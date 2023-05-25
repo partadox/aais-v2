@@ -104,14 +104,23 @@ $routes->post('kantor/edit', 'Admin\Kantor::edit', ["filter" => "authweb:1"]);
 $routes->post('kantor/create', 'Admin\Kantor::create', ["filter" => "authweb:1"]);
 $routes->post('kantor/update', 'Admin\Kantor::update', ["filter" => "authweb:1"]);
 
-/*--- Bank ---*/
-$routes->get('bank', 'Admin\Bank::index', ["filter" => "authweb:1"]);
-$routes->post('bank/input', 'Admin\Bank::input', ["filter" => "authweb:1"]);
-$routes->post('bank/edit', 'Admin\Bank::edit', ["filter" => "authweb:1"]);
+/*--- Payment ---*/
+$routes->get('payment-methode', 'Admin\Payment::index', ["filter" => "authweb:1"]);
+$routes->post('payment-methode/edit', 'Admin\Payment::edit', ["filter" => "authweb:1"]);
 
-$routes->post('bank/create', 'Admin\Bank::create', ["filter" => "authweb:1"]);
-$routes->post('bank/update', 'Admin\Bank::update', ["filter" => "authweb:1"]);
-$routes->post('bank/delete', 'Admin\Bank::delete', ["filter" => "authweb:1"]);
+$routes->post('payment-methode/update', 'Admin\Payment::update', ["filter" => "authweb:1"]);
+
+/*--- Beasiswa ---*/
+$routes->get('beasiswa', 'Admin\Beasiswa::index', ["filter" => "authweb:1-2-3-7"]);
+$routes->get('beasiswa/list', 'Admin\Beasiswa::list', ["filter" => "authweb:1-2-3-7"]);
+$routes->post('beasiswa/input', 'Admin\Beasiswa::input', ["filter" => "authweb:1-2-3-7"]);
+
+$routes->post('beasiswa/getdata', 'Admin\Beasiswa::getdata', ["filter" => "authweb:1-2-3-7"]);
+$routes->post('beasiswa/create', 'Admin\Beasiswa::create', ["filter" => "authweb:1-2-3-7"]);
+$routes->post('beasiswa/delete', 'Admin\Beasiswa::delete', ["filter" => "authweb:1-2-3-7"]);
+$routes->post('beasiswa/deleteselect', 'Admin\Beasiswa::deleteselect', ["filter" => "authweb:1-2-3-7"]);
+$routes->post('beasiswa/import', 'Admin\Beasiswa::import', ["filter" => "authweb:1-2-3-7"]);
+$routes->get('beasiswa/export', 'Admin\Beasiswa::export', ["filter" => "authweb:1-2-3-7"]);
 
 /*--- Program Regular---*/
 $routes->get('program-regular', 'Admin\ProgramReg::index', ["filter" => "authweb:1-2-3-7"]);

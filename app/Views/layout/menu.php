@@ -127,9 +127,6 @@
         <a href="<?= base_url('kelas-regular') ?>" class="waves-effect">
             <i class="mdi mdi-school"></i> <span> Kelas Regular </span>
         </a>
-        <a href="<?= base_url('program-nonreg') ?>" class="waves-effect">
-            <i class="mdi mdi-application"></i> <span> Program Non-Regular </span>
-        </a>
         <a href="<?= base_url('kelas-nonreg') ?>" class="waves-effect">
             <i class="mdi mdi-school"></i> <span> Kelas Non-Regular </span>
         </a>
@@ -178,8 +175,8 @@
         <a href="<?= base_url('kantor') ?>" class="waves-effect">
             <i class="mdi mdi-office-building"></i> <span> Kantor & Cabang</span>
         </a>
-        <a href="<?= base_url('bank') ?>" class="waves-effect">
-            <i class="mdi mdi-bank-transfer"></i> <span> Rek. Bank</span>
+        <a href="<?= base_url('payment-methode') ?>" class="waves-effect">
+            <i class="mdi mdi-bank-transfer"></i> <span> Payment Methode</span>
         </a>
         <a href="<?= base_url('log-admin') ?>" class="waves-effect">
             <i class="mdi mdi-history"></i> <span> Log Admin </span>

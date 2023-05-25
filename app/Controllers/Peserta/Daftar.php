@@ -109,8 +109,14 @@ class Daftar extends BaseController
 
     public function tes()
     {
-        $key        = $this->konfigurasi->flip_key();
-        $secret_key = $key->flip_key;
-        echo $secret_key;
+        $length = 6;
+        $characters = '123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $code = '';
+        
+        for ($i = 0; $i < $length; $i++) {
+            $randomIndex = mt_rand(0, strlen($characters) - 1);
+            $code .= $characters[$randomIndex];
+        }
+        echo $code;
     }
 }

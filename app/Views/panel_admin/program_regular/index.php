@@ -16,8 +16,9 @@
     <table id="datatable" class="table table-striped table-bordered nowrap mt-5" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
         <thead>
             <tr>
-                <th>No.</th>
-                <th>Nama Program</th>
+                <!-- <th>No.</th> -->
+                <th>ID Program</th>
+                <th>Nama</th>
                 <th>Jenis</th>
                 <th>Kategori</th>
                 <th>Biaya Program</th>
@@ -34,7 +35,8 @@
             foreach ($list as $data) :
                 $nomor++; ?>
                 <tr>
-                    <td width="5%"><?= $nomor ?></td>
+                    <!-- <td width="5%"><?= $nomor ?></td> -->
+                    <td width="5%"><?= $data['program_id'] ?></td>
                     <td width="20%"><?= $data['nama_program'] ?></td>
                     <td width="12%"><?= $data['jenis_program'] ?></td>
                     <td width="10%"><?= $data['kategori_program'] ?></td>

@@ -72,4 +72,12 @@ class Model_program extends Model
             ->get()
             ->getUnbufferedRow();
     }
+
+    //Cek data apa id program ada - import beasiswa
+    public function cek_program_id($program_id)
+    {
+        return $this->table('program')
+            ->where('program_id', $program_id)
+            ->countAllResults();
+    }
 }

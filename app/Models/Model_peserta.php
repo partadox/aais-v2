@@ -184,4 +184,12 @@ class Model_peserta extends Model
             ->where('peserta_id', $peserta_id)
             ->countAllResults();
     }
+
+    //Cek data apa id peserta ada - import beasiswa
+    public function cek_peserta_id($peserta_id)
+    {
+        return $this->table('peserta')
+            ->where('peserta_id', $peserta_id)
+            ->countAllResults();
+    }
 }

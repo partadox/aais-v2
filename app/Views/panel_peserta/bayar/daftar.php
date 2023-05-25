@@ -377,7 +377,7 @@
                             title: 'Payment details',
                             html: `
                                 <p>Total TF = Rp ${formatPrice(total)}</p>
-                                <p>Batas Waktu Bayar:<br> <?= shortdate_indo(substr($expired_waktu,0,10)) ?> <br><?=substr($expired_waktu,11,5)?> WITA</p> <br>
+                                <p>Batas Waktu Bayar:<br> <?= $expired_waktu ?> <br>
                                 Bank = ${bank} <br>
                                 VA = ${va} <br>
                                 <button id="copy" class="btn btn-success btn-sm"><i class="fas fa-copy"></i> Copy VA</button>
