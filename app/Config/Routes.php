@@ -154,6 +154,7 @@ $routes->get('log-user', 'Admin\Log::user', ["filter" => "authweb:1-2-3-7"]);
  */
 /*--- Pendaftaran Program---*/
 $routes->get('daftar', 'Peserta\Daftar::index', ["filter" => "authweb:4"]);
+$routes->get('daftar/tes', 'Peserta\Daftar::tes', ["filter" => "authweb:4"]);
 
 $routes->post('daftar/level-update', 'Peserta\Daftar::level_update', ["filter" => "authweb:4"]);
 $routes->post('daftar/save', 'Peserta\Daftar::save', ["filter" => "authweb:4"]);
@@ -162,6 +163,9 @@ $routes->post('daftar/save', 'Peserta\Daftar::save', ["filter" => "authweb:4"]);
 $routes->get('bayar/daftar', 'Peserta\Bayar::index', ["filter" => "authweb:4"]);
 
 $routes->post('bayar/save-manual', 'Peserta\Bayar::save_manual', ["filter" => "authweb:4"]);
+$routes->post('bayar/generate-flip', 'Peserta\Bayar::generate_flip', ["filter" => "authweb:4"]);
+$routes->post('bayar/cancel', 'Peserta\Bayar::cancel', ["filter" => "authweb:4"]);
+
 /*
  * --------------------------------------------------------------------
  * Additional Routing

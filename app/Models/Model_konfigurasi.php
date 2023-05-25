@@ -8,7 +8,7 @@ class Model_konfigurasi extends Model
 {
     protected $table      = 'konfigurasi';
     protected $primaryKey = 'konfigurasi_id';
-    protected $allowedFields = ['nama_web', 'deskripsi', 'visi', 'misi', 'instagram', 'facebook', 'whatsapp', 'email', 'alamat', 'logo', 'icon', 'status_pendaftaran','angkatan_kuliah', 'filter_domisili', 'periode_sertifikat', 'status_menu_sertifikat', 'biaya_sertifikat'];
+    protected $allowedFields = ['nama_web', 'deskripsi', 'visi', 'misi', 'instagram', 'facebook', 'whatsapp', 'email', 'alamat', 'logo', 'icon', 'status_pendaftaran','angkatan_kuliah', 'filter_domisili', 'periode_sertifikat', 'status_menu_sertifikat', 'biaya_sertifikat', 'flip_key'];
 
     //backend
     public function list()
@@ -68,6 +68,15 @@ class Model_konfigurasi extends Model
     {
         return $this->table('konfigurasi')
             ->select('biaya_sertifikat')
+            ->get()
+            ->getUnbufferedRow();
+    }
+
+    //Mendapatkan  Key
+    public function flip_key()
+    {
+        return $this->table('konfigurasi')
+            ->select('flip_key')
             ->get()
             ->getUnbufferedRow();
     }

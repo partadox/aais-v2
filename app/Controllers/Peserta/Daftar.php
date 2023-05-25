@@ -1,6 +1,6 @@
 <?php
 namespace App\Controllers\Peserta;
-
+use CodeIgniter\I18n\Time;
 use App\Controllers\BaseController;
 
 class Daftar extends BaseController
@@ -80,6 +80,7 @@ class Daftar extends BaseController
                 'cart_kelas'         => $kelas_id,
                 'cart_peserta_kelas' => $this->peserta_kelas->insertID(),
                 'cart_timeout'       => $timeout,
+                'cart_type'          => 'daftar',
             ];
             $this->cart->insert($newcart);
             $this->db->transComplete();
@@ -104,5 +105,12 @@ class Daftar extends BaseController
             ];
             echo json_encode($msg);
         }
+    }
+
+    public function tes()
+    {
+        $key        = $this->konfigurasi->flip_key();
+        $secret_key = $key->flip_key;
+        echo $secret_key;
     }
 }

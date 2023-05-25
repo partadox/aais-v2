@@ -25,6 +25,7 @@ use App\Models\Model_log;
 use App\Models\Model_log_user;
 use App\Models\Model_absen_peserta;
 use App\Models\Model_absen_pengajar;
+use App\Models\Model_bill;
 use App\Models\Model_cart;
 use App\Models\Model_ujian;
 use App\Models\Model_sertifikat;
@@ -111,6 +112,7 @@ abstract class BaseController extends Controller
         $this->pekerjaan    = new Model_pekerjaan;
         $this->cart         = new Model_cart;
         $this->payment      = new Model_payment;
+        $this->bill         = new Model_bill;
         $this->db 			= \Config\Database::connect();
     }
 

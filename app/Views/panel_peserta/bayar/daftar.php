@@ -12,18 +12,21 @@
 <?php if ($cek != 0) { ?>
 <!-- Container-fluid starts-->
 <div class="container-fluid">
+    <p class="mt-1">Catatan :<br> 
+        <i class="mdi mdi-information"></i> Anda akan terdaftar di kelas yang anda pilih setelah mengisi form pembayaran, melakukan pembayaran, dan pembayaran akan dikonfirmasi oleh sistem/admin.<br>
+        <i class="mdi mdi-information"></i> Harap lakukan pembayaran sebelum batas waktu pembayaran.<br>
+        <i class="mdi mdi-information"></i> Jika anda ingin memilih kelas lain harap tekan tombol batal.<br>
+    </p>
+    <hr>
     <h5 style="text-align:center"> Status Konfirmasi :
-        <button class="btn btn-warning" disabled> Belum Bayar</button>
-        <h5 style="text-align:center">
-        <i><b>Anda Akan Terdaftar di Kelas yang Anda Pilih Setelah Mengisi Form Pembayaran di Bawah ini.</b></i>
-        </h5> <br>
-        <h5 style="text-align:center">Lakukan Pembayaran Sebelum Batas Waktu Bayar!</h5>
-        <h5 style="text-align:center; color:red">Batas Waktu Pembayaran : <br> Tgl: <?= shortdate_indo(substr($expired_waktu,0,10)) ?>, Jam: <?=substr($expired_waktu,11,5)?> WITA</h5>
-    </h5>
+        <button class="btn btn-warning" disabled> Belum Bayar</button> </h5> <br>
+        <h5 style="text-align:center; color:red">Batas Waktu Bayar: <br> Tgl: <?= shortdate_indo(substr($expired_waktu,0,10)) ?> <br> Jam: <?=substr($expired_waktu,11,5)?> WITA</h5>
+    
     <h5 style="text-align:center; color:red" id="demo"></h5> <br>
 
     <div class="card shadow-lg bg-white rounded">
         <div class="card-body">
+            <button type="button" class="btn btn-danger btn-sm" onclick="hapus(<?= $cart_id ?>, <?= $peserta_kelas_id ?>)">Batal</button>
             <h6><?= $kelas['nama_program'] ?></h6>
             <h5 class="card-title"><?= $kelas['nama_kelas'] ?></h5>
             <hr>
@@ -162,11 +165,12 @@
             for(var i=0; i<cart.length; i++) {
                 var isBankService = cart[i].id >= 20 && cart[i].id <= 35;
                 var isDaftar = cart[i].id == 5;
+                var isSpp1   = cart[i].id == 1;
                 $('#cart-items').append(`
                     <div class="list-group-item">
                         <span>${cart[i].name}</span> <br> 
                         <span>Rp ${formatPrice(cart[i].price)}</span>
-                        ${!isBankService && !isDaftar ? `<button class="remove-from-cart btn btn-sm btn-danger float-right" data-id="${cart[i].id}"><i class="fa fa-trash"></i></button>` : ''}
+                        ${!isBankService && !isSpp1 &&!isDaftar ? `<button class="remove-from-cart btn btn-sm btn-danger float-right" data-id="${cart[i].id}"><i class="fa fa-trash"></i></button>` : ''}
                     </div>
                 `);
             }
@@ -261,6 +265,7 @@
                         <div id="image_preview_div"></div>`,
                 showCancelButton: true,
                 confirmButtonText: 'Upload',
+                cancelButtonText: 'Batal',
                 focusConfirm: false,
                 allowOutsideClick: false,
                 preConfirm: () => {
@@ -323,18 +328,84 @@
         });
 
         $('#pay-va-btn').click(function() {
-            var requestData = JSON.stringify({ cart: cart, total: total });
-            console.log("Request data:", requestData);
+            let formData = new FormData();
+            formData.append('cart', JSON.stringify(cart));
+            formData.append('total', total);
+            formData.append('peserta_kelas_id', <?= $peserta_kelas_id ?>);
+            formData.append('peserta_id', <?= $peserta_id ?>);
+            formData.append('kelas_id', <?= $kelas_id ?>);
+            formData.append('cart_id', <?= $cart_id ?>);
+            formData.append('expired_waktu', '<?= $expired_waktu ?>');
+
+            // Display a loading alert with no buttons
+            Swal.fire({
+                title: 'Loading...',
+                allowEscapeKey: false,
+                allowOutsideClick: false,
+                showConfirmButton: false,
+                didOpen: () => {
+                    Swal.showLoading()
+                }
+            });
 
             $.ajax({
-                url: '/bayar/gateway',
+                url: '/bayar/generate-flip',
                 type: 'POST',
-                data: requestData,
-                success: function(response) {
-                    alert("Payment saved successfully");
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function(response){
+                    // Close the loading alert
+                    Swal.close();
+
+                    if (response.error) {
+                        // Handle the error: display an alert with the error message
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: response.error,
+                            confirmButtonText: 'OK',
+                            allowOutsideClick: false,
+                        });
+                    } else {
+
+                        // assuming response is a JSON object and contains account_number and bank_code
+                        let bank = response.bank_code;
+                        let va = response.account_number;
+
+                        Swal.fire({
+                            title: 'Payment details',
+                            html: `
+                                <p>Total TF = Rp ${formatPrice(total)}</p>
+                                <p>Batas Waktu Bayar:<br> <?= shortdate_indo(substr($expired_waktu,0,10)) ?> <br><?=substr($expired_waktu,11,5)?> WITA</p> <br>
+                                Bank = ${bank} <br>
+                                VA = ${va} <br>
+                                <button id="copy" class="btn btn-success btn-sm"><i class="fas fa-copy"></i> Copy VA</button>
+                            `,
+                            confirmButtonText: 'Tutup',
+                            allowOutsideClick: false,
+                            didOpen: () => {
+                                $('#copy').click(function(){
+                                    let $temp = $("<input>");
+                                    $("body").append($temp);
+                                    $temp.val($('#va').text()).select();
+                                    document.execCommand("copy");
+                                    $temp.remove();
+
+                                    // Update the text of the button
+                                    $(this).html('<i class="fas fa-check"></i> VA dicopy');
+                                });
+                            },
+                                didClose: () => {
+                                window.location.href = "/daftar";
+                            }
+                        });
+                    }
                 },
-                error: function(error) {
-                    console.error("Error saving payment:", error.responseText);
+                error: function(jqXHR, textStatus, errorThrown){
+                    // Close the loading alert
+                    Swal.close();
+                    console.log(textStatus, errorThrown);
                 }
             });
         });
@@ -348,6 +419,7 @@
                 showCancelButton: true,
                 confirmButtonText: 'Cek Beasiswa',
                 focusConfirm: false,
+                allowOutsideClick: false,
                 preConfirm: () => {
                     let note = document.getElementById('pay_note').value;
                     let image = document.getElementById('pay_image').files[0];
@@ -365,7 +437,7 @@
 
 
     /*--- Cancel Cart ---*/
-    function hapus(bayar_id, kelas_id, bayar_peserta_id) {
+    function hapus(cart_id, peserta_kelas_id) {
         Swal.fire({
             title: 'Batal Daftar?',
             text: `Apakah anda yakin membatalkan pendaftaran program/kelas ini?`,
@@ -374,17 +446,17 @@
             confirmButtonColor: '#3085d6',
             cancelButtonColor: '#d33',
             confirmButtonText: 'Ya',
-            cancelButtonText: 'Tidak'
+            cancelButtonText: 'Tidak',
+            allowOutsideClick: false,
         }).then((result) => {
             if (result.isConfirmed) {
                 $.ajax({
-                    url: "<?= site_url('daftar/cancel') ?>",
+                    url: "<?= site_url('/bayar/cancel') ?>",
                     type: "post",
                     dataType: "json",
                     data: {
-                        bayar_id: bayar_id,
-                        kelas_id: kelas_id,
-                        bayar_peserta_id: bayar_peserta_id,
+                        cart_id: cart_id,
+                        peserta_kelas_id: peserta_kelas_id,
                     },
                     success: function(response) {
                         if (response.sukses) {
@@ -405,24 +477,29 @@
     }
 
     /*--- Countdown Function---*/
+    // Receive the server time from PHP
+    let serverTime = new Date('<?= $jsFriendlyTime ?>');
+    let timeOffset = serverTime.getTime() - new Date().getTime();
+
+    // Your countdown function
     let endTime = new Date('<?= $expired_waktu ?>').getTime();
 
     function updateTime() {
-    let now = new Date().getTime();
-    let distance = endTime - now;
+        let now = new Date().getTime() + timeOffset;
+        let distance = endTime - now;
 
-    if (distance < 0) {
-        document.getElementById("demo").innerHTML = "";
-        clearInterval(intervalId);
-        return;
-    }
+        if (distance < 0) {
+            document.getElementById("demo").innerHTML = "";
+            clearInterval(intervalId);
+            return;
+        }
 
-    let days = Math.floor(distance / (1000 * 60 * 60 * 24));
-    let hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    let minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-    let seconds = Math.floor((distance % (1000 * 60)) / 1000);
+        let days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        let hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        let minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        let seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
-    document.getElementById("demo").innerHTML = `${hours} Jam - ${minutes} Menit - ${seconds} Detik`;
+        document.getElementById("demo").innerHTML = `${hours} jam-${minutes} mnt-${seconds} dtk`;
     }
 
     // Update the timer every second
