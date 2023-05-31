@@ -619,8 +619,11 @@ class Bayar extends BaseController
     {
         // Get the JSON data from the request body
         $json               = $this->request->getJSON();
-        var_dump($json);
+        // Convert the payload to a formatted JSON string
+        $jsonString = json_encode($json, JSON_PRETTY_PRINT);
 
+        // Output the JSON string
+        echo $jsonString;
         // Access the individual data fields from the JSON
         // $id                 = $json->id;
         // $bill_link          = $json->bill_link;
