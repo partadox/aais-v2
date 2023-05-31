@@ -623,7 +623,15 @@ class Bayar extends BaseController
         $$aktivitas = json_encode($json, JSON_PRETTY_PRINT);
 
         // Output the JSON string
-        $this->logging('Admin', 'BERHASIL', $aktivitas);
+        $log = [
+            'username_log' => 'aw',
+            'tgl_log'      => date("Y-m-d"),
+            'waktu_log'    => date("H:i:s"),
+            'status_log'   => 'tes',
+            'aktivitas_log'=> $aktivitas,
+        ];
+        $this->log->insert($log);
+        return $this->response->setJSON(['success' => 'Your operation was successful.']);
         // Access the individual data fields from the JSON
         // $id                 = $json->id;
         // $bill_link          = $json->bill_link;
