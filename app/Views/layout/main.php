@@ -14,10 +14,10 @@
     <link href="<?= base_url() ?>public/assets/css/metismenu.min.css" rel="stylesheet" type="text/css">
     <link href="<?= base_url() ?>public/assets/css/icons.css" rel="stylesheet" type="text/css">
     <link href="<?= base_url() ?>public/assets/css/style.css" rel="stylesheet" type="text/css">
-    <script src="<?= base_url() ?>public/assets/js/jquery.min.js"></script>
-    <script src="<?= base_url() ?>public/assets/select2/dist/js/select2.min.js"></script>
-    <link rel="stylesheet" href="<?= base_url() ?>public/assets/select2/dist/css/select2.min.css" />
-    <link rel="stylesheet" href="<?= base_url() ?>public/assets/select2/dist/css/select2-bootstrap4.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.0/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@ttskch/select2-bootstrap4-theme@1.5.2/dist/select2-bootstrap4.min.css">
     <link href="<?= base_url() ?>public/assets/plugins/summernote/summernote-bs4.css" rel="stylesheet" />
     <!-- DataTables -->
     <link href="https://cdn.datatables.net/v/bs4/dt-1.13.4/fc-4.2.2/datatables.min.css" rel="stylesheet"/>
