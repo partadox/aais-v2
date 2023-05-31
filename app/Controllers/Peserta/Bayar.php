@@ -509,6 +509,7 @@ class Bayar extends BaseController
                 'metode'                    => 'beasiswa',
                 'beasiswa_id'               => $beasiswa[0]['beasiswa_id'],
                 'status_bayar'              => 'Lunas',
+                'status_bayar_admin'        => 'BEBAS BIAYA',
                 'status_konfirmasi'         => 'Terkonfirmasi',
                 'awal_bayar'                => '0',
                 'nominal_bayar'             => '0',
