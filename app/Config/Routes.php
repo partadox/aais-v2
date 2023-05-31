@@ -189,6 +189,8 @@ $routes->post('bayar/save-beasiswa', 'Peserta\Bayar::save_beasiswa', ["filter" =
 $routes->post('bayar/generate-flip', 'Peserta\Bayar::generate_flip', ["filter" => "authweb:4"]);
 $routes->post('bayar/cancel', 'Peserta\Bayar::cancel', ["filter" => "authweb:4"]);
 
+$routes->post('bayar/77callback77', 'Peserta\Bayar::callback');
+
 /*
  * --------------------------------------------------------------------
  * Additional Routing
