@@ -619,157 +619,159 @@ class Bayar extends BaseController
     {
         // Get the JSON data from the request body
         $json               = $this->request->getJSON();
+        var_dump($json);
 
         // Access the individual data fields from the JSON
-        $id                 = $json->id;
-        $bill_link          = $json->bill_link;
-        $bill_link_id       = $json->bill_link_id;
-        $bill_title         = $json->bill_title;
-        $sender_name        = $json->sender_name;
-        $sender_bank        = $json->sender_bank;
-        $amount             = $json->amount;
-        $status             = $json->status;
-        $sender_bank_type   = $json->sender_bank_type;
-        $created_at         = $json->created_at;
+        // $id                 = $json->id;
+        // $bill_link          = $json->bill_link;
+        // $bill_link_id       = $json->bill_link_id;
+        // $bill_title         = $json->bill_title;
+        // $sender_name        = $json->sender_name;
+        // $sender_bank        = $json->sender_bank;
+        // $amount             = $json->amount;
+        // $status             = $json->status;
+        // $sender_bank_type   = $json->sender_bank_type;
+        // $created_at         = $json->created_at;
 
-        $title_explode      = explode("-", $bill_title);
+        // if ($status == 'SUCCESSFUL') {
+        //     $title_explode      = explode("-", $bill_title);
         
-        $peserta_kelas_id   = $title_explode[0];
-        $cart_id            = $title_explode[1];
-        $bayar_id           = $title_explode[2];
-        $peserta_kelas      = $this->peserta_kelas->find($peserta_kelas_id);
-        $peserta_id         = $peserta_kelas['data_peserta_id'];
-        $kelas_id           = $peserta_kelas['data_kelas_id'];
+        //     $peserta_kelas_id   = $title_explode[0];
+        //     $cart_id            = $title_explode[1];
+        //     $bayar_id           = $title_explode[2];
+        //     $peserta_kelas      = $this->peserta_kelas->find($peserta_kelas_id);
+        //     $peserta_id         = $peserta_kelas['data_peserta_id'];
+        //     $kelas_id           = $peserta_kelas['data_kelas_id'];
 
-        $data_kelas         = $this->kelas->find($kelas_id);
-        $peserta            = $this->peserta->find($peserta_id);
+        //     $data_kelas         = $this->kelas->find($kelas_id);
+        //     $peserta            = $this->peserta->find($peserta_id);
 
-        $this->db->transStart();
-        $updateBayar = [
-            'status_bayar'              => 'Lunas',
-            'status_bayar_admin'        => 'SESUAI BAYAR',
-            'status_konfirmasi'         => 'Terkonfirmasi',
-            'tgl_bayar_konfirmasi'      => date("Y-m-d"),
-            'waktu_bayar_konfirmasi'    => date("H:i:s"),
-            'validator'                 => 'Flip Payment Gateway',
-        ];
-        $this->bayar->update($bayar_id, $updateBayar);
+        //     $this->db->transStart();
+        //     $updateBayar = [
+        //         'status_bayar'              => 'Lunas',
+        //         'status_bayar_admin'        => 'SESUAI BAYAR',
+        //         'status_konfirmasi'         => 'Terkonfirmasi',
+        //         'tgl_bayar_konfirmasi'      => date("Y-m-d"),
+        //         'waktu_bayar_konfirmasi'    => date("H:i:s"),
+        //         'validator'                 => 'Flip Payment Gateway',
+        //     ];
+        //     $this->bayar->update($bayar_id, $updateBayar);
 
-        $bayar  = $this->bayar->find($bayar_id);
-        $daftar = $bayar['awal_bayar_daftar'];
-        $modul  = $bayar['awal_bayar_modul'];
-        $spp1   = $bayar['awal_bayar_spp1'];
-        $spp2   = $bayar['awal_bayar_spp2'];
-        $spp3   = $bayar['awal_bayar_spp3'];
-        $spp4   = $bayar['awal_bayar_spp4'];
-        $infaq  = $bayar['awal_bayar_infaq'];
-        $lainnya= $bayar['awal_bayar_lainnya'];
+        //     $bayar  = $this->bayar->find($bayar_id);
+        //     $daftar = $bayar['awal_bayar_daftar'];
+        //     $modul  = $bayar['awal_bayar_modul'];
+        //     $spp1   = $bayar['awal_bayar_spp1'];
+        //     $spp2   = $bayar['awal_bayar_spp2'];
+        //     $spp3   = $bayar['awal_bayar_spp3'];
+        //     $spp4   = $bayar['awal_bayar_spp4'];
+        //     $infaq  = $bayar['awal_bayar_infaq'];
+        //     $lainnya= $bayar['awal_bayar_lainnya'];
 
-        $dt_konfirmasi_daftar = date('Y-m-d H:i:s');
-        $dt_konfirmasi_spp2 = date('Y-m-d H:i:s');
-        $dt_konfirmasi_spp3 = date('Y-m-d H:i:s');
-        $dt_konfirmasi_spp4 = date('Y-m-d H:i:s');
+        //     $dt_konfirmasi_daftar = date('Y-m-d H:i:s');
+        //     $dt_konfirmasi_spp2 = date('Y-m-d H:i:s');
+        //     $dt_konfirmasi_spp3 = date('Y-m-d H:i:s');
+        //     $dt_konfirmasi_spp4 = date('Y-m-d H:i:s');
 
-        if ($modul == '0') {
-            $modul = NULL;
-        }
+        //     if ($modul == '0') {
+        //         $modul = NULL;
+        //     }
 
-        if ($spp2 == '0') {
-            $spp2 = NULL;
-            $dt_konfirmasi_spp2 = NULL;
-        }
+        //     if ($spp2 == '0') {
+        //         $spp2 = NULL;
+        //         $dt_konfirmasi_spp2 = NULL;
+        //     }
 
-        if ($spp3 == '0') {
-            $spp3 = NULL;
-            $dt_konfirmasi_spp3 = NULL;
-        }
+        //     if ($spp3 == '0') {
+        //         $spp3 = NULL;
+        //         $dt_konfirmasi_spp3 = NULL;
+        //     }
 
-        if ($spp4 == '0') {
-            $spp4 = NULL;
-            $dt_konfirmasi_spp4 = NULL;
-        }
+        //     if ($spp4 == '0') {
+        //         $spp4 = NULL;
+        //         $dt_konfirmasi_spp4 = NULL;
+        //     }
 
-        if ($lainnya != '0') {
-            $data_lain = [
-                'lainnya_bayar_id'        => $bayar_id,
-                'bayar_lainnya'           => $lainnya,
-                'data_peserta_id_lain'    => $peserta_id,
-                'status_bayar_lainnya'    => 'Lunas',
-            ];
-            $this->bayar_lain->insert($data_lain);
-        }
+        //     if ($lainnya != '0') {
+        //         $data_lain = [
+        //             'lainnya_bayar_id'        => $bayar_id,
+        //             'bayar_lainnya'           => $lainnya,
+        //             'data_peserta_id_lain'    => $peserta_id,
+        //             'status_bayar_lainnya'    => 'Lunas',
+        //         ];
+        //         $this->bayar_lain->insert($data_lain);
+        //     }
 
-        if ($modul != '0') {
-            $data_modul = [
-                'bayar_modul_id'        => $bayar_id,
-                'bayar_modul'           => $modul,
-                'status_bayar_modul'    => 'Lunas',
-            ];
+        //     if ($modul != '0') {
+        //         $data_modul = [
+        //             'bayar_modul_id'        => $bayar_id,
+        //             'bayar_modul'           => $modul,
+        //             'status_bayar_modul'    => 'Lunas',
+        //         ];
 
-            $this->bayar_modul->insert($data_modul);
-        }
+        //         $this->bayar_modul->insert($data_modul);
+        //     }
 
-        if ($infaq != '0') {
-            $data_infaq = [
-                'infaq_bayar_id'=> $bayar_id,
-                'bayar_infaq'   => $infaq,
-            ];
-            $this->infaq->insert($data_infaq);
-        }
+        //     if ($infaq != '0') {
+        //         $data_infaq = [
+        //             'infaq_bayar_id'=> $bayar_id,
+        //             'bayar_infaq'   => $infaq,
+        //         ];
+        //         $this->infaq->insert($data_infaq);
+        //     }
 
-        if ($daftar != '0' && $spp1 != '0' && $spp2 != '0' && $spp3 != '0' && $spp4 != '0') {
-            $spp_status = 'LUNAS';
-        } else {
-            $spp_status = 'BELUM LUNAS';
-        }
-        
+        //     if ($daftar != '0' && $spp1 != '0' && $spp2 != '0' && $spp3 != '0' && $spp4 != '0') {
+        //         $spp_status = 'LUNAS';
+        //     } else {
+        //         $spp_status = 'BELUM LUNAS';
+        //     }
+            
 
-        $dataabsen = [
-            'bckp_absen_peserta_id'     => $peserta_id,
-            'bckp_absen_peserta_kelas'  => $kelas_id,
-        ];
-        $this->absen_peserta->insert($dataabsen);
+        //     $dataabsen = [
+        //         'bckp_absen_peserta_id'     => $peserta_id,
+        //         'bckp_absen_peserta_kelas'  => $kelas_id,
+        //     ];
+        //     $this->absen_peserta->insert($dataabsen);
 
-        $dataujian = [
-            'bckp_ujian_peserta'     => $peserta_id,
-            'bckp_ujian_kelas'       => $kelas_id,
-        ];
-        $this->ujian->insert($dataujian);
+        //     $dataujian = [
+        //         'bckp_ujian_peserta'     => $peserta_id,
+        //         'bckp_ujian_kelas'       => $kelas_id,
+        //     ];
+        //     $this->ujian->insert($dataujian);
 
-        $updatePK = [
-            'data_absen'                => $this->absen_peserta->insertID(),
-            'data_ujian'                => $this->ujian->insertID(),
-            'byr_daftar'                => $daftar,
-            'byr_modul'                 => $modul,
-            'byr_spp1'                  => $spp1,
-            'byr_spp2'                  => $spp2,
-            'byr_spp3'                  => $spp3,
-            'byr_spp4'                  => $spp4,
-            'spp_status'                => $spp_status,
-            'dt_konfirmasi_daftar'      => $dt_konfirmasi_daftar,
-            'dt_konfirmasi_spp2'        => $dt_konfirmasi_spp2,
-            'dt_konfirmasi_spp3'        => $dt_konfirmasi_spp3,
-            'dt_konfirmasi_spp4'        => $dt_konfirmasi_spp4,
-            'expired_tgl_daftar'        => NULL,
-            'expired_waktu_daftar'      => NULL,
-        ];
+        //     $updatePK = [
+        //         'data_absen'                => $this->absen_peserta->insertID(),
+        //         'data_ujian'                => $this->ujian->insertID(),
+        //         'byr_daftar'                => $daftar,
+        //         'byr_modul'                 => $modul,
+        //         'byr_spp1'                  => $spp1,
+        //         'byr_spp2'                  => $spp2,
+        //         'byr_spp3'                  => $spp3,
+        //         'byr_spp4'                  => $spp4,
+        //         'spp_status'                => $spp_status,
+        //         'dt_konfirmasi_daftar'      => $dt_konfirmasi_daftar,
+        //         'dt_konfirmasi_spp2'        => $dt_konfirmasi_spp2,
+        //         'dt_konfirmasi_spp3'        => $dt_konfirmasi_spp3,
+        //         'dt_konfirmasi_spp4'        => $dt_konfirmasi_spp4,
+        //         'expired_tgl_daftar'        => NULL,
+        //         'expired_waktu_daftar'      => NULL,
+        //     ];
 
-        $this->peserta_kelas->update($peserta_kelas_id, $updatePK);
-        $this->cart->delete($cart_id);
-        $this->db->transComplete();
+        //     $this->peserta_kelas->update($peserta_kelas_id, $updatePK);
+        //     $this->cart->delete($cart_id);
+        //     $this->db->transComplete();
 
-        $aktivitas = 'Pendaftaran peserta '. $peserta['nis'].'-'.$peserta['nama_peserta'] .' pada kelas ' . $data_kelas['nama_kelas']. ' terkonfirmasi oleh flip';
+        //     $aktivitas = 'Pendaftaran peserta '. $peserta['nis'].'-'.$peserta['nama_peserta'] .' pada kelas ' . $data_kelas['nama_kelas']. ' terkonfirmasi oleh flip';
 
-        if ($this->db->transStatus() === FALSE)
-        {
-            /*--- Log ---*/
-            $this->logging('Admin', 'FAIL', $aktivitas);
-        }
-        else
-        {
-            /*--- Log ---*/
-            $this->logging('Admin', 'BERHASIL', $aktivitas);
-        }
-        
+        //     if ($this->db->transStatus() === FALSE)
+        //     {
+        //         /*--- Log ---*/
+        //         $this->logging('Admin', 'FAIL', $aktivitas);
+        //     }
+        //     else
+        //     {
+        //         /*--- Log ---*/
+        //         $this->logging('Admin', 'BERHASIL', $aktivitas);
+        //     }
+        // }
     }
 }
