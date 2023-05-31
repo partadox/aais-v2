@@ -444,6 +444,144 @@ class Bayar extends BaseController
         return $this->response->setJSON(['success' => 'Your operation was successful.']);
     }
 
+    public function save_beasiswa()
+    {
+         // Get the POST data
+        $beasiswa_code      = $this->request->getPost('beasiswa_code');
+        $cart               = $this->request->getPost('cart');
+        $total              = $this->request->getPost('total');
+        $peserta_id         = $this->request->getPost('peserta_id');
+        $peserta_kelas_id   = $this->request->getPost('peserta_kelas_id');
+        $kelas_id           = $this->request->getPost('kelas_id');
+        $cart_id            = $this->request->getPost('cart_id');
+        $expired_waktu      = $this->request->getPost('expired_waktu');
+        $expired_waktu      = \DateTime::createFromFormat('Y-m-d H:i:s', $expired_waktu);
+        $data_kelas         = $this->kelas->find($kelas_id);
+        $program_id         = $data_kelas['program_id'];
+
+        $now                = new \DateTime();
+
+        if (!$this->request->getPost('beasiswa_code')) {
+            return $this->response->setJSON(['error' => 'Harap Masukan Kode Beasiswa.']);
+        }
+
+        if ($expired_waktu < $now) {
+            return $this->response->setJSON(
+                ['error' => 'Anda telah melampui batas waktu transfer, silahkan pilih kelas terlebih dahulu.']);
+        }
+
+        $beasiswa = $this->beasiswa->find_code($beasiswa_code, $peserta_id, $program_id);
+
+        if (count($beasiswa) == NULL) {
+            return $this->response->setJSON(['error' => 'Kode Beasiswa Tidak Ditemukan.']);
+        } elseif(count($beasiswa) == 1) {
+
+            $beasiswa_daftar= ' ';
+            $beasiswa_spp1  = ' ';
+            $beasiswa_spp2  = ' ';
+            $beasiswa_spp3  = ' ';
+            $beasiswa_spp4  = ' ';
+
+            if ($beasiswa[0]['beasiswa_daftar'] == 1) {
+                $beasiswa_daftar = ' Pendaftaran';
+            }
+
+            if ($beasiswa[0]['beasiswa_spp1'] == 1) {
+                $beasiswa_spp1 = ' SPP-1';
+            }
+
+            if ($beasiswa[0]['beasiswa_spp2'] == 1) {
+                $beasiswa_spp2 = ' SPP-2';
+            }
+
+            if ($beasiswa[0]['beasiswa_spp3'] == 1) {
+                $beasiswa_spp3 = ' SPP-3';
+            }
+
+            if ($beasiswa[0]['beasiswa_spp4'] == 1) {
+                $beasiswa_spp4 = ' SPP-4';
+            }
+
+            $data_bayar = [
+                'kelas_id'                  => $kelas_id,
+                'bayar_peserta_id'          => $peserta_id,
+                'bayar_peserta_kelas_id'    => $peserta_kelas_id,
+                'metode'                    => 'beasiswa',
+                'beasiswa_id'               => $beasiswa[0]['beasiswa_id'],
+                'status_bayar'              => 'Lunas',
+                'status_konfirmasi'         => 'Terkonfirmasi',
+                'awal_bayar'                => '0',
+                'nominal_bayar'             => '0',
+                'tgl_bayar'                 => date("Y-m-d"),
+                'waktu_bayar'               => date("H:i:s"),
+                'keterangan_bayar'          => 'Bayar dengan kode beasiswa '.$beasiswa_code . ' free beasiswa untuk'.$beasiswa_daftar.$beasiswa_spp1.$beasiswa_spp2.$beasiswa_spp3.$beasiswa_spp4,
+                'tgl_bayar_konfirmasi'      => date("Y-m-d"),
+                'waktu_bayar_konfirmasi'    => date("H:i:s"),
+                'validator'                 => 'AAIS Sistem',
+                'bukti_bayar'               => 'beasiswa.png',
+            ];
+
+            $updateBeasiswa = [
+                'beasiswa_status'    => 1,
+                'beasiswa_used'      => date('Y-m-d H:i:s'),
+            ];
+
+            $this->db->transStart();
+            $this->bayar->insert($data_bayar);
+
+            $dataabsen = [
+                'bckp_absen_peserta_id'     => $peserta_id,
+                'bckp_absen_peserta_kelas'  => $kelas_id,
+            ];
+            $this->absen_peserta->insert($dataabsen);
+
+            $dataujian = [
+                'bckp_ujian_peserta'     => $peserta_id,
+                'bckp_ujian_kelas'       => $kelas_id,
+            ];
+            $this->ujian->insert($dataujian);
+
+            if ($beasiswa[0]['beasiswa_daftar'] == 1 && $beasiswa[0]['beasiswa_spp1'] == 1 && $beasiswa[0]['beasiswa_spp2'] == 1 && $beasiswa[0]['beasiswa_spp3'] == 1 && $beasiswa[0]['beasiswa_spp4'] == 1) {
+                $spp_status = 'LUNAS';
+            } else {
+                $spp_status = 'BELUM LUNAS';
+            }
+            
+            $updatePK = [
+                'data_absen'                => $this->absen_peserta->insertID(),
+                'data_ujian'                => $this->ujian->insertID(),
+                'spp_status'                => $spp_status,
+                'expired_tgl_daftar'        => NULL,
+                'expired_waktu_daftar'      => NULL,
+                'beasiswa_daftar'           => $beasiswa[0]['beasiswa_daftar'],
+                'beasiswa_spp1'             => $beasiswa[0]['beasiswa_spp1'],
+                'beasiswa_spp2'             => $beasiswa[0]['beasiswa_spp2'],
+                'beasiswa_spp3'             => $beasiswa[0]['beasiswa_spp3'],
+                'beasiswa_spp4'             => $beasiswa[0]['beasiswa_spp4'],
+            ];
+            
+            $this->peserta_kelas->update($peserta_kelas_id, $updatePK);
+            $this->beasiswa->update($beasiswa[0]['beasiswa_id'], $updateBeasiswa);
+            $this->cart->delete($cart_id);
+            $this->db->transComplete();
+        }
+
+        $aktivitas = 'Mendaftar dengan kode beasiswa pada kelas ' . $data_kelas['nama_kelas'];
+
+        if ($this->db->transStatus() === FALSE)
+        {
+            /*--- Log ---*/
+            $this->logging('Admin', 'FAIL', $aktivitas);
+        }
+        else
+        {
+            /*--- Log ---*/
+            $this->logging('Admin', 'BERHASIL', $aktivitas);
+        }
+        
+        return $this->response->setJSON(['success' => 'Your operation was successful.']);
+    }
+
     public function cancel()
     {
          // Get the POST data

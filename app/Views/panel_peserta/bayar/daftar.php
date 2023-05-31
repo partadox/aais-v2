@@ -411,23 +411,55 @@
         });
 
         $('#pay-beasiswa-btn').click(function() {
-            var requestData = JSON.stringify({ cart: cart, total: total });
             Swal.fire({
-                title: 'Form Beasiswa',
-                html: ` <label>Kode Beasiswa</label>
-                        <input id="beasiswa_code" class="form-control mb-3"></input>`,
+                title: 'Form Daftar dengan Beasiswa',
+                html: ` <label>Masukan Kode Beasiswa</label>
+                        <input type="text" id="beasiswa_code" class="form-control mb-3"></input>`,
                 showCancelButton: true,
-                confirmButtonText: 'Cek Beasiswa',
+                confirmButtonText: 'Cek',
+                cancelButtonText: 'Batal',
                 focusConfirm: false,
                 allowOutsideClick: false,
                 preConfirm: () => {
-                    let note = document.getElementById('pay_note').value;
-                    let image = document.getElementById('pay_image').files[0];
-                    return {note: note, image: image};
+                    let beasiswa_code = document.getElementById('beasiswa_code').value;
+                    let formData = new FormData();
+                    formData.append('beasiswa_code', beasiswa_code);
+                    formData.append('cart', JSON.stringify(cart));
+                    formData.append('total', total);
+                    formData.append('peserta_kelas_id', <?= $peserta_kelas_id ?>);
+                    formData.append('peserta_id', <?= $peserta_id ?>);
+                    formData.append('kelas_id', <?= $kelas_id ?>);
+                    formData.append('cart_id', <?= $cart_id ?>);
+                    formData.append('expired_waktu', '<?= $expired_waktu ?>');
+                    return $.ajax({
+                        url: "<?= site_url('/bayar/save-beasiswa') ?>",
+                        type: "post",
+                        dataType: "json",
+                        processData: false, // This is important
+                        contentType: false, // This is important
+                        data: formData
+                    });
                 }
             }).then((result) => {
-                if (result.isConfirmed) {
-                    console.log(result.value.note);
+                if (result.value.error) {
+                    Swal.fire({
+                        title: "Error!",
+                        text: result.value.error,
+                        icon: "error",
+                        confirmButtonText: 'OK',
+                        allowOutsideClick: false,
+                    });
+                } else {
+                    Swal.fire({
+                        title: "Berhasil!",
+                        text: "Form Pembayaran dengan Beasiswa Disimpan, Tunggu Konfirmasi dari Admin.",
+                        icon: "success",
+                        showConfirmButton: false,
+                        allowOutsideClick: false,
+                        timer: 1500
+                    }).then(function() {
+                        window.location = '/bayar/daftar';
+                    });
                 }
             });
         });

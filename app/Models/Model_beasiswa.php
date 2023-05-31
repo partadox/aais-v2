@@ -82,4 +82,14 @@ class Model_beasiswa extends Model
             ->orderBy('beasiswa_id', 'DESC')
             ->get()->getResultArray();
     }
+
+    public function find_code($beasiswa_code, $peserta_id, $program_id)
+    {
+        return $this->table('beasiswa')
+            ->where('beasiswa_code', $beasiswa_code)
+            ->where('beasiswa_peserta', $peserta_id)
+            ->where('beasiswa_program', $program_id)
+            ->where('beasiswa_status', '0')
+            ->get()->getResultArray();
+    }
 }
