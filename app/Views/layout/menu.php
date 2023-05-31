@@ -140,16 +140,19 @@
     <li class="menu-title">Akademik</li>
     <li>
         <a href="<?= base_url('akademik/admin_rekap_absen_peserta') ?>" class="waves-effect">
-            <i class="mdi mdi-check-bold"></i> <span> Absensi Peserta</span>
+            <i class="mdi mdi-check-bold"></i> <span> Abaseni Peserta Reg.</span>
         </a>
         <a href="<?= base_url('akademik/admin_rekap_absen_pengajar') ?>" class="waves-effect">
-            <i class="mdi mdi-check-box-outline"></i> <span> Absensi Pengajar</span>
+            <i class="mdi mdi-check-box-outline"></i> <span> Absensi Pengajar Reg.</span>
+        </a>
+        <a href="<?= base_url('akademik/admin_rekap_absen_peserta') ?>" class="waves-effect">
+            <i class="mdi mdi-check-bold"></i> <span> Absensi Peserta Nonreg</span>
         </a>
         <a href="<?= base_url('akademik/admin_rekap_ujian') ?>" class="waves-effect">
-            <i class="mdi mdi-book"></i> <span> Hasil Ujian </span>
+            <i class="mdi mdi-book"></i> <span> Hasil Ujian Reg.</span>
         </a>
         <a href="<?= base_url('akademik/admin_sertifikat') ?>" class="waves-effect">
-            <i class="mdi mdi-certificate"></i> <span> Sertifikat </span>
+            <i class="mdi mdi-certificate"></i> <span> Sertifikat</span>
         </a>
     </li>
     <li class="menu-title">Peserta & Pengajar</li>

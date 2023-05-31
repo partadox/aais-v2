@@ -9,20 +9,85 @@
 
 <?= $this->section('isi') ?>
 
-<!-- <a> 
-    <button type="button" class="btn btn-primary mb-3" onclick="tambah('')" ><i class=" fa fa-plus-circle"></i> Masukan Peserta Pindah</button>
-</a> -->
 <a href="<?= base_url('kelas-nonreg') ?>"> 
     <button type="button" class="btn btn-secondary mb-3"><i class=" fa fa-arrow-circle-left"></i> Kembali</button>
 </a>
 
-<h5 style="text-align:center;">Kelas <?= $detail_kelas['nk_name'] ?></h5>
-<h6 style="text-align:center;"><?= $detail_kelas['nk_hari'] ?>, <?= $detail_kelas['nk_waktu'] ?> <?= $detail_kelas['nk_timezone'] ?> - <?= $detail_kelas['nk_tm_methode'] ?></h6>
-<h6 style="text-align:center;">Jumlah Peserta = <?= $jumlah_peserta ?></h6>
+<button type="button" class="btn btn-primary mb-3" onclick="modal('peserta','<?= $detail_kelas['nk_id'] ?>')" ><i class=" fa fa-plus-circle"></i> Tambah Peserta</button>
 
-<p>Pengajar = <?php foreach ($pengajar as $key => $value) {
-    $value['nama_pengajar'];
-}?> </p>
+
+<div class="mb-3">
+    <h5 style="text-align:center;">Kelas <?= $detail_kelas['nk_name'] ?></h5>
+    <h6 style="text-align:center;"><?= $detail_kelas['nk_hari'] ?>, <?= $detail_kelas['nk_waktu'] ?> <?= $detail_kelas['nk_timezone'] ?> - <?= $detail_kelas['nk_tm_methode'] ?></h6>
+    <h6 style="text-align:center;">Jumlah Peserta = <?= $jumlah_peserta ?></h6> 
+</div>
+<hr>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card card-body shadow-lg">
+            <div class="card-title">
+                <h6>Pengajar</h6>
+                <button type="button" class="btn btn-primary btn-sm" onclick="modal('pengajar','<?= $detail_kelas['nk_id'] ?>')" ><i class=" fa fa-plus-circle"></i> Tambah Pengajar</button>
+                <hr>
+            </div>
+            <div class="card-text">
+                <table class="table table-borderless table-sm">
+                    <tbody>
+                        <?php $nmr = 0;
+                        foreach ($pengajar as $item) :
+                        $nmr++;?>
+                            <tr>
+                                <td><?= $nmr ?>.</td>
+                                <td><?= $item['nama_pengajar'] ?></td>
+                                <td><button class="btn btn-danger btn-sm" onclick="hapus('pengajar','<?= $detail_kelas['nk_id'] ?>','<?= $item['nj_id'] ?>','<?= $item['nama_pengajar'] ?>')"><i class="fa fa-trash"></i></button></td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+                
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card card-body shadow-lg">
+            <div class="card-title">
+                <h6>Pengaturan Absensi</h6>
+                <button class="btn btn-sm btn-warning" onclick="modal('absensi','<?= $detail_kelas['nk_id'] ?>')"> <i class="fa fa-screwdriver"></i> Pengaturan</button>
+                <hr>
+            </div>
+            <div class="card-text">
+                <table class="table table-bordered table-sm">
+                    <tbody>
+                        <tr>
+                            <td width="40%"><b>Jumlah TM</b></td>
+                            <td><?= $detail_kelas['nk_tm_total'] ?></td>
+                        </tr>
+                        <tr>
+                            <td width="40%"><b>Metode Absen</b></td>
+                            <td><?= $detail_kelas['nk_absen_methode'] ?></td>
+                        </tr>
+                        <tr>
+                            <td width="40%"><b>Status Absen</b></td>
+                            <td>
+                                <?php if($detail_kelas['nk_absen_status'] == '0') { ?>
+                                    <button class="btn btn-secondary btn-sm" disabled>Nonaktif</button> 
+                                <?php } ?>
+                                <?php if($detail_kelas['nk_absen_status'] == '1') { ?>
+                                    <button class="btn btn-success btn-sm" disabled>Aktif</button> 
+                                <?php } ?>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td width="40%"><b>Koordinator</b></td>
+                            <td><?= $koor  ?></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
 
 <div class="table-responsive">
     <table id="datatable" class="table table-striped table-bordered nowrap mt-1" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
@@ -32,7 +97,6 @@
                 <th>NIS</th>
                 <th>NIK</th>
                 <th>Nama</th>
-                <th>Domisili</th>
                 <th>HP</th>
                 <th>Status</th>
                 <th>Tindakan</th>
@@ -50,15 +114,18 @@
                     <td width="15%"><?= $data['nama_peserta'] ?></td>
                     <td width="10%"><?= $data['hp'] ?></td>
                     <td width="10%">
-                        <?php if($data['status_peserta_kelas'] == 'BELUM LULUS') { ?>
+                        <?php if($data['ns_status'] == 'BELUM LULUS') { ?>
                             <button class="btn btn-secondary btn-sm" disabled>BELUM LULUS</button> 
                         <?php } ?>
-                        <?php if($data['status_peserta_kelas'] == 'LULUS') { ?>
+                        <?php if($data['ns_status'] == 'LULUS') { ?>
                             <button class="btn btn-success btn-sm" disabled>LULUS</button> 
                         <?php } ?>
-                        <?php if($data['status_peserta_kelas'] == 'MENGULANG') { ?>
+                        <?php if($data['ns_status'] == 'MENGULANG') { ?>
                             <button class="btn btn-success btn-sm" disabled>MENGULANG</button> 
                         <?php } ?>
+                    </td>
+                    <td width="2%">
+                        <button class="btn btn-danger btn-sm" onclick="hapus('peserta','<?= $detail_kelas['nk_id'] ?>','<?= $data['ns_id'] ?>','<?= $data['nama_peserta'] ?>')"><i class="fa fa-trash"></i></button>
                     </td>
                 </tr>
 
@@ -67,46 +134,32 @@
     </table>
 </div>
 
-<div class="viewmodalpindah">
+<div class="viewmodal">
 </div>
 
 <script>
-
-    $(document).on('click','.btn-hapus',function(e){
-        e.preventDefault()
-        let peserta_kelas_id = $(this).data("item")
-        let nama_peserta = $(this).data("item")
-        hapus(peserta_kelas_id,nama_peserta)
-    })
-
-    $(document).on('click','.btn-pindah',function(e){
-        e.preventDefault()
-        let peserta_kelas_id = $(this).data("item")
-        pindah(peserta_kelas_id)
-    })
-
-
-    function pindah(peserta_kelas_id) {
+    function modal(modul,nk_id) {
         $.ajax({
             type: "post",
-            url: "<?= site_url('kelas-regular/input-move') ?>",
+            url: "<?= site_url('/kelas-nonreg/detail/modal') ?>",
             data: {
-                peserta_kelas_id : peserta_kelas_id
+                modul : modul,
+                nk_id : nk_id
             },
             dataType: "json",
             success: function(response) {
                 if (response.sukses) {
-                    $('.viewmodalpindah').html(response.sukses).show();
-                    $('#modalpindah').modal('show');
+                    $('.viewmodal').html(response.sukses).show();
+                    $('#modaldetail').modal('show');
                 }
             }
         });
     }
 
-    function hapus(peserta_kelas_id,nama_peserta) {
+    function hapus(modul, nk_id, id, nama) {
         Swal.fire({
-            title: 'Hapus Data Peserta di Kelas Ini?',
-            text: `Hapus data ${nama_peserta} kelas ini akan berdampak pada terhapusnya data absen peserta`,
+            title: 'Yakin Hapus Data ini?',
+            text: `Hapus data ${modul} nama ${nama}?`,
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
@@ -116,17 +169,20 @@
         }).then((result) => {
             if (result.isConfirmed) {
                 $.ajax({
-                    url: "<?= site_url('kelas-regular/delete-peserta') ?>",
+                    url: "<?= site_url('/kelas-nonreg/delete') ?>",
                     type: "post",
                     dataType: "json",
                     data: {
-                        peserta_kelas_id : peserta_kelas_id
+                        modul : modul,
+                        nk_id: nk_id,
+                        id: id,
+                        nama: nama
                     },
                     success: function(response) {
                         if (response.sukses) {
                             Swal.fire({
                                 title: "Berhasil!",
-                                text: "Anda berhasil menghapus peserta dari kelas ini ini!",
+                                text: "Anda berhasil menghapus data ini!",
                                 icon: "success",
                                 showConfirmButton: false,
                                 timer: 1500

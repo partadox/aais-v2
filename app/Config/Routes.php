@@ -150,15 +150,12 @@ $routes->get('kelas-nonreg', 'Admin\KelasNonreg::index', ["filter" => "authweb:1
 $routes->post('kelas-nonreg/input', 'Admin\KelasNonreg::input', ["filter" => "authweb:1-2-3-7"]);
 $routes->post('kelas-nonreg/edit', 'Admin\KelasNonreg::edit', ["filter" => "authweb:1-2-3-7"]);
 $routes->get('kelas-nonreg/detail', 'Admin\KelasNonreg::detail', ["filter" => "authweb:1-2-3-7"]);
-$routes->post('kelas-nonreg/input-setting', 'Admin\KelasNonreg::input_setting', ["filter" => "authweb:1-2"]);
-$routes->post('kelas-nonreg/input-move', 'Admin\KelasNonreg::input_move', ["filter" => "authweb:1-2-3-7"]);
+$routes->post('kelas-nonreg/detail/modal', 'Admin\KelasNonreg::detail_modal', ["filter" => "authweb:1-2-3-7"]);
 
 $routes->post('kelas-nonreg/create', 'Admin\KelasNonreg::create', ["filter" => "authweb:1-2-3-7"]);
 $routes->post('kelas-nonreg/update', 'Admin\KelasNonreg::update', ["filter" => "authweb:1-2-3-7"]);
-$routes->post('kelas-nonreg/save-setting', 'Admin\KelasNonreg::save_setting', ["filter" => "authweb:1-2"]);
-$routes->get('kelas-nonreg/export', 'Admin\KelasNonreg::export', ["filter" => "authweb:1-2-3-7"]);
-$routes->post('kelas-nonreg/move', 'Admin\KelasNonreg::move', ["filter" => "authweb:1-2-3-7"]);
-$routes->post('kelas-nonreg/delete-peserta', 'Admin\KelasNonreg::delete_peserta', ["filter" => "authweb:1-2-3-7"]);
+$routes->post('kelas-nonreg/detail/update', 'Admin\KelasNonreg::update_detail', ["filter" => "authweb:1-2-3-7"]);
+$routes->post('kelas-nonreg/delete', 'Admin\KelasNonreg::delete', ["filter" => "authweb:1-2-3-7"]);
 
 /*--- Level---*/
 $routes->get('level', 'Admin\Level::index', ["filter" => "authweb:1-2-3-7"]);
