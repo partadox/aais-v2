@@ -22,6 +22,7 @@ use App\Models\Model_absen_pengajar;
 use App\Models\Model_bill;
 use App\Models\Model_cart;
 use App\Models\Model_ujian;
+use App\Models\Model_payment;
 use App\Models\Model_konfigurasi;
 
 use CodeIgniter\RESTful\ResourceController;
