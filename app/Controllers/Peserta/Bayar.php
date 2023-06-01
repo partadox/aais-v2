@@ -599,12 +599,12 @@ class Bayar extends BaseController
         if ($this->db->transStatus() === FALSE)
         {
             /*--- Log ---*/
-            $this->logging('Admin', 'FAIL', $aktivitas);
+            $this->logging('Peserta', 'FAIL', $aktivitas);
         }
         else
         {
             /*--- Log ---*/
-            $this->logging('Admin', 'BERHASIL', $aktivitas);
+            $this->logging('Peserta', 'BERHASIL', $aktivitas);
         }
         
         $msg = [
