@@ -8,41 +8,41 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <?= form_open('kelas-nonreg/create', ['class' => 'formtambah']) ?>
+            <?= form_open('kelas-bina/create', ['class' => 'formtambah']) ?>
             <?= csrf_field(); ?>
             <div class="modal-body">
                 <p class="mt-1">Catatan :<br> 
                     <i class="mdi mdi-information"></i> Nama Kelas Harus Unik<br>
                 </p>
                 <div class="form-group row">
-                    <label for="nk_name" class="col-sm-4 col-form-label">Nama Kelas <code>*</code></label>
+                    <label for="bk_name" class="col-sm-4 col-form-label">Nama Kelas <code>*</code></label>
                     <div class="col-sm-8">
-                        <input type="text" class="form-control text-uppercase" id="nk_name" name="nk_name" placeholder="Nama Kelas Non-Regular...">
-                        <div class="invalid-feedback error_nk_name"></div>
+                        <input type="text" class="form-control text-uppercase" id="bk_name" name="bk_name" placeholder="Nama Kelas Non-Regular...">
+                        <div class="invalid-feedback error_bk_name"></div>
                     </div>
                 </div>
                 <div class="form-group row">
-                    <label for="nk_angkatan" class="col-sm-4 col-form-label">Angkatan Perkuliahan <code>*</code></label>
+                    <label for="bk_angkatan" class="col-sm-4 col-form-label">Angkatan Perkuliahan <code>*</code></label>
                     <div class="col-sm-8">
-                        <input type="number" min="1" class="form-control" id="nk_angkatan" name="nk_angkatan" value="<?= $angkatan ?>">
-                        <div class="invalid-feedback error_nk_angkatan"></div>
+                        <input type="number" min="1" class="form-control" id="bk_angkatan" name="bk_angkatan" value="<?= $angkatan ?>">
+                        <div class="invalid-feedback error_bk_angkatan"></div>
                     </div>
                 </div>
                 <div class="form-group row">
-                    <label for="nj_pengajar" class="col-sm-4 col-form-label">Pengajar <code>*</code></label>
+                    <label for="bj_pengajar" class="col-sm-4 col-form-label">Pengajar <code>*</code></label>
                     <div class="col-sm-8">
-                        <select name="nj_pengajar[]" multiple="multiple" id="nj_pengajar" class="js-example-basic-single">
+                        <select name="bj_pengajar[]" multiple="multiple" id="bj_pengajar" class="js-example-basic-single">
                             <?php foreach ($pengajar as $key => $data) { ?>
                                 <option value="<?= $data['pengajar_id'] ?>"><?= $data['nama_pengajar'] ?></option>
                             <?php } ?>
                         </select>
-                        <div class="invalid-feedback error_nj_pengajar"></div>
+                        <div class="invalid-feedback error_bj_pengajar"></div>
                     </div>
                 </div>
                 <div class="form-group row">
-                    <label for="nk_hari" class="col-sm-4 col-form-label">Hari <code>*</code></label>
+                    <label for="bk_hari" class="col-sm-4 col-form-label">Hari <code>*</code></label>
                     <div class="col-sm-8">
-                        <select class="form-control btn-square" id="nk_hari" name="nk_hari">
+                        <select class="form-control btn-square" id="bk_hari" name="bk_hari">
                             <option value="" disabled selected>--PILIH--</option>
                             <option value="SENIN">SENIN</option>
                             <option value="SELASA">SELASA</option>
@@ -52,13 +52,13 @@
                             <option value="SABTU">SABTU</option>
                             <option value="MINGGU">MINGGU</option>
                         </select>
-                        <div class="invalid-feedback error_nk_hari"></div>
+                        <div class="invalid-feedback error_bk_hari"></div>
                     </div>
                 </div>
                 <div class="form-group row">
-                    <label for="nk_waktu" class="col-sm-4 col-form-label">Waktu <code>*</code></label>
+                    <label for="bk_waktu" class="col-sm-4 col-form-label">Waktu <code>*</code></label>
                     <div class="col-sm-4">
-                        <select class="form-control btn-square" id="nk_waktu" name="nk_waktu">
+                        <select class="form-control btn-square" id="bk_waktu" name="bk_waktu">
                             <option value="" disabled selected>--WAKTU--</option>
                             <option value="05:00">05:00</option>
                             <option value="06:00">06:00</option>
@@ -78,59 +78,59 @@
                             <option value="20:00">20:00</option>
                             <option value="21:00">21:00</option>
                         </select>
-                        <div class="invalid-feedback error_nk_waktu"></div>
+                        <div class="invalid-feedback error_bk_waktu"></div>
                     </div>
                     <div class="col-sm-4">
-                        <select class="form-control btn-square" id="nk_timezone" name="nk_timezone">
+                        <select class="form-control btn-square" id="bk_timezone" name="bk_timezone">
                             <option value="" disabled selected>--ZONA--</option>
                             <option value="WITA">WITA</option>
                             <option value="WIB">WIB</option>
                             <option value="WIT">WIT</option>
                         </select>
-                        <div class="invalid-feedback error_nk_timezone"></div>
+                        <div class="invalid-feedback error_bk_timezone"></div>
                     </div>
                 </div>
                 
                 <div class="form-group row">
-                    <label for="nk_jenkel" class="col-sm-4 col-form-label">Jenis Kelamin <code>*</code></label>
+                    <label for="bk_jenkel" class="col-sm-4 col-form-label">Jenis Kelamin <code>*</code></label>
                     <div class="col-sm-8">
-                        <select class="form-control btn-square" id="nk_jenkel" name="nk_jenkel">
+                        <select class="form-control btn-square" id="bk_jenkel" name="bk_jenkel">
                             <option value="" disabled selected>--PILIH--</option>
                             <option value="IKHWAN">IKHWAN</option>
                             <option value="AKHWAT">AKHWAT</option>
                         </select>
-                        <div class="invalid-feedback error_nk_jenkel"></div>
+                        <div class="invalid-feedback error_bk_jenkel"></div>
                     </div>
                 </div>
                 <div class="form-group row">
-                    <label for="nk_tm_methode" class="col-sm-4 col-form-label">Metode Tatap Muka<code>*</code></label>
+                    <label for="bk_tm_methode" class="col-sm-4 col-form-label">Metode Tatap Muka<code>*</code></label>
                     <div class="col-sm-8">
-                        <select class="form-control btn-square" id="nk_tm_methode" name="nk_tm_methode">
+                        <select class="form-control btn-square" id="bk_tm_methode" name="bk_tm_methode">
                             <option value="" disabled selected>--PILIH--</option>
                             <option value="ONLINE">ONLINE</option>
                             <option value="OFFLINE">OFFLINE</option>
                             <option value="HYBRID">HYBRID</option>
                         </select>
-                        <div class="invalid-feedback error_nk_tm_methode"></div>
+                        <div class="invalid-feedback error_bk_tm_methode"></div>
                     </div>
                 </div>
                 <div class="form-group row">
-                    <label for="nk_tm_total" class="col-sm-4 col-form-label">Jumlah Tatap Muka (TM)<code>*</code></label>
+                    <label for="bk_tm_total" class="col-sm-4 col-form-label">Jumlah Tatap Muka (TM)<code>*</code></label>
                     <div class="col-sm-8">
-                        <input type="number" min="1" class="form-control" id="nk_tm_total" name="nk_tm_total" placeholder="">
-                        <div class="invalid-feedback error_nk_tm_total"></div>
+                        <input type="number" min="1" class="form-control" id="bk_tm_total" name="bk_tm_total" placeholder="">
+                        <div class="invalid-feedback error_bk_tm_total"></div>
                     </div>
                 </div>
                 
                 <div class="form-group row">
-                    <label for="nk_status" class="col-sm-4 col-form-label">Status Kelas <code>*</code></label>
+                    <label for="bk_status" class="col-sm-4 col-form-label">Status Kelas <code>*</code></label>
                     <div class="col-sm-8">
-                        <select class="form-control btn-square" id="nk_status" name="nk_status">
+                        <select class="form-control btn-square" id="bk_status" name="bk_status">
                             <option value="" disabled selected>--PILIH--</option>
                             <option value="1">AKTIF</option>
                             <option value="0">NONAKTIF</option>
                         </select>
-                        <div class="invalid-feedback error_nk_status"></div>
+                        <div class="invalid-feedback error_bk_status"></div>
                     </div>
                 </div>
             </div>
@@ -146,7 +146,6 @@
 <script>
     $(document).ready(function() {
         $('.js-example-basic-single').select2({
-            theme: "bootstrap4"
         });
         $('.formtambah').submit(function(e) {
             e.preventDefault();
@@ -154,16 +153,16 @@
                 type: "post",
                 url: $(this).attr('action'),
                 data: {
-                    nk_name: $('input#nk_name').val(),
-                    nk_angkatan: $('input#nk_angkatan').val(),
-                    nj_pengajar: $('select#nj_pengajar').val(),
-                    nk_hari: $('select#nk_hari').val(),
-                    nk_waktu: $('select#nk_waktu').val(),
-                    nk_timezone: $('select#nk_timezone').val(),
-                    nk_jenkel: $('select#nk_jenkel').val(),
-                    nk_tm_total: $('input#nk_tm_total').val(),
-                    nk_tm_methode: $('select#nk_tm_methode').val(),
-                    nk_status: $('select#nk_status').val(),
+                    bk_name: $('input#bk_name').val(),
+                    bk_angkatan: $('input#bk_angkatan').val(),
+                    bj_pengajar: $('select#bj_pengajar').val(),
+                    bk_hari: $('select#bk_hari').val(),
+                    bk_waktu: $('select#bk_waktu').val(),
+                    bk_timezone: $('select#bk_timezone').val(),
+                    bk_jenkel: $('select#bk_jenkel').val(),
+                    bk_tm_total: $('input#bk_tm_total').val(),
+                    bk_tm_methode: $('select#bk_tm_methode').val(),
+                    bk_status: $('select#bk_status').val(),
                 },
                 dataType: "json",
                 beforeSend: function() {
@@ -177,84 +176,84 @@
                 success: function(response) {
                     if (response.error) {
 
-                        if (response.error.nk_name) {
-                            $('#nk_name').addClass('is-invalid');
-                            $('.error_nk_name').html(response.error.nk_name);
+                        if (response.error.bk_name) {
+                            $('#bk_name').addClass('is-invalid');
+                            $('.error_bk_name').html(response.error.bk_name);
                         } else {
-                            $('#nk_name').removeClass('is-invalid');
-                            $('.error_nk_name').html('');
+                            $('#bk_name').removeClass('is-invalid');
+                            $('.error_bk_name').html('');
                         }
 
-                        if (response.error.nk_angkatan) {
-                            $('#nk_angkatan').addClass('is-invalid');
-                            $('.error_nk_angkatan').html(response.error.nk_angkatan);
+                        if (response.error.bk_angkatan) {
+                            $('#bk_angkatan').addClass('is-invalid');
+                            $('.error_bk_angkatan').html(response.error.bk_angkatan);
                         } else {
-                            $('#nk_angkatan').removeClass('is-invalid');
-                            $('.error_nk_angkatan').html('');
+                            $('#bk_angkatan').removeClass('is-invalid');
+                            $('.error_bk_angkatan').html('');
                         }
 
-                        if (response.error.nj_pengajar) {
-                            $('#nj_pengajar').addClass('is-invalid');
-                            $('.error_nj_pengajar').html(response.error.nj_pengajar);
+                        if (response.error.bj_pengajar) {
+                            $('#bj_pengajar').addClass('is-invalid');
+                            $('.error_bj_pengajar').html(response.error.bj_pengajar);
                         } else {
-                            $('#nj_pengajar').removeClass('is-invalid');
-                            $('.error_nj_pengajar').html('');
+                            $('#bj_pengajar').removeClass('is-invalid');
+                            $('.error_bj_pengajar').html('');
                         }
 
-                        if (response.error.nk_hari) {
-                            $('#nk_hari').addClass('is-invalid');
-                            $('.error_nk_hari').html(response.error.nk_hari);
+                        if (response.error.bk_hari) {
+                            $('#bk_hari').addClass('is-invalid');
+                            $('.error_bk_hari').html(response.error.bk_hari);
                         } else {
-                            $('#nk_hari').removeClass('is-invalid');
-                            $('.error_nk_hari').html('');
+                            $('#bk_hari').removeClass('is-invalid');
+                            $('.error_bk_hari').html('');
                         }
 
-                        if (response.error.nk_waktu) {
-                            $('#nk_waktu').addClass('is-invalid');
-                            $('.error_nk_waktu').html(response.error.nk_waktu);
+                        if (response.error.bk_waktu) {
+                            $('#bk_waktu').addClass('is-invalid');
+                            $('.error_bk_waktu').html(response.error.bk_waktu);
                         } else {
-                            $('#nk_waktu').removeClass('is-invalid');
-                            $('.error_nk_waktu').html('');
+                            $('#bk_waktu').removeClass('is-invalid');
+                            $('.error_bk_waktu').html('');
                         }
 
-                        if (response.error.nk_timezone) {
-                            $('#nk_timezone').addClass('is-invalid');
-                            $('.error_nk_timezone').html(response.error.nk_timezone);
+                        if (response.error.bk_timezone) {
+                            $('#bk_timezone').addClass('is-invalid');
+                            $('.error_bk_timezone').html(response.error.bk_timezone);
                         } else {
-                            $('#nk_timezone').removeClass('is-invalid');
-                            $('.error_nk_timezone').html('');
+                            $('#bk_timezone').removeClass('is-invalid');
+                            $('.error_bk_timezone').html('');
                         }
 
-                        if (response.error.nk_jenkel) {
-                            $('#nk_jenkel').addClass('is-invalid');
-                            $('.error_nk_jenkel').html(response.error.nk_jenkel);
+                        if (response.error.bk_jenkel) {
+                            $('#bk_jenkel').addClass('is-invalid');
+                            $('.error_bk_jenkel').html(response.error.bk_jenkel);
                         } else {
-                            $('#nk_jenkel').removeClass('is-invalid');
-                            $('.error_nk_jenkel').html('');
+                            $('#bk_jenkel').removeClass('is-invalid');
+                            $('.error_bk_jenkel').html('');
                         }
 
-                        if (response.error.nk_tm_total) {
-                            $('#nk_tm_total').addClass('is-invalid');
-                            $('.error_nk_tm_total').html(response.error.nk_tm_total);
+                        if (response.error.bk_tm_total) {
+                            $('#bk_tm_total').addClass('is-invalid');
+                            $('.error_bk_tm_total').html(response.error.bk_tm_total);
                         } else {
-                            $('#nk_tm_total').removeClass('is-invalid');
-                            $('.error_nk_tm_total').html('');
+                            $('#bk_tm_total').removeClass('is-invalid');
+                            $('.error_bk_tm_total').html('');
                         }
 
-                        if (response.error.nk_tm_methode) {
-                            $('#nk_tm_methode').addClass('is-invalid');
-                            $('.error_nk_tm_methode').html(response.error.nk_tm_methode);
+                        if (response.error.bk_tm_methode) {
+                            $('#bk_tm_methode').addClass('is-invalid');
+                            $('.error_bk_tm_methode').html(response.error.bk_tm_methode);
                         } else {
-                            $('#nk_tm_methode').removeClass('is-invalid');
-                            $('.error_nk_tm_methode').html('');
+                            $('#bk_tm_methode').removeClass('is-invalid');
+                            $('.error_bk_tm_methode').html('');
                         }
 
-                        if (response.error.nk_status) {
-                            $('#nk_status').addClass('is-invalid');
-                            $('.error_nk_status').html(response.error.nk_status);
+                        if (response.error.bk_status) {
+                            $('#bk_status').addClass('is-invalid');
+                            $('.error_bk_status').html(response.error.bk_status);
                         } else {
-                            $('#nk_status').removeClass('is-invalid');
-                            $('.error_nk_status').html('');
+                            $('#bk_status').removeClass('is-invalid');
+                            $('.error_bk_status').html('');
                         }
 
                     } else {

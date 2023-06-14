@@ -26,7 +26,7 @@
 
     <div class="card shadow-lg bg-white rounded">
         <div class="card-body">
-            <button type="button" class="btn btn-danger btn-sm" onclick="hapus(<?= $cart_id ?>, <?= $peserta_kelas_id ?>)">Batal</button>
+            <button type="button" class="btn btn-danger" onclick="hapus(<?= $cart_id ?>, <?= $peserta_kelas_id ?>)">Batal</button>
             <h6><?= $kelas['nama_program'] ?></h6>
             <h5 class="card-title"><?= $kelas['nama_kelas'] ?></h5>
             <hr>

@@ -31,10 +31,10 @@ use App\Models\Model_cart;
 use App\Models\Model_ujian;
 use App\Models\Model_sertifikat;
 use App\Models\Model_konfigurasi;
-use App\Models\Model_nonreg_absen_peserta;
-use App\Models\Model_nonreg_kelas;
-use App\Models\Model_nonreg_pengajar;
-use App\Models\Model_nonreg_peserta;
+use App\Models\Model_bina_absen_peserta;
+use App\Models\Model_bina_kelas;
+use App\Models\Model_bina_pengajar;
+use App\Models\Model_bina_peserta;
 use App\Models\Model_payment;
 use App\Models\Model_pekerjaan;
 use CodeIgniter\Controller;
@@ -94,7 +94,7 @@ abstract class BaseController extends Controller
 		$this->user                 = new Model_user($request);
 		$this->peserta              = new Model_peserta($request);
 		$this->kelas                = new Model_kelas;
-		$this->bayar                = new Model_bayar;
+		$this->bayar                = new Model_bayar($request);
 		$this->spp1                 = new Model_spp1;
 		$this->spp2                 = new Model_spp2;
 		$this->spp3                 = new Model_spp3;
@@ -119,10 +119,10 @@ abstract class BaseController extends Controller
         $this->payment              = new Model_payment;
         $this->bill                 = new Model_bill;
         $this->beasiswa             = new Model_beasiswa($request);
-        $this->nonreg_kelas         = new Model_nonreg_kelas;
-        $this->nonreg_peserta       = new Model_nonreg_peserta;
-        $this->nonreg_pengajar      = new Model_nonreg_pengajar;
-        $this->nonreg_absen_peserta = new Model_nonreg_absen_peserta();
+        $this->bina_kelas         = new Model_bina_kelas;
+        $this->bina_peserta       = new Model_bina_peserta;
+        $this->bina_pengajar      = new Model_bina_pengajar;
+        $this->bina_absen_peserta = new Model_bina_absen_peserta();
         $this->db 			= \Config\Database::connect();
     }
 

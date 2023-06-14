@@ -3,7 +3,7 @@ namespace App\Controllers\Admin;
 
 use App\Controllers\BaseController;
 
-class KelasNonreg extends BaseController
+class KelasBina extends BaseController
 {
     public function index()
     {
@@ -21,8 +21,8 @@ class KelasNonreg extends BaseController
             $angkatan           = $get_angkatan->angkatan_kuliah;
         }
         
-        $list_angkatan      = $this->nonreg_kelas->list_unik_angkatan();
-        $list_kelas         = $this->nonreg_kelas->list($angkatan);
+        $list_angkatan      = $this->bina_kelas->list_unik_angkatan();
+        $list_kelas         = $this->bina_kelas->list($angkatan);
         $data = [
             'title'             => 'Manajamen Kelas Non-Regular Angkatan ' . $angkatan,
             'list'              => $list_kelas,
@@ -30,7 +30,7 @@ class KelasNonreg extends BaseController
             'angkatan_pilih'    => $angkatan,
             'user'              => $user,
         ];
-        return view('panel_admin/kelas_nonreg/index', $data);
+        return view('panel_admin/kelas_bina/index', $data);
     }
 
     public function input()
@@ -47,7 +47,7 @@ class KelasNonreg extends BaseController
                 'angkatan'  => $angkatan,
             ];
             $msg = [
-                'sukses' => view('panel_admin/kelas_nonreg/add', $data)
+                'sukses' => view('panel_admin/kelas_bina/add', $data)
             ];
             echo json_encode($msg);
         }
@@ -57,15 +57,15 @@ class KelasNonreg extends BaseController
     {
         if ($this->request->isAJAX()) {
 
-            $nk_id          = $this->request->getVar('nk_id');
-            $nonreg_kelas   =  $this->nonreg_kelas->find($nk_id);
+            $bk_id          = $this->request->getVar('bk_id');
+            $bina_kelas   =  $this->bina_kelas->find($bk_id);
             $data = [
-                'title'     => 'Ubah Data Kelas Non-Regular '.$nonreg_kelas['nk_name'],
+                'title'     => 'Ubah Data Kelas Non-Regular '.$bina_kelas['bk_name'],
                 'pengajar'  => $this->pengajar->list(),
-                'nonreg'    => $nonreg_kelas,
+                'bina'    => $bina_kelas,
             ];
             $msg = [
-                'sukses' => view('panel_admin/kelas_nonreg/edit', $data)
+                'sukses' => view('panel_admin/kelas_bina/edit', $data)
             ];
             echo json_encode($msg);
         }
@@ -80,12 +80,12 @@ class KelasNonreg extends BaseController
         parse_str($queryString, $params);
 
         if (count($params) == 1 && array_key_exists('id', $params)) {
-            $nk_id              = $params['id'];
-            $peserta_onkelas    = $this->nonreg_peserta->peserta_onkelas($nk_id);
-            $kelas              = $this->nonreg_kelas->find($nk_id);
+            $bk_id              = $params['id'];
+            $peserta_onkelas    = $this->bina_peserta->peserta_onkelas($bk_id);
+            $kelas              = $this->bina_kelas->find($bk_id);
             $koor               = NULL;
-            if ($kelas['nk_absen_koor'] != NULL) {
-                $koor_peserta_id    = $kelas['nk_absen_koor'];
+            if ($kelas['bk_absen_koor'] != NULL) {
+                $koor_peserta_id    = $kelas['bk_absen_koor'];
                 $koor_peserta       = $this->peserta->find($koor_peserta_id);
                 $koor               = $koor_peserta['nis'] .'-'. $koor_peserta['nama_peserta'];
             }
@@ -96,12 +96,12 @@ class KelasNonreg extends BaseController
                 'peserta_onkelas'   => $peserta_onkelas,
                 'koor'              => $koor,
                 'detail_kelas'      => $kelas,
-                'pengajar'          => $this->nonreg_pengajar->pengajar_onkelas($nk_id),
+                'pengajar'          => $this->bina_pengajar->pengajar_onkelas($bk_id),
                 'jumlah_peserta'    => count($peserta_onkelas),
             ];
-            return view('panel_admin/kelas_nonreg/detail', $data);
+            return view('panel_admin/kelas_bina/detail', $data);
         } else {
-            return redirect()->to('kelas-nonreg');
+            return redirect()->to('kelas-bina');
         }
     }
 
@@ -109,8 +109,8 @@ class KelasNonreg extends BaseController
     {
         if ($this->request->isAJAX()) {
             $modul              = $this->request->getVar('modul');
-            $nk_id              = $this->request->getVar('nk_id');
-            $nonreg_kelas       = $this->nonreg_kelas->find($nk_id);
+            $bk_id              = $this->request->getVar('bk_id');
+            $bina_kelas       = $this->bina_kelas->find($bk_id);
             $peserta            = NULL;
             $pengajar           = NULL;
             $koor               = NULL;
@@ -123,19 +123,19 @@ class KelasNonreg extends BaseController
                 $pengajar = $this->pengajar->list();
             } elseif($modul == 'absensi'){
                 $title        = 'Form Pengaturan Absensi Kelas Non-Regular';
-                $koor         = $this->nonreg_peserta->peserta_onkelas($nk_id);
+                $koor         = $this->bina_peserta->peserta_onkelas($bk_id);
             }
 
             $data = [
                 'title'     => $title,
                 'pengajar'  => $pengajar,
                 'peserta'   => $peserta,
-                'nonreg'    => $nonreg_kelas,
+                'bina'    => $bina_kelas,
                 'koor'      => $koor,
                 'modul'     => $modul,
             ];
             $msg = [
-                'sukses' => view('panel_admin/kelas_nonreg/detail_modal', $data)
+                'sukses' => view('panel_admin/kelas_bina/detail_modal', $data)
             ];
             echo json_encode($msg);
         }
@@ -148,72 +148,72 @@ class KelasNonreg extends BaseController
         if ($this->request->isAJAX()) {
             $validation = \Config\Services::validation();
             $valid = $this->validate([
-                'nk_name' => [
-                    'label' => 'nk_name',
-                    'rules' => 'required|is_unique[nonreg_kelas.nk_name]',
+                'bk_name' => [
+                    'label' => 'bk_name',
+                    'rules' => 'required|is_unique[bina_kelas.bk_name]',
                     'errors' => [
                         'required' => 'Nama Kelas tidak boleh kosong',
                         'is_unique' => 'Nama Kelas harus unik, sudah ada yang menggunakan Nama Kelas ini',
                     ]
                 ],
-                'nk_angkatan' => [
-                    'label' => 'nk_angkatan',
+                'bk_angkatan' => [
+                    'label' => 'bk_angkatan',
                     'rules' => 'required',
                     'errors' => [
                         'required' => 'Angakatan tidak boleh kosong',
                     ]
                 ],
-                'nj_pengajar' => [
-                    'label' => 'nj_pengajar',
+                'bj_pengajar' => [
+                    'label' => 'bj_pengajar',
                     'rules' => 'required',
                     'errors' => [
                         'required' => 'Pengajar tidak boleh kosong',
                     ]
                 ],
-                'nk_hari' => [
-                    'label' => 'nk_hari',
+                'bk_hari' => [
+                    'label' => 'bk_hari',
                     'rules' => 'required',
                     'errors' => [
                         'required' => 'Hari tidak boleh kosong',
                     ]
                 ],
-                'nk_waktu' => [
-                    'label' => 'nk_waktu',
+                'bk_waktu' => [
+                    'label' => 'bk_waktu',
                     'rules' => 'required',
                     'errors' => [
                         'required' => 'Waktu tidak boleh kosong',
                     ]
                 ],
-                'nk_timezone' => [
-                    'label' => 'nk_timezone',
+                'bk_timezone' => [
+                    'label' => 'bk_timezone',
                     'rules' => 'required',
                     'errors' => [
                         'required' => 'Zona Waktu tidak boleh kosong',
                     ]
                 ],
-                'nk_jenkel' => [
-                    'label' => 'nk_jenkel',
+                'bk_jenkel' => [
+                    'label' => 'bk_jenkel',
                     'rules' => 'required',
                     'errors' => [
                         'required' => 'Jenis Kelamin tidak boleh kosong',
                     ]
                 ],
-                'nk_tm_total' => [
-                    'label' => 'nk_tm_total',
+                'bk_tm_total' => [
+                    'label' => 'bk_tm_total',
                     'rules' => 'required',
                     'errors' => [
                         'required' => 'TM Total tidak boleh kosong',
                     ]
                 ],
-                'nk_tm_methode' => [
-                    'label' => 'nk_tm_methode',
+                'bk_tm_methode' => [
+                    'label' => 'bk_tm_methode',
                     'rules' => 'required',
                     'errors' => [
                         'required' => 'Metode TM tidak boleh kosong',
                     ]
                 ],
-                'nk_status' => [
-                    'label' => 'nk_status',
+                'bk_status' => [
+                    'label' => 'bk_status',
                     'rules' => 'required',
                     'errors' => [
                         'required' => 'Status Kelas tidak boleh kosong',
@@ -223,45 +223,45 @@ class KelasNonreg extends BaseController
             if (!$valid) {
                 $msg = [
                     'error' => [
-                        'nk_name'      => $validation->getError('nk_name'),
-                        'nk_angkatan'  => $validation->getError('nk_angkatan'),
-                        'nj_pengajar'  => $validation->getError('nj_pengajar'),
-                        'nk_hari'      => $validation->getError('nk_hari'),
-                        'nk_waktu'     => $validation->getError('nk_waktu'),
-                        'nk_timezone'  => $validation->getError('nk_timezone'),
-                        'nk_jenkel'    => $validation->getError('nk_jenkel'),
-                        'nk_tm_total'  => $validation->getError('nk_tm_total'),
-                        'nk_tm_methode'=> $validation->getError('nk_tm_methode'),
-                        'nk_status'    => $validation->getError('nk_status'),
+                        'bk_name'      => $validation->getError('bk_name'),
+                        'bk_angkatan'  => $validation->getError('bk_angkatan'),
+                        'bj_pengajar'  => $validation->getError('bj_pengajar'),
+                        'bk_hari'      => $validation->getError('bk_hari'),
+                        'bk_waktu'     => $validation->getError('bk_waktu'),
+                        'bk_timezone'  => $validation->getError('bk_timezone'),
+                        'bk_jenkel'    => $validation->getError('bk_jenkel'),
+                        'bk_tm_total'  => $validation->getError('bk_tm_total'),
+                        'bk_tm_methode'=> $validation->getError('bk_tm_methode'),
+                        'bk_status'    => $validation->getError('bk_status'),
                     ]
                 ];
             } else {
                 
                 
                 $this->db->transStart();
-                $nonreg_kelas_New = [
-                    'nk_name'          => strtoupper($this->request->getVar('nk_name')),
-                    'nk_angkatan'      => $this->request->getVar('nk_angkatan'),
-                    'nk_hari'          => $this->request->getVar('nk_hari'),
-                    'nk_waktu'         => $this->request->getVar('nk_waktu'),
-                    'nk_timezone'      => $this->request->getVar('nk_timezone'),
-                    'nk_jenkel'        => $this->request->getVar('nk_jenkel'),
-                    'nk_tm_total'      => $this->request->getVar('nk_tm_total'),
-                    'nk_tm_methode'    => $this->request->getVar('nk_tm_methode'),
-                    'nk_created'       => date('Y-m-d H:i:s'),
-                    'nk_status'        => $this->request->getVar('nk_status'),
-                    'nk_absen_status'  => '0',
-                    'nk_absen_methode' => 'Mandiri',
+                $bina_kelas_New = [
+                    'bk_name'          => strtoupper($this->request->getVar('bk_name')),
+                    'bk_angkatan'      => $this->request->getVar('bk_angkatan'),
+                    'bk_hari'          => $this->request->getVar('bk_hari'),
+                    'bk_waktu'         => $this->request->getVar('bk_waktu'),
+                    'bk_timezone'      => $this->request->getVar('bk_timezone'),
+                    'bk_jenkel'        => $this->request->getVar('bk_jenkel'),
+                    'bk_tm_total'      => $this->request->getVar('bk_tm_total'),
+                    'bk_tm_methode'    => $this->request->getVar('bk_tm_methode'),
+                    'bk_created'       => date('Y-m-d H:i:s'),
+                    'bk_status'        => $this->request->getVar('bk_status'),
+                    'bk_absen_status'  => '0',
+                    'bk_absen_methode' => 'Mandiri',
                 ];
-                $this->nonreg_kelas->insert($nonreg_kelas_New);
-                $nj_kelas = $this->nonreg_kelas->insertID();
-                $pengajar     = $this->request->getPost('nj_pengajar');
+                $this->bina_kelas->insert($bina_kelas_New);
+                $bj_kelas = $this->bina_kelas->insertID();
+                $pengajar     = $this->request->getPost('bj_pengajar');
                 foreach ($pengajar as $item) {
-                    $nonreg_pengajar_NEW = [
-                        'nj_pengajar' => $item,
-                        'nj_kelas'    => $nj_kelas,
+                    $bina_pengajar_NEW = [
+                        'bj_pengajar' => $item,
+                        'bj_kelas'    => $bj_kelas,
                     ];
-                    $this->nonreg_pengajar->insert($nonreg_pengajar_NEW);
+                    $this->bina_pengajar->insert($bina_pengajar_NEW);
                 }
                 $this->db->transComplete();
                 
@@ -280,7 +280,7 @@ class KelasNonreg extends BaseController
 
                 $msg = [
                     'sukses' => [
-                        'link' => 'kelas-nonreg'
+                        'link' => 'kelas-bina'
                     ]
                 ];
             }
@@ -294,65 +294,65 @@ class KelasNonreg extends BaseController
             $validation = \Config\Services::validation();
             $valid = $this->validate([
                 
-                'nk_name' => [
-                    'label' => 'nk_name',
-                    'rules' => 'required|is_unique_except[nonreg_kelas.nk_name.nk_id.'. $this->request->getVar('nk_id').']',
+                'bk_name' => [
+                    'label' => 'bk_name',
+                    'rules' => 'required|is_unique_except[bina_kelas.bk_name.bk_id.'. $this->request->getVar('bk_id').']',
                     'errors' => [
                         'required' => '{field} tidak boleh kosong',
                         'is_unique_except' => '{field} harus unik, sudah ada yang menggunakan {field} ini',
                     ]
                 ],
-                'nk_angkatan' => [
-                    'label' => 'nk_angkatan',
+                'bk_angkatan' => [
+                    'label' => 'bk_angkatan',
                     'rules' => 'required',
                     'errors' => [
                         'required' => 'Angakatan tidak boleh kosong',
                     ]
                 ],
-                'nk_hari' => [
-                    'label' => 'nk_hari',
+                'bk_hari' => [
+                    'label' => 'bk_hari',
                     'rules' => 'required',
                     'errors' => [
                         'required' => 'Hari tidak boleh kosong',
                     ]
                 ],
-                'nk_waktu' => [
-                    'label' => 'nk_waktu',
+                'bk_waktu' => [
+                    'label' => 'bk_waktu',
                     'rules' => 'required',
                     'errors' => [
                         'required' => 'Waktu tidak boleh kosong',
                     ]
                 ],
-                'nk_timezone' => [
-                    'label' => 'nk_timezone',
+                'bk_timezone' => [
+                    'label' => 'bk_timezone',
                     'rules' => 'required',
                     'errors' => [
                         'required' => 'Zona Waktu tidak boleh kosong',
                     ]
                 ],
-                'nk_jenkel' => [
-                    'label' => 'nk_jenkel',
+                'bk_jenkel' => [
+                    'label' => 'bk_jenkel',
                     'rules' => 'required',
                     'errors' => [
                         'required' => 'Jenis Kelamin tidak boleh kosong',
                     ]
                 ],
-                'nk_tm_total' => [
-                    'label' => 'nk_tm_total',
+                'bk_tm_total' => [
+                    'label' => 'bk_tm_total',
                     'rules' => 'required',
                     'errors' => [
                         'required' => 'TM Total tidak boleh kosong',
                     ]
                 ],
-                'nk_tm_methode' => [
-                    'label' => 'nk_tm_methode',
+                'bk_tm_methode' => [
+                    'label' => 'bk_tm_methode',
                     'rules' => 'required',
                     'errors' => [
                         'required' => 'Metode TM tidak boleh kosong',
                     ]
                 ],
-                'nk_status' => [
-                    'label' => 'nk_status',
+                'bk_status' => [
+                    'label' => 'bk_status',
                     'rules' => 'required',
                     'errors' => [
                         'required' => 'Status Kelas tidak boleh kosong',
@@ -362,33 +362,33 @@ class KelasNonreg extends BaseController
             if (!$valid) {
                 $msg = [
                     'error' => [
-                        'nk_name'      => $validation->getError('nk_name'),
-                        'nk_angkatan'  => $validation->getError('nk_angkatan'),
-                        'nk_hari'      => $validation->getError('nk_hari'),
-                        'nk_waktu'     => $validation->getError('nk_waktu'),
-                        'nk_timezone'  => $validation->getError('nk_timezone'),
-                        'nk_jenkel'    => $validation->getError('nk_jenkel'),
-                        'nk_tm_total'  => $validation->getError('nk_tm_total'),
-                        'nk_tm_methode'=> $validation->getError('nk_tm_methode'),
-                        'nk_status'    => $validation->getError('nk_status'),
+                        'bk_name'      => $validation->getError('bk_name'),
+                        'bk_angkatan'  => $validation->getError('bk_angkatan'),
+                        'bk_hari'      => $validation->getError('bk_hari'),
+                        'bk_waktu'     => $validation->getError('bk_waktu'),
+                        'bk_timezone'  => $validation->getError('bk_timezone'),
+                        'bk_jenkel'    => $validation->getError('bk_jenkel'),
+                        'bk_tm_total'  => $validation->getError('bk_tm_total'),
+                        'bk_tm_methode'=> $validation->getError('bk_tm_methode'),
+                        'bk_status'    => $validation->getError('bk_status'),
                     ]
                 ];
             } else {
 
                 $updatedata = [
-                    'nk_name'          => strtoupper($this->request->getVar('nk_name')),
-                    'nk_angkatan'      => $this->request->getVar('nk_angkatan'),
-                    'nk_hari'          => $this->request->getVar('nk_hari'),
-                    'nk_waktu'         => $this->request->getVar('nk_waktu'),
-                    'nk_timezone'      => $this->request->getVar('nk_timezone'),
-                    'nk_jenkel'        => $this->request->getVar('nk_jenkel'),
-                    'nk_tm_total'      => $this->request->getVar('nk_tm_total'),
-                    'nk_tm_methode'    => $this->request->getVar('nk_tm_methode'),
-                    'nk_status'        => $this->request->getVar('nk_status'),
+                    'bk_name'          => strtoupper($this->request->getVar('bk_name')),
+                    'bk_angkatan'      => $this->request->getVar('bk_angkatan'),
+                    'bk_hari'          => $this->request->getVar('bk_hari'),
+                    'bk_waktu'         => $this->request->getVar('bk_waktu'),
+                    'bk_timezone'      => $this->request->getVar('bk_timezone'),
+                    'bk_jenkel'        => $this->request->getVar('bk_jenkel'),
+                    'bk_tm_total'      => $this->request->getVar('bk_tm_total'),
+                    'bk_tm_methode'    => $this->request->getVar('bk_tm_methode'),
+                    'bk_status'        => $this->request->getVar('bk_status'),
                 ];
 
-                $nk_id = $this->request->getVar('nk_id');
-                $this->nonreg_kelas->update($nk_id, $updatedata);
+                $bk_id = $this->request->getVar('bk_id');
+                $this->bina_kelas->update($bk_id, $updatedata);
 
                 // Data Log END
                 $aktivitas = 'Ubah Data Kelas Non-Regular Nama : ' .  $this->request->getVar('nama_kelas');
@@ -396,7 +396,7 @@ class KelasNonreg extends BaseController
 
                 $msg = [
                     'sukses' => [
-                        'link' => 'kelas-nonreg'
+                        'link' => 'kelas-bina'
                     ]
                 ];
             }
@@ -409,47 +409,47 @@ class KelasNonreg extends BaseController
         if ($this->request->isAJAX()) {
 
             $modul  = $this->request->getVar('modul');
-            $nk_id  = $this->request->getVar('nk_id');
-            $nonreg = $this->nonreg_kelas->find($nk_id);
+            $bk_id  = $this->request->getVar('bk_id');
+            $bina = $this->bina_kelas->find($bk_id);
 
             if ($modul == 'peserta') {
-                $peserta     = $this->request->getPost('ns_peserta');
+                $peserta     = $this->request->getPost('bs_peserta');
                 foreach ($peserta as $item) {
-                    $nonreg_peserta_NEW = [
-                        'ns_peserta' => $item,
-                        'ns_kelas'   => $nk_id,
-                        'ns_status'  => 'BELUM LULUS',
+                    $bina_peserta_NEW = [
+                        'bs_peserta' => $item,
+                        'bs_kelas'   => $bk_id,
+                        'bs_status'  => 'BELUM LULUS',
                     ];
-                    $this->nonreg_peserta->insert($nonreg_peserta_NEW);
+                    $this->bina_peserta->insert($bina_peserta_NEW);
                 }
                 $pesan      = 'Berhasil Tambah Data Peserta';
-                $aktivitas  = 'Memasukan data peserta di kelas non regular ' .  $nonreg['nk_name'];
+                $aktivitas  = 'Memasukan data peserta di kelas non regular ' .  $bina['bk_name'];
             } elseif ($modul == 'pengajar') {
-                $pengajar     = $this->request->getPost('nj_pengajar');
+                $pengajar     = $this->request->getPost('bj_pengajar');
                 foreach ($pengajar as $item) {
-                    $nonreg_pengajar_NEW = [
-                        'nj_pengajar' => $item,
-                        'nj_kelas'    => $nk_id,
+                    $bina_pengajar_NEW = [
+                        'bj_pengajar' => $item,
+                        'bj_kelas'    => $bk_id,
                     ];
-                    $this->nonreg_pengajar->insert($nonreg_pengajar_NEW);
+                    $this->bina_pengajar->insert($bina_pengajar_NEW);
                 }
                 $pesan      = 'Berhasil Tambah Data Pengajar';
-                $aktivitas  = 'Memasukan data pengajar di kelas non regular ' .  $nonreg['nk_name'];
+                $aktivitas  = 'Memasukan data pengajar di kelas non regular ' .  $bina['bk_name'];
             } elseif ($modul == 'absensi') {
-                $metode = $this->request->getVar('nk_absen_methode');
+                $metode = $this->request->getVar('bk_absen_methode');
                 if ($metode == 'Perwakilan') {
-                    $koor = $this->request->getVar('nk_absen_koor');
+                    $koor = $this->request->getVar('bk_absen_koor');
                 } elseif ($metode == 'Mandiri') {
                     $koor = NULL;
                 }
                 $updatedata = [
-                    'nk_absen_status'   => $this->request->getVar('nk_absen_status'),
-                    'nk_absen_methode'  => $metode,
-                    'nk_absen_koor'     => $koor,
+                    'bk_absen_status'   => $this->request->getVar('bk_absen_status'),
+                    'bk_absen_methode'  => $metode,
+                    'bk_absen_koor'     => $koor,
                 ];
-                $this->nonreg_kelas->update($nk_id, $updatedata);
+                $this->bina_kelas->update($bk_id, $updatedata);
                 $pesan      = 'Berhasil Ganti Pengaturan Absensi';
-                $aktivitas  = 'Mengubah pengaturan absensi di kelas non regular ' .  $nonreg['nk_name'];
+                $aktivitas  = 'Mengubah pengaturan absensi di kelas non regular ' .  $bina['bk_name'];
             }
 
                 // Data Log END
@@ -457,7 +457,7 @@ class KelasNonreg extends BaseController
 
                 $msg = [
                     'sukses' => [
-                        'link' => '/kelas-nonreg/detail?id='.$nk_id,
+                        'link' => '/kelas-bina/detail?id='.$bk_id,
                         'pesan'=> $pesan
                     ]
                 ];
@@ -471,19 +471,19 @@ class KelasNonreg extends BaseController
         if ($this->request->isAJAX()) {
 
             $modul   = $this->request->getVar('modul');
-            $nk_id   = $this->request->getVar('nk_id');
+            $bk_id   = $this->request->getVar('bk_id');
             $nama  = $this->request->getVar('nama');
-            $nonreg  = $this->nonreg_kelas->find($nk_id);
+            $bina  = $this->bina_kelas->find($bk_id);
 
             if ($modul == 'pengajar') {
-                $nj_id = $this->request->getVar('id');
-                $this->nonreg_pengajar->delete($nj_id);
+                $bj_id = $this->request->getVar('id');
+                $this->bina_pengajar->delete($bj_id);
             } elseif ($modul == 'peserta') {
-                $ns_id = $this->request->getVar('id');
-                $this->nonreg_peserta->delete($ns_id);
+                $bs_id = $this->request->getVar('id');
+                $this->bina_peserta->delete($bs_id);
             }
 
-            $aktivitas = 'Hapus ' . $modul . ' nama  : ' .  $nama . ' pada kelas ' .  $nonreg['nk_name'];
+            $aktivitas = 'Hapus ' . $modul . ' nama  : ' .  $nama . ' pada kelas ' .  $bina['bk_name'];
 
             if ($this->db->transStatus() === FALSE)
             {
@@ -498,7 +498,7 @@ class KelasNonreg extends BaseController
 
             $msg = [
                 'sukses' => [
-                    'link' => '/kelas-nonreg/detail?id='. $nk_id 
+                    'link' => '/kelas-bina/detail?id='. $bk_id 
                 ]
             ];
             echo json_encode($msg);

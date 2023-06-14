@@ -15,7 +15,7 @@
     </div>
     
     <div class="col-sm-auto">
-        <a href="<?= base_url('kelas-nonreg/export?angkatan='.$angkatan_pilih ) ?>"> 
+        <a href="<?= base_url('kelas-bina/export?angkatan='.$angkatan_pilih ) ?>"> 
             <button type="button" class="btn btn-secondary mb-3"><i class=" fa fa-file-download"></i> Export Excel (Download)</button>
         </a>
     </div>
@@ -26,7 +26,7 @@
         <label for="angkatan_kelas">Pilih Angkatan Perkuliahan</label>
         <select onchange="javascript:location.href = this.value;" class="form-control js-example-basic-single" name="angkatan_kelas_filter" id="angkatan_kelas_filter" class="js-example-basic-single mb-2">
             <?php foreach ($list_angkatan as $key => $data) { ?>
-            <option value="kelas-nonreg?angkatan=<?= $data['nk_angkatan'] ?>" <?php if ($angkatan_pilih == $data['nk_angkatan']) echo "selected"; ?> > <?= $data['nk_angkatan'] ?> </option>
+            <option value="kelas-bina?angkatan=<?= $data['bk_angkatan'] ?>" <?php if ($angkatan_pilih == $data['bk_angkatan']) echo "selected"; ?> > <?= $data['bk_angkatan'] ?> </option>
             <?php } ?>
         </select>
     </div>
@@ -55,37 +55,37 @@
                 $nomor++; ?>
                 <tr>
                     <td width="2%"><?= $nomor ?></td>
-                    <td width="5%"><?= $data['nk_id'] ?></td>
-                    <td width="15%"><?= $data['nk_name'] ?></td>
-                    <td width="5%"><?= $data['nk_angkatan'] ?></td>
-                    <td width="5%"><?= $data['nk_hari'] ?></td>
-                    <td width="5%"><?= $data['nk_waktu'] ?> <?= $data['nk_timezone'] ?></td>
+                    <td width="5%"><?= $data['bk_id'] ?></td>
+                    <td width="15%"><?= $data['bk_name'] ?></td>
+                    <td width="5%"><?= $data['bk_angkatan'] ?></td>
+                    <td width="5%"><?= $data['bk_hari'] ?></td>
+                    <td width="5%"><?= $data['bk_waktu'] ?> <?= $data['bk_timezone'] ?></td>
                     <td width="5%">
-                        <?php if($data['nk_tm_methode'] == 'ONLINE') { ?>
+                        <?php if($data['bk_tm_methode'] == 'ONLINE') { ?>
                             <button class="btn btn-primary btn-sm" disabled>ONLINE</button> 
                         <?php } ?>
-                        <?php if($data['nk_tm_methode'] == 'OFFLINE') { ?>
+                        <?php if($data['bk_tm_methode'] == 'OFFLINE') { ?>
                             <button class="btn btn-info btn-sm" disabled>OFFLINE</button> 
                         <?php } ?>
-                        <?php if($data['nk_tm_methode'] == 'HYBRID') { ?>
+                        <?php if($data['bk_tm_methode'] == 'HYBRID') { ?>
                             <button class="btn btn-warning btn-sm" disabled>HYBRID</button> 
                         <?php } ?>
                     </td>
-                    <td  width="5%"><?= $data['nk_jenkel'] ?></td>
-                    <td width="5%"><?= $data['peserta_nonreg_count'] ?></td>
+                    <td  width="5%"><?= $data['bk_jenkel'] ?></td>
+                    <td width="5%"><?= $data['peserta_bina_count'] ?></td>
                     <td width="5%">
-                        <?php if($data['nk_status'] == '1') { ?>
+                        <?php if($data['bk_status'] == '1') { ?>
                             <button class="btn btn-success btn-sm" disabled>Aktif</button> 
                         <?php } ?>
-                        <?php if($data['nk_status'] == '0') { ?>
+                        <?php if($data['bk_status'] == '0') { ?>
                             <button class="btn btn-secondary btn-sm" disabled>Nonaktif</button> 
                         <?php } ?>
                     </td>
                     <td width="10%">
-                        <button type="button" class="btn btn-warning" onclick="edit('<?= $data['nk_id'] ?>')" >
+                        <button type="button" class="btn btn-warning" onclick="edit('<?= $data['bk_id'] ?>')" >
                             <i class=" fa fa-edit"></i></button>
 
-                        <a href="kelas-nonreg/detail?id=<?= $data['nk_id'] ?>" class="btn btn-info">
+                        <a href="kelas-bina/detail?id=<?= $data['bk_id'] ?>" class="btn btn-info">
                             <i class=" fa fa-user-graduate"></i>
                         </a>
                         
@@ -116,7 +116,7 @@
     function tambah() {
         $.ajax({
             type: "post",
-            url: "<?= site_url('kelas-nonreg/input') ?>",
+            url: "<?= site_url('kelas-bina/input') ?>",
             data: {
             },
             dataType: "json",
@@ -129,12 +129,12 @@
         });
     }
 
-    function edit(nk_id) {
+    function edit(bk_id) {
         $.ajax({
             type: "post",
-            url: "<?= site_url('kelas-nonreg/edit') ?>",
+            url: "<?= site_url('kelas-bina/edit') ?>",
             data: {
-                nk_id : nk_id
+                bk_id : bk_id
             },
             dataType: "json",
             success: function(response) {
@@ -149,7 +149,7 @@
     function peserta(kelas_id) {
         $.ajax({
             type: "post",
-            url: "<?= site_url('kelas-nonreg/detail') ?>",
+            url: "<?= site_url('kelas-bina/detail') ?>",
             data: {
                 kelas_id : kelas_id
             },

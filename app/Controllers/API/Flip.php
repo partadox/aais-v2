@@ -36,7 +36,7 @@ class Flip extends ResourceController
         $this->konfigurasi          = new Model_konfigurasi;
 		$this->peserta              = new Api_peserta;
 		$this->kelas                = new Model_kelas;
-		$this->bayar                = new Model_bayar;
+		$this->bayar                = new Api_bayar;
 		$this->spp1                 = new Model_spp1;
 		$this->spp2                 = new Model_spp2;
 		$this->spp3                 = new Model_spp3;
@@ -58,7 +58,7 @@ class Flip extends ResourceController
         $this->db 			        = \Config\Database::connect();
 
         // Get the JSON data from the request body
-        $json               = $this->request->getJSON();
+        $json       = $this->request->getJSON();
         $jsonString = json_encode($json, JSON_PRETTY_PRINT);
         return $this->respondCreated(['message' => $jsonString]);
         //Access the individual data fields from the JSON

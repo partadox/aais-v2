@@ -2,23 +2,23 @@
 
 <?= $this->section('judul') ?>
 <div class="col-sm-6">
-    <h4 class="page-title"><?= $title ?> <?= $detail_kelas['nk_name'] ?></h4>
+    <h4 class="page-title"><?= $title ?> <?= $detail_kelas['bk_name'] ?></h4>
 </div>
 
 <?= $this->endSection('judul') ?>
 
 <?= $this->section('isi') ?>
 
-<a href="<?= base_url('kelas-nonreg') ?>"> 
+<a href="<?= base_url('kelas-bina') ?>"> 
     <button type="button" class="btn btn-secondary mb-3"><i class=" fa fa-arrow-circle-left"></i> Kembali</button>
 </a>
 
-<button type="button" class="btn btn-primary mb-3" onclick="modal('peserta','<?= $detail_kelas['nk_id'] ?>')" ><i class=" fa fa-plus-circle"></i> Tambah Peserta</button>
+<button type="button" class="btn btn-primary mb-3" onclick="modal('peserta','<?= $detail_kelas['bk_id'] ?>')" ><i class=" fa fa-plus-circle"></i> Tambah Peserta</button>
 
 
 <div class="mb-3">
-    <h5 style="text-align:center;">Kelas <?= $detail_kelas['nk_name'] ?></h5>
-    <h6 style="text-align:center;"><?= $detail_kelas['nk_hari'] ?>, <?= $detail_kelas['nk_waktu'] ?> <?= $detail_kelas['nk_timezone'] ?> - <?= $detail_kelas['nk_tm_methode'] ?></h6>
+    <h5 style="text-align:center;">Kelas <?= $detail_kelas['bk_name'] ?></h5>
+    <h6 style="text-align:center;"><?= $detail_kelas['bk_hari'] ?>, <?= $detail_kelas['bk_waktu'] ?> <?= $detail_kelas['bk_timezone'] ?> - <?= $detail_kelas['bk_tm_methode'] ?></h6>
     <h6 style="text-align:center;">Jumlah Peserta = <?= $jumlah_peserta ?></h6> 
 </div>
 <hr>
@@ -28,7 +28,7 @@
         <div class="card card-body shadow-lg">
             <div class="card-title">
                 <h6>Pengajar</h6>
-                <button type="button" class="btn btn-primary btn-sm" onclick="modal('pengajar','<?= $detail_kelas['nk_id'] ?>')" ><i class=" fa fa-plus-circle"></i> Tambah Pengajar</button>
+                <button type="button" class="btn btn-primary btn-sm" onclick="modal('pengajar','<?= $detail_kelas['bk_id'] ?>')" ><i class=" fa fa-plus-circle"></i> Tambah Pengajar</button>
                 <hr>
             </div>
             <div class="card-text">
@@ -40,7 +40,7 @@
                             <tr>
                                 <td><?= $nmr ?>.</td>
                                 <td><?= $item['nama_pengajar'] ?></td>
-                                <td><button class="btn btn-danger btn-sm" onclick="hapus('pengajar','<?= $detail_kelas['nk_id'] ?>','<?= $item['nj_id'] ?>','<?= $item['nama_pengajar'] ?>')"><i class="fa fa-trash"></i></button></td>
+                                <td><button class="btn btn-danger btn-sm" onclick="hapus('pengajar','<?= $detail_kelas['bk_id'] ?>','<?= $item['bj_id'] ?>','<?= $item['nama_pengajar'] ?>')"><i class="fa fa-trash"></i></button></td>
                             </tr>
                         <?php endforeach; ?>
                     </tbody>
@@ -53,7 +53,7 @@
         <div class="card card-body shadow-lg">
             <div class="card-title">
                 <h6>Pengaturan Absensi</h6>
-                <button class="btn btn-sm btn-warning" onclick="modal('absensi','<?= $detail_kelas['nk_id'] ?>')"> <i class="fa fa-screwdriver"></i> Pengaturan</button>
+                <button class="btn btn-sm btn-warning" onclick="modal('absensi','<?= $detail_kelas['bk_id'] ?>')"> <i class="fa fa-screwdriver"></i> Pengaturan</button>
                 <hr>
             </div>
             <div class="card-text">
@@ -61,19 +61,19 @@
                     <tbody>
                         <tr>
                             <td width="40%"><b>Jumlah TM</b></td>
-                            <td><?= $detail_kelas['nk_tm_total'] ?></td>
+                            <td><?= $detail_kelas['bk_tm_total'] ?></td>
                         </tr>
                         <tr>
                             <td width="40%"><b>Metode Absen</b></td>
-                            <td><?= $detail_kelas['nk_absen_methode'] ?></td>
+                            <td><?= $detail_kelas['bk_absen_methode'] ?></td>
                         </tr>
                         <tr>
                             <td width="40%"><b>Status Absen</b></td>
                             <td>
-                                <?php if($detail_kelas['nk_absen_status'] == '0') { ?>
+                                <?php if($detail_kelas['bk_absen_status'] == '0') { ?>
                                     <button class="btn btn-secondary btn-sm" disabled>Nonaktif</button> 
                                 <?php } ?>
-                                <?php if($detail_kelas['nk_absen_status'] == '1') { ?>
+                                <?php if($detail_kelas['bk_absen_status'] == '1') { ?>
                                     <button class="btn btn-success btn-sm" disabled>Aktif</button> 
                                 <?php } ?>
                             </td>
@@ -114,18 +114,18 @@
                     <td width="15%"><?= $data['nama_peserta'] ?></td>
                     <td width="10%"><?= $data['hp'] ?></td>
                     <td width="10%">
-                        <?php if($data['ns_status'] == 'BELUM LULUS') { ?>
+                        <?php if($data['bs_status'] == 'BELUM LULUS') { ?>
                             <button class="btn btn-secondary btn-sm" disabled>BELUM LULUS</button> 
                         <?php } ?>
-                        <?php if($data['ns_status'] == 'LULUS') { ?>
+                        <?php if($data['bs_status'] == 'LULUS') { ?>
                             <button class="btn btn-success btn-sm" disabled>LULUS</button> 
                         <?php } ?>
-                        <?php if($data['ns_status'] == 'MENGULANG') { ?>
+                        <?php if($data['bs_status'] == 'MENGULANG') { ?>
                             <button class="btn btn-success btn-sm" disabled>MENGULANG</button> 
                         <?php } ?>
                     </td>
                     <td width="2%">
-                        <button class="btn btn-danger btn-sm" onclick="hapus('peserta','<?= $detail_kelas['nk_id'] ?>','<?= $data['ns_id'] ?>','<?= $data['nama_peserta'] ?>')"><i class="fa fa-trash"></i></button>
+                        <button class="btn btn-danger btn-sm" onclick="hapus('peserta','<?= $detail_kelas['bk_id'] ?>','<?= $data['bs_id'] ?>','<?= $data['nama_peserta'] ?>')"><i class="fa fa-trash"></i></button>
                     </td>
                 </tr>
 
@@ -138,13 +138,13 @@
 </div>
 
 <script>
-    function modal(modul,nk_id) {
+    function modal(modul,bk_id) {
         $.ajax({
             type: "post",
-            url: "<?= site_url('/kelas-nonreg/detail/modal') ?>",
+            url: "<?= site_url('/kelas-bina/detail/modal') ?>",
             data: {
                 modul : modul,
-                nk_id : nk_id
+                bk_id : bk_id
             },
             dataType: "json",
             success: function(response) {
@@ -156,7 +156,7 @@
         });
     }
 
-    function hapus(modul, nk_id, id, nama) {
+    function hapus(modul, bk_id, id, nama) {
         Swal.fire({
             title: 'Yakin Hapus Data ini?',
             text: `Hapus data ${modul} nama ${nama}?`,
@@ -169,12 +169,12 @@
         }).then((result) => {
             if (result.isConfirmed) {
                 $.ajax({
-                    url: "<?= site_url('/kelas-nonreg/delete') ?>",
+                    url: "<?= site_url('/kelas-bina/delete') ?>",
                     type: "post",
                     dataType: "json",
                     data: {
                         modul : modul,
-                        nk_id: nk_id,
+                        bk_id: bk_id,
                         id: id,
                         nama: nama
                     },

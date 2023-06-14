@@ -145,17 +145,17 @@ $routes->get('kelas-regular/export', 'Admin\KelasReg::export', ["filter" => "aut
 $routes->post('kelas-regular/move', 'Admin\KelasReg::move', ["filter" => "authweb:1-2-3-7"]);
 $routes->post('kelas-regular/delete-peserta', 'Admin\KelasReg::delete_peserta', ["filter" => "authweb:1-2-3-7"]);
 
-/*--- Kelas Non-Regular---*/
-$routes->get('kelas-nonreg', 'Admin\KelasNonreg::index', ["filter" => "authweb:1-2-3-7"]);
-$routes->post('kelas-nonreg/input', 'Admin\KelasNonreg::input', ["filter" => "authweb:1-2-3-7"]);
-$routes->post('kelas-nonreg/edit', 'Admin\KelasNonreg::edit', ["filter" => "authweb:1-2-3-7"]);
-$routes->get('kelas-nonreg/detail', 'Admin\KelasNonreg::detail', ["filter" => "authweb:1-2-3-7"]);
-$routes->post('kelas-nonreg/detail/modal', 'Admin\KelasNonreg::detail_modal', ["filter" => "authweb:1-2-3-7"]);
+/*--- Kelas Pembinaan---*/
+$routes->get('kelas-bina', 'Admin\KelasBina::index', ["filter" => "authweb:1-2-3-7"]);
+$routes->post('kelas-bina/input', 'Admin\KelasBina::input', ["filter" => "authweb:1-2-3-7"]);
+$routes->post('kelas-bina/edit', 'Admin\KelasBina::edit', ["filter" => "authweb:1-2-3-7"]);
+$routes->get('kelas-bina/detail', 'Admin\KelasBina::detail', ["filter" => "authweb:1-2-3-7"]);
+$routes->post('kelas-bina/detail/modal', 'Admin\KelasBina::detail_modal', ["filter" => "authweb:1-2-3-7"]);
 
-$routes->post('kelas-nonreg/create', 'Admin\KelasNonreg::create', ["filter" => "authweb:1-2-3-7"]);
-$routes->post('kelas-nonreg/update', 'Admin\KelasNonreg::update', ["filter" => "authweb:1-2-3-7"]);
-$routes->post('kelas-nonreg/detail/update', 'Admin\KelasNonreg::update_detail', ["filter" => "authweb:1-2-3-7"]);
-$routes->post('kelas-nonreg/delete', 'Admin\KelasNonreg::delete', ["filter" => "authweb:1-2-3-7"]);
+$routes->post('kelas-bina/create', 'Admin\KelasBina::create', ["filter" => "authweb:1-2-3-7"]);
+$routes->post('kelas-bina/update', 'Admin\KelasBina::update', ["filter" => "authweb:1-2-3-7"]);
+$routes->post('kelas-bina/detail/update', 'Admin\KelasBina::update_detail', ["filter" => "authweb:1-2-3-7"]);
+$routes->post('kelas-bina/delete', 'Admin\KelasBina::delete', ["filter" => "authweb:1-2-3-7"]);
 
 /*--- Level---*/
 $routes->get('level', 'Admin\Level::index', ["filter" => "authweb:1-2-3-7"]);
@@ -164,6 +164,52 @@ $routes->post('level/edit', 'Admin\Level::edit', ["filter" => "authweb:1-2-3-7"]
 
 $routes->post('level/create', 'Admin\Level::create', ["filter" => "authweb:1-2-3-7"]);
 $routes->post('level/update', 'Admin\Level::update', ["filter" => "authweb:1-2-3-7"]);
+
+/*--- Pembayaran ---*/
+//Transaksi Bayar
+$routes->get('pembayaran', 'Admin\Pembayaran::index', ["filter" => "authweb:1-2-3-7"]);
+$routes->post('pembayaran/list', 'Admin\Pembayaran::list', ["filter" => "authweb:1-2-3-7"]);
+$routes->post('pembayaran/edit', 'Admin\Pembayaran::edit', ["filter" => "authweb:1-2-3-7"]);
+$routes->post('pembayaran/edit-bukti', 'Admin\Pembayaran::edit_bukti', ["filter" => "authweb:1-2-3-7"]);
+$routes->post('pembayaran/flip-bill', 'Admin\Pembayaran::flip_bill', ["filter" => "authweb:1-2-3-7"]);
+$routes->post('pembayaran/filter', 'Admin\Pembayaran::pembayaran_filter', ["filter" => "authweb:1-2-3-7"]);
+
+$routes->post('pembayaran/getdata', 'Admin\Pembayaran::getdata', ["filter" => "authweb:1-2-3-7"]);
+$routes->post('pembayaran/update', 'Admin\Pembayaran::update', ["filter" => "authweb:1-2-3-7"]);
+$routes->post('pembayaran/update-bukti', 'Admin\Pembayaran::update_bukti', ["filter" => "authweb:1-2-3-7"]);
+$routes->post('pembayaran/delete', 'Admin\Pembayaran::delete', ["filter" => "authweb:1-2-3-7"]);
+$routes->post('pembayaran/export', 'Admin\Pembayaran::export', ["filter" => "authweb:1-2-3-7"]);
+
+//Konfirmasi Bayar
+$routes->get('pembayaran/konfirmasi', 'Admin\Pembayaran::index_konfirmasi', ["filter" => "authweb:1-2-3-7"]);
+$routes->post('pembayaran/input-konfirmasi', 'Admin\Pembayaran::input_konfirmasi', ["filter" => "authweb:1-2-3-7"]);
+
+$routes->post('pembayaran/save-konfirmasi', 'Admin\Pembayaran::save_konfirmasi', ["filter" => "authweb:1-2-3-7"]);
+
+//Tambah Bayar
+$routes->get('pembayaran/add-daftar', 'Admin\Pembayaran::add_daftar', ["filter" => "authweb:1-2-3-7"]);
+$routes->get('pembayaran/add-spp', 'Admin\Pembayaran::add_spp', ["filter" => "authweb:1-2-3-7"]);
+$routes->get('pembayaran/add-lain', 'Admin\Pembayaran::add_lain', ["filter" => "authweb:1-2-3-7"]);
+
+$routes->post('pembayaran/save-daftar', 'Admin\Pembayaran::save_daftar', ["filter" => "authweb:1-2-3-7"]);
+$routes->post('pembayaran/save-spp', 'Admin\Pembayaran::save_spp', ["filter" => "authweb:1-2-3-7"]);
+$routes->post('pembayaran/save-lain', 'Admin\Pembayaran::save_lain', ["filter" => "authweb:1-2-3-7"]);
+
+//Rekap
+$routes->get('pembayaran/rekap-spp', 'Admin\Pembayaran::rekap_spp', ["filter" => "authweb:1-2-3-7"]);
+$routes->get('pembayaran/rekap-spp-detail', 'Admin\Pembayaran::rekap_spp_detail', ["filter" => "authweb:1-2-3-7"]);
+$routes->post('pembayaran/rekap-spp-edit', 'Admin\Pembayaran::rekap_spp_edit', ["filter" => "authweb:1-2-3-7"]);
+$routes->get('pembayaran/rekap-infaq', 'Admin\Pembayaran::rekap_infaq', ["filter" => "authweb:1-2-3-7"]);
+$routes->get('pembayaran/rekap-lain', 'Admin\Pembayaran::rekap_lain', ["filter" => "authweb:1-2-3-7"]);
+$routes->post('pembayaran/rekap-lain-edit', 'Admin\Pembayaran::rekap_lain_edit', ["filter" => "authweb:1-2-3-7"]);
+// $routes->get('pembayaran/rekap-beasiswa', 'Admin\Pembayaran::rekap_beasiswa', ["filter" => "authweb:1-2-3-7"]);
+
+$routes->post('pembayaran/rekap-spp-update', 'Admin\Pembayaran::rekap_spp_update', ["filter" => "authweb:1-2-3-7"]);
+$routes->get('pembayaran/rekap-spp-export', 'Admin\Pembayaran::rekap_spp_export', ["filter" => "authweb:1-2-3-7"]);
+$routes->get('pembayaran/rekap-infaq-export', 'Admin\Pembayaran::rekap_infaq_export', ["filter" => "authweb:1-2-3-7"]);
+$routes->get('pembayaran/rekap-lain-export', 'Admin\Pembayaran::rekap_lain_export', ["filter" => "authweb:1-2-3-7"]);
+$routes->post('pembayaran/rekap-lain-update', 'Admin\Pembayaran::rekap_lain_update', ["filter" => "authweb:1-2-3-7"]);
+$routes->post('pembayaran/rekap-lain-delete', 'Admin\Pembayaran::rekap_lain_delete', ["filter" => "authweb:1-2-3-7"]);
 
 /*--- Log ---*/
 $routes->get('log-admin', 'Admin\Log::admin', ["filter" => "authweb:1-2-3-7"]);

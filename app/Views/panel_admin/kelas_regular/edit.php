@@ -167,7 +167,7 @@
 <script>
     $(document).ready(function() {
         $('.js-example-basic-single-edit').select2({
-            theme: "bootstrap4"
+            
         });
         $('.formedit').submit(function(e) {
             e.preventDefault();
