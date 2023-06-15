@@ -211,6 +211,17 @@ $routes->get('pembayaran/rekap-lain-export', 'Admin\Pembayaran::rekap_lain_expor
 $routes->post('pembayaran/rekap-lain-update', 'Admin\Pembayaran::rekap_lain_update', ["filter" => "authweb:1-2-3-7"]);
 $routes->post('pembayaran/rekap-lain-delete', 'Admin\Pembayaran::rekap_lain_delete', ["filter" => "authweb:1-2-3-7"]);
 
+//Absensi
+$routes->get('absensi-regular/peserta', 'Admin\Absensi::regular_peserta', ["filter" => "authweb:1-2-3-7"]);
+$routes->get('absensi-regular/pengajar', 'Admin\Absensi::regular_pengajar', ["filter" => "authweb:1-2-3-7"]);
+$routes->post('absensi-regular/pengajar-note', 'Admin\Absensi::regular_pengajar_note', ["filter" => "authweb:1-2-3-7"]);
+
+$routes->get('absensi-regular/peserta-export', 'Admin\Absensi::regular_peserta_export', ["filter" => "authweb:1-2-3-7"]);
+$routes->get('absensi-regular/pengajar-export', 'Admin\Absensi::regular_pengajar_export', ["filter" => "authweb:1-2-3-7"]);
+
+//Ujian
+$routes->get('ujian', 'Admin\Ujian::index', ["filter" => "authweb:1-2-3-7"]);
+
 /*--- Log ---*/
 $routes->get('log-admin', 'Admin\Log::admin', ["filter" => "authweb:1-2-3-7"]);
 $routes->get('log-user', 'Admin\Log::user', ["filter" => "authweb:1-2-3-7"]);

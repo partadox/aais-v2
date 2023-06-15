@@ -181,22 +181,22 @@
         </ul>
     </li>
     <li>
-        <a href="<?= base_url('akademik/admin_rekap_absen_peserta') ?>" class="waves-effect">
+        <a href="<?= base_url('absensi-bina') ?>" class="waves-effect">
             <i class="mdi mdi-file-check"></i><span> Absensi Pembinaan</span>
         </a>
     </li>
     <li>
-        <a href="<?= base_url('akademik/admin_rekap_ujian') ?>" class="waves-effect">
+        <a href="<?= base_url('ujian') ?>" class="waves-effect">
             <i class="mdi mdi-book"></i><span> Hasil Ujian Reg.</span>
         </a>
     </li>
     <li>
-        <a href="<?= base_url('akademik/admin_sertifikat') ?>" class="waves-effect">
+        <a href="<?= base_url('sertifikat') ?>" class="waves-effect">
             <i class="mdi mdi-certificate"></i><span> Sertifikat</span>
         </a>
     </li>
     <li>
-        <a href="<?= base_url('akademik/pengumuman') ?>" class="waves-effect">
+        <a href="<?= base_url('pengumuman') ?>" class="waves-effect">
             <i class="mdi mdi-bullhorn"></i><span> Pengumuman</span>
         </a>
     </li>

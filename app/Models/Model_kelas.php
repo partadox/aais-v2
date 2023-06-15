@@ -59,9 +59,9 @@ class Model_kelas extends Model
             ->orderBy('kelas_id', 'ASC');
         
         if($filter_domisili == 'AKTIF' && $peserta_domisili == 'BALIKPAPAN') {
-            $mainQuery = $mainQuery->where('metode_kelas', 'ONLINE');
-        } elseif ($filter_domisili == 'AKTIF' && $peserta_domisili == 'LUAR BALIKPAPAN'){
             $mainQuery = $mainQuery->where('metode_kelas', 'OFFLINE');
+        } elseif ($filter_domisili == 'AKTIF' && $peserta_domisili == 'LUAR BALIKPAPAN'){
+            $mainQuery = $mainQuery->where('metode_kelas', 'ONLINE');
         }
 
         if ($peserta_status_kerja == 0) {

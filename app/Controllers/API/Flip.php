@@ -4,7 +4,7 @@ namespace App\Controllers\Api;
 use App\Libraries\JWTCI4;
 use App\Models\Api_peserta;
 use App\Models\Model_kelas;
-use App\Models\Model_bayar;
+use App\Models\Api_bayar;
 use App\Models\Model_spp1;
 use App\Models\Model_spp2;
 use App\Models\Model_spp3;
@@ -58,9 +58,31 @@ class Flip extends ResourceController
         $this->db 			        = \Config\Database::connect();
 
         // Get the JSON data from the request body
-        $json       = $this->request->getJSON();
-        $jsonString = json_encode($json, JSON_PRETTY_PRINT);
-        return $this->respondCreated(['message' => $jsonString]);
+        // $json       = $this->request->getJSON();
+        // $jsonString = json_encode($json, JSON_PRETTY_PRINT);
+
+        $request = \Config\Services::request();
+
+        // get JSON data
+        $jsonData = $request->getJSON(true);  // returns assoc array if valid JSON was sent
+        if ($jsonData) {
+            // valid JSON received
+            // $jsonData now contains your data
+            // debug the data
+            return $this->respondCreated(['message' => $jsonData]);
+        } else {
+            // not valid JSON, check if it's a form POST
+            $postData = $request->getPost();
+            if ($postData) {
+                // valid POST data received
+                // debug the data
+                return $this->respondCreated(['message' => $postData]);
+            } else {
+                return $this->respondCreated(['message' => "No JSON or POST data received."]);
+            }
+}
+
+        
         //Access the individual data fields from the JSON
         // $id                 = $json->id;
         // $bill_link          = $json->bill_link;
