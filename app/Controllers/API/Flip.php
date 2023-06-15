@@ -69,14 +69,14 @@ class Flip extends ResourceController
             // valid JSON received
             // $jsonData now contains your data
             // debug the data
-            return $this->respondCreated(['message' => $jsonData]);
+            return $this->respondCreated(['message' => "Using JSON".$jsonData]);
         } else {
             // not valid JSON, check if it's a form POST
             $postData = $request->getPost();
             if ($postData) {
                 // valid POST data received
                 // debug the data
-                return $this->respondCreated(['message' => $postData]);
+                return $this->respondCreated(['message' => "Using POST".$postData]);
             } else {
                 return $this->respondCreated(['message' => "No JSON or POST data received."]);
             }
