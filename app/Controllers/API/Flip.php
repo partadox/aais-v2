@@ -65,28 +65,22 @@ class Flip extends ResourceController
         //     return $this->respondCreated(['message' => "Using JSON".$jsonData]);
         // } 
         
-        $Data    = $request->getPost();
-        $message = json_decode($Data['message'], true);  // decode the 'message' JSON string into an associative array
-
-        if ($message) {
-            $data = json_decode($message['data'], true);  // decode the 'data' JSON string into an associative array
-            if ($data) {
-                $id             = $data['id'];
-                $bill_link_id   = $data['bill_link_id'];
-                $bill_link      = $data['bill_link'];
-                $bill_title     = $data['bill_title'];
-                $sender_name    = $data['sender_name'];
-                $sender_email   = $data['sender_email'];
-                $sender_bank    = $data['sender_bank'];
-                $sender_bank_type = $data['sender_bank_type'];
-                $amount         = $data['amount'];
-                $status         = $data['status'];
-                $created_at     = $data['created_at'];
-            } else {
-                return $this->respondCreated(['message' => "Invalid data JSON"]);
-            }
+        $Data = $request->getPost();
+        $data = json_decode($Data['data'], true);  // decode the 'data' JSON string into an associative array
+        if ($data) {
+            $id             = $data['id'];
+            $bill_link_id   = $data['bill_link_id'];
+            $bill_link      = $data['bill_link'];
+            $bill_title     = $data['bill_title'];
+            $sender_name    = $data['sender_name'];
+            $sender_email   = $data['sender_email'];
+            $sender_bank    = $data['sender_bank'];
+            $sender_bank_type = $data['sender_bank_type'];
+            $amount         = $data['amount'];
+            $status         = $data['status'];
+            $created_at     = $data['created_at'];
         } else {
-            return $this->respondCreated(['message' => "Invalid message JSON"]);
+            return $this->respondCreated(['message' => "Invalid data JSON"]);
         }
 
         if ($status == 'SUCCESSFUL') {
