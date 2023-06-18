@@ -132,7 +132,7 @@ if (session()->getFlashdata('pesan_sukses')) {
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <?php echo form_open_multipart('/akademik/rekap_ujian_peserta_import');
+            <?php echo form_open_multipart('/ujian/import');
             ?>
             <?= csrf_field() ?>
             <div class="modal-body">

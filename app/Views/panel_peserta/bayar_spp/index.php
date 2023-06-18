@@ -9,29 +9,20 @@
 <?= $this->section('isi') ?>
 </p>
 
-<?php if ($cek != 0) { ?>
+<?php if ($cek == 0) { ?>
 <!-- Container-fluid starts-->
 <div class="container-fluid">
-    <p class="mt-1">Catatan :<br> 
-        <i class="mdi mdi-information"></i> Anda akan terdaftar di kelas yang anda pilih setelah mengisi form pembayaran, melakukan pembayaran, dan pembayaran akan dikonfirmasi oleh sistem/admin.<br>
-        <i class="mdi mdi-information"></i> Harap lakukan pembayaran sebelum batas waktu pembayaran.<br>
-        <i class="mdi mdi-information"></i> Jika anda ingin memilih kelas lain harap tekan tombol batal.<br>
-    </p>
-    <hr>
-    <h5 style="text-align:center"> Status Konfirmasi :
-        <button class="btn btn-warning" disabled> Belum Bayar</button> </h5> <br>
-        <h5 style="text-align:center; color:red">Batas Waktu Bayar: <br> Tgl: <?= shortdate_indo(substr($expired_waktu,0,10)) ?> <br> Jam: <?=substr($expired_waktu,11,5)?> WITA</h5>
-    
-    <h5 style="text-align:center; color:red" id="demo"></h5> <br>
-
+    <a href="<?= base_url('/peserta-kelas') ?>"> 
+        <button type="button" class="btn btn-secondary mb-3"><i class=" fa fa-arrow-circle-left"></i> Kembali</button>
+    </a>
     <div class="card shadow-lg bg-white rounded">
         <div class="card-body">
-            <button type="button" class="btn btn-danger" onclick="hapus(<?= $cart_id ?>, <?= $peserta_kelas_id ?>)">Batal</button>
             <h6><?= $kelas['nama_program'] ?></h6>
             <h5 class="card-title"><?= $kelas['nama_kelas'] ?></h5>
             <hr>
             <p> <i class="mdi mdi-calendar"></i> Hari = <?= $kelas['hari_kelas'] ?> </p>
             <p> <i class="mdi mdi-clock"></i> Waktu = <?= $kelas['waktu_kelas'] ?></p>
+            <p> <i class="mdi mdi-account-supervisor"></i> Pengajar = <?= $kelas['nama_pengajar'] ?></p>
             <a> <i class="mdi mdi-teach"></i>
                 <?php if($kelas['metode_kelas'] == 'OFFLINE') { ?>
                     Metode Perkuliahan = <span class="badge badge-secondary">TATAP MUKA / OFFLINE</span>
@@ -41,12 +32,80 @@
                 <?php } ?>
             </a>
             <hr>
-            <p> <i class="mdi mdi-cash-marker"></i> Biaya Pendaftaran = Rp <?= rupiah($kelas['biaya_daftar']) ?></p>
-            <p> <i class="mdi mdi-cash-marker"></i> Biaya Modul = Rp <?= rupiah($kelas['biaya_modul']) ?></p>
-            <p> <i class="mdi mdi-cash-register"></i> SPP per Bulan = Rp <?= rupiah($kelas['biaya_bulanan']) ?> (x 4 Bulan)</p>
-            <hr>
-            <p> <i class="mdi mdi-bookmark-check"></i> Total Kuota = <?= $kelas['kouta'] ?></p>
-            <h6> <i class="mdi mdi-bookmark-minus"> </i> Kuota Tersedia = <?= $kelas['kouta']-$kelas['peserta_kelas_count'] ?> </h6>
+                <?php 
+                    $totalBiaya = $kelas['biaya_daftar'] + $kelas['biaya_program'];
+                    $totalBayar = $peserta_kelas['byr_daftar'] + $peserta_kelas['byr_spp1'] + $peserta_kelas['byr_spp2'] + $peserta_kelas['byr_spp3'] + $peserta_kelas['byr_spp4'];
+                    $totalBeasiswa = 0;
+
+                    // Jika beasiswa diterima, anggap sebagai pembayaran
+                    if($peserta_kelas['beasiswa_daftar'] == 1) {
+                        $totalBeasiswa += $kelas['biaya_daftar'];
+                    }
+                    if($peserta_kelas['beasiswa_spp1'] == 1) {
+                        $totalBeasiswa += $kelas['biaya_bulanan'];
+                    }
+                    if($peserta_kelas['beasiswa_spp2'] == 1) {
+                        $totalBeasiswa += $kelas['biaya_bulanan'];
+                    }
+                    if($peserta_kelas['beasiswa_spp3'] == 1) {
+                        $totalBeasiswa += $kelas['biaya_bulanan'];
+                    }
+                    if($peserta_kelas['beasiswa_spp4'] == 1) {
+                        $totalBeasiswa += $kelas['biaya_bulanan'];
+                    }
+                    // total pembayaran ditambah dengan total beasiswa
+                    $totalBayar += $totalBeasiswa;
+
+                    if($totalBiaya - $totalBayar != 0) { ?>
+                        <strong>Status SPP: </strong>  <button class="btn btn-warning btn-sm mb-2" disabled>BELUM LUNAS</button> <br>
+                <?php } ?>
+                <?php if($totalBiaya - $totalBayar == 0) { ?>
+                    <strong>Status SPP: </strong> <button class="btn btn-success btn-sm mb-2" disabled>LUNAS</button> <br>
+                <?php } ?>
+                <strong>Pendaftaran: </strong> 
+                    <?php if($peserta_kelas['byr_daftar'] == $kelas['biaya_daftar']) { ?>
+                        <i class=" fa fa-check" style="color:green"></i> Rp <?= rupiah($peserta_kelas['byr_daftar']) ?>
+                    <?php } ?>
+                    <?php if($peserta_kelas['beasiswa_daftar'] == 1) { ?>
+                        <span class="badge badge-success">Beasiswa</span>
+                    <?php } ?>
+                <br>
+                <strong>SPP-1: </strong> 
+                    <?php if($peserta_kelas['byr_spp1'] == $kelas['biaya_bulanan']) { ?>
+                        <i class=" fa fa-check" style="color:green"></i> Rp <?= rupiah($peserta_kelas['byr_spp1']) ?>
+                    <?php } ?>
+                    <?php if($peserta_kelas['beasiswa_spp1'] == 1) { ?>
+                        <span class="badge badge-success">Beasiswa</span>
+                    <?php } ?>
+                <br>
+                <strong>SPP-2: </strong> 
+                    <?php if($peserta_kelas['byr_spp2'] == $kelas['biaya_bulanan']) { ?>
+                        <i class=" fa fa-check" style="color:green"></i> Rp <?= rupiah($peserta_kelas['byr_spp2']) ?>
+                    <?php } ?>
+                    <?php if($peserta_kelas['beasiswa_spp2'] == 1) { ?>
+                        <span class="badge badge-success">Beasiswa</span>
+                    <?php } ?>
+                <br>
+                <strong>SPP-3: </strong> 
+                    <?php if($peserta_kelas['byr_spp3'] == $kelas['biaya_bulanan']) { ?>
+                        <i class=" fa fa-check" style="color:green"></i> Rp <?= rupiah($peserta_kelas['byr_spp3']) ?>
+                    <?php } ?>
+                    <?php if($peserta_kelas['beasiswa_spp3'] == 1) { ?>
+                        <span class="badge badge-success">Beasiswa</span>
+                    <?php } ?>
+                <br>
+                <strong>SPP-4: </strong> 
+                    <?php if($peserta_kelas['byr_spp4'] == $kelas['biaya_bulanan']) { ?>
+                        <i class=" fa fa-check" style="color:green"></i> Rp <?= rupiah($peserta_kelas['byr_spp4']) ?>
+                    <?php } ?>
+                    <?php if($peserta_kelas['beasiswa_spp4'] == 1) { ?>
+                        <span class="badge badge-success">Beasiswa</span>
+                    <?php } ?>
+                <br>
+                <strong>Modul: </strong> 
+                    <?php if($peserta_kelas['byr_modul'] == $kelas['biaya_modul']) { ?>
+                        Rp <?= rupiah($peserta_kelas['byr_modul']) ?>
+                    <?php } ?>
         </div>
     </div>
     
@@ -98,9 +157,9 @@
 <!-- Container-fluid Ends-->
 <?php } ?>
 
-<?php if ($cek == 0) { ?>
+<?php if ($cek != 0) { ?>
     <div class="alert alert-secondary alert-dismissible fade show" role="alert"> <i class="mdi mdi-account-multiple-outline"></i>
-        <strong>Anda Belum Memiliki Program Yang Akan Dibayar. Silihkan Pilih Program Dan Kelas Dahulu di Menu Pilih Program</strong> 
+        <strong>Bayar</strong> 
     </div>  
 <?php } ?>
 
@@ -108,18 +167,29 @@
     /*--- Front-end Function---*/
     $(document).ready(function() {
         var services = [
-            { id: 5, name: "Pendaftaran", price: <?= $biaya_daftar?>, fixed: true },
-            { id: 1, name: "SPP-1", price: <?= $biaya_bulanan?>, fixed: true },
-            { id: 2, name: "SPP-2", price: <?= $biaya_bulanan?>, fixed: true },
-            { id: 3, name: "SPP-3", price: <?= $biaya_bulanan?>, fixed: true },
-            { id: 4, name: "SPP-4", price: <?= $biaya_bulanan?>, fixed: true },
-            { id: 6, name: "Modul", price: <?= $biaya_modul?>, fixed: true },
+            <?php if (!($peserta_kelas['byr_daftar'] == $kelas['biaya_daftar'] || $peserta_kelas['beasiswa_daftar'] == 1)): ?>
+                { id: 5, name: "Pendaftaran", price: <?= $kelas['biaya_daftar']?>, fixed: true },
+            <?php endif; ?>
+            <?php if (!($peserta_kelas['byr_spp1'] == $kelas['biaya_bulanan'] || $peserta_kelas['beasiswa_spp1'] == 1)): ?>
+                { id: 1, name: "SPP-1", price: <?= $kelas['biaya_bulanan']?>, fixed: true },
+            <?php endif; ?>
+            <?php if (!($peserta_kelas['byr_spp2'] == $kelas['biaya_bulanan'] || $peserta_kelas['beasiswa_spp2'] == 1)): ?>
+                { id: 2, name: "SPP-2", price: <?= $kelas['biaya_bulanan']?>, fixed: true },
+            <?php endif; ?>
+            <?php if (!($peserta_kelas['byr_spp3'] == $kelas['biaya_bulanan'] || $peserta_kelas['beasiswa_spp3'] == 1)): ?>
+                { id: 3, name: "SPP-3", price: <?= $kelas['biaya_bulanan']?>, fixed: true },
+            <?php endif; ?>
+            <?php if (!($peserta_kelas['byr_spp4'] == $kelas['biaya_bulanan'] || $peserta_kelas['beasiswa_spp4'] == 1)): ?>
+                { id: 4, name: "SPP-4", price: <?= $kelas['biaya_bulanan']?>, fixed: true },
+            <?php endif; ?>
+            <?php if (!($peserta_kelas['byr_modul'] == $kelas['biaya_modul'])): ?>
+                { id: 6, name: "Modul", price: <?= $kelas['biaya_modul']?>, fixed: true },
+            <?php endif; ?>
             { id: 7, name: "Infaq", price: 0, fixed: false },
             { id: 8, name: "Pemby. Lain", price: 0, fixed: false },
         ];
+        
         var cart = [
-            { id: 5, name: "Pendaftaran", price: <?= $biaya_daftar?> },
-            { id: 1, name: "SPP-1", price: <?= $biaya_bulanan?> },
         ];
         var total = cart.reduce((sum, service) => sum + service.price, 0);
 
@@ -279,8 +349,6 @@
                     formData.append('peserta_kelas_id', <?= $peserta_kelas_id ?>);
                     formData.append('peserta_id', <?= $peserta_id ?>);
                     formData.append('kelas_id', <?= $kelas_id ?>);
-                    formData.append('cart_id', <?= $cart_id ?>);
-                    formData.append('expired_waktu', '<?= $expired_waktu ?>');
                     return $.ajax({
                         url: "<?= site_url('/bayar/save-manual') ?>",
                         type: "post",
@@ -334,8 +402,6 @@
             formData.append('peserta_kelas_id', <?= $peserta_kelas_id ?>);
             formData.append('peserta_id', <?= $peserta_id ?>);
             formData.append('kelas_id', <?= $kelas_id ?>);
-            formData.append('cart_id', <?= $cart_id ?>);
-            formData.append('expired_waktu', '<?= $expired_waktu ?>');
 
             // Display a loading alert with no buttons
             Swal.fire({
@@ -377,7 +443,6 @@
                             title: 'Payment details',
                             html: `
                                 <p>Total TF = Rp ${formatPrice(total)}</p>
-                                <p>Batas Waktu Bayar:<br> <?= $expired_waktu ?> <br>
                                 Bank = ${bank} <br>
                                 VA = ${va} <br>
                                 <button id="copy" class="btn btn-success btn-sm"><i class="fas fa-copy"></i> Copy VA</button>
@@ -429,8 +494,6 @@
                     formData.append('peserta_kelas_id', <?= $peserta_kelas_id ?>);
                     formData.append('peserta_id', <?= $peserta_id ?>);
                     formData.append('kelas_id', <?= $kelas_id ?>);
-                    formData.append('cart_id', <?= $cart_id ?>);
-                    formData.append('expired_waktu', '<?= $expired_waktu ?>');
                     return $.ajax({
                         url: "<?= site_url('/bayar/save-beasiswa') ?>",
                         type: "post",
@@ -465,77 +528,6 @@
         });
 
     });
-
-
-
-    /*--- Cancel Cart ---*/
-    function hapus(cart_id, peserta_kelas_id) {
-        Swal.fire({
-            title: 'Batal Daftar?',
-            text: `Apakah anda yakin membatalkan pendaftaran program/kelas ini?`,
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Ya',
-            cancelButtonText: 'Tidak',
-            allowOutsideClick: false,
-        }).then((result) => {
-            if (result.isConfirmed) {
-                $.ajax({
-                    url: "<?= site_url('/bayar/cancel') ?>",
-                    type: "post",
-                    dataType: "json",
-                    data: {
-                        cart_id: cart_id,
-                        peserta_kelas_id: peserta_kelas_id,
-                    },
-                    success: function(response) {
-                        if (response.sukses) {
-                            Swal.fire({
-                                title: "Berhasil!",
-                                text: "Anda berhasil membatalkan ambil program/kelas",
-                                icon: "success",
-                                showConfirmButton: false,
-                                timer: 1500
-                            }).then(function() {
-                                window.location = response.sukses.link;
-                        });
-                        }
-                    }
-                });
-            }
-        })
-    }
-
-    /*--- Countdown Function---*/
-    // Receive the server time from PHP
-    let serverTime = new Date('<?= $jsFriendlyTime ?>');
-    let timeOffset = serverTime.getTime() - new Date().getTime();
-
-    // Your countdown function
-    let endTime = new Date('<?= $expired_waktu ?>').getTime();
-
-    function updateTime() {
-        let now = new Date().getTime() + timeOffset;
-        let distance = endTime - now;
-
-        if (distance < 0) {
-            document.getElementById("demo").innerHTML = "";
-            clearInterval(intervalId);
-            return;
-        }
-
-        let days = Math.floor(distance / (1000 * 60 * 60 * 24));
-        let hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        let minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-        let seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-        document.getElementById("demo").innerHTML = `${hours} jam-${minutes} mnt-${seconds} dtk`;
-    }
-
-    // Update the timer every second
-    let intervalId = setInterval(updateTime, 1000);
 </script>
 
 <?= $this->endSection('isi') ?>

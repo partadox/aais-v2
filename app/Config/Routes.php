@@ -221,6 +221,24 @@ $routes->get('absensi-regular/pengajar-export', 'Admin\Absensi::regular_pengajar
 
 //Ujian
 $routes->get('ujian', 'Admin\Ujian::index', ["filter" => "authweb:1-2-3-7"]);
+$routes->post('ujian/edit', 'Admin\Ujian::edit', ["filter" => "authweb:1-2-3-7"]);
+
+$routes->post('ujian/update', 'Admin\Ujian::update', ["filter" => "authweb:1-2-3-7"]);
+$routes->post('ujian/import', 'Admin\Ujian::import', ["filter" => "authweb:1-2-3-7"]);
+$routes->get('ujian/export', 'Admin\Ujian::export', ["filter" => "authweb:1-2-3-7"]);
+
+//Sertifikat
+$routes->get('sertifikat', 'Admin\Sertifikat::index', ["filter" => "authweb:1-2-3-7"]);
+$routes->get('sertifikat/konfirmasi', 'Admin\Sertifikat::konfirmasi', ["filter" => "authweb:1-2-3-7"]);
+$routes->post('sertifikat/edit', 'Admin\Sertifikat::edit', ["filter" => "authweb:1-2-3-7"]);
+$routes->post('sertifikat/input-atur', 'Admin\Sertifikat::input_atur', ["filter" => "authweb:1-2-3-7"]);
+$routes->post('sertifikat/input-konfirmasi', 'Admin\Sertifikat::input_konfirmasi', ["filter" => "authweb:1-2-3-7"]);
+
+$routes->post('sertifikat/save-atur', 'Admin\Sertifikat::save_atur', ["filter" => "authweb:1-2-3-7"]);
+$routes->post('sertifikat/save-konfirmasi', 'Admin\Sertifikat::save_konfirmasi', ["filter" => "authweb:1-2-3-7"]);
+$routes->post('sertifikat/update', 'Admin\Sertifikat::update', ["filter" => "authweb:1-2-3-7"]);
+$routes->post('sertifikat/import', 'Admin\Sertifikat::import', ["filter" => "authweb:1-2-3-7"]);
+$routes->get('sertifikat/export', 'Admin\Sertifikat::export', ["filter" => "authweb:1-2-3-7"]);
 
 /*--- Log ---*/
 $routes->get('log-admin', 'Admin\Log::admin', ["filter" => "authweb:1-2-3-7"]);
@@ -238,7 +256,7 @@ $routes->get('daftar/tes', 'Peserta\Daftar::tes', ["filter" => "authweb:4"]);
 $routes->post('daftar/level-update', 'Peserta\Daftar::level_update', ["filter" => "authweb:4"]);
 $routes->post('daftar/save', 'Peserta\Daftar::save', ["filter" => "authweb:4"]);
 
-/*--- Bayar---*/
+/*--- Bayar Daftar---*/
 $routes->get('bayar/daftar', 'Peserta\Bayar::index', ["filter" => "authweb:4"]);
 
 $routes->post('bayar/save-manual', 'Peserta\Bayar::save_manual', ["filter" => "authweb:4"]);
@@ -246,8 +264,24 @@ $routes->post('bayar/save-beasiswa', 'Peserta\Bayar::save_beasiswa', ["filter" =
 $routes->post('bayar/generate-flip', 'Peserta\Bayar::generate_flip', ["filter" => "authweb:4"]);
 $routes->post('bayar/cancel', 'Peserta\Bayar::cancel', ["filter" => "authweb:4"]);
 
+/*--- Bayar SPP---*/
+$routes->get('bayar/spp', 'Peserta\BayarSPP::index', ["filter" => "authweb:4"]);
+
+/*--- API Flip Callback---*/
 $routes->post('bayar/77callback77', 'API\Flip::callback');
 
+/*--- Kelas---*/
+$routes->get('peserta-kelas', 'Peserta\Kelas::index', ["filter" => "authweb:4"]);
+/*
+ * --------------------------------------------------------------------
+ * PENGAJAR
+ * --------------------------------------------------------------------
+ */
+/*--- Kelas---*/
+$routes->get('pengajar/kelas', 'Pengajar\Kelas::index', ["filter" => "authweb:5-6"]);
+$routes->get('pengajar/absensi', 'Pengajar\Kelas::absensi', ["filter" => "authweb:5-6"]);
+$routes->post('pengajar/input-absensi', 'Pengajar\Kelas::input_absensi', ["filter" => "authweb:5-6"]);
+$routes->post('pengajar/save-absensi', 'Pengajar\Kelas::save_absensi', ["filter" => "authweb:5-6"]);
 /*
  * --------------------------------------------------------------------
  * Additional Routing

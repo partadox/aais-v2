@@ -128,7 +128,7 @@ class Dashboard extends BaseController
 			}
 			
 			$data = [
-				'title'                 => 'Al-Haqq - Dashboard',
+				'title'                 => 'Dashboard',
 				'user'					=> $user,
 				'angkatan'              => $angkatan,
 				'list_angkatan'         => $list_angkatan,
@@ -160,7 +160,7 @@ class Dashboard extends BaseController
 		//Peserta
 		if ($level == 4) {
 			$data = [
-				'title'                 => 'Al-Haqq - Dashboard',
+				'title'                 => 'Dashboard',
 				'user'					=> $user,
 				'angkatan'              => $angkatan,
 				'list_angkatan'         => $list_angkatan,
@@ -168,6 +168,15 @@ class Dashboard extends BaseController
 			];
 		}
 		//Pengajar
+		if ($level == 5 || $level == 6) {
+			$data = [
+				'title'                 => 'Dashboard',
+				'user'					=> $user,
+				'angkatan'              => $angkatan,
+				'list_angkatan'         => $list_angkatan,
+				'angkatan_pilih'        => $angkatan,
+			];
+		}
 
 		
 		return view('panel/dashboard', $data);

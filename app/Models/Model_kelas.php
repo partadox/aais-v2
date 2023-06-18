@@ -310,6 +310,16 @@ class Model_kelas extends Model
             ->get()->getResultArray();
     }
 
+    public function detail_kelas_bayar($kelas_id)
+    {
+        return $this->table('program_kelas')
+            ->join('program', 'program.program_id = program_kelas.program_id')
+            ->join('pengajar', 'pengajar.pengajar_id = program_kelas.pengajar_id')
+            ->join('peserta_level', 'peserta_level.peserta_level_id = program_kelas.peserta_level')
+            ->where('kelas_id', $kelas_id)
+            ->get()->getRowArray();
+    }
+
     //Group_concat hitung table jumlah fk dari pk tabel lain
     //  public function list_kelas_dan_jml_peserta()
     //  {
@@ -331,14 +341,36 @@ class Model_kelas extends Model
     }
 
     //Panel Pengajar - Menu Kelas & Absen
+    // public function kelas_pengajar($pengajar_id, $angkatan)
+    // {
+    //     return $this->table('program_kelas')
+    //         ->join('program', 'program.program_id = program_kelas.program_id')
+    //         ->join('peserta_level', 'peserta_level.peserta_level_id = program_kelas.peserta_level')
+    //         ->where('pengajar_id', $pengajar_id)
+    //         ->where('angkatan_kelas', $angkatan)
+    //         ->where('status_kelas', 'aktif')
+    //         ->get()->getResultArray();
+    // }
+
     public function kelas_pengajar($pengajar_id, $angkatan)
     {
-        return $this->table('program_kelas')
+        $db      = \Config\Database::connect();
+        $builder = $db->table('peserta_kelas');
+
+        $builder->selectCount('data_kelas_id');
+        $builder->where('peserta_kelas.data_kelas_id = program_kelas.kelas_id');
+        $subQuery = $builder->getCompiledSelect();
+
+        $mainQuery = $db->table('program_kelas')
+            ->select('program_kelas.*, program.*, peserta_level.*, ('.$subQuery.') as peserta_kelas_count')
             ->join('program', 'program.program_id = program_kelas.program_id')
             ->join('peserta_level', 'peserta_level.peserta_level_id = program_kelas.peserta_level')
             ->where('pengajar_id', $pengajar_id)
             ->where('angkatan_kelas', $angkatan)
-            ->get()->getResultArray();
+            ->where('status_kelas', 'aktif')
+            ->orderBy('kelas_id', 'DESC');
+
+        return $mainQuery->get()->getResultArray();
     }
 
     //Pengajar Panel - Absensi Peserta

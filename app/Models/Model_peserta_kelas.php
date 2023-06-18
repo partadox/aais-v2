@@ -205,6 +205,7 @@ class Model_peserta_kelas extends Model
             ->select('nis')
             ->select('nama_peserta')
             ->select('data_absen')
+            ->select('status_aktif_peserta')
             ->select($tm)
             ->where('data_kelas_id', $kelas_id)
             //->where('status_peserta_kelas', 'BELUM LULUS')
