@@ -71,7 +71,7 @@ class Model_peserta_kelas extends Model
     }
 
     //Cek Kelas Peserta
-    public function kelas_peserta($peserta_id)
+    public function kelas_peserta($angkatan, $peserta_id)
     {
         return $this->table('peserta_kelas')
         ->join('peserta', 'peserta.peserta_id = peserta_kelas.data_peserta_id')
@@ -81,6 +81,7 @@ class Model_peserta_kelas extends Model
         ->join('ujian', 'ujian.ujian_id = peserta_kelas.data_ujian')
         // ->where('status_peserta_kelas', 'Belum Lulus')
         ->where('data_absen !=', NULL)
+        ->where('angkatan_kelas', $angkatan)
         ->where('data_peserta_id', $peserta_id)
         ->get()->getResultArray();
     }

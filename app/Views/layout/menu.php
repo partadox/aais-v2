@@ -48,7 +48,7 @@
 
 <!--  Peserta Menu Start -->
 <?php if ($user['level'] == 4) { ?>
-    <li class="menu-title">Pendaftaran Program Regular</li>
+    <li class="menu-title">Pendaftaran Program Reguler</li>
     <li>
         <a href="<?= base_url('daftar') ?>" class="waves-effect">
             <i class="mdi mdi-application"></i> <span>Pilih Program</span>
@@ -63,7 +63,7 @@
     <li class="menu-title">Akademik</li>
     <li>
         <a href="<?= base_url('peserta-kelas') ?>" class="waves-effect">
-            <i class="mdi mdi-application"></i> <span> Kelas </span>
+            <i class="mdi mdi-school"></i> <span> Kelas </span>
         </a>
     </li>
     <!-- <li>
@@ -73,7 +73,7 @@
     </li> -->
     <li>
         <a href="<?= base_url('bayar/riwayat') ?>" class="waves-effect">
-            <i class="mdi mdi-cash-multiple"></i> <span> Riwayat Pembayaran </span>
+            <i class="mdi mdi-history"></i> <span> Riwayat Pembayaran </span>
         </a>
     </li>
 

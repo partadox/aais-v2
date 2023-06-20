@@ -806,4 +806,23 @@ class Bayar extends BaseController
             }
         }
     }
+
+    public function riwayat()
+    {
+        $user           = $this->userauth();
+        $user_id        = $user['user_id'];
+        $peserta        = $this->peserta->get_peserta($user_id);
+        $peserta_id     = $peserta['peserta_id'];
+
+        // Get data peserta_kelas yang belum lulus 
+        $pembayaran     = $this->bayar->list_pembayaran_peserta($peserta_id);
+
+
+        $data = [
+            'title'         => 'Riwayat Pembayaran Peserta',
+            'user'          => $user,
+            'list'          => $pembayaran,
+        ];
+        return view('panel_peserta/bayar/riwayat', $data);
+    }
 }

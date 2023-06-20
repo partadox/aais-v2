@@ -30,7 +30,7 @@ class Kelas extends BaseController
         $list_angkatan      = $this->kelas->list_unik_angkatan();
         $get_peserta_id     = $this->peserta->get_peserta_id($user['user_id']);
         $peserta_id         = $get_peserta_id->peserta_id;
-        $list               = $this->peserta_kelas->kelas_peserta($peserta_id);
+        $list               = $this->peserta_kelas->kelas_peserta($angkatan, $peserta_id);
         $data = [
             'title'                 => 'Daftar Kelas Anda pada Angkatan '.$angkatan,
             'user'                  => $user,

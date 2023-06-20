@@ -258,6 +258,7 @@ $routes->post('daftar/save', 'Peserta\Daftar::save', ["filter" => "authweb:4"]);
 
 /*--- Bayar Daftar---*/
 $routes->get('bayar/daftar', 'Peserta\Bayar::index', ["filter" => "authweb:4"]);
+$routes->get('bayar/riwayat', 'Peserta\Bayar::riwayat', ["filter" => "authweb:4"]);
 
 $routes->post('bayar/save-manual', 'Peserta\Bayar::save_manual', ["filter" => "authweb:4"]);
 $routes->post('bayar/save-beasiswa', 'Peserta\Bayar::save_beasiswa', ["filter" => "authweb:4"]);
@@ -266,6 +267,8 @@ $routes->post('bayar/cancel', 'Peserta\Bayar::cancel', ["filter" => "authweb:4"]
 
 /*--- Bayar SPP---*/
 $routes->get('bayar/spp', 'Peserta\BayarSPP::index', ["filter" => "authweb:4"]);
+
+$routes->post('bayar-spp/save-manual', 'Peserta\BayarSPP::save_manual', ["filter" => "authweb:4"]);
 
 /*--- API Flip Callback---*/
 $routes->post('bayar/77callback77', 'API\Flip::callback');

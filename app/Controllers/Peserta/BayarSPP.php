@@ -86,6 +86,138 @@ class BayarSPP extends BaseController
 
     /*--- BACKEND ---*/
 
+    public function save_manual()
+    {
+         // Get the POST data
+        $cart               = $this->request->getPost('cart');
+        $total              = $this->request->getPost('total');
+        $peserta_id         = $this->request->getPost('peserta_id');
+        $peserta_kelas_id   = $this->request->getPost('peserta_kelas_id');
+        $kelas_id           = $this->request->getPost('kelas_id');
+        $keterangan_bayar   = $this->request->getPost('keterangan_bayar');
+        $timeout            = date('Y-m-d H:i:s', strtotime('+60 minutes', strtotime(date('Y-m-d H:i:s'))));
+        $dateTime           = new \DateTime($timeout);
+
+        $newcart = [
+            'cart_peserta'       => $peserta_id,
+            'cart_kelas'         => $kelas_id,
+            'cart_peserta_kelas' => $peserta_kelas_id,
+            'cart_timeout'       => $timeout,
+            'cart_type'          => 'spp',
+        ];
+
+        // $cart_id            = $this->request->getPost('cart_id');
+        // $expired_waktu      = $this->request->getPost('expired_waktu');
+        // $expired_waktu      = \DateTime::createFromFormat('Y-m-d H:i:s', $expired_waktu);
+        $data_kelas            = $this->kelas->find($kelas_id);
+
+        // $now                = new \DateTime();
+
+        // Check if a file was received
+        if (!$this->request->getFiles('image')) {
+            return $this->response->setJSON(['error' => 'Harap Upload Bukti Transfer.']);
+        }
+
+        // Get the file
+        $image = $this->request->getFile('image');
+
+        // Check if file is uploaded
+        if (!$image->isValid()) {
+            return $this->response->setJSON(
+                ['error' => 'Bukti transfer harus dalam format gambar (jpg/png)']);
+        }
+
+        // if ($expired_waktu < $now) {
+        //     return $this->response->setJSON(
+        //         ['error' => 'Anda telah melampui batas waktu transfer, silahkan pilih kelas terlebih dahulu.']);
+        // }
+
+        // Move the uploaded file somewhere
+        $ext        = $image->guessExtension();
+        $newName    = $peserta_id."-".date('Ymd-His').'.'.$ext;
+        $cart       = json_decode($cart, true);
+
+        $data_bayar = [
+            'kelas_id'                  => $kelas_id,
+            'bayar_peserta_id'          => $peserta_id,
+            'bayar_peserta_kelas_id'    => $peserta_kelas_id,
+            'status_konfirmasi'         => 'Proses',
+            'awal_bayar'                => $total,
+            'nominal_bayar'             => $total,
+            'bukti_bayar'               => $newName,
+            'tgl_bayar'                 => date("Y-m-d"),
+            'waktu_bayar'               => date("H:i:s"),
+            'keterangan_bayar'          => $keterangan_bayar,
+            'tgl_bayar_konfirmasi'      => '1000-01-01',
+            'waktu_bayar_konfirmasi'    => '00:00:00',
+        ];
+
+        // Define mapping from ids to column names
+        $idColumnMap = [
+            //1 => 'dt_bayar_spp1',
+            2 => 'dt_bayar_spp2',
+            3 => 'dt_bayar_spp3',
+            4 => 'dt_bayar_spp4',
+            5 => 'dt_bayar_daftar',
+        ];
+
+        // Define mapping from ids to column names
+        $idColumnMap2 = [
+            1 => 'awal_bayar_spp1',
+            2 => 'awal_bayar_spp2',
+            3 => 'awal_bayar_spp3',
+            4 => 'awal_bayar_spp4',
+            5 => 'awal_bayar_daftar',
+            6 => 'awal_bayar_modul',
+            7 => 'awal_bayar_infaq',
+            8 => 'awal_bayar_lainnya',
+        ];
+
+        // Initialize data to update
+        $dataUpdatePK = [];
+        $dataUpdateBY = [];
+
+        // Loop over each item in the cart
+        foreach ($cart as $item) {
+            // Get id and price from item
+            $id = $item['id'];
+            $price = $item['price'];
+
+            // If there is a mapping for this id, add the price to the data to update
+            if (isset($idColumnMap[$id])) {
+                $dataUpdatePK[$idColumnMap[$id]] = date('Y-m-d H:i:s');
+            }
+
+            if (isset($idColumnMap2[$id])) {
+                $dataUpdateBY[$idColumnMap2[$id]] = $price;
+            }
+        }
+
+        $this->db->transStart();
+        $this->cart->insert($newcart);
+        $this->bayar->insert($data_bayar);
+        $bayar_id  = $this->bayar->insertID();
+        $this->peserta_kelas->update($peserta_kelas_id,$dataUpdatePK);
+        $this->bayar->update($bayar_id, $dataUpdateBY);
+        $image->move('public/img/transfer', $newName);
+        $this->db->transComplete();
+
+        $aktivitas = 'Melakukan Pembayaran SPP dan telah melakukan input bukti pembayaran pada kelas ' . $data_kelas['nama_kelas'];
+
+        if ($this->db->transStatus() === FALSE)
+        {
+            /*--- Log ---*/
+            $this->logging('Peserta', 'FAIL', $aktivitas);
+        }
+        else
+        {
+            /*--- Log ---*/
+            $this->logging('Peserta', 'BERHASIL', $aktivitas);
+        }
+        
+        return $this->response->setJSON(['success' => 'Your operation was successful.']);
+    }
+
     public function maintenance_status()
     {
         $ch         = curl_init();
@@ -338,133 +470,6 @@ class BayarSPP extends BaseController
             'account_number' => $account_number,
             'bank_code' => strtoupper($bank_code)
         ]);
-    }
-
-    public function save_manual()
-    {
-         // Get the POST data
-        $note               = $this->request->getPost('note');
-        $cart               = $this->request->getPost('cart');
-        $total              = $this->request->getPost('total');
-        $peserta_id         = $this->request->getPost('peserta_id');
-        $peserta_kelas_id   = $this->request->getPost('peserta_kelas_id');
-        $kelas_id           = $this->request->getPost('kelas_id');
-        $cart_id            = $this->request->getPost('cart_id');
-        $expired_waktu      = $this->request->getPost('expired_waktu');
-        $expired_waktu      = \DateTime::createFromFormat('Y-m-d H:i:s', $expired_waktu);
-        $data_kelas         = $this->kelas->find($kelas_id);
-
-        $now                = new \DateTime();
-
-        // Check if a file was received
-        if (!$this->request->getFiles('image')) {
-            return $this->response->setJSON(['error' => 'Harap Upload Bukti Transfer.']);
-        }
-
-        // Get the file
-        $image = $this->request->getFile('image');
-
-        // Check if file is uploaded
-        if (!$image->isValid()) {
-            return $this->response->setJSON(
-                ['error' => 'Bukti transfer harus dalam format gambar (jpg/png)']);
-        }
-
-        if ($expired_waktu < $now) {
-            return $this->response->setJSON(
-                ['error' => 'Anda telah melampui batas waktu transfer, silahkan pilih kelas terlebih dahulu.']);
-        }
-
-        // Move the uploaded file somewhere
-        $ext = $image->guessExtension();
-        $newName = $peserta_id."-".date('Ymd-His').'.'.$ext;
-        $cart = json_decode($cart, true);
-
-        $data_bayar = [
-            'kelas_id'                  => $kelas_id,
-            'bayar_peserta_id'          => $peserta_id,
-            'bayar_peserta_kelas_id'    => $peserta_kelas_id,
-            'status_konfirmasi'         => 'Proses',
-            'awal_bayar'                => $total,
-            'nominal_bayar'             => $total,
-            'bukti_bayar'               => $newName,
-            'tgl_bayar'                 => date("Y-m-d"),
-            'waktu_bayar'               => date("H:i:s"),
-            'keterangan_bayar'          => $note,
-            'tgl_bayar_konfirmasi'      => '1000-01-01',
-            'waktu_bayar_konfirmasi'    => '00:00:00',
-        ];
-
-        $updatePK = [
-            'expired_tgl_daftar'        => NULL,
-            'expired_waktu_daftar'      => NULL,
-        ];
-
-        // Define mapping from ids to column names
-        $idColumnMap = [
-            // 1 => 'dt_bayar_spp1',
-            2 => 'dt_bayar_spp2',
-            3 => 'dt_bayar_spp3',
-            4 => 'dt_bayar_spp4',
-            5 => 'dt_bayar_daftar',
-        ];
-
-        // Define mapping from ids to column names
-        $idColumnMap2 = [
-            1 => 'awal_bayar_spp1',
-            2 => 'awal_bayar_spp2',
-            3 => 'awal_bayar_spp3',
-            4 => 'awal_bayar_spp4',
-            5 => 'awal_bayar_daftar',
-            6 => 'awal_bayar_modul',
-            7 => 'awal_bayar_infaq',
-            8 => 'awal_bayar_lainnya',
-        ];
-
-        // Initialize data to update
-        $dataUpdatePK = [];
-        $dataUpdateBY = [];
-
-        // Loop over each item in the cart
-        foreach ($cart as $item) {
-            // Get id and price from item
-            $id = $item['id'];
-            $price = $item['price'];
-
-            // If there is a mapping for this id, add the price to the data to update
-            if (isset($idColumnMap[$id])) {
-                $dataUpdatePK[$idColumnMap[$id]] = date('Y-m-d H:i:s');
-            }
-
-            if (isset($idColumnMap2[$id])) {
-                $dataUpdateBY[$idColumnMap2[$id]] = $price;
-            }
-        }
-
-        $this->db->transStart();
-        $this->bayar->insert($data_bayar);
-        $bayar_id   = $this->bayar->insertID();
-        $this->peserta_kelas->update($peserta_kelas_id,$dataUpdatePK);
-        $this->peserta_kelas->update($peserta_kelas_id, $updatePK);
-        $this->bayar->update($bayar_id, $dataUpdateBY);
-        $this->cart->delete($cart_id);
-        $image->move('public/img/transfer', $newName);
-        $this->db->transComplete();
-
-        $aktivitas = 'Mendaftar dan telah melakukan input bukti pembayaran pada kelas ' . $data_kelas['nama_kelas'];
-
-        if ($this->db->transStatus() === FALSE)
-        {
-            /*--- Log ---*/
-            $this->logging('Peserta', 'FAIL', $aktivitas);
-        }
-        else
-        {
-            /*--- Log ---*/
-            $this->logging('Peserta', 'BERHASIL', $aktivitas);
-        }
-        
-        return $this->response->setJSON(['success' => 'Your operation was successful.']);
     }
 
     public function save_beasiswa()

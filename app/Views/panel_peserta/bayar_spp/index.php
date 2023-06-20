@@ -117,6 +117,9 @@
                     <div id="services">
                         <!-- Services will be added here -->
                     </div>
+                    <hr>
+                    <label for="keterangan_bayar">Keterangan Pembayaran</label>
+                    <textarea class="form-control" name="keterangan_bayar" id="keterangan_bayar" cols="30" rows="10"></textarea>
                 </div>
             </div>
         </div>
@@ -158,9 +161,23 @@
 <?php } ?>
 
 <?php if ($cek != 0) { ?>
-    <div class="alert alert-secondary alert-dismissible fade show" role="alert"> <i class="mdi mdi-account-multiple-outline"></i>
-        <strong>Bayar</strong> 
-    </div>  
+    <div class="container mt-3">
+        <div class="card card-row">
+            <div class="col-md-4 mb-3">
+                <div class="card shadow-lg rounded">
+                    <div class="card-body">
+                        <h5 class="card-title">"Transaksi Sedang dalam Proses"</h5>
+                        <p class="card-text">
+                            <strong>Anda memiliki transaksi pembayaran pada kelas ini yang sedang diproses, silihkan kunjungi menu "Riwayat Pembayaran untuk melihat detailnya."</strong>
+                    <div class="card-footer text-left">
+                        <a href="/bayar/riwayat" class="btn btn-primary mb-2">
+                            <i class="fa fa-history mr-1"></i>Riwayat Pembayaran
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 <?php } ?>
 
 <script>
@@ -214,7 +231,7 @@
                         <div class="card-service card mb-3 p-2">
                             <h6>${services[i].name}</h6>
                             <div>Biaya: Rp ${formatPrice(services[i].price)}</div>
-                            <button class="add-to-cart btn ${buttonClass}" style="width: 150px;" data-id="${services[i].id}" data-price="${services[i].price}">${isInCart ? 'Sudah Dicek' : '<i class="fa fa-check"></i> Cek Bayar'}</button>
+                            <button class="add-to-cart btn ${buttonClass}" style="width: 150px;" data-id="${services[i].id}" data-price="${services[i].price}">${isInCart ? 'Dipilih' : '<i class="fa fa-check"></i> Klik untuk Bayar'}</button>
                         </div>
                     `);
                 } else {
@@ -223,7 +240,7 @@
                         <div class="card-service card mb-3 p-2">
                             <h6>${services[i].name}</h6>
                             <input type="number" id="price-${services[i].id}" value="${formatPrice(services[i].price)}" min="0" step="5000" class="form-control mb-2" style="width: 150px;" placeholder="Masukan jumlah">
-                            <button class="add-to-cart btn ${buttonClass}" data-id="${services[i].id}" style="width: 150px;">${isInCart ? 'Update jumlah' : '<i class="fa fa-check"></i> Cek Bayar'}</button>
+                            <button class="add-to-cart btn ${buttonClass}" data-id="${services[i].id}" style="width: 150px;">${isInCart ? 'Update jumlah' : '<i class="fa fa-check"></i> Klik untuk Bayar'}</button>
                         </div>
                     `);
                 }
@@ -329,7 +346,6 @@
                 title: 'Form Upload Bukti Bayar',
                 html: ` <p>Total TF = Rp ${formatPrice(total)}</p>
                         <label>Catatan</label>
-                        <textarea id="pay_note" class="form-control mb-3"></textarea>
                         <label>Bukti Transfer<code>*</code></label>
                         <input type="file" id="pay_image" accept="image/png, image/jpeg" class="form-control mb-3">
                         <div id="image_preview_div"></div>`,
@@ -339,10 +355,10 @@
                 focusConfirm: false,
                 allowOutsideClick: false,
                 preConfirm: () => {
-                    let note = document.getElementById('pay_note').value;
+                    let keterangan_bayar = document.getElementById('keterangan_bayar').value;
                     let image = document.getElementById('pay_image').files[0];
                     let formData = new FormData();
-                    formData.append('note', note);
+                    formData.append('keterangan_bayar', keterangan_bayar);
                     formData.append('image', image);
                     formData.append('cart', JSON.stringify(cart));
                     formData.append('total', total);
@@ -350,7 +366,7 @@
                     formData.append('peserta_id', <?= $peserta_id ?>);
                     formData.append('kelas_id', <?= $kelas_id ?>);
                     return $.ajax({
-                        url: "<?= site_url('/bayar/save-manual') ?>",
+                        url: "<?= site_url('/bayar-spp/save-manual') ?>",
                         type: "post",
                         dataType: "json",
                         processData: false, // This is important
@@ -376,7 +392,7 @@
                         allowOutsideClick: false,
                         timer: 1500
                     }).then(function() {
-                        window.location = '/bayar/daftar';
+                        window.location = '/bayar/spp';
                     });
                 }
             });
