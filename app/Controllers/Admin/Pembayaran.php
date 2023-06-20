@@ -2243,7 +2243,8 @@ class Pembayaran extends BaseController
                 ->setCellValue('W' . $row, $data['dt_konfirmasi_spp3'])
                 ->setCellValue('X' . $row, $data['dt_bayar_spp4'])
                 ->setCellValue('Y' . $row, $data['dt_konfirmasi_spp4'])
-                ->setCellValue('Z' . $row, $data['hp']);
+                ->setCellValue('Z' . $row, $data['hp'])
+                ->setCellValue('AA' . $row, $data['peserta_kelas_id']);
             
             $row++;
         }
