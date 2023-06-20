@@ -41,9 +41,6 @@
         var table = $('#listpeserta').DataTable({
             "processing": true,
             "serverside": true,
-            "scrollY": "500px",
-            "scrollX":  true,
-            "scrollCollapse": true,
             "fixedColumns":   {
                 "left": 2
             },

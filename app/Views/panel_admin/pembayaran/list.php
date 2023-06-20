@@ -39,9 +39,6 @@
         var table = $('#listpembayaran').DataTable({
             "processing": true,
             "serverside": true,
-            "scrollY": "1000px",
-            "scrollX":  true,
-            "scrollCollapse": true,
             "fixedColumns":   {
                 "left": 1
             },
