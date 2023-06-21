@@ -223,6 +223,7 @@ class Model_bayar extends Model
     public function jml_bayar_proses()
     {
         return $this->table('program_bayar')
+        ->where('metode', NULL)
         ->where('status_konfirmasi', 'Proses')
         ->countAllResults();
     }

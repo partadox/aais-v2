@@ -15,7 +15,7 @@ class Model_program extends Model
     {
         return $this->table('program')
             //->orderBy('nama_program', 'ASC')
-            ->where('kategori_program', 'REGULER')
+            // ->where('kategori_program', 'REGULER')
             ->get()->getResultArray();
     }
 
