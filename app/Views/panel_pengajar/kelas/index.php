@@ -60,7 +60,7 @@
                         <a href="/pengajar/absensi?kelas=<?= $data['kelas_id'] ?>" class="btn btn-info">
                             <i class="fa fa-user-graduate mr-1"></i>Absensi
                         </a>
-                        <a href="/pengajar/ujian?kelas<?= $data['kelas_id'] ?>" class="btn btn-warning">
+                        <a href="/pengajar/ujian?kelas=<?= $data['kelas_id'] ?>" class="btn btn-warning">
                             <i class="fa fa-file-archive mr-1"></i>Hasil Ujian
                         </a>
                     </div>

@@ -277,6 +277,19 @@ $routes->post('bayar/77callback77', 'API\Flip::callback');
 
 /*--- Kelas---*/
 $routes->get('peserta-kelas', 'Peserta\Kelas::index', ["filter" => "authweb:4"]);
+
+/*--- Absensi Peserta---*/
+$routes->post('peserta/absensi', 'Peserta\Absensi::index', ["filter" => "authweb:4"]);
+
+/*--- Ujian Peserta---*/
+$routes->post('peserta/ujian', 'Peserta\Ujian::index', ["filter" => "authweb:4"]);
+
+/*--- Biodata Peserta---*/
+$routes->get('biodata-peserta', 'Peserta\Biodata::index', ["filter" => "authweb:4"]);
+$routes->post('biodata-peserta/edit-password', 'Peserta\Biodata::edit_password', ["filter" => "authweb:4"]);
+$routes->post('biodata-peserta/update', 'Peserta\Biodata::update', ["filter" => "authweb:4"]);
+$routes->post('biodata-peserta/update-password', 'Peserta\Biodata::update_password', ["filter" => "authweb:4"]);
+
 /*
  * --------------------------------------------------------------------
  * PENGAJAR
@@ -285,8 +298,14 @@ $routes->get('peserta-kelas', 'Peserta\Kelas::index', ["filter" => "authweb:4"])
 /*--- Kelas---*/
 $routes->get('pengajar/kelas', 'Pengajar\Kelas::index', ["filter" => "authweb:5-6"]);
 $routes->get('pengajar/absensi', 'Pengajar\Kelas::absensi', ["filter" => "authweb:5-6"]);
+$routes->get('pengajar/ujian', 'Pengajar\Ujian::index', ["filter" => "authweb:5-6"]);
 $routes->post('pengajar/input-absensi', 'Pengajar\Kelas::input_absensi', ["filter" => "authweb:5-6"]);
 $routes->post('pengajar/save-absensi', 'Pengajar\Kelas::save_absensi', ["filter" => "authweb:5-6"]);
+/*--- Biodata Pengajar---*/
+$routes->get('biodata-pengajar', 'Pengajar\Biodata::index', ["filter" => "authweb:5-6"]);
+$routes->post('biodata-pengajar/edit-password', 'Pengajar\Biodata::edit_password', ["filter" => "authweb:5-6"]);
+$routes->post('biodata-pengajar/update', 'Pengajar\Biodata::update', ["filter" => "authweb:5-6"]);
+$routes->post('biodata-pengajar/update-password', 'Pengajar\Biodata::update_password', ["filter" => "authweb:5-6"]);
 /*
  * --------------------------------------------------------------------
  * Additional Routing

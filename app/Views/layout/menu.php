@@ -87,7 +87,7 @@
 
     <li class="menu-title">Akun</li>
     <li>
-        <a href="<?= base_url('akun/biodata_peserta') ?>" class="waves-effect">
+        <a href="<?= base_url('biodata-peserta') ?>" class="waves-effect">
             <i class="mdi mdi-account-badge"></i> <span> Biodata dan Akun </span>
         </a>
     </li>
@@ -399,7 +399,7 @@
     </li>
     <li class="menu-title">Akun</li>
     <li>
-        <a href="<?= base_url('pengajar/biodata') ?>" class="waves-effect">
+        <a href="<?= base_url('biodata-pengajar') ?>" class="waves-effect">
             <i class="mdi mdi-account-badge"></i> <span> Biodata dan Akun </span>
         </a>
     </li>

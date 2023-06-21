@@ -36,9 +36,9 @@
         </select>
     </div>
     <?php if ($user['level'] == 1) { ?>
-    <div class="col-sm-auto mb-2">
+    <!-- <div class="col-sm-auto mb-2">
         <button type="submit" class="btn btn-primary btn-sm" id="checked" onclick="postRequest()">Pengecekan Rekap</button>
-    </div>
+    </div> -->
     <?php } ?>
 </div>
 
