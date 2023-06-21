@@ -288,6 +288,7 @@ class Model_peserta_kelas extends Model
         return $this->table('peserta_kelas')
         ->selectCount('spp_status')
         ->join('program_kelas', 'program_kelas.kelas_id = peserta_kelas.data_kelas_id')
+				->join('program', 'program.program_id = program_kelas.program_id')
         ->where('spp_status', 'BELUM LUNAS')
         ->where('angkatan_kelas', $angkatan)
         ->get()

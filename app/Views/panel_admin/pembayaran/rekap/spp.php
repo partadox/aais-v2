@@ -35,6 +35,11 @@
             <?php } ?>
         </select>
     </div>
+    <?php if ($user['level'] == 1) { ?>
+    <div class="col-sm-auto mb-2">
+        <button type="submit" class="btn btn-primary btn-sm" id="checked" onclick="postRequest()">Pengecekan Rekap</button>
+    </div>
+    <?php } ?>
 </div>
 
 <div class="table-responsive">
@@ -178,6 +183,23 @@
 </div>
 
 <script>
+    function postRequest() {
+        var angkatan_pilih = <?= $angkatan_pilih ?>; // I'm assuming this is PHP and it's available here
+
+        fetch('/pembayaran/rekap-spp-cek?angkatan=' + angkatan_pilih, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                // 'Authorization': 'Bearer ' + token  // Uncomment this line if you need to send a token for authorization
+            },
+            // body: JSON.stringify(data)  // Uncomment this line if you need to send a payload with the request
+        })
+        .then(response => response.json())
+        .then(data => console.log(data))
+        .catch((error) => {
+        console.error('Error:', error);
+        });
+    }
     $('#angkatan_kelas').bind('change', function () { // bind change event to select
         var url = $(this).val(); // get selected value
         if (url != '') { // require a URL

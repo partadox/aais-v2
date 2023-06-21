@@ -2243,8 +2243,8 @@ class Pembayaran extends BaseController
                 ->setCellValue('W' . $row, $data['dt_konfirmasi_spp3'])
                 ->setCellValue('X' . $row, $data['dt_bayar_spp4'])
                 ->setCellValue('Y' . $row, $data['dt_konfirmasi_spp4'])
-                ->setCellValue('Z' . $row, $data['hp'])
-                ->setCellValue('AA' . $row, $data['peserta_kelas_id']);
+                ->setCellValue('Z' . $row, $data['hp']);
+                // ->setCellValue('AA' . $row, $data['peserta_kelas_id']);
             
             $row++;
         }
@@ -2262,6 +2262,78 @@ class Pembayaran extends BaseController
         header('Cache-Control: max-age=0');
 
         $writer->save('php://output');
+    }
+
+    public function rekap_spp_cek()
+    {
+        $user = $this->userauth();
+        //Angkatan
+		$uri            = new \CodeIgniter\HTTP\URI(current_url(true));
+        $queryString    = $uri->getQuery();
+        $params         = [];
+        parse_str($queryString, $params);
+
+        if (count($params) == 1 && array_key_exists('angkatan', $params)) {
+            $angkatan           = $params['angkatan'];
+            if (ctype_digit($angkatan)) {
+                $angkatan           = $params['angkatan'];
+            }else {
+                $get_angkatan       = $this->konfigurasi->angkatan_kuliah();
+                $angkatan           = $get_angkatan->angkatan_kuliah;
+            }
+        } else {
+            $get_angkatan       = $this->konfigurasi->angkatan_kuliah();
+            $angkatan           = $get_angkatan->angkatan_kuliah;
+        }
+        
+        $list       = $this->peserta_kelas->admin_rekap_bayar($angkatan);
+        $checked    = "";
+        // var_dump($list);
+        foreach($list as $data){
+            $peserta_kelas_id =  intval($data['peserta_kelas_id']);
+            $totalBiaya = $data['biaya_daftar'] + $data['biaya_program'];
+            $totalBayar = $data['byr_daftar'] + $data['byr_spp1'] + $data['byr_spp2'] + $data['byr_spp3'] + $data['byr_spp4'];
+            $totalBeasiswa = 0;
+
+            // Jika beasiswa diterima, anggap sebagai pembayaran
+            if($data['beasiswa_daftar'] == 1) {
+                $totalBeasiswa += $data['biaya_daftar'];
+            }
+            if($data['beasiswa_spp1'] == 1) {
+                $totalBeasiswa += $data['biaya_bulanan'];
+            }
+            if($data['beasiswa_spp2'] == 1) {
+                $totalBeasiswa += $data['biaya_bulanan'];
+            }
+            if($data['beasiswa_spp3'] == 1) {
+                $totalBeasiswa += $data['biaya_bulanan'];
+            }
+            if($data['beasiswa_spp4'] == 1) {
+                $totalBeasiswa += $data['biaya_bulanan'];
+            }
+            // total pembayaran ditambah dengan total beasiswa
+            $totalBayar += $totalBeasiswa;
+
+            if($totalBiaya - $totalBayar != 0) {
+                $spp_status_real = "BELUM LUNAS";
+            }
+            if($totalBiaya - $totalBayar == 0) {
+                $spp_status_real = "LUNAS";
+            }
+
+            if ($data['spp_status'] != $spp_status_real) {
+                $data = [
+                    'spp_status' => $spp_status_real
+                ];
+                $this->peserta_kelas->update($peserta_kelas_id, $data);
+                
+                $checked = $checked . $peserta_kelas_id.', ';
+            }
+        }
+        $aktivitas = "Pembenaran Otomatis Status SPP pada peserta_kelas_id: ".$checked;
+        /*--- Log ---*/
+        $this->logging('Admin', 'BERHASIL', $aktivitas);
+        return redirect()->to('/log-admin');
     }
 
     /*--- REKAP BAYAR INFAQ ---*/

@@ -211,6 +211,8 @@ $routes->get('pembayaran/rekap-lain-export', 'Admin\Pembayaran::rekap_lain_expor
 $routes->post('pembayaran/rekap-lain-update', 'Admin\Pembayaran::rekap_lain_update', ["filter" => "authweb:1-2-3-7"]);
 $routes->post('pembayaran/rekap-lain-delete', 'Admin\Pembayaran::rekap_lain_delete', ["filter" => "authweb:1-2-3-7"]);
 
+$routes->post('pembayaran/rekap-spp-cek', 'Admin\Pembayaran::rekap_spp_cek', ["filter" => "authweb:1"]);
+
 //Absensi
 $routes->get('absensi-regular/peserta', 'Admin\Absensi::regular_peserta', ["filter" => "authweb:1-2-3-7"]);
 $routes->get('absensi-regular/pengajar', 'Admin\Absensi::regular_pengajar', ["filter" => "authweb:1-2-3-7"]);

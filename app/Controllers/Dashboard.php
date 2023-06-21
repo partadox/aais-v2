@@ -50,25 +50,12 @@ class Dashboard extends BaseController
 			$get_spp_lunas_akhwat      = $this->peserta_kelas->pie_spp_lunas_akhwat($angkatan);
 			$spp_lunas_akhwat          = $get_spp_lunas_akhwat->spp_status;
 	
-			$db = db_connect();
-			$perlevel_ikhwan = $db->query('SELECT pl.nama_level,
-				SUM(CASE WHEN (pk.byr_daftar + pk.byr_spp1 + pk.byr_spp2 + pk.byr_spp3 + pk.byr_spp4 + 
-				CASE WHEN pk.beasiswa_daftar = 1 THEN pg.biaya_daftar ELSE 0 END + 
-				CASE WHEN pk.beasiswa_spp1 = 1 THEN pg.biaya_bulanan ELSE 0 END + 
-				CASE WHEN pk.beasiswa_spp2 = 1 THEN pg.biaya_bulanan ELSE 0 END + 
-				CASE WHEN pk.beasiswa_spp3 = 1 THEN pg.biaya_bulanan ELSE 0 END + 
-				CASE WHEN pk.beasiswa_spp4 = 1 THEN pg.biaya_bulanan ELSE 0 END) >= (pg.biaya_daftar + pg.biaya_bulanan) THEN 1 ELSE 0 END) AS lunas,
-				SUM(CASE WHEN (pk.byr_daftar + pk.byr_spp1 + pk.byr_spp2 + pk.byr_spp3 + pk.byr_spp4 + 
-				CASE WHEN pk.beasiswa_daftar = 1 THEN pg.biaya_daftar ELSE 0 END + 
-				CASE WHEN pk.beasiswa_spp1 = 1 THEN pg.biaya_bulanan ELSE 0 END + 
-				CASE WHEN pk.beasiswa_spp2 = 1 THEN pg.biaya_bulanan ELSE 0 END + 
-				CASE WHEN pk.beasiswa_spp3 = 1 THEN pg.biaya_bulanan ELSE 0 END + 
-				CASE WHEN pk.beasiswa_spp4 = 1 THEN pg.biaya_bulanan ELSE 0 END) < (pg.biaya_daftar + pg.biaya_bulanan) THEN 1 ELSE 0 END) AS belum_lunas 
+			$db              = db_connect();
+			$perlevel_ikhwan = $db->query('SELECT pl.nama_level, SUM(CASE WHEN pk.spp_status = "LUNAS" THEN 1 ELSE 0 END) AS lunas, SUM(CASE WHEN pk.spp_status = "BELUM LUNAS" THEN 1 ELSE 0 END) AS belum_lunas 
 			FROM peserta_kelas pk
 			JOIN program_kelas pgrm ON pk.data_kelas_id = pgrm.kelas_id
-			JOIN program pg ON pgrm.program_id = pg.program_id
 			JOIN peserta_level pl ON pgrm.peserta_level = pl.peserta_level_id
-			WHERE pgrm.jenkel = "IKHWAN"
+			WHERE pgrm.jenkel       = "IKHWAN"
 			AND pgrm.angkatan_kelas ='.$angkatan.' GROUP BY pl.nama_level');
 			$result_perlevel_ikhwan = $perlevel_ikhwan->getResult();
 			foreach ($result_perlevel_ikhwan as $rslt) {
@@ -76,26 +63,12 @@ class Dashboard extends BaseController
 				$ikhwan_lunas[]        = $rslt->lunas . ',';
 				$ikhwan_belum_lunas[]  = $rslt->belum_lunas . ',';
 			}
-
 	
-			$perlevel_akhwat = $db->query('SELECT pl.nama_level,
-				SUM(CASE WHEN (pk.byr_daftar + pk.byr_spp1 + pk.byr_spp2 + pk.byr_spp3 + pk.byr_spp4 + 
-				CASE WHEN pk.beasiswa_daftar = 1 THEN pg.biaya_daftar ELSE 0 END + 
-				CASE WHEN pk.beasiswa_spp1 = 1 THEN pg.biaya_bulanan ELSE 0 END + 
-				CASE WHEN pk.beasiswa_spp2 = 1 THEN pg.biaya_bulanan ELSE 0 END + 
-				CASE WHEN pk.beasiswa_spp3 = 1 THEN pg.biaya_bulanan ELSE 0 END + 
-				CASE WHEN pk.beasiswa_spp4 = 1 THEN pg.biaya_bulanan ELSE 0 END) >= (pg.biaya_daftar + pg.biaya_bulanan) THEN 1 ELSE 0 END) AS lunas,
-				SUM(CASE WHEN (pk.byr_daftar + pk.byr_spp1 + pk.byr_spp2 + pk.byr_spp3 + pk.byr_spp4 + 
-				CASE WHEN pk.beasiswa_daftar = 1 THEN pg.biaya_daftar ELSE 0 END + 
-				CASE WHEN pk.beasiswa_spp1 = 1 THEN pg.biaya_bulanan ELSE 0 END + 
-				CASE WHEN pk.beasiswa_spp2 = 1 THEN pg.biaya_bulanan ELSE 0 END + 
-				CASE WHEN pk.beasiswa_spp3 = 1 THEN pg.biaya_bulanan ELSE 0 END + 
-				CASE WHEN pk.beasiswa_spp4 = 1 THEN pg.biaya_bulanan ELSE 0 END) < (pg.biaya_daftar + pg.biaya_bulanan) THEN 1 ELSE 0 END) AS belum_lunas 
+			$perlevel_akhwat = $db->query('SELECT pl.nama_level, SUM(CASE WHEN pk.spp_status = "LUNAS" THEN 1 ELSE 0 END) AS lunas, SUM(CASE WHEN pk.spp_status = "BELUM LUNAS" THEN 1 ELSE 0 END) AS belum_lunas 
 			FROM peserta_kelas pk
 			JOIN program_kelas pgrm ON pk.data_kelas_id = pgrm.kelas_id
-			JOIN program pg ON pgrm.program_id = pg.program_id
 			JOIN peserta_level pl ON pgrm.peserta_level = pl.peserta_level_id
-			WHERE pgrm.jenkel = "AKHWAT"
+			WHERE pgrm.jenkel       = "AKHWAT"
 			AND pgrm.angkatan_kelas ='.$angkatan.' GROUP BY pl.nama_level');
 			$result_perlevel_akhwat = $perlevel_akhwat->getResult();
 			foreach ($result_perlevel_akhwat as $rslt) {
