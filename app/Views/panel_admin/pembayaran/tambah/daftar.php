@@ -79,49 +79,79 @@
     <div class="form-group">
       <div class="mb-3">
         <label class="form-label">Pendaftaran <code>*</code></label>
-        <input class="form-control number-separator" type="text" id="daftar" name="daftar" placeholder="Input Nominal Daftar">
+        <select class="form-control js-example-basic" id="daftar" name="daftar">
+          <option value=0>Belum Bayar</option>
+          <option value=1>Sesuai Biaya</option>
+          <option value=2>Beasiswa (Free)</option>
+        </select>
+        <!-- <input class="form-control number-separator" type="text" id="daftar" name="daftar" placeholder="Input Nominal Daftar"> -->
       </div>
     </div>
     <div class="form-group">
       <div class="mb-3">
         <label class="form-label">SPP-1 <code>*</code></label>
-        <input class="form-control number-separator" type="text" id="spp1" name="spp1" placeholder="Input Nominal SPP-1" >
+        <select class="form-control js-example-basic" id="spp1" name="spp1">
+          <option value=0>Belum Bayar</option>
+          <option value=1>Sesuai Biaya</option>
+          <option value=2>Beasiswa (Free)</option>
+        </select>
+        <!-- <input class="form-control number-separator" type="text" id="spp1" name="spp1" placeholder="Input Nominal SPP-1" > -->
       </div>
     </div>
     <div class="form-group">
       <div class="mb-3">
         <label class="form-label">SPP-2 <code>*</code></label>
-        <input class="form-control number-separator" type="text" id="spp2" name="spp2" placeholder="(Masukan 0 jika hanya bayar untuk daftar dan SPP-1)">
+        <select class="form-control js-example-basic" id="spp2" name="spp2">
+          <option value=0>Belum Bayar</option>
+          <option value=1>Sesuai Biaya</option>
+          <option value=2>Beasiswa (Free)</option>
+        </select>
+        <!-- <input class="form-control number-separator" type="text" id="spp2" name="spp2" placeholder="(Masukan 0 jika hanya bayar untuk daftar dan SPP-1)"> -->
       </div>
     </div>
     <div class="form-group">
       <div class="mb-3">
         <label class="form-label">SPP-3 <code>*</code></label>
-        <input class="form-control number-separator" type="text" id="spp3" name="spp3" placeholder="(Masukan 0 jika hanya bayar untuk daftar dan SPP-1)">
+        <select class="form-control js-example-basic" id="spp3" name="spp3">
+          <option value=0>Belum Bayar</option>
+          <option value=1>Sesuai Biaya</option>
+          <option value=2>Beasiswa (Free)</option>
+        </select>
+        <!-- <input class="form-control number-separator" type="text" id="spp3" name="spp3" placeholder="(Masukan 0 jika hanya bayar untuk daftar dan SPP-1)"> -->
       </div>
     </div>
     <div class="form-group">
       <div class="mb-3">
         <label class="form-label">SPP-4 <code>*</code></label>
-        <input class="form-control number-separator" type="text" id="spp4" name="spp4" placeholder="(Masukan 0 jika hanya bayar untuk daftar dan SPP-1)">
-      </div>
-    </div>
-    <div class="form-group">
-      <div class="mb-3">
-        <label class="form-label">Infaq <code>*</code></label>
-        <input class="form-control number-separator" type="text" id="infaq" name="infaq" placeholder="(Masukan 0 jika tidak ada infaq)">
+        <select class="form-control js-example-basic" id="spp4" name="spp4" >
+          <option value=0>Belum Bayar</option>
+          <option value=1>Sesuai Biaya</option>
+          <option value=2>Beasiswa (Free)</option>
+        </select>
+        <!-- <input class="form-control number-separator" type="text" id="spp4" name="spp4" placeholder="(Masukan 0 jika hanya bayar untuk daftar dan SPP-1)"> -->
       </div>
     </div>
     <div class="form-group">
       <div class="mb-3">
         <label class="form-label">Modul <code>*</code></label>
-        <input class="form-control number-separator" type="text" id="modul" name="modul" placeholder="(Masukan 0 jika tidak membayar modul)">
+        <select class="form-control js-example-basic"  id="modul" name="modul" >
+          <option value=0>Tidak</option>
+          <option value=1>Bayar</option>
+        </select>
+        <!-- <input class="form-control number-separator" type="text" id="modul" name="modul" placeholder="(Masukan 0 jika tidak membayar modul)"> -->
       </div>
     </div>
     <div class="form-group">
       <div class="mb-3">
+        <label class="form-label">Infaq <code>*</code></label>
+        <input class="form-control number-separator" type="text" id="infaq" name="infaq" value="0">
+      </div>
+    </div>
+    
+    <div class="form-group">
+      <div class="mb-3">
         <label class="form-label">Biaya Lainnya (Tunggukan SPP, Merchandise, dsb) <code>*</code></label>
-        <input class="form-control number-separator" type="text" id="lain" name="lain" placeholder="(Masukan 0 jika tidak biaya lainnya)">
+        <input class="form-control number-separator" type="text" id="lain" name="lain" value="0">
       </div>
     </div>
     <div class="form-group">
@@ -170,17 +200,20 @@
   $(document).ready(function() {
         $('.js-example-basic-single').select2({
         });
+        $('.js-example-basic').select2({
+          minimumResultsForSearch: Infinity
+        });
     });
 
   $(document).ready(function () {
 			$('#awal_bayar').maskMoney({prefix:'Rp. ', thousands:'.', decimal:',', precision:0});
-			$('#daftar').maskMoney({prefix:'Rp. ', thousands:'.', decimal:',', precision:0});
-      $('#spp1').maskMoney({prefix:'Rp. ', thousands:'.', decimal:',', precision:0});
-      $('#spp2').maskMoney({prefix:'Rp. ', thousands:'.', decimal:',', precision:0, allowZero:true});
-      $('#spp3').maskMoney({prefix:'Rp. ', thousands:'.', decimal:',', precision:0, allowZero:true});
-      $('#spp4').maskMoney({prefix:'Rp. ', thousands:'.', decimal:',', precision:0, allowZero:true});
+			// $('#daftar').maskMoney({prefix:'Rp. ', thousands:'.', decimal:',', precision:0});
+      // $('#spp1').maskMoney({prefix:'Rp. ', thousands:'.', decimal:',', precision:0});
+      // $('#spp2').maskMoney({prefix:'Rp. ', thousands:'.', decimal:',', precision:0, allowZero:true});
+      // $('#spp3').maskMoney({prefix:'Rp. ', thousands:'.', decimal:',', precision:0, allowZero:true});
+      // $('#spp4').maskMoney({prefix:'Rp. ', thousands:'.', decimal:',', precision:0, allowZero:true});
       $('#infaq').maskMoney({prefix:'Rp. ', thousands:'.', decimal:',', precision:0, allowZero:true});
-      $('#modul').maskMoney({prefix:'Rp. ', thousands:'.', decimal:',', precision:0, allowZero:true});
+      // $('#modul').maskMoney({prefix:'Rp. ', thousands:'.', decimal:',', precision:0, allowZero:true});
       $('#lain').maskMoney({prefix:'Rp. ', thousands:'.', decimal:',', precision:0, allowZero:true});
   });
 

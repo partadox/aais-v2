@@ -159,11 +159,11 @@ class Beasiswa extends BaseController
                     'beasiswa_peserta'=> $peserta_id,
                     'beasiswa_program'=> $program_id,
                     'beasiswa_status' => 0,
-                    'beasiswa_daftar' => $this->request->getVar('beasiswa_daftar'),
-                    'beasiswa_spp1'   => $this->request->getVar('beasiswa_spp1'),
-                    'beasiswa_spp2'   => $this->request->getVar('beasiswa_spp2'),
-                    'beasiswa_spp3'   => $this->request->getVar('beasiswa_spp3'),
-                    'beasiswa_spp4'   => $this->request->getVar('beasiswa_spp4'),
+                    'beasiswa_daftar' => $this->request->getPost('beasiswa_daftar'),
+                    'beasiswa_spp1'   => $this->request->getPost('beasiswa_spp1'),
+                    'beasiswa_spp2'   => $this->request->getPost('beasiswa_spp2'),
+                    'beasiswa_spp3'   => $this->request->getPost('beasiswa_spp3'),
+                    'beasiswa_spp4'   => $this->request->getPost('beasiswa_spp4'),
                     'beasiswa_create' => date('Y-m-d H:i:s'),
                 ];
 

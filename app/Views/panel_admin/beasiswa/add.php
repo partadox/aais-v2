@@ -88,11 +88,11 @@
                 data: {
                     beasiswa_peserta: $('select#beasiswa_peserta').val(),
                     beasiswa_program: $('select#beasiswa_program').val(),
-                    beasiswa_daftar: $('input#beasiswa_daftar').val(),
-                    beasiswa_spp1: $('input#beasiswa_spp1').val(),
-                    beasiswa_spp2: $('input#beasiswa_spp2').val(),
-                    beasiswa_spp3: $('input#beasiswa_spp3').val(),
-                    beasiswa_spp4: $('input#beasiswa_spp4').val(),
+                    beasiswa_daftar: $('input#beasiswa_daftar').is(':checked') ? 1 : 0,
+                    beasiswa_spp1: $('input#beasiswa_spp1').is(':checked') ? 1 : 0,
+                    beasiswa_spp2: $('input#beasiswa_spp2').is(':checked') ? 1 : 0,
+                    beasiswa_spp3: $('input#beasiswa_spp3').is(':checked') ? 1 : 0,
+                    beasiswa_spp4: $('input#beasiswa_spp4').is(':checked') ? 1 : 0,
                 },
                 dataType: "json",
                 beforeSend: function() {

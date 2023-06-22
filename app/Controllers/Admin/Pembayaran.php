@@ -1189,6 +1189,11 @@ class Pembayaran extends BaseController
             $keterangan_admin   = strtoupper($this->request->getVar('keterangan_admin'));
             $peserta            = $this->peserta->find($peserta_id);
             $kelas              = $this->kelas->find($kelas_id);
+            $program_id         = $kelas['program_id'];
+            $program            = $this->program->find($program_id);
+            $biaya_daftar       = $program['biaya_daftar'];
+            $biaya_bulanan      = $program['biaya_bulanan'];
+            $biaya_modul        = $program['biaya_modul'];
 
             // get file foto from input
             $filefoto = $this->request->getFile('foto');
@@ -1211,14 +1216,16 @@ class Pembayaran extends BaseController
 
             //Get Data from Input view
             $nominal_bayar      = str_replace(str_split('Rp. .'), '', $get_awal_bayar);
-            $bayar_daftar       = str_replace(str_split('Rp. .'), '', $get_bayar_daftar);
-            $bayar_spp1         = str_replace(str_split('Rp. .'), '', $get_bayar_spp1);
-            $bayar_spp2         = str_replace(str_split('Rp. .'), '', $get_bayar_spp2);
-            $bayar_spp3         = str_replace(str_split('Rp. .'), '', $get_bayar_spp3);
-            $bayar_spp4         = str_replace(str_split('Rp. .'), '', $get_bayar_spp4);
+            // $bayar_daftar       = str_replace(str_split('Rp. .'), '', $get_bayar_daftar);
+            // $bayar_spp1         = str_replace(str_split('Rp. .'), '', $get_bayar_spp1);
+            // $bayar_spp2         = str_replace(str_split('Rp. .'), '', $get_bayar_spp2);
+            // $bayar_spp3         = str_replace(str_split('Rp. .'), '', $get_bayar_spp3);
+            // $bayar_spp4         = str_replace(str_split('Rp. .'), '', $get_bayar_spp4);
+            // $bayar_modul        = str_replace(str_split('Rp. .'), '', $get_bayar_modul);
             $bayar_infaq        = str_replace(str_split('Rp. .'), '', $get_bayar_infaq);
-            $bayar_modul        = str_replace(str_split('Rp. .'), '', $get_bayar_modul);
             $bayar_lain         = str_replace(str_split('Rp. .'), '', $get_bayar_lain);
+
+            
 
 
             $data_bayar = [
@@ -1228,14 +1235,14 @@ class Pembayaran extends BaseController
                 'status_bayar_admin'        => $status_bayar_admin,
                 'status_konfirmasi'         => 'Terkonfirmasi',
                 'awal_bayar'                => $nominal_bayar,
-                'awal_bayar_daftar'         => $bayar_daftar,
                 'awal_bayar_infaq'          => $bayar_infaq,
-                'awal_bayar_spp1'           => $bayar_spp1,
-                'awal_bayar_spp2'           => $bayar_spp2,
-                'awal_bayar_spp3'           => $bayar_spp3,
-                'awal_bayar_spp4'           => $bayar_spp4,
-                'awal_bayar_modul'          => $bayar_modul,
                 'awal_bayar_lainnya'        => $bayar_lain,
+                // 'awal_bayar_daftar'         => $bayar_daftar,
+                // 'awal_bayar_spp1'           => $bayar_spp1,
+                // 'awal_bayar_spp2'           => $bayar_spp2,
+                // 'awal_bayar_spp3'           => $bayar_spp3,
+                // 'awal_bayar_spp4'           => $bayar_spp4,
+                // 'awal_bayar_modul'          => $bayar_modul,
                 'bukti_bayar'               => $namafoto_new,
                 'tgl_bayar'                 => date('Y-m-d'),
                 'waktu_bayar'               => date('H:i:s'),
@@ -1268,61 +1275,76 @@ class Pembayaran extends BaseController
                 'data_absen'            => $this->absen_peserta->insertID(),
                 'data_ujian'            => $this->ujian->insertID(),
                 'status_peserta_kelas'  => 'BELUM LULUS',
-                'byr_daftar'            => $bayar_daftar,
+                // 'byr_daftar'            => $bayar_daftar,
                 'dt_bayar_daftar'       => date("Y-m-d H:i:s"),
                 'dt_konfirmasi_daftar'  => date("Y-m-d H:i:s"),
             ];
             $this->peserta_kelas->insert($datapesertakelas);
             $peserta_kelas_id = $this->peserta_kelas->insertID();
 
+            $payments = ['daftar', 'spp1', 'spp2', 'spp3', 'spp4'];
+            foreach($payments as $payment) {
+                $get_bayar = 'get_bayar_' . $payment;
+                $beasiswa = 'beasiswa_' . $payment;
+                $byr = 'byr_' . $payment;
+
+                if ($$get_bayar == 2) {
+                    $dtupdate = [$beasiswa => 1];
+                    $this->peserta_kelas->update($peserta_kelas_id, $dtupdate);
+                }
+
+                if ($$get_bayar == 1) {
+                    $dtupdate = [$byr => ($payment == 'daftar') ? $biaya_daftar : $biaya_bulanan];
+                    $this->peserta_kelas->update($peserta_kelas_id, $dtupdate);
+                }
+            }
+
+            ///
+            $payments = ['daftar', 'spp1', 'spp2', 'spp3', 'spp4'];
+
+            foreach($payments as $payment) {
+                $get_bayar = 'get_bayar_' . $payment;
+                $beasiswa = 'beasiswa_' . $payment;
+                $awal_bayar = 'awal_bayar_' . $payment;
+                $byr = 'byr_' . $payment;
+
+                if ($$get_bayar == 2) {
+                    $dtupdate = [$beasiswa => 1];
+                    $this->peserta_kelas->update($peserta_kelas_id, $dtupdate);
+                    $dtupdate2 = [$awal_bayar => 0];
+                    $this->bayar->update($bayar_id, $dtupdate2);
+                }
+
+                if ($$get_bayar == 1) {
+                    $biaya = ($payment == 'daftar') ? $biaya_daftar : $biaya_bulanan;
+                    $dtupdate = [$byr => $biaya];
+                    $this->peserta_kelas->update($peserta_kelas_id, $dtupdate);
+                    $dtupdate2 = [$awal_bayar => $biaya];
+                    $this->bayar->update($bayar_id, $dtupdate2);
+                }
+            }
+            ///
+
             $PKbayar= [
                 'bayar_peserta_kelas_id' => $peserta_kelas_id,
             ];
             $this->bayar->update($bayar_id, $PKbayar);
 
-            if ($bayar_spp1 != '0') {
-                $PKspp1 = [
-                    'byr_spp1'            => $bayar_spp1,
-                    'dt_konfirmasi_spp1'  => date('Y-m-d H:i:s')
-                ];
-                $this->peserta_kelas->update($peserta_kelas_id, $PKspp1);
-            }
-
-            if ($bayar_spp2 != '0') {
-                $PKspp2 = [
-                    'byr_spp2'            => $bayar_spp2,
-                    'dt_konfirmasi_spp2'  => date('Y-m-d H:i:s')
-                ];
-                $this->peserta_kelas->update($peserta_kelas_id, $PKspp2);
-            }
-
-            if ($bayar_spp3 != '0') {
-                $PKspp3 = [
-                    'byr_spp3'            => $bayar_spp3,
-                    'dt_konfirmasi_spp3'  => date('Y-m-d H:i:s')
-                ];
-                $this->peserta_kelas->update($peserta_kelas_id, $PKspp3);
-            }
-
-            if ($bayar_spp4 != '0') {
-                $PKspp4 = [
-                    'byr_spp4'            => $bayar_spp4,
-                    'dt_konfirmasi_spp4'  => date('Y-m-d H:i:s')
-                ];
-                $this->peserta_kelas->update($peserta_kelas_id, $PKspp4);
-            }
-
-            if ($bayar_modul != '0') {
+            if ($get_bayar_modul == 1) {
                 $PKmodul = [
-                    'byr_modul'            => $bayar_modul,
+                    'byr_modul'            => $biaya_modul,
                 ];
                 $this->peserta_kelas->update($peserta_kelas_id, $PKmodul);
                 $data_modul = [
                     'bayar_modul_id'        => $bayar_id,
-                    'bayar_modul'           => $bayar_modul,
+                    'bayar_modul'           => $biaya_modul,
                     'status_bayar_modul'    => 'Lunas',
                 ];
                 $this->bayar_modul->insert($data_modul);
+                $PKmodul2 = [
+                    'awal_bayar_modul'            => $biaya_modul,
+                ];
+                $this->bayar->update($bayar_id, $PKmodul2);
             }
 
             if ($bayar_lain != '0') {
@@ -1492,6 +1514,12 @@ class Pembayaran extends BaseController
             $get_data_peserta_kelas = $this->peserta_kelas->find($peserta_kelas_id);;
             $peserta_id             = $get_data_peserta_kelas['data_peserta_id'];
             $kelas_id               = $get_data_peserta_kelas['data_kelas_id'];
+            $kelas                  = $this->kelas->find($kelas_id);
+            $program_id         = $kelas['program_id'];
+            $program            = $this->program->find($program_id);
+            $biaya_daftar       = $program['biaya_daftar'];
+            $biaya_bulanan      = $program['biaya_bulanan'];
+            $biaya_modul        = $program['biaya_modul'];
 
             $get_data_peserta       = $this->peserta->find($peserta_id);
             $nama_peserta           = $get_data_peserta['nama_peserta'];
@@ -1513,17 +1541,17 @@ class Pembayaran extends BaseController
             $get_bayar_spp2    = $this->request->getVar('spp2');
             $get_bayar_spp3    = $this->request->getVar('spp3');
             $get_bayar_spp4    = $this->request->getVar('spp4');
-            $get_bayar_infaq   = $this->request->getVar('infaq');
             $get_bayar_modul   = $this->request->getVar('modul');
+            $get_bayar_infaq   = $this->request->getVar('infaq');
             $get_bayar_lain    = $this->request->getVar('lain');
 
             //Get Data from Input view
             $nominal_bayar      = str_replace(str_split('Rp. .'), '', $get_awal_bayar);
-            $bayar_spp2         = str_replace(str_split('Rp. .'), '', $get_bayar_spp2);
-            $bayar_spp3         = str_replace(str_split('Rp. .'), '', $get_bayar_spp3);
-            $bayar_spp4         = str_replace(str_split('Rp. .'), '', $get_bayar_spp4);
+            // $bayar_spp2         = str_replace(str_split('Rp. .'), '', $get_bayar_spp2);
+            // $bayar_spp3         = str_replace(str_split('Rp. .'), '', $get_bayar_spp3);
+            // $bayar_spp4         = str_replace(str_split('Rp. .'), '', $get_bayar_spp4);
+            // $bayar_modul        = str_replace(str_split('Rp. .'), '', $get_bayar_modul);
             $bayar_infaq        = str_replace(str_split('Rp. .'), '', $get_bayar_infaq);
-            $bayar_modul        = str_replace(str_split('Rp. .'), '', $get_bayar_modul);
             $bayar_lain         = str_replace(str_split('Rp. .'), '', $get_bayar_lain);
 
             $data_bayar = [
@@ -1536,10 +1564,10 @@ class Pembayaran extends BaseController
                 'awal_bayar_daftar'         => '0',
                 'awal_bayar_infaq'          => $bayar_infaq,
                 'awal_bayar_spp1'           => '0',
-                'awal_bayar_spp2'           => $bayar_spp2,
-                'awal_bayar_spp3'           => $bayar_spp3,
-                'awal_bayar_spp4'           => $bayar_spp4,
-                'awal_bayar_modul'          => $bayar_modul,
+                // 'awal_bayar_spp2'           => $bayar_spp2,
+                // 'awal_bayar_spp3'           => $bayar_spp3,
+                // 'awal_bayar_spp4'           => $bayar_spp4,
+                // 'awal_bayar_modul'          => $bayar_modul,
                 'awal_bayar_lainnya'        => $bayar_lain,
                 'bukti_bayar'               => $namafoto_new,
                 'tgl_bayar'                 => $tgl,
@@ -1555,41 +1583,48 @@ class Pembayaran extends BaseController
             $this->bayar->insert($data_bayar);
             $filefoto->move('public/img/transfer/', $namafoto_new);
             $bayar_id = $this->bayar->insertID();
-            if ($bayar_spp2 != '0') {
-                $PKspp2 = [
-                    'byr_spp2'            => $bayar_spp2,
-                    'dt_konfirmasi_spp2'  => date('Y-m-d H:i:s')
-                ];
-                $this->peserta_kelas->update($peserta_kelas_id, $PKspp2);
-            }
 
-            if ($bayar_spp3 != '0') {
-                $PKspp3 = [
-                    'byr_spp3'            => $bayar_spp3,
-                    'dt_konfirmasi_spp3'  => date('Y-m-d H:i:s')
-                ];
-                $this->peserta_kelas->update($peserta_kelas_id, $PKspp3);
-            }
+            //
+            $payments = ['spp2', 'spp3', 'spp4'];
 
-            if ($bayar_spp4 != '0') {
-                $PKspp4 = [
-                    'byr_spp4'            => $bayar_spp4,
-                    'dt_konfirmasi_spp4'  => date('Y-m-d H:i:s')
-                ];
-                $this->peserta_kelas->update($peserta_kelas_id, $PKspp4);
-            }
+            foreach($payments as $payment) {
+                $get_bayar = 'get_bayar_' . $payment;
+                $beasiswa = 'beasiswa_' . $payment;
+                $awal_bayar = 'awal_bayar_' . $payment;
+                $byr = 'byr_' . $payment;
 
-            if ($bayar_modul != '0') {
+                if ($$get_bayar == 2) {
+                    $dtupdate = [$beasiswa => 1];
+                    $this->peserta_kelas->update($peserta_kelas_id, $dtupdate);
+                    $dtupdate2 = [$awal_bayar => 0];
+                    $this->bayar->update($bayar_id, $dtupdate2);
+                }
+
+                if ($$get_bayar == 1) {
+                    $biaya = ($payment == 'daftar') ? $biaya_daftar : $biaya_bulanan;
+                    $dtupdate = [$byr => $biaya];
+                    $this->peserta_kelas->update($peserta_kelas_id, $dtupdate);
+                    $dtupdate2 = [$awal_bayar => $biaya];
+                    $this->bayar->update($bayar_id, $dtupdate2);
+                }
+            }
+            //
+
+            if ($get_bayar_modul == 1) {
                 $PKmodul = [
-                    'byr_modul'            => $bayar_modul,
+                    'byr_modul'            => $biaya_modul,
                 ];
                 $this->peserta_kelas->update($peserta_kelas_id, $PKmodul);
                 $data_modul = [
                     'bayar_modul_id'        => $bayar_id,
-                    'bayar_modul'           => $bayar_modul,
+                    'bayar_modul'           => $biaya_modul,
                     'status_bayar_modul'    => 'Lunas',
                 ];
                 $this->bayar_modul->insert($data_modul);
+                $PKmodul2 = [
+                    'awal_bayar_modul'            => $biaya_modul,
+                ];
+                $this->bayar->update($bayar_id, $PKmodul2);
             }
 
             if ($bayar_lain != '0') {
@@ -1613,15 +1648,22 @@ class Pembayaran extends BaseController
 
             //Get data total bayar
             $peserta_kelas      = $this->peserta_kelas->find($peserta_kelas_id);
+            $byr_daftar         = $peserta_kelas['byr_daftar'];
+            $byr_modul          = $peserta_kelas['byr_modul'];
+            $byr_spp1           = $peserta_kelas['byr_spp1'];
             $byr_spp2           = $peserta_kelas['byr_spp2'];
             $byr_spp3           = $peserta_kelas['byr_spp3'];
             $byr_spp4           = $peserta_kelas['byr_spp4'];
 
+            $beasiswa_daftar    = $peserta_kelas['beasiswa_daftar'];
+            $beasiswa_spp1      = $peserta_kelas['beasiswa_spp1'];
             $beasiswa_spp2      = $peserta_kelas['beasiswa_spp2'];
             $beasiswa_spp3      = $peserta_kelas['beasiswa_spp3'];
             $beasiswa_spp4      = $peserta_kelas['beasiswa_spp4'];
 
             $payments = [
+                [$byr_daftar, $beasiswa_daftar],
+                [$byr_spp1, $beasiswa_spp1],
                 [$byr_spp2, $beasiswa_spp2],
                 [$byr_spp3, $beasiswa_spp3],
                 [$byr_spp4, $beasiswa_spp4]
