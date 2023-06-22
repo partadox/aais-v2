@@ -1585,27 +1585,25 @@ class Pembayaran extends BaseController
             $bayar_id = $this->bayar->insertID();
 
             //
-            $payments = ['spp2', 'spp3', 'spp4'];
-
-            foreach($payments as $payment) {
-                $get_bayar = 'get_bayar_' . $payment;
-                $beasiswa = 'beasiswa_' . $payment;
-                $awal_bayar = 'awal_bayar_' . $payment;
-                $byr = 'byr_' . $payment;
-
-                if ($$get_bayar == 2) {
-                    $dtupdate = [$beasiswa => 1];
-                    $this->peserta_kelas->update($peserta_kelas_id, $dtupdate);
-                    $dtupdate2 = [$awal_bayar => 0];
-                    $this->bayar->update($bayar_id, $dtupdate2);
+            $bayarTypes = ['spp2', 'spp3', 'spp4'];
+            foreach ($bayarTypes as $type) {
+                $get_bayar = ${"get_bayar_$type"};
+                $biaya = ($type == 'daftar') ? $biaya_daftar : $biaya_bulanan;
+                if ($get_bayar == 2) {
+                    if ($get_data_peserta_kelas["byr_$type"] != $biaya || $get_data_peserta_kelas["beasiswa_$type"] != 1) {
+                        $dtupdate = ["beasiswa_$type" => 1];
+                        $this->peserta_kelas->update($peserta_kelas_id, $dtupdate);
+                        $dtupdate2 = ["awal_bayar_$type" => 0];
+                        $this->bayar->update($bayar_id, $dtupdate2);
+                    }
                 }
-
-                if ($$get_bayar == 1) {
-                    $biaya = ($payment == 'daftar') ? $biaya_daftar : $biaya_bulanan;
-                    $dtupdate = [$byr => $biaya];
-                    $this->peserta_kelas->update($peserta_kelas_id, $dtupdate);
-                    $dtupdate2 = [$awal_bayar => $biaya];
-                    $this->bayar->update($bayar_id, $dtupdate2);
+                if ($get_bayar == 1) {
+                    if ($get_data_peserta_kelas["byr_$type"] != $biaya || $get_data_peserta_kelas["beasiswa_$type"] != 1) {
+                        $dtupdate = ["byr_$type" => $biaya];
+                        $this->peserta_kelas->update($peserta_kelas_id, $dtupdate);
+                        $dtupdate2 = ["awal_bayar_$type" => $biaya];
+                        $this->bayar->update($bayar_id, $dtupdate2);
+                    }
                 }
             }
             //

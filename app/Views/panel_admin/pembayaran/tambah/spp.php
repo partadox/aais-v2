@@ -90,8 +90,8 @@
       <div class="mb-3">
         <label class="form-label">SPP-2 <code>*</code></label>
         <select class="form-control js-example-basic" id="spp2" name="spp2">
-          <option value=0>Belum Bayar</option>
-          <option value=1>Sesuai Biaya</option>
+          <option value=0>Tidak Dengan SPP ini</option>
+          <option value=1>Dengan SPP ini (Sesuai Biaya)</option>
           <option value=2>Beasiswa (Free)</option>
         </select>
         <!-- <input class="form-control number-separator" type="text" id="spp2" name="spp2" placeholder="(Masukan 0 jika bukan untuk SPP-2)"> -->
@@ -101,8 +101,8 @@
       <div class="mb-3">
         <label class="form-label">SPP-3 <code>*</code></label>
         <select class="form-control js-example-basic" id="spp3" name="spp3">
-          <option value=0>Belum Bayar</option>
-          <option value=1>Sesuai Biaya</option>
+          <option value=0>Tidak Dengan SPP ini</option>
+          <option value=1>Dengan SPP ini (Sesuai Biaya)</option>
           <option value=2>Beasiswa (Free)</option>
         </select>
         <!-- <input class="form-control number-separator" type="text" id="spp3" name="spp3" placeholder="(Masukan 0 jika bukan untuk SPP-3)"> -->
@@ -112,8 +112,8 @@
       <div class="mb-3">
         <label class="form-label">SPP-4 <code>*</code></label>
         <select class="form-control js-example-basic" id="spp4" name="spp4" >
-          <option value=0>Belum Bayar</option>
-          <option value=1>Sesuai Biaya</option>
+          <option value=0>Tidak Dengan SPP ini</option>
+          <option value=1>Dengan SPP ini (Sesuai Biaya)</option>
           <option value=2>Beasiswa (Free)</option>
         </select>
         <!-- <input class="form-control number-separator" type="text" id="spp4" name="spp4" placeholder="(Masukan 0 jika bukan untuk SPP-4)"> -->
@@ -132,13 +132,13 @@
     <div class="form-group">
       <div class="mb-3">
         <label class="form-label">Infaq <code>*</code></label>
-        <input class="form-control number-separator" type="text" id="infaq" name="infaq" placeholder="(Masukan 0 jika tidak ada infaq)">
+        <input class="form-control number-separator" type="text" id="infaq" name="infaq" value="0">
       </div>
     </div>
     <div class="form-group">
       <div class="mb-3">
         <label class="form-label">Biaya Lainnya (Tunggukan SPP, Merchandise, dsb) <code>*</code></label>
-        <input class="form-control number-separator" type="text" id="lain" name="lain" placeholder="(Masukan 0 jika tidak biaya lainnya)">
+        <input class="form-control number-separator" type="text" id="lain" name="lain" value="0">
       </div>
     </div>
     <div class="form-group">
