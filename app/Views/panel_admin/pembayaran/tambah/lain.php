@@ -97,7 +97,7 @@
           <div class="input-group">
               <div class="custom-file">
                   <!-- <input type="file" class="custom-file-input"  id="foto" name="foto" onchange="previewimg()"> -->
-                  <input type="file" class="form-control" name="file_excel" accept=".xls, .xlsx">
+                  <input type="file" class="form-control" name="file_excel" accept=".png, .jpg">
                   <!-- <input type="file"id="foto" name="foto">
                   <label class="custom-file-label">Upload Bukti Transfer</label> -->
               </div>
