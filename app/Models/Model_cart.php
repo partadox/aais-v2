@@ -29,4 +29,13 @@ class Model_cart extends Model
             ->where('cart_status',NULL)
             ->get()->getResultArray();
     }
+
+    public function find_cart_id($peserta_id, $kelas_id)
+    {
+        return $this->table('cart')
+            ->where('cart_peserta',$peserta_id)
+            ->where('cart_kelas',$kelas_id)
+            ->where('cart_status',NULL)
+            ->get()->getRowArray();
+    }
 }

@@ -857,7 +857,10 @@ class Pembayaran extends BaseController
                     'validator'                 => $validator,
                 ];
 
+                $cart_id = $this->cart->find_cart_id($peserta_id, $kelas_id);
+
                 $this->db->transStart();
+                $this->cart->delete($cart_id);
                 $this->bayar->update($bayar_id, $databayar);
 
                 if ($bayar_daftar != '0') {
