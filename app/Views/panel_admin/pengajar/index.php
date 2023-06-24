@@ -34,8 +34,8 @@
     Template
   </button>
   <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-    <a class="dropdown-item" href="<?= base_url('public/assets/template/Template_Pengajar_v1.xlsx') ?>"> <i class=" fa fa-file-excel"></i> Import File Excel</a>
-    <a class="dropdown-item" href="<?= base_url('public/assets/template/Template_Multiple_Edit_Pengajar.xlsx') ?>"> <i class=" fa fa-edit"></i> Multiple Edit</a>
+    <a class="dropdown-item" href="<?= base_url('public/assets/template/Template_Pengajar_v2.xlsx') ?>"> <i class=" fa fa-file-excel"></i> Import File Excel</a>
+    <a class="dropdown-item" href="<?= base_url('public/assets/template/Template_Multiple_Edit_Pengajar_V2.xlsx') ?>"> <i class=" fa fa-edit"></i> Multiple Edit</a>
   </div>
 </div>
 

@@ -129,7 +129,7 @@
                     <div id="cart">
                         <label for="va_list">Metode Pembayaran<code>*</code></label>
                         
-                        <select class="form-control btn-square mb-3" id="va_list">
+                        <select class="form-control btn-square select2 mb-3" id="va_list">
                             <option value="" disabled selected>--Pilih--</option>
                             <?php foreach ($payment as $pay): ?>
                                 <option value="<?= $pay['payment_code'] ?>"><?= $pay['payment_name'] ?> (+ Rp <?= rupiah($pay['payment_price']+(( $pay['payment_tax']/100)* $pay['payment_price'])) ?>)</option>
@@ -183,6 +183,10 @@
 <script>
     /*--- Front-end Function---*/
     $(document).ready(function() {
+        $('.select2').select2({
+            minimumResultsForSearch: Infinity
+        });
+
         var services = [
             <?php if (!($peserta_kelas['byr_daftar'] == $kelas['biaya_daftar'] || $peserta_kelas['beasiswa_daftar'] == 1)): ?>
                 { id: 5, name: "Pendaftaran", price: <?= $kelas['biaya_daftar']?>, fixed: true },

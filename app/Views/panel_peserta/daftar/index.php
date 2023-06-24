@@ -50,7 +50,7 @@
             <div class="mb-3">
             <label class="form-label">Silahkan Memilih Level Kelas Terlebih Dahulu <code>*</code></label>
                 
-                <select onchange="javascript:location.href = this.value;" class="form-control js-example-basic-single" name="level_peserta" id="level_peserta" class="js-example-basic-single mb-2">
+                <select onchange="javascript:location.href = this.value;" class="form-control js-example-basic-single mb-2" name="level_peserta" id="level_peserta">
                     <?php foreach ($tampil_ondaftar as $key => $data) { ?>
                     <option value="/daftar?level=<?= $data['peserta_level_id'] ?>" <?php if ($level == $data['peserta_level_id']) echo "selected"; ?> > <?= $data['nama_level'] ?> </option>
                     <?php } ?>
@@ -96,7 +96,7 @@
                         <button type="button" class="btn btn-danger btn-sm" disabled>PENUH</button>
                     <?php } ?>
                     <?php if( $data['peserta_status'] == 1) { ?>
-                        <b>ANDA SUDAH TERDAFTAR DI KELAS INI</b>
+                        <br><b>ANDA SUDAH TERDAFTAR DI KELAS INI</b>
                     <?php } ?>
                     <?php if($data['peserta_status'] == 0 && $data['kouta']-$data['peserta_kelas_count'] != '0') { ?>
                         <input type='submit' class='btn btn-warning align-right btnsimpan' value='Daftar' onclick="daftar('<?= $data['kelas_id'] ?>')"></input>
@@ -115,6 +115,11 @@
 
 
 <script>
+    $(document).ready(function() {
+        $('.js-example-basic-single').select2({
+            minimumResultsForSearch: Infinity
+        });
+    });
     function daftar(kelas_id) {
         $.ajax({
             type: "post",

@@ -65,7 +65,7 @@
         <select class="form-control js-example-basic-single" name="kelas" id="kelas" class="js-example-basic-single">
                 <option value="" disabled selected>-- PILIH --</option>
             <?php foreach ($kelas as $key => $data) { ?>
-              <option value="<?= $data['kelas_id'] ?>" <?php if ($data['kouta']-$data['peserta_kelas_count'] == '0') echo "disabled"; ?> > <?= $data['nama_kelas'] ?> | <?= $data['metode_kelas'] ?> | <?= $data['nama_pengajar'] ?> | SK/JK: <?= $data['kouta']-$data['peserta_kelas_count'] ?>/<?= $data['kouta'] ?> - Pendaftaran: Rp <?= rupiah($data['biaya_daftar']) ?>, SPP: Rp <?= rupiah($data['biaya_bulanan']) ?>, Modul: Rp <?= rupiah($data['biaya_modul']) ?> </option>
+              <option value="<?= $data['kelas_id'] ?>" data-biaya="<?= $data['biaya_bulanan'] ?>" <?php if ($data['kouta']-$data['peserta_kelas_count'] == '0') echo "disabled"; ?> > <?= $data['nama_kelas'] ?> | <?= $data['metode_kelas'] ?> | <?= $data['nama_pengajar'] ?> | SK/JK: <?= $data['kouta']-$data['peserta_kelas_count'] ?>/<?= $data['kouta'] ?> - Pendaftaran: Rp <?= rupiah($data['biaya_daftar']) ?>, SPP: Rp <?= rupiah($data['biaya_bulanan']) ?>, Modul: Rp <?= rupiah($data['biaya_modul']) ?> </option>
             <?php } ?>
           </select>
       </div>

@@ -595,8 +595,15 @@ class Bayar extends BaseController
         $cart_id            = $this->request->getPost('cart_id');
 
         $this->db->transStart();
-        $this->cart->delete($cart_id);
-        $this->peserta_kelas->delete($peserta_kelas_id);
+        $cart          = $this->cart->find($cart_id);
+        $peserta_kelas = $this->peserta_kelas->find($peserta_kelas_id);
+
+        if (isset($cart) == true) {
+            $this->cart->delete($cart_id);
+        }
+        if (isset($peserta_kelas) == true) {
+            $this->peserta_kelas->delete($peserta_kelas_id);
+        }
 
         $aktivitas = 'Membatalkan kelas yg dipilih untuk pilih ulang kelas lain';
 
