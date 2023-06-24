@@ -243,4 +243,16 @@ class Model_bayar extends Model
         ->get()
         ->getResultArray();
     }
+
+    //Cek pembayaran peserta SPP
+    public function cek_spp($peserta_id, $kelas_id)
+    {
+        return $this->table('program_bayar')
+        ->select('bayar_id')
+        ->where('bayar_peserta_id', $peserta_id)
+        ->where('kelas_id', $kelas_id)
+        ->where('status_konfirmasi', 'Proses')
+        ->get()
+        ->getResultArray();
+    }
 }

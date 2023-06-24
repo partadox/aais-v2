@@ -31,7 +31,7 @@ class BayarSPP extends BaseController
         }
 
         $time                   = \CodeIgniter\I18n\Time::now('Asia/Makassar');
-        $cek                    = $this->cart->cek_spp($peserta_id, $kelas_id);
+        $cek                    = $this->bayar->cek_spp($peserta_id, $kelas_id);
         $get_peserta_kelas_id   = $this->peserta_kelas->get_peserta_kelas_id($peserta_id, $kelas_id);
         $peserta_kelas_id       = $get_peserta_kelas_id->peserta_kelas_id;
 
@@ -69,13 +69,13 @@ class BayarSPP extends BaseController
         $timeout            = date('Y-m-d H:i:s', strtotime('+60 minutes', strtotime(date('Y-m-d H:i:s'))));
         $dateTime           = new \DateTime($timeout);
 
-        $newcart = [
-            'cart_peserta'       => $peserta_id,
-            'cart_kelas'         => $kelas_id,
-            'cart_peserta_kelas' => $peserta_kelas_id,
-            // 'cart_timeout'       => $timeout,
-            'cart_type'          => 'spp',
-        ];
+        // $newcart = [
+        //     'cart_peserta'       => $peserta_id,
+        //     'cart_kelas'         => $kelas_id,
+        //     'cart_peserta_kelas' => $peserta_kelas_id,
+        //     // 'cart_timeout'       => $timeout,
+        //     'cart_type'          => 'spp',
+        // ];
 
         $data_kelas            = $this->kelas->find($kelas_id);
 
@@ -163,7 +163,7 @@ class BayarSPP extends BaseController
             return;
         }
 
-        $this->cart->insert($newcart);
+        // $this->cart->insert($newcart);
         $this->bayar->insert($data_bayar);
         $bayar_id  = $this->bayar->insertID();
         $this->bayar->update($bayar_id, $dataUpdateBY);
