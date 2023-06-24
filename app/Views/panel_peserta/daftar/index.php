@@ -49,16 +49,13 @@
         <input type="hidden" id="peserta_id" name="peserta_id" value="<?=$peserta['peserta_id'] ?>">
             <div class="mb-3">
             <label class="form-label">Silahkan Memilih Level Kelas Terlebih Dahulu <code>*</code></label>
-                <select name="level_peserta" id="level_peserta" class="form-control btn-square js-example-basic-single">
-                    <option value="" disabled selected>--PILIH LEVEL KELAS--</option>
-                <?php foreach ($tampil_ondaftar as $key => $data) { ?>
-                    <option value="<?= $data['peserta_level_id'] ?>"><?= $data['nama_level'] ?></option>
-                <?php } ?>
+                
+                <select onchange="javascript:location.href = this.value;" class="form-control js-example-basic-single" name="level_peserta" id="level_peserta" class="js-example-basic-single mb-2">
+                    <?php foreach ($tampil_ondaftar as $key => $data) { ?>
+                    <option value="/daftar?level=<?= $data['peserta_level_id'] ?>" <?php if ($level == $data['peserta_level_id']) echo "selected"; ?> > <?= $data['nama_level'] ?> </option>
+                    <?php } ?>
                 </select>
             <!-- <div class="invalid-feedback errorLevel_peserta"> -->
-            </div>
-            <div class="row">
-            <input  class="btn btn-warning ml-3 mt-3 mb-6 mr-4 btncari" type="submit" value="Pilih" ></input>
             </div>
         </div>
         <?= form_close() ?> 
@@ -196,5 +193,13 @@
                 }
             });
         })
+
+        $('#level_peserta').bind('change', function () { // bind change event to select
+            var url = $(this).val(); // get selected value
+            if (url != '') { // require a URL
+                window.location = url; // redirect
+            }
+            return false;
+        });
 </script>
 <?= $this->endSection('isi') ?>

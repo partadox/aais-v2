@@ -15,9 +15,10 @@ class Model_log_user extends Model
     {
         return $this->table('log_user')
             ->orderBy('log_id', 'DESC')
-            ->where('tgl_log BETWEEN CURDATE() - INTERVAL 30 DAY AND NOW()')
+            ->where('tgl_log >=', 'DATE_SUB(NOW(), INTERVAL 3 MONTH)', false)
             ->get()->getResultArray();
     }
+
 
     public function hapus_log_14day()
     {

@@ -7,18 +7,35 @@ class Daftar extends BaseController
 {
     public function index()
     {
-        $user   = $this->userauth();
-        $user_id= $user['user_id'];    
+        $user           = $this->userauth();
+        $user_id        = $user['user_id'];
+        $peserta        = $this->peserta->get_peserta($user_id);
+        $level_peserta  = $peserta['level_peserta']; 
+        
+        //Level
+		$uri            = new \CodeIgniter\HTTP\URI(current_url(true));
+        $queryString    = $uri->getQuery();
+        $params         = [];
+        parse_str($queryString, $params);
+
+        if (count($params) == 1 && array_key_exists('level', $params)) {
+            $level           = $params['level'];
+            if (ctype_digit($level)) {
+                $level           = $params['level'];
+            }else {
+                $level = $level_peserta;
+            }
+        } else {
+            $level = $level_peserta;
+        }
 
         //Get Angkatan Perkuliahan
         $get_angkatan       = $this->konfigurasi->angkatan_kuliah();
         $angkatan           = $get_angkatan->angkatan_kuliah;
 
-        $peserta            = $this->peserta->get_peserta($user_id);
-
         //Get data peserta
         $peserta_id             = $peserta['peserta_id'];
-        $peserta_level          = $peserta['level_peserta'];
+        $peserta_level          = $level;
         $peserta_jenkel         = $peserta['jenkel'];
         $peserta_status_kerja   = $peserta['status_kerja'];
         $peserta_domisili       = $peserta['domisili_peserta'];
@@ -42,6 +59,7 @@ class Daftar extends BaseController
         $data = [
             'title'              => 'Pendaftaran Kelas Program',
             'user'               => $user,
+            'level'              => $level,
             'tampil_ondaftar'    => $this->level->list_tampil_ondaftar(),
             'peserta'            => $peserta,
             'program'            => $program,
@@ -83,17 +101,19 @@ class Daftar extends BaseController
                 'cart_type'          => 'daftar',
             ];
             $this->cart->insert($newcart);
-            $this->db->transComplete();
+            
 
             $aktivitas = 'Memilih kelas '.$kelas['nama_kelas']. ' waktu timeout pembayaran '.$timeout;
 
             if ($this->db->transStatus() === FALSE)
             {
+                $this->db->transRollback();
                 /*--- Log ---*/
                 $this->logging('Peserta', 'FAIL', $aktivitas);
             }
             else
             {
+                $this->db->transComplete();
                 /*--- Log ---*/
                 $this->logging('Peserta', 'BERHASIL', $aktivitas);
             }

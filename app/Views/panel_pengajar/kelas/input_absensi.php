@@ -1,5 +1,5 @@
 <!-- Modal -->
-<div class="modal fade" id="modaltm" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="modaltm" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true"  data-keyboard="false" data-backdrop="static">
     <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -29,7 +29,7 @@
                             <div class="form-group row">
                                 <label class="col-sm-2 col-form-label">Tanggal <?= $tm_upper ?></label>
                                 <div class="col-sm-8">
-                                    <input type="date" class="form-control" id="tgl_tm<?= $i ?>" name="tgl_tm<?= $i ?>" value="<?= date('Y-m-d') ?>">
+                                    <input type="date" class="form-control" id="tgl_tm<?= $i ?>" name="tgl_tm<?= $i ?>" value="<?= $tgl_absen ?>">
                                 </div>
                             </div>
 

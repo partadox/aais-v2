@@ -22,7 +22,7 @@ class Log extends BaseController
         $data = [
             'title' => 'Log User',
             'user'  => $user,
-            'list'  => $this->log_user->findAll()
+            'list'  => $this->log_user->list()
         ];
         return view('panel_admin/log/user', $data); 
     }

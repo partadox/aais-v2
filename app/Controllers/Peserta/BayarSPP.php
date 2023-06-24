@@ -37,30 +37,6 @@ class BayarSPP extends BaseController
 
         $peserta_kelas          = $this->peserta_kelas->find($peserta_kelas_id);
         $kelas                  = $this->kelas->detail_kelas_bayar($kelas_id);
-        
-        // if (count($cek) == 0) {
-        //     // $expired_waktu      = $cek[0]['cart_timeout'];
-            
-        //     // $peserta_kelas_id   = $cek[0]['cart_peserta_kelas'];
-        //     // $peserta_kelas      = $this->peserta_kelas->find($peserta_kelas_id);
-        //     // $cart_id            = $cek[0]['cart_id'];
-
-        //     $biaya_daftar       = $kelas['biaya_daftar'];
-        //     $biaya_bulanan      = $kelas['biaya_bulanan'];
-        //     $biaya_modul        = $kelas['biaya_modul'];
-        // } else {
-        //     $expired_waktu      = NULL;
-        //     $kelas              = NULL;
-        //     $kelas_id           = NULL;
-        //     $peserta_kelas      = NULL;
-        //     $peserta_kelas_id   = NULL;
-        //     $cart_id            = NULL;
-
-        //     $biaya_daftar       = 0;
-        //     $biaya_bulanan      = 0;
-        //     $biaya_modul        = 0;
-        // }
-        // var_dump($peserta_kelas);
 
         $data = [
             'title'             => 'Bayar SPP Kelas',
@@ -71,15 +47,10 @@ class BayarSPP extends BaseController
             'peserta_kelas_id'  => $peserta_kelas_id,
             'kelas'             => $kelas,
             'kelas_id'          => $kelas_id,
-            // 'biaya_daftar'      => $biaya_daftar,
-            // 'biaya_bulanan'     => $biaya_bulanan,
-            // 'biaya_modul'       => $biaya_modul,
             'cek'               => count($cek),
-            // 'cart_id'           => $cart_id,
             'payment'           => $this->payment->list_active(),
             'payment_manual'    => $this->payment->list_manual(),
             'jsFriendlyTime'    => $time->format('Y/m/d H:i:s'),
-            // 'expired_waktu'     => $expired_waktu,
         ];
         return view('panel_peserta/bayar_spp/index', $data);
     }
@@ -89,7 +60,7 @@ class BayarSPP extends BaseController
     public function save_manual()
     {
          // Get the POST data
-        $cart               = $this->request->getPost('cart');
+        $cart               = $this->request->getVar('cart');
         $total              = $this->request->getPost('total');
         $peserta_id         = $this->request->getPost('peserta_id');
         $peserta_kelas_id   = $this->request->getPost('peserta_kelas_id');
@@ -102,16 +73,11 @@ class BayarSPP extends BaseController
             'cart_peserta'       => $peserta_id,
             'cart_kelas'         => $kelas_id,
             'cart_peserta_kelas' => $peserta_kelas_id,
-            'cart_timeout'       => $timeout,
+            // 'cart_timeout'       => $timeout,
             'cart_type'          => 'spp',
         ];
 
-        // $cart_id            = $this->request->getPost('cart_id');
-        // $expired_waktu      = $this->request->getPost('expired_waktu');
-        // $expired_waktu      = \DateTime::createFromFormat('Y-m-d H:i:s', $expired_waktu);
         $data_kelas            = $this->kelas->find($kelas_id);
-
-        // $now                = new \DateTime();
 
         // Check if a file was received
         if (!$this->request->getFiles('image')) {
@@ -126,11 +92,6 @@ class BayarSPP extends BaseController
             return $this->response->setJSON(
                 ['error' => 'Bukti transfer harus dalam format gambar (jpg/png)']);
         }
-
-        // if ($expired_waktu < $now) {
-        //     return $this->response->setJSON(
-        //         ['error' => 'Anda telah melampui batas waktu transfer, silahkan pilih kelas terlebih dahulu.']);
-        // }
 
         // Move the uploaded file somewhere
         $ext        = $image->guessExtension();
@@ -180,8 +141,8 @@ class BayarSPP extends BaseController
         // Loop over each item in the cart
         foreach ($cart as $item) {
             // Get id and price from item
-            $id = $item['id'];
-            $price = $item['price'];
+            $id     = $item['id'];
+            $price  = $item['price'];
 
             // If there is a mapping for this id, add the price to the data to update
             if (isset($idColumnMap[$id])) {
@@ -194,23 +155,27 @@ class BayarSPP extends BaseController
         }
 
         $this->db->transStart();
+        $aktivitas = 'Melakukan Pembayaran SPP dan telah melakukan input bukti pembayaran pada kelas ' . $data_kelas['nama_kelas'];
+        if (!$image->move('public/img/transfer', $newName)) {
+            $this->db->transRollback();
+            /*--- Log ---*/
+            $this->logging('Peserta', 'FAIL', $aktivitas);
+            return;
+        }
+
         $this->cart->insert($newcart);
         $this->bayar->insert($data_bayar);
         $bayar_id  = $this->bayar->insertID();
-        $this->peserta_kelas->update($peserta_kelas_id,$dataUpdatePK);
         $this->bayar->update($bayar_id, $dataUpdateBY);
-        $image->move('public/img/transfer', $newName);
-        $this->db->transComplete();
-
-        $aktivitas = 'Melakukan Pembayaran SPP dan telah melakukan input bukti pembayaran pada kelas ' . $data_kelas['nama_kelas'];
-
-        if ($this->db->transStatus() === FALSE)
-        {
+        if ($dataUpdatePK != NULL) {
+            $this->peserta_kelas->update($peserta_kelas_id,$dataUpdatePK);
+        }
+        if ($this->db->transStatus() === FALSE) {
+            $this->db->transRollback();
             /*--- Log ---*/
             $this->logging('Peserta', 'FAIL', $aktivitas);
-        }
-        else
-        {
+        } else {
+            $this->db->transComplete();
             /*--- Log ---*/
             $this->logging('Peserta', 'BERHASIL', $aktivitas);
         }
@@ -305,13 +270,13 @@ class BayarSPP extends BaseController
 
     public function generate_flip()
     {
-        $cart               = $this->request->getPost('cart');
+        $cart               = $this->request->getVar('cart');
         $total              = $this->request->getPost('total');
         $peserta_id         = $this->request->getPost('peserta_id');
         $peserta_kelas_id   = $this->request->getPost('peserta_kelas_id');
         $kelas_id           = $this->request->getPost('kelas_id');
         $cart_id            = $this->request->getPost('cart_id');
-        $expired_waktu1      = $this->request->getPost('expired_waktu');
+        $expired_waktu1      = $this->request->getVar('expired_waktu');
         $expired_waktu      = \DateTime::createFromFormat('Y-m-d H:i:s', $expired_waktu1);
 
         $peserta            = $this->peserta->find($peserta_id);
@@ -482,7 +447,7 @@ class BayarSPP extends BaseController
         $peserta_kelas_id   = $this->request->getPost('peserta_kelas_id');
         $kelas_id           = $this->request->getPost('kelas_id');
         $cart_id            = $this->request->getPost('cart_id');
-        $expired_waktu      = $this->request->getPost('expired_waktu');
+        $expired_waktu      = $this->request->getVar('expired_waktu');
         $expired_waktu      = \DateTime::createFromFormat('Y-m-d H:i:s', $expired_waktu);
         $data_kelas         = $this->kelas->find($kelas_id);
         $program_id         = $data_kelas['program_id'];

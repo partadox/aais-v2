@@ -122,7 +122,7 @@
                                 <button class="btn btn-danger btn-sm mb-2" disabled>Tolak</button>
                             <?php } ?>
                             <hr>
-                            <h6><strong>Keterangan</strong></h6>
+                            <h6><strong>Status Pembayaran: </strong></h6>
                             <?php if($data['status_bayar_admin'] == 'SESUAI BAYAR') { ?>
                                 <button class="btn btn-success btn-sm mb-2" disabled>SESUAI BAYAR</button>
                             <?php } ?>

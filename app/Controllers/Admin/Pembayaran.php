@@ -857,7 +857,9 @@ class Pembayaran extends BaseController
                     'validator'                 => $validator,
                 ];
 
-                $cart_id = $this->cart->find_cart_id($peserta_id, $kelas_id);
+                $cart = $this->cart->cart_pk($peserta_id, $kelas_id);
+                $cart_id = $cart['cart_id'];
+                //var_dump($cart_id);
 
                 $this->db->transStart();
                 $this->cart->delete($cart_id);
@@ -986,17 +988,19 @@ class Pembayaran extends BaseController
                     'spp_status'  => $spp_status,
                 ];
                 $this->peserta_kelas->update($peserta_kelas_id, $PKstatus);
-                $this->db->transComplete();
+                
 
                 $aktivitas = 'Konfirmasi Transaksi ID ' . $bayar_id . ' - ' . $log_nis_peserta . ' ' . $log_nama_peserta;
 
                 if ($this->db->transStatus() === FALSE)
                 {
+                    $this->db->transRollback();
                     /*--- Log ---*/
                     $this->logging('Admin', 'FAIL', $aktivitas);
                 }
                 else
                 {
+                    $this->db->transComplete();
                     /*--- Log ---*/
                     $this->logging('Admin', 'BERHASIL', $aktivitas);
                 }
@@ -1405,18 +1409,18 @@ class Pembayaran extends BaseController
                 'spp_status'  => $spp_status,
             ];
             $this->peserta_kelas->update($peserta_kelas_id, $PKstatus);
-
-            $this->db->transComplete();
             
             $aktivitas = 'Buat Data Pembayaran Pendaftaran Atas Nama Peserta : ' . $peserta['nis'] . ' - ' . $peserta['nama_peserta'] . ' Pada Kelas ' . $kelas['nama_kelas'];
 
             if ($this->db->transStatus() === FALSE)
             {
+                $this->db->transRollback();
                 /*--- Log ---*/
                 $this->logging('Admin', 'FAIL', $aktivitas);
             }
             else
             {
+                $this->db->transComplete();
                 /*--- Log ---*/
                 $this->logging('Admin', 'BERHASIL', $aktivitas);
             }
@@ -1684,17 +1688,17 @@ class Pembayaran extends BaseController
             ];
             $this->peserta_kelas->update($peserta_kelas_id, $PKstatus);
 
-            $this->db->transComplete();
-
             $aktivitas = 'Buat Data Pembayaran SPP Atas Nama Peserta : ' . $nis . ' - ' . $nama_peserta . ' Pada Kelas ' . $nama_kelas;
 
             if ($this->db->transStatus() === FALSE)
             {
+                $this->db->transRollback();
                 /*--- Log ---*/
                 $this->logging('Admin', 'FAIL', $aktivitas);
             }
             else
             {
+                $this->db->transComplete();
                 /*--- Log ---*/
                 $this->logging('Admin', 'BERHASIL', $aktivitas);
             }
@@ -1837,17 +1841,17 @@ class Pembayaran extends BaseController
                     ];
                     $this->infaq->insert($data_infaq);
                 }
-                $this->db->transComplete();
-
                 $aktivitas = 'Buat Data Pembayaran Infaq & Lain Atas Nama Peserta : ' . $nis . ' - ' . $nama_peserta;
 
                 if ($this->db->transStatus() === FALSE)
                 {
+                    $this->db->transRollback();
                     /*--- Log ---*/
                     $this->logging('Admin', 'FAIL', $aktivitas);
                 }
                 else
                 {
+                    $this->db->transComplete();
                     /*--- Log ---*/
                     $this->logging('Admin', 'BERHASIL', $aktivitas);
                 }

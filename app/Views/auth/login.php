@@ -103,7 +103,7 @@
             }
             if (response.success == true) {
             Swal.fire({
-                title: "Success!",
+                title: response.data.title,
                 text: response.message,
                 icon: response.data.icon,
                 showConfirmButton: false,

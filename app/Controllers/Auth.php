@@ -79,44 +79,57 @@ class Auth extends BaseController
              // validate reCAPTCHA
              $responseToken = $this->request->getVar('g-recaptcha-response');
             
-             if (password_verify($this->request->getVar('password'), $user['password']) && $this->validateRecaptcha($responseToken, $secretKey, $scoreThreshold)) {
-                $uid        = $user['user_id'];
-                $rle        = $user['level'];
-                $ofc        = 'Pusat';
-                $atv        = $user['active'];
-                $jwt        = new JWTCI4;
-                $token      = $jwt->token($uid,$rle,$ofc,$atv);
-                
-                $exp        = 60 * 60 * 24 * 1; // in second (60 * 60 * 24 * 30) (86.400 = 1day)
-                $remember   = $this->request->getVar('remember');
-                if ($remember == 1) {
-                    $exp        = 60 * 60 * 24 * 2; // 7day
-                }
-                set_Cookie('gem',$token,$exp);
-                return $this->response->setJSON( 
-                [
-                    'success' => true,
-                    'code'    => '200',
-                    'data'    => [
-                        'link' => 'dashboard',
-                        'icon' => 'success',
-                    ], 
-                    'message' => 'Berhasil, Redirect...',  
-                ]);
-                
-
-             } else {
-                return $this->response->setJSON( 
+             if (!password_verify($this->request->getVar('password'), $user['password'])) {
+                return $this->response->setJSON(
                     [
                         'success' => true,
                         'code'    => '200',
                         'data'    => [
-                            'link' => 'login',
-                            'icon' => 'warning',
-                        ], 
-                        'message' => 'Password Salah atau Invalid Captcha Token, Refresh Page...',  
+                            'title' => 'Error',
+                            'link'  => 'login',
+                            'icon'  => 'error',
+                        ],
+                        'message' => 'Password Salah, coba lagi...',
                     ]);
-             }
+            } else if (!$this->validateRecaptcha($responseToken, $secretKey, $scoreThreshold)) {
+                return $this->response->setJSON(
+                    [
+                        'success' => true,
+                        'code'    => '200',
+                        'data'    => [
+                            'title' => 'Error',
+                            'link'  => 'login',
+                            'icon'  => 'warning',
+                        ],
+                        'message' => 'Invalid Captcha Token, Refresh Page...',
+                    ]);
+            } else {
+                // rest of the code
+                $uid = $user['user_id'];
+                $rle = $user['level'];
+                $ofc = 'Pusat';
+                $atv = $user['active'];
+                $jwt = new JWTCI4;
+                $token = $jwt->token($uid, $rle, $ofc, $atv);
+            
+                $exp = 60 * 60 * 24 * 1; // in second (60 * 60 * 24 * 30) (86.400 = 1day)
+                $remember = $this->request->getVar('remember');
+                if ($remember == 1) {
+                    $exp = 60 * 60 * 24 * 2; // 7day
+                }
+                set_Cookie('gem', $token, $exp);
+                return $this->response->setJSON(
+                    [
+                        'success' => true,
+                        'code'    => '200',
+                        'data'    => [
+                            'title' => 'Berhasil',
+                            'link'  => 'dashboard',
+                            'icon'  => 'success',
+                        ],
+                        'message' => 'Berhasil, Redirect...',
+                    ]);
+            }
 			
 		}else{
 

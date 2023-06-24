@@ -151,13 +151,13 @@ class Bayar extends BaseController
 
     public function generate_flip()
     {
-        $cart               = $this->request->getPost('cart');
+        $cart               = $this->request->getVar('cart');
         $total              = $this->request->getPost('total');
         $peserta_id         = $this->request->getPost('peserta_id');
         $peserta_kelas_id   = $this->request->getPost('peserta_kelas_id');
         $kelas_id           = $this->request->getPost('kelas_id');
         $cart_id            = $this->request->getPost('cart_id');
-        $expired_waktu1      = $this->request->getPost('expired_waktu');
+        $expired_waktu1      = $this->request->getVar('expired_waktu');
         $expired_waktu      = \DateTime::createFromFormat('Y-m-d H:i:s', $expired_waktu1);
 
         $peserta            = $this->peserta->find($peserta_id);
@@ -322,13 +322,13 @@ class Bayar extends BaseController
     {
          // Get the POST data
         $note               = $this->request->getPost('note');
-        $cart               = $this->request->getPost('cart');
+        $cart               = $this->request->getVar('cart');
         $total              = $this->request->getPost('total');
         $peserta_id         = $this->request->getPost('peserta_id');
         $peserta_kelas_id   = $this->request->getPost('peserta_kelas_id');
         $kelas_id           = $this->request->getPost('kelas_id');
         $cart_id            = $this->request->getPost('cart_id');
-        $expired_waktu      = $this->request->getPost('expired_waktu');
+        $expired_waktu      = $this->request->getVar('expired_waktu');
         $expired_waktu      = \DateTime::createFromFormat('Y-m-d H:i:s', $expired_waktu);
         $data_kelas         = $this->kelas->find($kelas_id);
 
@@ -427,17 +427,19 @@ class Bayar extends BaseController
         $this->bayar->update($bayar_id, $dataUpdateBY);
         $this->cart->delete($cart_id);
         $image->move('public/img/transfer', $newName);
-        $this->db->transComplete();
+        
 
         $aktivitas = 'Mendaftar dan telah melakukan input bukti pembayaran pada kelas ' . $data_kelas['nama_kelas'];
 
         if ($this->db->transStatus() === FALSE)
         {
+            $this->db->transRollback();
             /*--- Log ---*/
             $this->logging('Peserta', 'FAIL', $aktivitas);
         }
         else
         {
+            $this->db->transComplete();
             /*--- Log ---*/
             $this->logging('Peserta', 'BERHASIL', $aktivitas);
         }
@@ -455,7 +457,7 @@ class Bayar extends BaseController
         $peserta_kelas_id   = $this->request->getPost('peserta_kelas_id');
         $kelas_id           = $this->request->getPost('kelas_id');
         $cart_id            = $this->request->getPost('cart_id');
-        $expired_waktu      = $this->request->getPost('expired_waktu');
+        $expired_waktu      = $this->request->getVar('expired_waktu');
         $expired_waktu      = \DateTime::createFromFormat('Y-m-d H:i:s', $expired_waktu);
         $data_kelas         = $this->kelas->find($kelas_id);
         $program_id         = $data_kelas['program_id'];
@@ -565,18 +567,20 @@ class Bayar extends BaseController
             $this->peserta_kelas->update($peserta_kelas_id, $updatePK);
             $this->beasiswa->update($beasiswa[0]['beasiswa_id'], $updateBeasiswa);
             $this->cart->delete($cart_id);
-            $this->db->transComplete();
+            
         }
 
         $aktivitas = 'Mendaftar dengan kode beasiswa pada kelas ' . $data_kelas['nama_kelas'];
 
         if ($this->db->transStatus() === FALSE)
         {
+            $this->db->transRollback();
             /*--- Log ---*/
             $this->logging('Peserta', 'FAIL', $aktivitas);
         }
         else
         {
+            $this->db->transComplete();
             /*--- Log ---*/
             $this->logging('Peserta', 'BERHASIL', $aktivitas);
         }
@@ -593,17 +597,18 @@ class Bayar extends BaseController
         $this->db->transStart();
         $this->cart->delete($cart_id);
         $this->peserta_kelas->delete($peserta_kelas_id);
-        $this->db->transComplete();
 
         $aktivitas = 'Membatalkan kelas yg dipilih untuk pilih ulang kelas lain';
 
         if ($this->db->transStatus() === FALSE)
         {
+            $this->db->transRollback();
             /*--- Log ---*/
             $this->logging('Peserta', 'FAIL', $aktivitas);
         }
         else
         {
+            $this->db->transComplete();
             /*--- Log ---*/
             $this->logging('Peserta', 'BERHASIL', $aktivitas);
         }

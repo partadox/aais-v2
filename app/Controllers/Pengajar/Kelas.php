@@ -102,6 +102,12 @@ class Kelas extends BaseController
 
             //Data absen pengajar
             $absen_pengajar  = $this->absen_pengajar->find($data_absen_pengajar);
+            $tgl_tm          = "tgl_".$tm;
+            $tgl_absen       = $absen_pengajar["$tgl_tm"];
+
+            if ($tgl_absen == NULL || $tgl_absen == "2022-01-01") {
+                $tgl_absen  = date("Y-m-d");
+            }
 
             $data = [
                 'title'         => 'Absensi Pengajar & Peserta',
@@ -110,6 +116,7 @@ class Kelas extends BaseController
                 'tm_upper'      => $tm_upper,
                 'nama_pengajar' => $nama_pengajar, 
                 'absen_tm'      => $absen_tm,
+                'tgl_absen'     => $tgl_absen,
                 'absen_pengajar'=> $absen_pengajar,
                 'absen_pengajar_id' => $absen_pengajar_id,
             ];
