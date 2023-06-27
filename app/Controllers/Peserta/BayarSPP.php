@@ -277,8 +277,10 @@ class BayarSPP extends BaseController
         $peserta_kelas_id   = $this->request->getPost('peserta_kelas_id');
         $kelas_id           = $this->request->getPost('kelas_id');
         $cart_id            = 00;
-        $expired_waktu1     = $this->request->getVar('expired_waktu');
-        $expired_waktu      = \DateTime::createFromFormat('Y-m-d H:i:s', $expired_waktu1);
+        // $expired_waktu1     = $this->request->getVar('expired_waktu');
+        // $expired_waktu      = \DateTime::createFromFormat('Y-m-d H:i:s', $expired_waktu1);
+        $expired_waktu1     = date('Y-m-d H:i:s', strtotime('+60 minutes', strtotime(date('Y-m-d H:i:s'))));
+        $expired_waktu      = new \DateTime($expired_waktu1);
 
         $peserta            = $this->peserta->find($peserta_id);
         $peserta_nama       = $peserta['nama_peserta'];
