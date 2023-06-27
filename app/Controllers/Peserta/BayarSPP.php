@@ -275,8 +275,8 @@ class BayarSPP extends BaseController
         $peserta_id         = $this->request->getPost('peserta_id');
         $peserta_kelas_id   = $this->request->getPost('peserta_kelas_id');
         $kelas_id           = $this->request->getPost('kelas_id');
-        $cart_id            = $this->request->getPost('cart_id');
-        $expired_waktu1      = $this->request->getVar('expired_waktu');
+        $cart_id            = 00;
+        $expired_waktu1     = $this->request->getVar('expired_waktu');
         $expired_waktu      = \DateTime::createFromFormat('Y-m-d H:i:s', $expired_waktu1);
 
         $peserta            = $this->peserta->find($peserta_id);
@@ -306,15 +306,15 @@ class BayarSPP extends BaseController
         }
 
         $maintenance_status = $this->maintenance_status();
-        // $bank_status        = $this->bank_status($sender_bank);
+        $bank_status        = $this->bank_status($sender_bank);
 
         if ($maintenance_status == true) {
             return $this->response->setJSON(['error' => 'Metode pembayaran dengan payment gateway sedang maintenance, gunakan pembayaran via transfer manual.']);
         }
 
-        // if ($bank_status != 'OPERATIONAL') {
-        //     return $this->response->setJSON(['error' => 'Metode pembayaran dengan bank yang anda pilih sedang gangguan, gunakan pembayaran via VA bank lain atau transfer manual.']);
-        // }
+        if ($bank_status != 'OPERATIONAL') {
+            return $this->response->setJSON(['error' => 'Metode pembayaran dengan bank yang anda pilih sedang gangguan, gunakan pembayaran via VA bank lain atau transfer manual.']);
+        }
 
         $data_bayar = [
             'kelas_id'                  => $kelas_id,
@@ -329,11 +329,6 @@ class BayarSPP extends BaseController
             'waktu_bayar'               => date("H:i:s"),
             'tgl_bayar_konfirmasi'      => '1000-01-01',
             'waktu_bayar_konfirmasi'    => '00:00:00',
-        ];
-
-        $updatePK = [
-            'expired_tgl_daftar'        => NULL,
-            'expired_waktu_daftar'      => NULL,
         ];
 
         // Define mapping from ids to column names
@@ -380,10 +375,10 @@ class BayarSPP extends BaseController
         $this->db->transStart();
         $this->bayar->insert($data_bayar);
         $bayar_id   = $this->bayar->insertID();
-        $this->peserta_kelas->update($peserta_kelas_id,$dataUpdatePK);
-        $this->peserta_kelas->update($peserta_kelas_id, $updatePK);
+        if ($dataUpdatePK != NULL) {
+            $this->peserta_kelas->update($peserta_kelas_id,$dataUpdatePK);
+        }
         $this->bayar->update($bayar_id, $dataUpdateBY);
-        $this->cart->delete($cart_id);
         $response       = $this->generate_link($peserta_kelas_id, $cart_id, $bayar_id, $total, $expired_waktu, $peserta_nama, $peserta_email, $sender_bank, $account_type);
 
         $data           = json_decode($response);
@@ -416,17 +411,17 @@ class BayarSPP extends BaseController
         ];
         $this->bayar->update($bayar_id, $dtbillbayar);
 
-        $this->db->transComplete();
-
-        $aktivitas = 'Mendaftar dan telah melakukan input bukti pembayaran pada kelas ' . $data_kelas['nama_kelas'] .  ' via flip VA '.strtoupper($bank_code);
+        $aktivitas = 'Melakukan pembayaran SPP pada kelas ' . $data_kelas['nama_kelas'] .  ' via flip VA '.strtoupper($bank_code);
 
         if ($this->db->transStatus() === FALSE)
         {
+            $this->db->transRollback();
             /*--- Log ---*/
             $this->logging('Peserta', 'FAIL', $aktivitas);
         }
         else
         {
+            $this->db->transComplete();
             /*--- Log ---*/
             $this->logging('Peserta', 'BERHASIL', $aktivitas);
         }

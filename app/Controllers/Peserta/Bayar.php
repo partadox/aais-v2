@@ -187,15 +187,15 @@ class Bayar extends BaseController
         }
 
         $maintenance_status = $this->maintenance_status();
-        // $bank_status        = $this->bank_status($sender_bank);
+        $bank_status        = $this->bank_status($sender_bank);
 
         if ($maintenance_status == true) {
             return $this->response->setJSON(['error' => 'Metode pembayaran dengan payment gateway sedang maintenance, gunakan pembayaran via transfer manual.']);
         }
 
-        // if ($bank_status != 'OPERATIONAL') {
-        //     return $this->response->setJSON(['error' => 'Metode pembayaran dengan bank yang anda pilih sedang gangguan, gunakan pembayaran via VA bank lain atau transfer manual.']);
-        // }
+        if ($bank_status != 'OPERATIONAL') {
+            return $this->response->setJSON(['error' => 'Metode pembayaran dengan bank yang anda pilih sedang gangguan, gunakan pembayaran via VA bank lain atau transfer manual.']);
+        }
 
         $data_bayar = [
             'kelas_id'                  => $kelas_id,
