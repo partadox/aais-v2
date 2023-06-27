@@ -99,9 +99,14 @@
 <?php } ?>
 
 <?php if ($cek == 0) { ?>
-    <div class="alert alert-secondary alert-dismissible fade show" role="alert"> <i class="mdi mdi-account-multiple-outline"></i>
-        <strong>Anda Belum Memiliki Program Yang Akan Dibayar. Silihkan Pilih Program Dan Kelas Dahulu di Menu Pilih Program</strong> 
-    </div>  
+    <div class="card col d-flex justify-content-center shadow">
+        <div class="card-body">
+            <h5 class="card-title">Anda Belum Memiliki Tagihan Pendaftaran Kelas Yang Akan Dibayar.</h5>
+            <p class="card-text"> 
+                Silihkan Pilih Program Dan Kelas Dahulu di Menu Pilih Program.
+            </p>
+        </div>
+    </div>
 <?php } ?>
 
 <script>

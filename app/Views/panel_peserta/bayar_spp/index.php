@@ -515,7 +515,7 @@
                     formData.append('peserta_id', <?= $peserta_id ?>);
                     formData.append('kelas_id', <?= $kelas_id ?>);
                     return $.ajax({
-                        url: "<?= site_url('/bayar/save-beasiswa') ?>",
+                        url: "<?= site_url('/bayar-spp/save-beasiswa') ?>",
                         type: "post",
                         dataType: "json",
                         processData: false, // This is important
@@ -541,7 +541,7 @@
                         allowOutsideClick: false,
                         timer: 1500
                     }).then(function() {
-                        window.location = '/bayar/daftar';
+                        window.location = '/peserta-kelas';
                     });
                 }
             });

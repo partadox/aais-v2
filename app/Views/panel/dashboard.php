@@ -549,4 +549,102 @@
     })
     </script>
 <?php } ?>
+<?php if ($user['level'] == 4) { ?>
+    <div class="row">
+        <div class="col-sm-4 col-md-4">
+            <div class="card shadow-lg p-3">
+                <div class="card-heading p-4">
+                    <div class="mini-stat-icon float-right">
+                        <i class="mdi mdi-teach bg-warning  text-white"></i>
+                    </div>
+                    <div>
+                        <h5 class="font-16">Jumlah Kelas Anda pada Angkatan <?= $angkatan ?></h5>
+                    </div>
+                    <h3 class="mt-4"><?= $jml_kelas ?></h3>
+                </div>
+            </div>
+        </div>
+    </div>
+    <?php if ($pengumuman != NULL) { ?>
+        <hr>
+        <h4>Pengumuman</h4>
+        <div class="container-fluid">
+            <div class="row">
+                <?php
+                foreach ($pengumuman as $data) :
+                ?>
+                <div class="col-sm-3 col-md-3">
+                    <div class="card shadow-lg p-3 mb-5 bg-white rounded">
+                    <div class="card-body">
+                        <h6 class="card-title"><?= $data['pengumuman_title'] ?></h6>
+                        <span><?= $data['pengumuman_create'] ?></span>
+                        <hr>
+                        <button class="expandButton btn btn-warning">Baca</button>
+                        <div class="baca" style="display: none;">
+                            <?= $data['pengumuman_content'] ?>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+                <?php endforeach; ?>
+            </div>
+        </div>
+        <script>
+            $(document).ready(function(){
+                $(".expandButton").click(function(){
+                    $(this).next('.baca').toggle(); // This will only toggle the zoom-container that is directly after the clicked button
+                });
+            });
+        </script>
+    <?php } ?>
+<?php } ?>
+<?php if ($user['level'] == 5 || $user['level'] == 6) { ?>
+    <div class="row">
+        <div class="col-sm-4 col-md-4">
+            <div class="card shadow-lg p-3">
+                <div class="card-heading p-4">
+                    <div class="mini-stat-icon float-right">
+                        <i class="mdi mdi-teach bg-warning  text-white"></i>
+                    </div>
+                    <div>
+                        <h5 class="font-16">Jumlah Kelas Anda pada Angkatan <?= $angkatan ?></h5>
+                    </div>
+                    <h3 class="mt-4"><?= $jml_kelas ?></h3>
+                </div>
+            </div>
+        </div>
+    </div>
+    <?php if ($pengumuman != NULL) { ?>
+        <hr>
+        <h4>Pengumuman</h4>
+        <div class="container-fluid">
+            <div class="row">
+                <?php
+                foreach ($pengumuman as $data) :
+                ?>
+                <div class="col-sm-3 col-md-3">
+                    <div class="card shadow-lg p-3 mb-5 bg-white rounded">
+                    <div class="card-body">
+                        <h5 class="card-title"><?= $data['pengumuman_title'] ?></h5>
+                        <span><?= $data['pengumuman_create'] ?></span>
+                        <hr>
+                        <button class="expandButton btn btn-warning">Baca</button>
+                        <div class="baca" style="display: none;">
+                            <?= $data['pengumuman_content'] ?>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+                <?php endforeach; ?>
+            </div>
+        </div>
+        <script>
+            $(document).ready(function(){
+                $(".expandButton").click(function(){
+                    $(this).next('.baca').toggle(); // This will only toggle the zoom-container that is directly after the clicked button
+                });
+            });
+        </script>
+    <?php } ?>
+<?php } ?>
 <?= $this->endSection('isi') ?>

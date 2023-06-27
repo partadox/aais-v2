@@ -116,15 +116,24 @@ if (session()->getFlashdata('pesan_sukses')) {
                     <td width="8%"><?= $data['jenkel_pengajar'] ?></td>
                     <td width="8%"><?= $data['nik_pengajar'] ?></td>
                     <td width="5%"><?= umur($data['tgl_lahir_pengajar']) ?> Tahun</td>
-                    <td width="8%">ID:<?= $data['user_id'] ?> - <b><?= $data['username'] ?></b></td>
+                    <td width="8%">ID:<?= $data['user_id'] ?> - <b><?= $data['username'] ?> - 
+                        <?php if($data['active'] == 0) { ?>
+                            <span class="badge badge-secondary">Disable</span>
+                        <?php } ?>
+                        <?php if($data['active'] == 1) { ?>
+                            <span class="badge badge-success">Aktif</span>
+                        <?php } ?>
+                    </b></td>
                     <td width="8%"><?= $data['hp_pengajar'] ?></td>
                     <td width="10%">
-                        <button type="button" class="btn btn-secondary" onclick="datadiri('<?= $data['pengajar_id'] ?>')" >
+                        <button type="button" class="btn btn-sm btn-secondary" onclick="datadiri('<?= $data['pengajar_id'] ?>')" >
                         <i class=" fa fa-info"></i></button>
                         <?php if ($user['level'] == 1) { ?>
-                            <button type="button" class="btn btn-warning" onclick="edit('<?= $data['pengajar_id'] ?>')" >
+                            <button type="button" class="btn btn-sm btn-warning" onclick="edit('<?= $data['pengajar_id'] ?>')" >
                             <i class=" fa fa-edit"></i></button>
-                            <button type="button" class="btn btn-danger" onclick="hapus('<?= $data['pengajar_id'] ?>', '<?= $data['nama_pengajar'] ?>')" >
+                            <button type="button" class="btn btn-sm btn-info" onclick="edit_akun('<?= $data['user_id'] ?>')" >
+                            <i class=" fa fa-user"></i></button>
+                            <button type="button" class="btn btn-sm btn-danger" onclick="hapus('<?= $data['pengajar_id'] ?>', '<?= $data['nama_pengajar'] ?>')" >
                             <i class=" fa fa-trash"></i></button>
                         <?php } ?>
                     </td>
@@ -143,6 +152,9 @@ if (session()->getFlashdata('pesan_sukses')) {
 </div>
 
 <div class="viewmodaldataedit">
+</div>
+
+<div class="viewmodaleditakun">
 </div>
 
 <!-- Start Modal Import File Excel -->
@@ -322,6 +334,23 @@ if (session()->getFlashdata('pesan_sukses')) {
                 if (response.sukses) {
                     $('.viewmodaldataedit').html(response.sukses).show();
                     $('#modaledit').modal('show');
+                }
+            }
+        });
+    }
+
+    function edit_akun(user_id) {
+        $.ajax({
+            type: "post",
+            url: "<?= site_url('pengajar/edit_akun') ?>",
+            data: {
+                user_id: user_id
+            },
+            dataType: "json",
+            success: function(response) {
+                if (response.sukses) {
+                    $('.viewmodaleditakun').html(response.sukses).show();
+                    $('#modaleditakun').modal('show');
                 }
             }
         });

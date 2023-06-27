@@ -76,10 +76,10 @@ class Auth extends BaseController
             $secretKey      = getenv('recaptchaSecret');
             $scoreThreshold = getenv('recaptchaThreshold');
 
-             // validate reCAPTCHA
-             $responseToken = $this->request->getVar('g-recaptcha-response');
+            // validate reCAPTCHA
+            $responseToken = $this->request->getVar('g-recaptcha-response');
             
-             if (!password_verify($this->request->getVar('password'), $user['password'])) {
+            if (!password_verify($this->request->getVar('password'), $user['password'])) {
                 return $this->response->setJSON(
                     [
                         'success' => true,
@@ -102,6 +102,18 @@ class Auth extends BaseController
                             'icon'  => 'warning',
                         ],
                         'message' => 'Invalid Captcha Token, Refresh Page...',
+                    ]);
+            } else if ($user['active'] != 1) {
+                return $this->response->setJSON(
+                    [
+                        'success' => true,
+                        'code'    => '200',
+                        'data'    => [
+                            'title' => 'Akun Nonaktif',
+                            'link'  => 'login',
+                            'icon'  => 'warning',
+                        ],
+                        'message' => 'Harap Hubungi Admin',
                     ]);
             } else {
                 // rest of the code

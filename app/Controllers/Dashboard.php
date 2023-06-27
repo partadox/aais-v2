@@ -159,22 +159,32 @@ class Dashboard extends BaseController
 
 		//Peserta
 		if ($level == 4) {
+			$user_id 	= $user['user_id'];
+			$peserta_id = $this->peserta->get_peserta_id($user_id);
+			$peserta_id = $peserta_id->peserta_id;
 			$data = [
 				'title'                 => 'Dashboard',
 				'user'					=> $user,
 				'angkatan'              => $angkatan,
 				'list_angkatan'         => $list_angkatan,
 				'angkatan_pilih'        => $angkatan,
+				'jml_kelas'				=> count($this->peserta_kelas->jml_kelas_peserta($peserta_id, $angkatan)),
+				'pengumuman'			=> $this->pengumuman->list_peserta(),
 			];
 		}
 		//Pengajar
 		if ($level == 5 || $level == 6) {
+			$user_id 	= $user['user_id'];
+			$pengajar_id = $this->pengajar->get_pengajar_id($user_id);
+			$pengajar_id = $pengajar_id->pengajar_id;
 			$data = [
 				'title'                 => 'Dashboard',
 				'user'					=> $user,
 				'angkatan'              => $angkatan,
 				'list_angkatan'         => $list_angkatan,
 				'angkatan_pilih'        => $angkatan,
+				'jml_kelas'				=> count($this->kelas->kelas_pengajar($pengajar_id, $angkatan)),
+				'pengumuman'			=> $this->pengumuman->list_pengajar(),
 			];
 		}
 

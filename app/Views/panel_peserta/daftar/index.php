@@ -26,13 +26,13 @@
 <?php if ($status_pendaftaran == 'BUKA') { ?>
         <?php if ($cek != 0) { ?>
             <div class="card col d-flex justify-content-center shadow">
-            <div class="card-body">
-                <h5 class="card-title">Proses Pemilihan Kelas Masih Belum Selesai.</h5>
-                <p class="card-text"> 
-                Anda Perlu Menyelesaikan Proses Pembayaran Sebelum Memilih Kelas Lain
-                </p>
+                <div class="card-body">
+                    <h5 class="card-title">Proses Pemilihan Kelas Masih Belum Selesai.</h5>
+                    <p class="card-text"> 
+                    Anda Perlu Menyelesaikan Proses Pembayaran Sebelum Memilih Kelas Lain
+                    </p>
+                </div>
             </div>
-        </div>
         <?php } ?>
 
         <?php if ($cek == 0 ) { ?>

@@ -68,6 +68,24 @@ class Pengajar extends BaseController
         }
     }
 
+    public function edit_akun()
+    {
+        if ($this->request->isAJAX()) {
+
+            $user_id    = $this->request->getVar('user_id');
+            $user       = $this->user->find($user_id);
+            $data = [
+                'title'         => 'Ubah Data Akun Pengajar',
+                'kantor'        => $this->kantor->list(),
+                'user' => $user
+            ];
+            $msg = [
+                'sukses' => view('panel_admin/pengajar/edit_akun', $data)
+            ];
+            echo json_encode($msg);
+        }
+    }
+
     /*--- BACKEND ---*/
 
     public function create()
@@ -488,6 +506,126 @@ class Pengajar extends BaseController
                         'link' => 'pengajar'
                     ]
                 ];
+            }
+            echo json_encode($msg);
+        }
+    }
+
+    public function update_akun()
+    {
+        if ($this->request->isAJAX()) {
+            $user_id    = $this->request->getVar('user_id');
+            $password   = $this->request->getVar('password');
+            if (!$password) {
+                $validation = \Config\Services::validation();
+                $valid = $this->validate([
+                    'username' => [
+                        'label' => 'username',
+                        'rules' => 'required|is_unique_except[user.username.user_id.'.$user_id.']',
+                        'errors' => [
+                            'required' => '{field} tidak boleh kosong',
+                            'is_unique_except' => '{field} harus unik, sudah ada yang menggunakan {field} ini',
+                        ]
+                    ],
+                ]);
+                if (!$valid) {
+                    $msg = [
+                        'error' => [
+                            'username'    => $validation->getError('username'),
+                        ]
+                    ];
+                } else {
+                    $updatedata = [
+                        'username' => $this->request->getVar('username'),
+                        'active'   => $this->request->getVar('active'),
+                    ];
+    
+                    $user_id = $this->request->getVar('user_id');
+                    $this->db->transStart();
+                    $this->user->update($user_id, $updatedata);
+    
+                    $aktivitas = 'Edit Data Akun Pengajar ' . $this->request->getVar('username');
+    
+                    if ($this->db->transStatus() === FALSE)
+                    {
+                        $this->db->transRollback();
+                        /*--- Log ---*/
+                        $this->logging('Admin', 'FAIL', $aktivitas);
+                    }
+                    else
+                    {
+                        $this->db->transComplete();
+                        /*--- Log ---*/
+                        $this->logging('Admin', 'BERHASIL', $aktivitas);
+                    }
+    
+                    $msg = [
+                        'sukses' => [
+                            'link' => 'pengajar'
+                        ]
+                    ];
+                }
+                
+               
+            } else {
+                $validation = \Config\Services::validation();
+                $valid = $this->validate([
+                    'username' => [
+                        'label' => 'username',
+                        'rules' => 'required|is_unique_except[user.username.user_id.'.$user_id.']',
+                        'errors' => [
+                            'required' => '{field} tidak boleh kosong',
+                            'is_unique_except' => '{field} harus unik, sudah ada yang menggunakan {field} ini',
+                        ]
+                    ],
+                    'password' => [
+                        'label' => 'Password',
+                        'rules' => 'min_length[8]|max_length[50]',
+                        'errors' => [
+                            'min_length' => 'Password minimal memiliki panjang 8 character.',
+                            'max_length' => 'Password maximal memiliki panjang 50 character.'
+                        ]
+                    ]
+                ]);
+                if (!$valid) {
+                    $msg = [
+                        'error' => [
+                            'username'    => $validation->getError('username'),
+                            'password'    => $validation->getError('password'),
+                        ]
+                    ];
+                } else {
+    
+                    $updatedata = [
+                        'username'   => $this->request->getVar('username'),
+                        'active'   => $this->request->getVar('active'),
+                        'password' => (password_hash($this->request->getVar('password'), PASSWORD_BCRYPT)),
+                    ];
+    
+                    $this->db->transStart();
+                    $this->user->update($user_id, $updatedata);
+    
+                    $aktivitas = 'Edit Data Akun Pengajar (Password) ' . $this->request->getVar('username');
+    
+                    if ($this->db->transStatus() === FALSE)
+                    {
+                        $this->db->transRollback();
+                        /*--- Log ---*/
+                        $this->logging('Admin', 'FAIL', $aktivitas);
+                    }
+                    else
+                    {
+                        $this->db->transComplete();
+                        /*--- Log ---*/
+                        $this->logging('Admin', 'BERHASIL', $aktivitas);
+                    }
+    
+                    $msg = [
+                        'sukses' => [
+                            'link' => 'pengajar'
+                        ]
+                    ];
+                }
             }
             echo json_encode($msg);
         }

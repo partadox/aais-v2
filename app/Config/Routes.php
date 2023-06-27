@@ -61,10 +61,12 @@ $routes->get('peserta/list', 'Admin\Peserta::list', ["filter" => "authweb:1-2-3-
 $routes->post('peserta/input', 'Admin\Peserta::input', ["filter" => "authweb:1-2-3-7"]);
 $routes->post('peserta/detail', 'Admin\Peserta::detail', ["filter" => "authweb:1-2-3-7"]);
 $routes->post('peserta/edit', 'Admin\Peserta::edit', ["filter" => "authweb:1-2-3-7"]);
+$routes->post('peserta/edit_akun', 'Admin\Peserta::edit_akun', ["filter" => "authweb:1-2"]);
 
 $routes->post('peserta/getdata', 'Admin\Peserta::getdata', ["filter" => "authweb:1-2-3-7"]);
 $routes->post('peserta/create', 'Admin\Peserta::create', ["filter" => "authweb:1-2-3-7"]);
 $routes->post('peserta/update', 'Admin\Peserta::update', ["filter" => "authweb:1-2-3-7"]);
+$routes->post('peserta/update_akun', 'Admin\Peserta::update_akun', ["filter" => "authweb:1-2"]);
 $routes->post('peserta/delete', 'Admin\Peserta::delete', ["filter" => "authweb:1-2-3-7"]);
 $routes->post('peserta/deleteselect', 'Admin\Peserta::deleteselect', ["filter" => "authweb:1-2-3-7"]);
 $routes->post('peserta/import', 'Admin\Peserta::import', ["filter" => "authweb:1-2-3-7"]);
@@ -77,10 +79,12 @@ $routes->get('pengajar/list', 'Admin\Pengajar::list', ["filter" => "authweb:1-2-
 $routes->post('pengajar/input', 'Admin\Pengajar::input', ["filter" => "authweb:1-2-3-7"]);
 $routes->post('pengajar/detail', 'Admin\Pengajar::detail', ["filter" => "authweb:1-2-3-7"]);
 $routes->post('pengajar/edit', 'Admin\Pengajar::edit', ["filter" => "authweb:1-2-3-7"]);
+$routes->post('pengajar/edit_akun', 'Admin\Pengajar::edit_akun', ["filter" => "authweb:1-2-3-7"]);
 
 $routes->post('pengajar/getdata', 'Admin\Pengajar::getdata', ["filter" => "authweb:1-2-3-7"]);
 $routes->post('pengajar/create', 'Admin\Pengajar::create', ["filter" => "authweb:1-2-3-7"]);
 $routes->post('pengajar/update', 'Admin\Pengajar::update', ["filter" => "authweb:1-2-3-7"]);
+$routes->post('pengajar/update_akun', 'Admin\Pengajar::update_akun', ["filter" => "authweb:1-2-3-7"]);
 $routes->post('pengajar/delete', 'Admin\Pengajar::delete', ["filter" => "authweb:1-2-3-7"]);
 $routes->post('pengajar/deleteselect', 'Admin\Pengajar::deleteselect', ["filter" => "authweb:1-2-3-7"]);
 $routes->post('pengajar/import', 'Admin\Pengajar::import', ["filter" => "authweb:1-2-3-7"]);
@@ -242,6 +246,15 @@ $routes->post('sertifikat/update', 'Admin\Sertifikat::update', ["filter" => "aut
 $routes->post('sertifikat/import', 'Admin\Sertifikat::import', ["filter" => "authweb:1-2-3-7"]);
 $routes->get('sertifikat/export', 'Admin\Sertifikat::export', ["filter" => "authweb:1-2-3-7"]);
 
+/*--- Pengumuman ---*/
+$routes->get('pengumuman', 'Admin\Pengumuman::index', ["filter" => "authweb:1-2-3-7"]);
+$routes->post('pengumuman/input', 'Admin\Pengumuman::input', ["filter" => "authweb:1-2-3-7"]);
+$routes->post('pengumuman/edit', 'Admin\Pengumuman::edit', ["filter" => "authweb:1-2-3-7"]);
+
+$routes->post('pengumuman/create', 'Admin\Pengumuman::create', ["filter" => "authweb:1-2-3-7"]);
+$routes->post('pengumuman/update', 'Admin\Pengumuman::update', ["filter" => "authweb:1-2-3-7"]);
+$routes->post('pengumuman/delete', 'Admin\Pengumuman::delete', ["filter" => "authweb:1-2-3-7"]);
+
 /*--- Log ---*/
 $routes->get('log-admin', 'Admin\Log::admin', ["filter" => "authweb:1-2-3-7"]);
 $routes->get('log-user', 'Admin\Log::user', ["filter" => "authweb:1-2-3-7"]);
@@ -271,6 +284,7 @@ $routes->post('bayar/cancel', 'Peserta\Bayar::cancel', ["filter" => "authweb:4"]
 $routes->get('bayar/spp', 'Peserta\BayarSPP::index', ["filter" => "authweb:4"]);
 
 $routes->post('bayar-spp/save-manual', 'Peserta\BayarSPP::save_manual', ["filter" => "authweb:4"]);
+$routes->post('bayar-spp/save-beasiswa', 'Peserta\BayarSPP::save_beasiswa', ["filter" => "authweb:4"]);
 
 /*--- API Flip Callback---*/
 $routes->post('bayar/77callback77', 'API\Flip::callback');

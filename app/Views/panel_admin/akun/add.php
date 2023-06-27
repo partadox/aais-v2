@@ -58,7 +58,7 @@
 <script>
     $(document).ready(function() {
         $('.js-example-basic-single').select2({
-            
+            dropdownParent: $('#modalakuntambah')
         });
         $('.formtambah').submit(function(e) {
             e.preventDefault();

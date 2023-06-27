@@ -136,7 +136,7 @@
 
     $(document).ready(function() {
         $('.js-example-basic-single').select2({
-            theme: "bootstrap4"
+            dropdownParent: $('#modalkonfirmasi')
         });
         $('.formkonfirmasi').submit(function(e) {
             e.preventDefault();

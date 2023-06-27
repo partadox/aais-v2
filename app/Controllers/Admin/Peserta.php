@@ -46,10 +46,26 @@ class Peserta extends BaseController
                     
                     $hapus = "<button type=\"button\" title=\"Hapus Peserta\" class=\"btn btn-danger btn-sm\" onclick=\"hapus('" . $list->peserta_id . "','" . $list->nama_peserta . "'" ." )\">
                     <i class=\"fa fa-trash\"></i>
-                </button>";
+                    </button>";
                 } else {
                     $hapus = "";
                 }
+
+                if ($level_user == 1 || $level_user == 2) {
+                    $akun = "<button type=\"button\" title=\"Akun Peserta\" class=\"btn btn-info btn-sm\" onclick=\"akun('" . $list->user_id . "')\">
+                    <i class=\"fa fa-user\"></i>
+                    </button>";
+                } else {
+                    $akun  = "";
+                }
+
+                if ( $list->active == 1) {
+                    $active = "<span class=\"badge badge-success\">Aktif</span>";
+                } else {
+                    $active = "<span class=\"badge badge-secondary\">Disable</span>";
+                }
+                
+                
                 
                 $edit = "<button type=\"button\" title=\"Edit Data Peserta\" class=\"btn btn-warning btn-sm\" onclick=\"edit('" . $list->peserta_id . "')\">
                     <i class=\"fa fa-edit\"></i>
@@ -74,8 +90,8 @@ class Peserta extends BaseController
                 $row[] = $list->angkatan;
                 $row[] = umur($list->tgl_lahir);
                 $row[] = $status_peserta;
-                $row[] = "ID:" . $list->user_id . "-" . $list->username;
-                $row[] = $datadiri . " " . $edit . " " . $hapus;
+                $row[] = "ID:" . $list->user_id . "-" . $list->username . " " . $active;
+                $row[] = $datadiri . " " . $edit . " " . $akun . " " . $hapus;
                 $data[] = $row;
             }
             $output = [
@@ -141,6 +157,23 @@ class Peserta extends BaseController
             ];
             $msg = [
                 'sukses' => view('panel_admin/peserta/edit', $data)
+            ];
+            echo json_encode($msg);
+        }
+    }
+
+    public function edit_akun()
+    {
+        if ($this->request->isAJAX()) {
+
+            $user_id = $this->request->getVar('user_id');
+            $user    = $this->user->find($user_id);
+            $data = [
+                'title'     => 'Ubah Data Akun Peserta',
+                'user'      => $user,
+            ];
+            $msg = [
+                'sukses' => view('panel_admin/peserta/edit_akun', $data)
             ];
             echo json_encode($msg);
         }
@@ -562,6 +595,94 @@ class Peserta extends BaseController
                         'link' => 'peserta'
                     ]
                 ];
+            }
+            echo json_encode($msg);
+        }
+    }
+
+    public function update_akun()
+    {
+        if ($this->request->isAJAX()) {
+            $password   = $this->request->getVar('password');
+            if (!$password) {
+                $updatedata = [
+                    'active'   => $this->request->getVar('active'),
+                ];
+
+                $user_id = $this->request->getVar('user_id');
+                $this->db->transStart();
+                $this->user->update($user_id, $updatedata);
+
+                $aktivitas = 'Edit Data Akun Peserta ' . $this->request->getVar('nis');
+
+                if ($this->db->transStatus() === FALSE)
+                {
+                    $this->db->transRollback();
+                    /*--- Log ---*/
+				    $this->logging('Admin', 'FAIL', $aktivitas);
+                }
+                else
+                {
+                    $this->db->transComplete();
+                    /*--- Log ---*/
+				    $this->logging('Admin', 'BERHASIL', $aktivitas);
+                }
+
+                $msg = [
+                    'sukses' => [
+                        'link' => 'peserta'
+                    ]
+                ];
+            } else {
+                $validation = \Config\Services::validation();
+                $valid = $this->validate([
+                    'password' => [
+                        'label' => 'Password',
+                        'rules' => 'min_length[8]|max_length[50]',
+                        'errors' => [
+                            'min_length' => 'Password minimal memiliki panjang 8 character.',
+                            'max_length' => 'Password maximal memiliki panjang 50 character.'
+                        ]
+                    ]
+                ]);
+                if (!$valid) {
+                    $msg = [
+                        'error' => [
+                            'password'                  => $validation->getError('password'),
+                        ]
+                    ];
+                } else {
+    
+                    $updatedata = [
+                        'active'   => $this->request->getVar('active'),
+                        'password' => (password_hash($this->request->getVar('password'), PASSWORD_BCRYPT)),
+                    ];
+    
+                    $user_id = $this->request->getVar('user_id');
+                    $this->db->transStart();
+                    $this->user->update($user_id, $updatedata);
+    
+                    $aktivitas = 'Edit Data Akun Peserta (Password) ' . $this->request->getVar('nis');
+    
+                    if ($this->db->transStatus() === FALSE)
+                    {
+                        $this->db->transRollback();
+                        /*--- Log ---*/
+                        $this->logging('Admin', 'FAIL', $aktivitas);
+                    }
+                    else
+                    {
+                        $this->db->transComplete();
+                        /*--- Log ---*/
+                        $this->logging('Admin', 'BERHASIL', $aktivitas);
+                    }
+    
+                    $msg = [
+                        'sukses' => [
+                            'link' => 'peserta'
+                        ]
+                    ];
+                }
             }
             echo json_encode($msg);
         }

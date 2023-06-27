@@ -37,6 +37,7 @@ use App\Models\Model_bina_pengajar;
 use App\Models\Model_bina_peserta;
 use App\Models\Model_payment;
 use App\Models\Model_pekerjaan;
+use App\Models\Model_pengumuman;
 use CodeIgniter\Controller;
 use CodeIgniter\HTTP\CLIRequest;
 use CodeIgniter\HTTP\IncomingRequest;
@@ -123,6 +124,7 @@ abstract class BaseController extends Controller
         $this->bina_peserta       = new Model_bina_peserta;
         $this->bina_pengajar      = new Model_bina_pengajar;
         $this->bina_absen_peserta = new Model_bina_absen_peserta();
+        $this->pengumuman         = new Model_pengumuman();
         $this->db 			= \Config\Database::connect();
     }
 

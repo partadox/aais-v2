@@ -364,5 +364,15 @@ class Model_peserta_kelas extends Model
             ->getUnbufferedRow();
     }
 
+    //Dashboard Peserta
+    public function jml_kelas_peserta($peserta_id, $angkatan)
+    {
+        return $this->table('peserta_kelas')
+        ->join('program_kelas', 'program_kelas.kelas_id = peserta_kelas.data_kelas_id')
+        ->where('data_peserta_id', $peserta_id)
+        ->where('angkatan_kelas', $angkatan)
+        ->get()
+        ->getResultArray();
+    }
 
 }

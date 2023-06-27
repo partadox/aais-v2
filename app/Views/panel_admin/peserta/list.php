@@ -177,6 +177,23 @@
         });
     }
 
+    function akun(user_id) {
+        $.ajax({
+            type: "post",
+            url: "<?= site_url('peserta/edit_akun') ?>",
+            data: {
+                user_id: user_id
+            },
+            dataType: "json",
+            success: function(response) {
+                if (response.sukses) {
+                    $('.viewmodaleditakun').html(response.sukses).show();
+                    $('#modaleditakun').modal('show');
+                }
+            }
+        });
+    }
+
     function hapus(peserta_id, nama_peserta) {
         Swal.fire({
             title: 'Yakin Hapus Data Peserta ini?',

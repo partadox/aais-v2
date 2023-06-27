@@ -94,7 +94,7 @@
     } 
     $(document).ready(function() {
         $('.js-example-basic-single').select2({
-            
+            dropdownParent: $('#modaldetail')
         });
         $('.formtambah').submit(function(e) {
             e.preventDefault();

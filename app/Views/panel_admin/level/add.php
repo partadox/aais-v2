@@ -49,7 +49,7 @@
 <script>
     $(document).ready(function() {
         $('.js-example-basic-single').select2({
-            
+            dropdownParent: $('#modaltambahlevel')
         });
         $('.formtambah').submit(function(e) {
             e.preventDefault();
