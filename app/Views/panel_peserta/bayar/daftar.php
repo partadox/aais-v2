@@ -179,7 +179,7 @@
                     <div class="list-group-item">
                         <span>${isBankService ? `Biaya Transaksi` : ''} ${!isBankService ? cart[i].name : ''} </span>  <br> 
                         <span>Rp ${formatPrice(cart[i].price)}</span>
-                        ${!isBankService && !isSpp1 &&!isDaftar ? `<button class="remove-from-cart btn btn-sm btn-danger float-right" data-id="${cart[i].id}"><i class="fa fa-trash"></i></button>` : ''}
+                        ${!isBankService && !isSpp1 &&!isDaftar ? `<button class="remove-from-cart btn btn-sm btn-danger float-right" data-id="${cart[i].id}"><i class="fa fa-trash mr-1"></i> Hapus</button>` : ''}
                     </div>
                 `);
             }
