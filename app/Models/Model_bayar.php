@@ -193,15 +193,24 @@ class Model_bayar extends Model
     //Get list pembayran peserta - Panel Peserta
     public function list_pembayaran_peserta($peserta_id)
     {
-        return $this->table('program_bayar')
-        ->join('program_kelas', 'program_kelas.kelas_id = program_bayar.kelas_id')
-        ->join('peserta', 'peserta.peserta_id = program_bayar.bayar_peserta_id')
-        ->join('program', 'program_kelas.program_id = program.program_id')
-        ->where('bayar_peserta_id', $peserta_id)
-        ->where('status_konfirmasi !=', NULL)
-        ->orderBy('bayar_id', 'DESC')
-        ->get()
-        ->getResultArray();
+        $query = $this->table('program_bayar')
+            ->join('program_kelas', 'program_kelas.kelas_id = program_bayar.kelas_id')
+            ->join('peserta', 'peserta.peserta_id = program_bayar.bayar_peserta_id')
+            ->join('program', 'program_kelas.program_id = program.program_id');
+
+        // Assuming that metode is a column of program_bayar table
+        // You might need to modify this condition to match your actual data structure
+        $metode = $this->table('program_bayar')->where('bayar_peserta_id', $peserta_id)->get()->getRowArray()['metode'];
+
+        if ($metode == 'flip') {
+            $query = $query->join('flip_bill', 'flip_bill.bill_id= program_bayar.flip_bill_id');
+        }
+
+        return $query->where('bayar_peserta_id', $peserta_id)
+            ->where('status_konfirmasi !=', NULL)
+            ->orderBy('bayar_id', 'DESC')
+            ->get()
+            ->getResultArray();
     }
 
      //Get list rician pembayran peserta - Admin Panel 
