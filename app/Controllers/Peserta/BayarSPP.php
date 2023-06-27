@@ -212,7 +212,8 @@ class BayarSPP extends BaseController
         $key        = $this->konfigurasi->flip_key();
         $secret_key = $key->flip_key;
 
-        curl_setopt($ch, CURLOPT_URL, "https://bigflip.id/api/v2/general/banks?code=".$bank);
+        // curl_setopt($ch, CURLOPT_URL, "https://bigflip.id/api/v2/general/banks?code=".$bank);
+        curl_setopt($ch, CURLOPT_URL, "https://bigflip.id/big_sandbox_api/v2/general/banks?code=".$bank);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
         curl_setopt($ch, CURLOPT_HEADER, FALSE);
 

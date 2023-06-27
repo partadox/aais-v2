@@ -285,6 +285,7 @@ $routes->get('bayar/spp', 'Peserta\BayarSPP::index', ["filter" => "authweb:4"]);
 
 $routes->post('bayar-spp/save-manual', 'Peserta\BayarSPP::save_manual', ["filter" => "authweb:4"]);
 $routes->post('bayar-spp/save-beasiswa', 'Peserta\BayarSPP::save_beasiswa', ["filter" => "authweb:4"]);
+$routes->post('bayar-spp/generate-flip', 'Peserta\BayarSPP::generate_flip', ["filter" => "authweb:4"]);
 
 /*--- API Flip Callback---*/
 $routes->post('bayar/77callback77', 'API\Flip::callback');

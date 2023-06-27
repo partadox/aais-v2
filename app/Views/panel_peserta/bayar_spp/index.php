@@ -435,7 +435,7 @@
             });
 
             $.ajax({
-                url: '/bayar/generate-flip',
+                url: '/bayar-spp/generate-flip',
                 type: 'POST',
                 data: formData,
                 contentType: false,
@@ -462,10 +462,23 @@
                         Swal.fire({
                             title: 'Payment details',
                             html: `
-                                <p>Total TF = Rp ${formatPrice(total)}</p>
-                                Bank = ${bank} <br>
-                                VA = ${va} <br>
-                                <button id="copy" class="btn btn-success btn-sm"><i class="fas fa-copy"></i> Copy VA</button>
+                            <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                <th>Total</th>
+                                <th>Rp ${formatPrice(total)}</th>
+                                </tr>
+                                <tr>
+                                <th>Bank</th>
+                                <th>${bank}</th>
+                                </tr>
+                                <tr>
+                                <th>VA</th>
+                                <th>VA = ${va} <br>
+                                    <button id="copy" class="btn btn-primary"><i class="fas fa-copy"></i>Klik utk Copy VA</button></th>
+                                </tr>
+                            </thead>
+                            </table>
                             `,
                             confirmButtonText: 'Tutup',
                             allowOutsideClick: false,
@@ -482,7 +495,7 @@
                                 });
                             },
                                 didClose: () => {
-                                window.location.href = "/daftar";
+                                window.location.href = "/peserta-kelas";
                             }
                         });
                     }

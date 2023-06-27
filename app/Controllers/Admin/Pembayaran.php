@@ -120,7 +120,7 @@ class Pembayaran extends BaseController
 
                 }
                 elseif($list->metode == 'flip'){
-                    $row3 = "<button type=\"button\" class=\"btn btn-warning btn-sm\" disabled>Flip</button>";}
+                    $row3 = "<button type=\"button\" class=\"btn btn-primary btn-sm\" disabled>Flip</button>";}
                 elseif($list->metode == 'beasiswa'){
                     $row3 = "<button type=\"button\" class=\"btn btn-info btn-sm\" disabled>Beasiswa</button>";};
 
