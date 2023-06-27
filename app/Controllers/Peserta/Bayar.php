@@ -830,7 +830,6 @@ class Bayar extends BaseController
         // Get data peserta_kelas yang belum lulus 
         $pembayaran     = $this->bayar->list_pembayaran_peserta($peserta_id);
 
-
         $data = [
             'title'         => 'Riwayat Pembayaran Peserta',
             'user'          => $user,
