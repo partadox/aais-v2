@@ -338,6 +338,7 @@
         });
 
         $('#pay-va-btn').click(function() {
+            let keterangan_bayar = document.getElementById('keterangan_bayar').value;
             let formData = new FormData();
             formData.append('cart', JSON.stringify(cart));
             formData.append('total', total);
@@ -346,6 +347,7 @@
             formData.append('kelas_id', <?= $kelas_id ?>);
             formData.append('cart_id', <?= $cart_id ?>);
             formData.append('expired_waktu', '<?= $expired_waktu ?>');
+            formData.append('keterangan_bayar', keterangan_bayar);
 
             // Display a loading alert with no buttons
             Swal.fire({
