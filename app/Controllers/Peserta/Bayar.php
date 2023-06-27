@@ -162,7 +162,8 @@ class Bayar extends BaseController
         $peserta_kelas_id   = $this->request->getPost('peserta_kelas_id');
         $kelas_id           = $this->request->getPost('kelas_id');
         $cart_id            = $this->request->getPost('cart_id');
-        $expired_waktu1      = $this->request->getVar('expired_waktu');
+        $keterangan_bayar   = $this->request->getPost('keterangan_bayar');
+        $expired_waktu1     = $this->request->getVar('expired_waktu');
         $expired_waktu      = \DateTime::createFromFormat('Y-m-d H:i:s', $expired_waktu1);
 
         $peserta            = $this->peserta->find($peserta_id);
@@ -215,6 +216,7 @@ class Bayar extends BaseController
             'waktu_bayar'               => date("H:i:s"),
             'tgl_bayar_konfirmasi'      => '1000-01-01',
             'waktu_bayar_konfirmasi'    => '00:00:00',
+            'keterangan_bayar'          => $keterangan_bayar,
         ];
 
         $updatePK = [
@@ -326,7 +328,7 @@ class Bayar extends BaseController
     public function save_manual()
     {
          // Get the POST data
-        $note               = $this->request->getPost('note');
+        $keterangan_bayar   = $this->request->getPost('keterangan_bayar');
         $cart               = $this->request->getVar('cart');
         $total              = $this->request->getPost('total');
         $peserta_id         = $this->request->getPost('peserta_id');
@@ -373,7 +375,7 @@ class Bayar extends BaseController
             'bukti_bayar'               => $newName,
             'tgl_bayar'                 => date("Y-m-d"),
             'waktu_bayar'               => date("H:i:s"),
-            'keterangan_bayar'          => $note,
+            'keterangan_bayar'          => $keterangan_bayar,
             'tgl_bayar_konfirmasi'      => '1000-01-01',
             'waktu_bayar_konfirmasi'    => '00:00:00',
         ];

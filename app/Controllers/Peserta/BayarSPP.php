@@ -280,6 +280,7 @@ class BayarSPP extends BaseController
         $peserta_id         = $this->request->getPost('peserta_id');
         $peserta_kelas_id   = $this->request->getPost('peserta_kelas_id');
         $kelas_id           = $this->request->getPost('kelas_id');
+        $keterangan_bayar   = $this->request->getPost('keterangan_bayar');
         $cart_id            = 0;
         // $expired_waktu1     = $this->request->getVar('expired_waktu');
         // $expired_waktu      = \DateTime::createFromFormat('Y-m-d H:i:s', $expired_waktu1);
@@ -337,7 +338,8 @@ class BayarSPP extends BaseController
             'tgl_bayar_konfirmasi'      => '1000-01-01',
             'waktu_bayar_konfirmasi'    => '00:00:00',
             'tgl_bayar_dl'              => $expired_waktu->format('Y-m-d'),
-            'waktu_bayar_dl'            => $expired_waktu->format('H:i:s')
+            'waktu_bayar_dl'            => $expired_waktu->format('H:i:s'),
+            'keterangan_bayar'          => $keterangan_bayar
         ];
 
         // Define mapping from ids to column names

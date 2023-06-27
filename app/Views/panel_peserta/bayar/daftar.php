@@ -58,6 +58,9 @@
                     <div id="services">
                         <!-- Services will be added here -->
                     </div>
+                    <hr>
+                    <label for="keterangan_bayar">Keterangan Pembayaran</label>
+                    <textarea class="form-control" name="keterangan_bayar" id="keterangan_bayar" cols="30" rows="10"></textarea>
                 </div>
             </div>
         </div>
@@ -267,8 +270,6 @@
             Swal.fire({
                 title: 'Form Upload Bukti Bayar',
                 html: ` <p>Total TF = Rp ${formatPrice(total)}</p>
-                        <label>Catatan</label>
-                        <textarea id="pay_note" class="form-control mb-3"></textarea>
                         <label>Bukti Transfer<code>*</code></label>
                         <input type="file" id="pay_image" accept="image/png, image/jpeg" class="form-control mb-3">
                         <div id="image_preview_div"></div>`,
@@ -278,10 +279,10 @@
                 focusConfirm: false,
                 allowOutsideClick: false,
                 preConfirm: () => {
-                    let note = document.getElementById('pay_note').value;
+                    let keterangan_bayar = document.getElementById('keterangan_bayar').value;
                     let image = document.getElementById('pay_image').files[0];
                     let formData = new FormData();
-                    formData.append('note', note);
+                    formData.append('keterangan_bayar', keterangan_bayar);
                     formData.append('image', image);
                     formData.append('cart', JSON.stringify(cart));
                     formData.append('total', total);

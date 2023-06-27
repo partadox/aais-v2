@@ -349,7 +349,6 @@
             Swal.fire({
                 title: 'Form Upload Bukti Bayar',
                 html: ` <p>Total TF = Rp ${formatPrice(total)}</p>
-                        <label>Catatan</label>
                         <label>Bukti Transfer<code>*</code></label>
                         <input type="file" id="pay_image" accept="image/png, image/jpeg" class="form-control mb-3">
                         <div id="image_preview_div"></div>`,
@@ -422,6 +421,7 @@
             formData.append('peserta_kelas_id', <?= $peserta_kelas_id ?>);
             formData.append('peserta_id', <?= $peserta_id ?>);
             formData.append('kelas_id', <?= $kelas_id ?>);
+            formData.append('keterangan_bayar', keterangan_bayar);
 
             // Display a loading alert with no buttons
             Swal.fire({
