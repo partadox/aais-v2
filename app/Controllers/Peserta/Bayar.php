@@ -116,6 +116,10 @@ class Bayar extends BaseController
         $ch         = curl_init();
         $key        = $this->konfigurasi->flip_key();
         $secret_key = $key->flip_key;
+        $title      = $peserta_kelas_id.'-'.$cart_id.'-'.$bayar_id.'-'.time();
+
+        $byr        = ['keterangan_bayar_admin'=>$title];
+        $this->bayar->update($bayar_id, $byr);
 
         curl_setopt($ch, CURLOPT_URL, "https://bigflip.id/big_sandbox_api/v2/pwf/bill");
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
@@ -124,7 +128,7 @@ class Bayar extends BaseController
         curl_setopt($ch, CURLOPT_POST, TRUE);
 
         $payloads = [
-            "title"                     => $peserta_kelas_id.'-'.$cart_id.'-'.$bayar_id.'-'.time(),
+            "title"                     => $title,
             "amount"                    => $total,
             "type"                      => "SINGLE",
             "expired_date"              => $expired_waktu->format('Y-m-d H:i'),

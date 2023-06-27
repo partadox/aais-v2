@@ -385,11 +385,27 @@
                         Swal.fire({
                             title: 'Payment details',
                             html: `
-                                <p>Total TF = Rp ${formatPrice(total)}</p>
-                                <p>Batas Waktu Bayar:<br> <?= $expired_waktu ?> <br>
-                                Bank = ${bank} <br>
-                                VA = ${va} <br>
-                                <button id="copy" class="btn btn-success btn-sm"><i class="fas fa-copy"></i> Copy VA</button>
+                                <table class="table table-bordered">
+                                    <tbody>
+                                        <tr>
+                                        <th>Total</th>
+                                        <th>Rp ${formatPrice(total)}</th>
+                                        </tr>
+                                        <tr>
+                                        <th>Batas Waktu</th>
+                                        <th><?= $expired_waktu ?></th>
+                                        </tr>
+                                        <tr>
+                                        <th>Bank</th>
+                                        <th>${bank}</th>
+                                        </tr>
+                                        <tr>
+                                        <th>VA</th>
+                                        <th>${va} <br>
+                                            <button id="copy" class="btn btn-success"><i class="fas fa-copy mr-1"></i> Klik utk Copy VA</button></th>
+                                        </tr>
+                                    </tbody>
+                                </table>
                             `,
                             confirmButtonText: 'Tutup',
                             allowOutsideClick: false,

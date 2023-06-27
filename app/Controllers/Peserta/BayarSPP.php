@@ -235,6 +235,10 @@ class BayarSPP extends BaseController
         $ch         = curl_init();
         $key        = $this->konfigurasi->flip_key();
         $secret_key = $key->flip_key;
+        $title      = $peserta_kelas_id.'-'.$cart_id.'-'.$bayar_id.'-'.time();
+
+        $byr        = ['keterangan_bayar_admin'=>$title];
+        $this->bayar->update($bayar_id, $byr);
 
         curl_setopt($ch, CURLOPT_URL, "https://bigflip.id/big_sandbox_api/v2/pwf/bill");
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
@@ -243,7 +247,7 @@ class BayarSPP extends BaseController
         curl_setopt($ch, CURLOPT_POST, TRUE);
 
         $payloads = [
-            "title"                     => $peserta_kelas_id.'-'.$cart_id.'-'.$bayar_id.'-'.time(),
+            "title"                     => $title,
             "amount"                    => $total,
             "type"                      => "SINGLE",
             "expired_date"              => $expired_waktu->format('Y-m-d H:i'),
@@ -276,7 +280,7 @@ class BayarSPP extends BaseController
         $peserta_id         = $this->request->getPost('peserta_id');
         $peserta_kelas_id   = $this->request->getPost('peserta_kelas_id');
         $kelas_id           = $this->request->getPost('kelas_id');
-        $cart_id            = 00;
+        $cart_id            = 0;
         // $expired_waktu1     = $this->request->getVar('expired_waktu');
         // $expired_waktu      = \DateTime::createFromFormat('Y-m-d H:i:s', $expired_waktu1);
         $expired_waktu1     = date('Y-m-d H:i:s', strtotime('+60 minutes', strtotime(date('Y-m-d H:i:s'))));

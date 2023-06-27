@@ -463,7 +463,7 @@
                             title: 'Payment details',
                             html: `
                             <table class="table table-bordered">
-                            <thead>
+                            <tbody>
                                 <tr>
                                 <th>Total</th>
                                 <th>Rp ${formatPrice(total)}</th>
@@ -474,10 +474,10 @@
                                 </tr>
                                 <tr>
                                 <th>VA</th>
-                                <th>VA = ${va} <br>
-                                    <button id="copy" class="btn btn-primary"><i class="fas fa-copy"></i>Klik utk Copy VA</button></th>
+                                <th>${va} <br>
+                                    <button id="copy" class="btn btn-success"><i class="fas fa-copy mr-1"></i> Klik utk Copy VA</button></th>
                                 </tr>
-                            </thead>
+                            </tbody>
                             </table>
                             `,
                             confirmButtonText: 'Tutup',

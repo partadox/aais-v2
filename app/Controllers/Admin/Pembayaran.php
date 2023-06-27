@@ -594,11 +594,14 @@ class Pembayaran extends BaseController
 
             if ($data->metode == NULL) {
                 $metode = 'Transfer Manual';
+                $bill = "";
             } elseif ($data->metode == 'flip') {
-                $bill = $this->bill->find($data['flip_bill_id']);
-                $metode = 'FLIP-'.$bill['bill_bank'].'-'.$bill['bill_va'];
+                $bill = $this->bill->find($data->flip_bill_id);
+                $metode = 'Flip';
+                $bill = " (".$bill['bill_bank'].'-'.$bill['bill_va'].")";
             } elseif ($data->metode == 'beasiswa') {
                 $metode = 'Beasiswa';
+                $bill = "";
             }
 
             $spreadsheet->setActiveSheetIndex(0)
@@ -621,7 +624,7 @@ class Pembayaran extends BaseController
                 ->setCellValue('Q' . $row, $data->validator)
                 ->setCellValue('R' . $row, $data->tgl_bayar_konfirmasi)
                 ->setCellValue('S' . $row, $data->waktu_bayar_konfirmasi)
-                ->setCellValue('T' . $row, $data->keterangan_bayar_admin)
+                ->setCellValue('T' . $row, $data->keterangan_bayar_admin.$bill)
                 ->setCellValue('U' . $row, $data->awal_bayar)
                 ->setCellValue('V' . $row, $data->awal_bayar_daftar)
                 ->setCellValue('W' . $row, $data->awal_bayar_spp1)

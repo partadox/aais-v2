@@ -95,7 +95,7 @@ class Flip extends ResourceController
         $data_kelas         = $this->kelas->find($kelas_id);
         $peserta            = $this->peserta->find($peserta_id);
         
-        if ($cart_id == 00) {
+        if ($cart_id == 0) {
             if ($status == 'SUCCESSFUL') {
 
                 $this->db->transStart();
