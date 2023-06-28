@@ -162,7 +162,7 @@ class Bayar extends BaseController
         $peserta_kelas_id   = $this->request->getPost('peserta_kelas_id');
         $kelas_id           = $this->request->getPost('kelas_id');
         $cart_id            = $this->request->getPost('cart_id');
-        $keterangan_bayar   = $this->request->getPost('keterangan_bayar');
+        $keterangan_bayar   = $this->request->getVar('keterangan_bayar');
         $expired_waktu1     = $this->request->getVar('expired_waktu');
         $expired_waktu      = \DateTime::createFromFormat('Y-m-d H:i:s', $expired_waktu1);
 
@@ -328,7 +328,7 @@ class Bayar extends BaseController
     public function save_manual()
     {
          // Get the POST data
-        $keterangan_bayar   = $this->request->getPost('keterangan_bayar');
+        $keterangan_bayar   = $this->request->getVar('keterangan_bayar');
         $cart               = $this->request->getVar('cart');
         $total              = $this->request->getPost('total');
         $peserta_id         = $this->request->getPost('peserta_id');

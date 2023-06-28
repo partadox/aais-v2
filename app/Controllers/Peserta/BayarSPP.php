@@ -65,7 +65,7 @@ class BayarSPP extends BaseController
         $peserta_id         = $this->request->getPost('peserta_id');
         $peserta_kelas_id   = $this->request->getPost('peserta_kelas_id');
         $kelas_id           = $this->request->getPost('kelas_id');
-        $keterangan_bayar   = $this->request->getPost('keterangan_bayar');
+        $keterangan_bayar   = $this->request->getVar('keterangan_bayar');
         $timeout            = date('Y-m-d H:i:s', strtotime('+60 minutes', strtotime(date('Y-m-d H:i:s'))));
         $dateTime           = new \DateTime($timeout);
 
@@ -280,7 +280,7 @@ class BayarSPP extends BaseController
         $peserta_id         = $this->request->getPost('peserta_id');
         $peserta_kelas_id   = $this->request->getPost('peserta_kelas_id');
         $kelas_id           = $this->request->getPost('kelas_id');
-        $keterangan_bayar   = $this->request->getPost('keterangan_bayar');
+        $keterangan_bayar   = $this->request->getVar('keterangan_bayar');
         $cart_id            = 0;
         // $expired_waktu1     = $this->request->getVar('expired_waktu');
         // $expired_waktu      = \DateTime::createFromFormat('Y-m-d H:i:s', $expired_waktu1);

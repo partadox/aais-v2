@@ -49,6 +49,10 @@ $routes->post('auth/logout', 'Auth::logout');
 /*--- Dashboard ---*/
 $routes->get('dashboard', 'Dashboard::index', ["filter" => "authweb:1-2-3-4-5-6"]); 
 
+/*--- Dashboard ---*/
+$routes->get('terms-of-service', 'Tos::tos');
+$routes->get('privacy-policy', 'Tos::privacy'); 
+
 /*
  * --------------------------------------------------------------------
  * ADMIN
