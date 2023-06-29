@@ -98,7 +98,8 @@ class Flip extends ResourceController
         if ($cart_id == 0) {
             if ($status == 'SUCCESSFUL') {
 
-                $this->db->transStart();
+                $this->db->transBegin();
+                $results = [];
                 $updateBayar = [
                     'status_bayar'              => 'Lunas',
                     'status_bayar_admin'        => 'SESUAI BAYAR',
@@ -107,7 +108,7 @@ class Flip extends ResourceController
                     'waktu_bayar_konfirmasi'    => date("H:i:s"),
                     'validator'                 => 'Flip Payment Gateway',
                 ];
-                $this->bayar->update($bayar_id, $updateBayar);
+                $results[] = $this->bayar->update($bayar_id, $updateBayar);
     
                 $bayar  = $this->bayar->find($bayar_id);
                 $modul  = $bayar['awal_bayar_modul'];
@@ -122,7 +123,7 @@ class Flip extends ResourceController
                         'byr_spp2'            => $spp2,
                         'dt_konfirmasi_spp2'  => date('Y-m-d H:i:s')
                     ];
-                    $this->peserta_kelas->update($peserta_kelas_id, $PKspp2);
+                    $results[] = $this->peserta_kelas->update($peserta_kelas_id, $PKspp2);
                 }
     
                 if ($spp3 != '0') {
@@ -130,7 +131,7 @@ class Flip extends ResourceController
                         'byr_spp3'            => $spp3,
                         'dt_konfirmasi_spp3'  => date('Y-m-d H:i:s')
                     ];
-                    $this->peserta_kelas->update($peserta_kelas_id, $PKspp3);
+                    $results[] = $this->peserta_kelas->update($peserta_kelas_id, $PKspp3);
                 }
     
                 if ($spp4 != '0') {
@@ -138,20 +139,20 @@ class Flip extends ResourceController
                         'byr_spp4'            => $spp4,
                         'dt_konfirmasi_spp4'  => date('Y-m-d H:i:s')
                     ];
-                    $this->peserta_kelas->update($peserta_kelas_id, $PKspp4);
+                    $results[] = $this->peserta_kelas->update($peserta_kelas_id, $PKspp4);
                 }
     
                 if ($modul != '0') {
                     $PKmodul = [
                         'byr_modul'            => $modul,
                     ];
-                    $this->peserta_kelas->update($peserta_kelas_id, $PKmodul);
+                    $results[] = $this->peserta_kelas->update($peserta_kelas_id, $PKmodul);
                     $data_modul = [
                         'bayar_modul_id'        => $bayar_id,
                         'bayar_modul'           => $modul,
                         'status_bayar_modul'    => 'Lunas',
                     ];
-                    $this->bayar_modul->insert($data_modul);
+                    $results[] = $this->bayar_modul->insert($data_modul);
                 }
     
                 if ($lainnya != '0') {
@@ -161,7 +162,7 @@ class Flip extends ResourceController
                         'data_peserta_id_lain'    => $peserta_id,
                         'status_bayar_lainnya'    => 'Lunas',
                     ];
-                    $this->bayar_lain->insert($data_lain);
+                    $results[] = $this->bayar_lain->insert($data_lain);
                 }
     
                 if ($infaq != '0') {
@@ -170,7 +171,7 @@ class Flip extends ResourceController
                         'bayar_infaq'           => $infaq,
                         'data_peserta_id_infaq' => $peserta_id
                     ];
-                    $this->infaq->insert($data_infaq);
+                    $results[] = $this->infaq->insert($data_infaq);
                 }
     
                 //Get data total bayar
@@ -208,11 +209,11 @@ class Flip extends ResourceController
                 $PKstatus = [
                     'spp_status'  => $spp_status,
                 ];
-                $this->peserta_kelas->update($peserta_kelas_id, $PKstatus);
+                $results[] = $this->peserta_kelas->update($peserta_kelas_id, $PKstatus);
     
                 $aktivitas = 'Pembayaran SPP peserta '. $peserta['nis'].'-'.$peserta['nama_peserta'] .' pada kelas ' . $data_kelas['nama_kelas']. ' terkonfirmasi oleh flip';
     
-                if ($this->db->transStatus() === FALSE)
+                if (in_array(FALSE, $results, true))
                 {
                     $this->db->transRollback();
                     /*--- Log ---*/
@@ -227,7 +228,7 @@ class Flip extends ResourceController
                 }
                 else
                 {
-                    $this->db->transComplete();
+                    $this->db->transCommit();
                     /*--- Log ---*/
                     $log = [
                         'username_log' => 'Flip Payment',
@@ -253,6 +254,16 @@ class Flip extends ResourceController
                     'created_at' => $created_at,
                 ]);
             } else {
+                $updateBayar = [
+                    'status_bayar'              => 'Gagal',
+                    'status_bayar_admin'        => 'GAGAL BAYAR',
+                    'status_konfirmasi'         => 'Gagal',
+                    'tgl_bayar_konfirmasi'      => NULL,
+                    'waktu_bayar_konfirmasi'    => NULL,
+                    'validator'                 => 'Flip Payment Gateway',
+                    'keterangan_bayar_admin'    => $bill_title.' '.$status.' invoice bill: '.$bill_title.', total: '.$amount,
+                ];
+                $this->bayar->update($bayar_id, $updateBayar);
                 /*--- Log ---*/
                 $log = [
                     'username_log' => 'Flip Payment',
@@ -267,7 +278,8 @@ class Flip extends ResourceController
         } else {
             if ($status == 'SUCCESSFUL') {
 
-                $this->db->transStart();
+                $this->db->transBegin();
+                $results = [];
                 $updateBayar = [
                     'status_bayar'              => 'Lunas',
                     'status_bayar_admin'        => 'SESUAI BAYAR',
@@ -276,7 +288,7 @@ class Flip extends ResourceController
                     'waktu_bayar_konfirmasi'    => date("H:i:s"),
                     'validator'                 => 'Flip Payment Gateway',
                 ];
-                $this->bayar->update($bayar_id, $updateBayar);
+                $results[] = $this->bayar->update($bayar_id, $updateBayar);
     
                 $bayar  = $this->bayar->find($bayar_id);
                 $daftar = $bayar['awal_bayar_daftar'];
@@ -293,13 +305,13 @@ class Flip extends ResourceController
                         'bckp_absen_peserta_id'     => $peserta_id,
                         'bckp_absen_peserta_kelas'  => $kelas_id,
                     ];
-                    $this->absen_peserta->insert($dataabsen);
+                    $results[] = $this->absen_peserta->insert($dataabsen);
         
                     $dataujian = [
                         'bckp_ujian_peserta'     => $peserta_id,
                         'bckp_ujian_kelas'       => $kelas_id,
                     ];
-                    $this->ujian->insert($dataujian);
+                    $results[] = $this->ujian->insert($dataujian);
                     $PKdaftar = [
                         'byr_daftar'            => $daftar,
                         'dt_konfirmasi_daftar'  => date('Y-m-d H:i:s'),
@@ -308,7 +320,7 @@ class Flip extends ResourceController
                         'expired_tgl_daftar'    => NULL,
                         'expired_waktu_daftar'  => NULL,
                     ];
-                    $this->peserta_kelas->update($peserta_kelas_id, $PKdaftar);
+                    $results[] = $this->peserta_kelas->update($peserta_kelas_id, $PKdaftar);
                 }
     
                 if ($spp1 != '0') {
@@ -316,7 +328,7 @@ class Flip extends ResourceController
                         'byr_spp1'            => $spp1,
                         'dt_konfirmasi_spp1'  => date('Y-m-d H:i:s')
                     ];
-                    $this->peserta_kelas->update($peserta_kelas_id, $PKspp1);
+                    $results[] = $this->peserta_kelas->update($peserta_kelas_id, $PKspp1);
                 }
     
                 if ($spp2 != '0') {
@@ -324,7 +336,7 @@ class Flip extends ResourceController
                         'byr_spp2'            => $spp2,
                         'dt_konfirmasi_spp2'  => date('Y-m-d H:i:s')
                     ];
-                    $this->peserta_kelas->update($peserta_kelas_id, $PKspp2);
+                    $results[] = $this->peserta_kelas->update($peserta_kelas_id, $PKspp2);
                 }
     
                 if ($spp3 != '0') {
@@ -332,7 +344,7 @@ class Flip extends ResourceController
                         'byr_spp3'            => $spp3,
                         'dt_konfirmasi_spp3'  => date('Y-m-d H:i:s')
                     ];
-                    $this->peserta_kelas->update($peserta_kelas_id, $PKspp3);
+                    $results[] = $this->peserta_kelas->update($peserta_kelas_id, $PKspp3);
                 }
     
                 if ($spp4 != '0') {
@@ -340,20 +352,20 @@ class Flip extends ResourceController
                         'byr_spp4'            => $spp4,
                         'dt_konfirmasi_spp4'  => date('Y-m-d H:i:s')
                     ];
-                    $this->peserta_kelas->update($peserta_kelas_id, $PKspp4);
+                    $results[] = $this->peserta_kelas->update($peserta_kelas_id, $PKspp4);
                 }
     
                 if ($modul != '0') {
                     $PKmodul = [
                         'byr_modul'            => $modul,
                     ];
-                    $this->peserta_kelas->update($peserta_kelas_id, $PKmodul);
+                    $results[] = $this->peserta_kelas->update($peserta_kelas_id, $PKmodul);
                     $data_modul = [
                         'bayar_modul_id'        => $bayar_id,
                         'bayar_modul'           => $modul,
                         'status_bayar_modul'    => 'Lunas',
                     ];
-                    $this->bayar_modul->insert($data_modul);
+                    $results[] = $this->bayar_modul->insert($data_modul);
                 }
     
                 if ($lainnya != '0') {
@@ -363,7 +375,7 @@ class Flip extends ResourceController
                         'data_peserta_id_lain'    => $peserta_id,
                         'status_bayar_lainnya'    => 'Lunas',
                     ];
-                    $this->bayar_lain->insert($data_lain);
+                    $results[] = $this->bayar_lain->insert($data_lain);
                 }
     
                 if ($infaq != '0') {
@@ -372,7 +384,7 @@ class Flip extends ResourceController
                         'bayar_infaq'           => $infaq,
                         'data_peserta_id_infaq' => $peserta_id
                     ];
-                    $this->infaq->insert($data_infaq);
+                    $results[] = $this->infaq->insert($data_infaq);
                 }
     
                 //Get data total bayar
@@ -410,12 +422,12 @@ class Flip extends ResourceController
                 $PKstatus = [
                     'spp_status'  => $spp_status,
                 ];
-                $this->peserta_kelas->update($peserta_kelas_id, $PKstatus);
-                $this->cart->delete($cart_id);
+                $results[] = $this->peserta_kelas->update($peserta_kelas_id, $PKstatus);
+                $results[] = $this->cart->delete($cart_id);
     
                 $aktivitas = 'Pendaftaran peserta '. $peserta['nis'].'-'.$peserta['nama_peserta'] .' pada kelas ' . $data_kelas['nama_kelas']. ' terkonfirmasi oleh flip';
     
-                if ($this->db->transStatus() === FALSE)
+                if (in_array(FALSE, $results, true))
                 {
                     $this->db->transRollback();
                     /*--- Log ---*/
@@ -430,7 +442,7 @@ class Flip extends ResourceController
                 }
                 else
                 {
-                    $this->db->transComplete();
+                    $this->db->transCommit();
                     /*--- Log ---*/
                     $log = [
                         'username_log' => 'Flip Payment',
@@ -456,15 +468,46 @@ class Flip extends ResourceController
                     'created_at' => $created_at,
                 ]);
             } else {
-                /*--- Log ---*/
-                $log = [
-                    'username_log' => 'Flip Payment',
-                    'tgl_log'      => date("Y-m-d"),
-                    'waktu_log'    => date("H:i:s"),
-                    'status_log'   => 'GAGAL',
-                    'aktivitas_log'=> $bill_title.' '.$status.' invoice bill: '.$bill_title.', total: '.$amount,
+                $this->db->transBegin();
+                $results = [];
+                $updateBayar = [
+                    'status_bayar'              => 'Gagal',
+                    'status_bayar_admin'        => 'GAGAL BAYAR',
+                    'status_konfirmasi'         => 'Gagal',
+                    'tgl_bayar_konfirmasi'      => NULL,
+                    'waktu_bayar_konfirmasi'    => NULL,
+                    'validator'                 => 'Flip Payment Gateway',
+                    'keterangan_bayar_admin'    => $bill_title.' '.$status.' invoice bill: '.$bill_title.', total: '.$amount,
                 ];
-                $this->log->insert($log);
+                $results[] = $this->bayar->update($bayar_id, $updateBayar);
+                $results[] = $this->cart->delete($cart_id);
+                $results[] = $this->peserta_kelas->delete($peserta_kelas_id);
+
+                // Check the result of each operation
+                if (in_array(FALSE, $results, true)) {
+                    $this->db->transRollback();
+                    /*--- Log ---*/
+                    $log = [
+                        'username_log' => 'Flip Payment',
+                        'tgl_log'      => date("Y-m-d"),
+                        'waktu_log'    => date("H:i:s"),
+                        'status_log'   => 'FAIL',
+                        'aktivitas_log'=> 'Fail Callback Flip Daftar, Rollback not commited',
+                    ];
+                    $this->log->insert($log);
+                } else {
+                    // If all operations were successful, commit the transaction
+                    $this->db->transCommit();
+                    /*--- Log ---*/
+                    $log = [
+                        'username_log' => 'Flip Payment',
+                        'tgl_log'      => date("Y-m-d"),
+                        'waktu_log'    => date("H:i:s"),
+                        'status_log'   => 'GAGAL',
+                        'aktivitas_log'=> $bill_title.' '.$status.' invoice bill: '.$bill_title.', total: '.$amount,
+                    ];
+                    $this->log->insert($log);
+                }
                 return $this->respondCreated(['message' => 'Callback Failed']);
             }
         }

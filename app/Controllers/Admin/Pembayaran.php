@@ -145,17 +145,21 @@ class Pembayaran extends BaseController
                 elseif($list->status_bayar_admin == 'BELUM BAYAR'){
                     $row6 = "<button type=\"button\" class=\"btn btn-danger btn-sm\" disabled>BELUM BAYAR</button>"."<p>Ket Adm: <br> $list->keterangan_bayar_admin</p>";}
                 elseif($list->status_bayar_admin == 'BEBAS BIAYA'){
-                    $row6 = "<button type=\"button\" class=\"btn btn-info btn-sm\" disabled>BEBAS BIAYA</button>"."<p>Ket Adm: <br> $list->keterangan_bayar_admin</p>";};
+                    $row6 = "<button type=\"button\" class=\"btn btn-info btn-sm\" disabled>BEBAS BIAYA</button>"."<p>Ket Adm: <br> $list->keterangan_bayar_admin</p>";}
+                elseif($list->status_bayar_admin == 'GAGAL BAYAR'){
+                    $row6 = "<button type=\"button\" class=\"btn btn-danger btn-sm\" disabled>GAGAL BAYAR</button>"."<p>Ket Adm: <br> $list->keterangan_bayar_admin</p>";};
 
                 if($list->status_konfirmasi == 'Proses'){
                     $row8a = "<button type=\"button\" class=\"btn btn-secondary btn-sm\" disabled>Proses</button>";}
                 elseif($list->status_konfirmasi == 'Terkonfirmasi'){
                     $row8a = "<button type=\"button\" class=\"btn btn-success btn-sm\" disabled>Terkonfirmasi</button>"."<p>Validator: $list->validator</p> ";}
                 elseif($list->status_konfirmasi == 'Tolak'){
-                    $row8a = "<button type=\"button\" class=\"btn btn-danger btn-sm\" disabled>Tolak</button>"."<p>Validator: $list->validator</p>";};
+                    $row8a = "<button type=\"button\" class=\"btn btn-danger btn-sm\" disabled>Tolak</button>"."<p>Validator: $list->validator</p>";}
+                elseif($list->status_konfirmasi == 'Gagal'){
+                    $row8a = "<button type=\"button\" class=\"btn btn-danger btn-sm\" disabled>Gagal</button>"."<p>Validator: $list->validator</p>";};
 
                 if($list->tgl_bayar_konfirmasi == '1000-01-01' || $list->tgl_bayar_konfirmasi == NULL){
-                    $row8b = "<p>Belum Terkonfirmasi</p> ";}
+                    $row8b = "<p>-</p> ";}
                 else{
                     $row8b = "<p>Tgl: ".shortdate_indo($list->tgl_bayar_konfirmasi)."</p><p>Jam: $list->waktu_bayar_konfirmasi</p>";};
 

@@ -416,6 +416,7 @@
 
         $('#pay-va-btn').click(function() {
             let formData = new FormData();
+            let keterangan_bayar = document.getElementById('keterangan_bayar').value;
             formData.append('cart', JSON.stringify(cart));
             formData.append('total', total);
             formData.append('peserta_kelas_id', <?= $peserta_kelas_id ?>);

@@ -121,6 +121,9 @@
                             <?php if($data['status_konfirmasi'] == 'Tolak') { ?>
                                 <button class="btn btn-danger btn-sm mb-2" disabled>Tolak</button>
                             <?php } ?>
+                            <?php if($data['status_konfirmasi'] == 'Gagal') { ?>
+                                <button class="btn btn-danger btn-sm mb-2" disabled>Gagal</button>
+                            <?php } ?>
                             <hr>
                             <h6><strong>Status Pembayaran: </strong></h6>
                             <?php if($data['status_bayar_admin'] == 'SESUAI BAYAR') { ?>
