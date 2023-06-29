@@ -136,7 +136,7 @@
                             <a>Keterangan Admin: <?= $data['keterangan_bayar_admin'] ?></a>
 
                             <br>
-                            <?php if($data['tgl_bayar_konfirmasi'] == '1000-01-01' || $data['tgl_bayar'] == NULL) { ?>
+                            <?php if($data['tgl_bayar_konfirmasi'] == '1000-01-01' || $data['tgl_bayar_konfirmasi'] == NULL) { ?>
                             <a>Tgl Konfirmasi: -</a> <br>
                             <?php } ?>
                             <?php if($data['tgl_bayar_konfirmasi'] != '1000-01-01') { ?>
