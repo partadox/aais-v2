@@ -39,7 +39,7 @@
                             <?php if($data['tgl_bayar'] == '1000-01-01' || $data['tgl_bayar'] == NULL) { ?>
                                 <a><strong>Tgl Bayar:</strong> -</a> <br>
                             <?php } ?>
-                            <?php if($data['tgl_bayar'] != '1000-01-01') { ?>
+                            <?php if($data['tgl_bayar'] != '1000-01-01' && $data['tgl_bayar'] == NULL) { ?>
                                 <a><strong>Tgl Bayar:</strong>  <?= shortdate_indo($data['tgl_bayar'])?></a> <br>
                             <?php } ?>
                             <?php if($data['waktu_bayar'] == '00:00:00') { ?>
@@ -139,7 +139,7 @@
                             <?php if($data['tgl_bayar_konfirmasi'] == '1000-01-01' || $data['tgl_bayar_konfirmasi'] == NULL) { ?>
                             <a>Tgl Konfirmasi: -</a> <br>
                             <?php } ?>
-                            <?php if($data['tgl_bayar_konfirmasi'] != '1000-01-01') { ?>
+                            <?php if($data['tgl_bayar_konfirmasi'] != '1000-01-01' && $data['tgl_bayar'] == NULL) { ?>
                                 <a>Tgl Konfirmasi: <?= shortdate_indo($data['tgl_bayar_konfirmasi'])?></a> <br>
                             <?php } ?>
                             <?php if($data['waktu_bayar_konfirmasi'] == '00:00:00') { ?>
