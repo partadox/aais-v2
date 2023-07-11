@@ -79,8 +79,12 @@
                             </td>
                         </tr>
                         <tr>
-                            <td width="40%"><b>Koordinator</b></td>
+                            <td width="40%"><b>Koordinator <br> Isi Absen Perwakilan</b></td>
                             <td><?= $koor  ?></td>
+                        </tr>
+                        <tr>
+                            <td width="40%"><b>Batas Waktu <br> Isi Absen Mandiri</b></td>
+                            <td><?= $expired  ?></td>
                         </tr>
                     </tbody>
                 </table>

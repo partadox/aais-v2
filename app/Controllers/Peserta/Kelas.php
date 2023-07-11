@@ -31,12 +31,14 @@ class Kelas extends BaseController
         $get_peserta_id     = $this->peserta->get_peserta_id($user['user_id']);
         $peserta_id         = $get_peserta_id->peserta_id;
         $list               = $this->peserta_kelas->kelas_peserta($angkatan, $peserta_id);
+        $list_bina          = $this->bina_peserta->kelas_peserta($peserta_id, $angkatan);
         $data = [
             'title'                 => 'Daftar Kelas Anda pada Angkatan '.$angkatan,
             'user'                  => $user,
             'list_angkatan'         => $list_angkatan,
             'angkatan_pilih'        => $angkatan,
             'list'                  => $list,
+            'list_bina'             => $list_bina
         ];
 
         return view('panel_peserta/kelas/index', $data); 

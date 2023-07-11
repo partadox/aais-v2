@@ -169,6 +169,7 @@ class Dashboard extends BaseController
 				'list_angkatan'         => $list_angkatan,
 				'angkatan_pilih'        => $angkatan,
 				'jml_kelas'				=> count($this->peserta_kelas->jml_kelas_peserta($peserta_id, $angkatan)),
+				'jml_kelas_bina'		=> count($this->bina_peserta->kelas_peserta($peserta_id, $angkatan)),
 				'pengumuman'			=> $this->pengumuman->list_peserta(),
 			];
 		}

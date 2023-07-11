@@ -560,7 +560,7 @@
                     <div>
                         <h5 class="font-16">Jumlah Kelas Anda pada Angkatan <?= $angkatan ?></h5>
                     </div>
-                    <h3 class="mt-4"><?= $jml_kelas ?></h3>
+                    <h3 class="mt-4"><?= $jml_kelas + $jml_kelas_bina ?></h3>
                 </div>
             </div>
         </div>

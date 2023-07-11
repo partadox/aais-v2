@@ -8,7 +8,7 @@ class Model_bina_kelas extends Model
 {
     protected $table      = 'bina_kelas';
     protected $primaryKey = 'bk_id';
-    protected $allowedFields = ['bk_name', 'bk_angkatan', 'bk_hari', 'bk_waktu', 'bk_timezone', 'bk_level','bk_jenkel', 'bk_status', 'bk_created', 'bk_tm_methode','bk_tm_total', 'bk_absen_status', 'bk_absen_methode', 'bk_absen_koor'];
+    protected $allowedFields = ['bk_name', 'bk_angkatan', 'bk_hari', 'bk_waktu', 'bk_timezone', 'bk_level','bk_jenkel', 'bk_status', 'bk_created', 'bk_tm_methode','bk_tm_total', 'bk_absen_status', 'bk_absen_methode', 'bk_absen_koor', 'bk_absen_expired'];
 
     public function list($angkatan)
     {

@@ -36,12 +36,15 @@ class KelasReg extends BaseController
     public function input()
     {
         if ($this->request->isAJAX()) {
+            $get_angkatan       = $this->konfigurasi->angkatan_kuliah();
+            $angkatan           = $get_angkatan->angkatan_kuliah;
 
             $data = [
                 'title'     => 'Form Input Kelas Baru',
                 'program'   => $this->program->list_aktif(),
                 'pengajar'  => $this->pengajar->list(),
                 'level'     => $this->level->list(),
+                'angkatan'  => $angkatan,
             ];
             $msg = [
                 'sukses' => view('panel_admin/kelas_regular/add', $data)
@@ -139,6 +142,30 @@ class KelasReg extends BaseController
             ];
             $msg = [
                 'sukses' => view('panel_admin/kelas_regular/move', $data)
+            ];
+            echo json_encode($msg);
+        }
+    }
+
+    public function atur_absensi()
+    {
+        if ($this->request->isAJAX()) {
+
+            $kelas_id  = $this->request->getVar('kelas_id');
+            $kelas     = $this->kelas->find($kelas_id);
+            if ($kelas['metode_absen'] == NULL) {
+                $metode = 'Pengajar';
+            } else{
+                $metode = $kelas['metode_absen'];
+            }
+            $data = [
+                'title' => 'Pengaturan Absensi Mandiri',
+                'kelas' => $kelas,
+                'metode'=> $metode,
+            ];
+
+            $msg = [
+                'sukses' => view('panel_admin/kelas_regular/atur_absensi', $data)
             ];
             echo json_encode($msg);
         }
@@ -790,4 +817,56 @@ class KelasReg extends BaseController
         $writer->save('php://output');
     }
     
+    public function update_atur_absensi()
+    {
+        $kelas_id       = $this->request->getVar('kelas_id');
+        $kelas          = $this->kelas->find($kelas_id);
+        $metode_absen   = $this->request->getVar('metode_absen');
+        $tm_absen       = $this->request->getVar('tm_absen');
+        $expired_absen  = $this->request->getVar('expired_absen');
+
+        if ($metode_absen == "Mandiri") {
+            if ($this->request->isAJAX()) {
+                $validation = \Config\Services::validation();
+                $valid = $this->validate([
+                    'expired_absen_waktu' => [
+                        'label' => 'Waktu expired absen mandiri',
+                        'rules' => 'required',
+                        'errors' => [
+                            'required' => '{field} tidak boleh kosong',
+                        ]
+                    ],
+                ]);
+                if (!$valid) {
+                    $msg = [
+                        'error' => [
+                            'expired_absen_waktu'  => $validation->getError('expired_absen_waktu'),
+                        ]
+                    ];
+                } else {
+                    $updatedata = [
+                        'metode_absen'  => $metode_absen,
+                        'tm_absen'      => $tm_absen,
+                        'expired_absen' => $expired_absen,
+                    ];
+    
+                    $this->kelas->update($kelas_id, $updatedata);
+    
+                    $aktivitas = 'Mengubah Metode Absen Menjadi Mandiri di Kelas' . $kelas['nama_kelas'] . ' sampai ' . $expired_absen ;
+    
+                    $this->logging('Admin', 'BERHASIL', $aktivitas);
+    
+                    $msg = [
+                        'sukses' => [
+                            'link' => '/kelas-regular/detail?id='.$kelas_id
+                        ]
+                    ];
+                }
+                
+            }
+        }
+
+        echo json_encode($msg);
+        
+    }
 }

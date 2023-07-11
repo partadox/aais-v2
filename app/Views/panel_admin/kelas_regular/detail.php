@@ -16,6 +16,12 @@
     <button type="button" class="btn btn-secondary mb-3"><i class=" fa fa-arrow-circle-left"></i> Kembali</button>
 </a>
 
+<br>
+
+<a> 
+    <button type="button" class="btn btn-warning mb-3" onclick="aturAbsen('<?= $detail_kelas['kelas_id'] ?>')" ><i class=" fa fa-screwdriver"></i> Pengaturan Absensi Mandiri</button>
+</a>
+
 <h5 style="text-align:center;">Kelas <?= $detail_kelas['nama_kelas'] ?></h5>
 <h6 style="text-align:center;"><?= $detail_kelas['hari_kelas'] ?>, <?= $detail_kelas['waktu_kelas'] ?> - <?= $detail_kelas['metode_kelas'] ?></h6>
 <h6 style="text-align:center;"><?= $pengajar['nama_pengajar'] ?></h6>
@@ -88,6 +94,9 @@
 <div class="viewmodalpindah">
 </div>
 
+<div class="viewmodalaturabsen">
+</div>
+
 <script>
 
     $(document).on('click','.btn-hapus',function(e){
@@ -102,6 +111,23 @@
         let peserta_kelas_id = $(this).data("item")
         pindah(peserta_kelas_id)
     })
+
+    function aturAbsen(kelas_id) {
+        $.ajax({
+            type: "post",
+            url: "<?= site_url('/kelas-regular/atur_absensi') ?>",
+            data: {
+                kelas_id : kelas_id
+            },
+            dataType: "json",
+            success: function(response) {
+                if (response.sukses) {
+                    $('.viewmodalaturabsen').html(response.sukses).show();
+                    $('#modalatur').modal('show');
+                }
+            }
+        });
+    }
 
 
     function pindah(peserta_kelas_id) {

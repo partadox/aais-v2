@@ -145,6 +145,7 @@ $routes->post('kelas-regular/edit', 'Admin\KelasReg::edit', ["filter" => "authwe
 $routes->get('kelas-regular/detail', 'Admin\KelasReg::detail', ["filter" => "authweb:1-2-3-7"]);
 $routes->post('kelas-regular/input-setting', 'Admin\KelasReg::input_setting', ["filter" => "authweb:1-2"]);
 $routes->post('kelas-regular/input-move', 'Admin\KelasReg::input_move', ["filter" => "authweb:1-2-3-7"]);
+$routes->post('kelas-regular/atur_absensi', 'Admin\KelasReg::atur_absensi', ["filter" => "authweb:1-2-3-7"]);
 
 $routes->post('kelas-regular/create', 'Admin\KelasReg::create', ["filter" => "authweb:1-2-3-7"]);
 $routes->post('kelas-regular/update', 'Admin\KelasReg::update', ["filter" => "authweb:1-2-3-7"]);
@@ -152,7 +153,7 @@ $routes->post('kelas-regular/save-setting', 'Admin\KelasReg::save_setting', ["fi
 $routes->get('kelas-regular/export', 'Admin\KelasReg::export', ["filter" => "authweb:1-2-3-7"]);
 $routes->post('kelas-regular/move', 'Admin\KelasReg::move', ["filter" => "authweb:1-2-3-7"]);
 $routes->post('kelas-regular/delete-peserta', 'Admin\KelasReg::delete_peserta', ["filter" => "authweb:1-2-3-7"]);
-
+$routes->post('kelas-regular/update-atur-absensi', 'Admin\KelasReg::update_atur_absensi', ["filter" => "authweb:1-2-3-7"]);
 /*--- Kelas Pembinaan---*/
 $routes->get('kelas-bina', 'Admin\KelasBina::index', ["filter" => "authweb:1-2-3-7"]);
 $routes->post('kelas-bina/input', 'Admin\KelasBina::input', ["filter" => "authweb:1-2-3-7"]);
@@ -300,6 +301,18 @@ $routes->get('peserta-kelas', 'Peserta\Kelas::index', ["filter" => "authweb:4"])
 /*--- Absensi Peserta---*/
 $routes->post('peserta/absensi', 'Peserta\Absensi::index', ["filter" => "authweb:4"]);
 
+$routes->get('peserta/absensi-regular', 'Peserta\Absensi::index_regular', ["filter" => "authweb:4"]);
+$routes->post('peserta/absensi-regular-input', 'Peserta\Absensi::input_regular', ["filter" => "authweb:4"]);
+$routes->post('peserta/absensi-regular-save', 'Peserta\Absensi::save_regular', ["filter" => "authweb:4"]);
+$routes->post('peserta/absensi-regular-editnote', 'Peserta\Absensi::edit_note_regular', ["filter" => "authweb:4"]);
+$routes->post('peserta/absensi-regular-updatenote', 'Peserta\Absensi::update_note_regular', ["filter" => "authweb:4"]);
+
+$routes->get('peserta/absensi-bina', 'Peserta\Absensi::index_bina', ["filter" => "authweb:4"]);
+$routes->post('peserta/absensi-bina-input', 'Peserta\Absensi::input_bina', ["filter" => "authweb:4"]);
+$routes->post('peserta/absensi-bina-save', 'Peserta\Absensi::save_bina', ["filter" => "authweb:4"]);
+$routes->post('peserta/absensi-bina-editnote', 'Peserta\Absensi::edit_note_bina', ["filter" => "authweb:4"]);
+$routes->post('peserta/absensi-bina-updatenote', 'Peserta\Absensi::update_note_bina', ["filter" => "authweb:4"]);
+
 /*--- Ujian Peserta---*/
 $routes->post('peserta/ujian', 'Peserta\Ujian::index', ["filter" => "authweb:4"]);
 
@@ -318,8 +331,10 @@ $routes->post('biodata-peserta/update-password', 'Peserta\Biodata::update_passwo
 $routes->get('pengajar/kelas', 'Pengajar\Kelas::index', ["filter" => "authweb:5-6"]);
 $routes->get('pengajar/absensi', 'Pengajar\Kelas::absensi', ["filter" => "authweb:5-6"]);
 $routes->get('pengajar/ujian', 'Pengajar\Ujian::index', ["filter" => "authweb:5-6"]);
+$routes->post('pengajar/atur-absensi', 'Pengajar\Kelas::atur_absensi', ["filter" => "authweb:5-6"]);
 $routes->post('pengajar/input-absensi', 'Pengajar\Kelas::input_absensi', ["filter" => "authweb:5-6"]);
 $routes->post('pengajar/save-absensi', 'Pengajar\Kelas::save_absensi', ["filter" => "authweb:5-6"]);
+$routes->post('pengajar/update-atur-absensi', 'Pengajar\Kelas::update_atur_absensi', ["filter" => "authweb:5-6"]);
 /*--- Biodata Pengajar---*/
 $routes->get('biodata-pengajar', 'Pengajar\Biodata::index', ["filter" => "authweb:5-6"]);
 $routes->post('biodata-pengajar/edit-password', 'Pengajar\Biodata::edit_password', ["filter" => "authweb:5-6"]);

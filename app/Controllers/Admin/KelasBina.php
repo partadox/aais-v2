@@ -84,10 +84,14 @@ class KelasBina extends BaseController
             $peserta_onkelas    = $this->bina_peserta->peserta_onkelas($bk_id);
             $kelas              = $this->bina_kelas->find($bk_id);
             $koor               = NULL;
+            $expired            = NULL;
             if ($kelas['bk_absen_koor'] != NULL) {
                 $koor_peserta_id    = $kelas['bk_absen_koor'];
                 $koor_peserta       = $this->peserta->find($koor_peserta_id);
                 $koor               = $koor_peserta['nis'] .'-'. $koor_peserta['nama_peserta'];
+            }
+            if ($kelas['bk_absen_expired'] != NULL) {
+                $expired            = shortdate_indo(substr($kelas['bk_absen_expired'],0,10)) . ', '.substr($kelas['bk_absen_expired'],11,5). ' WITA';
             }
             
             $data = [
@@ -95,6 +99,7 @@ class KelasBina extends BaseController
                 'user'              => $user,
                 'peserta_onkelas'   => $peserta_onkelas,
                 'koor'              => $koor,
+                'expired'           => $expired,
                 'detail_kelas'      => $kelas,
                 'pengajar'          => $this->bina_pengajar->pengajar_onkelas($bk_id),
                 'jumlah_peserta'    => count($peserta_onkelas),
@@ -437,15 +442,18 @@ class KelasBina extends BaseController
                 $aktivitas  = 'Memasukan data pengajar di kelas non regular ' .  $bina['bk_name'];
             } elseif ($modul == 'absensi') {
                 $metode = $this->request->getVar('bk_absen_methode');
+                $koor = NULL;
+                $expired = NULL;
                 if ($metode == 'Perwakilan') {
                     $koor = $this->request->getVar('bk_absen_koor');
                 } elseif ($metode == 'Mandiri') {
-                    $koor = NULL;
+                    $expired = $this->request->getVar('bk_absen_expired');
                 }
                 $updatedata = [
                     'bk_absen_status'   => $this->request->getVar('bk_absen_status'),
                     'bk_absen_methode'  => $metode,
                     'bk_absen_koor'     => $koor,
+                    'bk_absen_expired'  => $expired,
                 ];
                 $this->bina_kelas->update($bk_id, $updatedata);
                 $pesan      = 'Berhasil Ganti Pengaturan Absensi';

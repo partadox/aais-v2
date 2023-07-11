@@ -44,8 +44,18 @@
 <script src="<?= base_url() ?>public/assets/plugins/summernote/summernote-bs4.min.js"></script>
 <!-- Datatable init js -->
 <script src="<?= base_url() ?>public/assets/pages/datatables.init.js"></script>
+<!-- Date and Time Picker Booststrap -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js" integrity="sha512-T/tUfKSV1bihCnd+MxKD0Hm1uBBroVYBOYSk1knyvQ9VyZJpc/ALb4P0r6ubwVPSGB2GvjeoMAJJImBG12TiaQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-timepicker/1.14.0/jquery.timepicker.min.js" integrity="sha512-s0SB4i9ezk9SRyV1Glrj/w5xS5ExSxXiN44fQeV9GYOtExbVWnC+mUsUyZdIYv6qXL0xe1qvpe0h1kk56gsgaA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
 
+
+<script>
+    $('.datepicker2').datepicker({
+        format: 'yyyy-mm-dd',
+    });
+    
+</script>
 
 <script>
     const user_id = '<?= session()->get('user_id') ?>'

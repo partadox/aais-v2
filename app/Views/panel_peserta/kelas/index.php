@@ -127,7 +127,10 @@
                         <a href="/bayar/spp?kelas=<?= $data['kelas_id'] ?>" class="btn btn-primary mb-2">
                             <i class="fa fa-cash-register mr-1"></i>Bayar
                         </a>
-                        <button type="button" class="btn btn-info mb-2" onclick="absensi('<?= $data['data_absen'] ?>','<?= $data['kelas_id'] ?>')" ><i class="fa fa-user-graduate mr-1"></i>Absensi</button>
+                        <!-- <button type="button" class="btn btn-info mb-2" onclick="absensi('<?= $data['data_absen'] ?>','<?= $data['kelas_id'] ?>')" ><i class="fa fa-user-graduate mr-1"></i>Absensi</button> -->
+                        <a href="/peserta/absensi-regular?absen=<?= $data['data_absen'] ?>&kelas=<?= $data['kelas_id'] ?>" class="btn btn-info mb-2">
+                            <i class="fa fa-user-graduate mr-1"></i>Absensi
+                        </a>
                         <button type="button" class="btn btn-warning mb-2" onclick="ujian('<?= $data['data_ujian'] ?>','<?= $data['kelas_id'] ?>')" ><i class="fa fa-file mr-1"></i>Ujian</button>
                     </div>
                 </div>
@@ -137,8 +140,45 @@
                     echo '</div><div class="row card-row">'; // close the current row and start a new one after every 3rd card
                 }
             endforeach; ?>
-        </div>
+            <?php
+            foreach ($list_bina as $data) :
+                $nomor++; ?>
+                <div class="col-md-4 mb-3">
+                    <div class="card shadow-lg rounded">
+                        <div class="card-body">
+                            <h5 class="card-title"><?= $nomor ?>. <?= $data['bk_name'] ?></h5>
+                            <p class="card-text">
+                                <strong>Angkatan Perkuliahan:</strong> <?= $data['bk_angkatan'] ?><br>
+                                <strong>Hari:</strong> <?= $data['bk_hari'] ?><br>
+                                <strong>Jam:</strong> <?= $data['bk_waktu'] ?> <?= $data['bk_timezone'] ?><br>
+                                <strong>Metode TM:</strong>
+                                <?php if($data['bk_tm_methode'] == 'ONLINE') { ?>
+                                    <span class="badge badge-primary">ONLINE</span>
+                                <?php } ?>
+                                <?php if($data['bk_tm_methode'] == 'OFFLINE') { ?>
+                                    <span class="badge badge-info">OFFLINE</span>
+                                <?php } ?><br>
+                                <?php if($data['bk_tm_methode'] == 'HYBRID') { ?>
+                                    <span class="badge badge-primary">HYBRID</span>
+                                <?php } ?><br>
+                            </p>
+                        </div>
+                        <div class="card-footer text-left">
+                            <?php if(($data['bk_absen_status'] == 1 && $data['bk_absen_koor'] == $data['bs_peserta']) || ($data['bk_absen_status'] == 1 && $data['bk_absen_methode'] == 'Mandiri')) { ?>
+                                <a href="/peserta/absensi-bina?bs=<?= $data['bs_id'] ?>&bk=<?= $data['bs_kelas'] ?>" class="btn btn-info mb-2">
+                                    <i class="fa fa-user-graduate mr-1"></i>Absensi
+                                </a>
+                            <?php } ?>
+                        </div>
+                    </div>
+                </div>
+                <?php 
+                    if ($nomor % 3 == 0) {
+                        echo '</div><div class="row card-row">'; // close the current row and start a new one after every 3rd card
+                    }
+                endforeach; ?>
     </div>
+</div>
     <div class="viewmodalabsensi"></div>
     <div class="viewmodalujian"></div>
 

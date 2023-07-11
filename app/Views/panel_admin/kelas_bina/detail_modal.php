@@ -1,6 +1,6 @@
 <!-- Modal -->
 <div class="modal fade" id="modaldetail" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
-    <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel"><?= $title ?></h5>
@@ -51,11 +51,18 @@
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="bk_absen_methode" class="col-sm-4 col-form-label">Metode Absen<code>*</code></label>
+                        <label class="col-sm-4 col-form-label">Metode Absensi</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" value="<?= $bina['bk_absen_methode'] ?>" readonly>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="bk_absen_methode" class="col-sm-4 col-form-label">Ganti Metode Absen<code>*</code></label>
                         <div class="col-sm-8">
                             <select class="form-control btn-square" id="bk_absen_methode" name="bk_absen_methode" onchange="showDiv(this)">
-                                <option value="Perwakilan" <?php if ($bina['bk_absen_methode'] == 'Perwakilan') echo "selected"; ?> >Perwakilan</option>
-                                <option value="Mandiri" <?php if ($bina['bk_absen_methode'] == 'Mandiri') echo "selected"; ?> >Mandiri</option>
+                                <option value="<?= $bina['bk_absen_methode'] ?>" readonly> ...PILIH... </option>
+                                <option value="Perwakilan"> Perwakilan</option>
+                                <option value="Mandiri"> Mandiri</option>
                             </select>
                             <div class="invalid-feedback error_bk_absen_methode"></div>
                         </div>
@@ -69,6 +76,31 @@
                                 <?php } ?>
                             </select>
                             <div class="invalid-feedback error_bk_absen_koor"></div>
+                        </div>
+                    </div>
+                    <div id="bk_absen_expired" class="form-group row" style="display: none;">
+                        <label for="bk_absen_koor" class="col-sm-10 col-form-label">Batas Pengisian Absen Mandiri (dalam WITA) <code>*</code></label>
+                        <div class="row ml-1 mr-1">
+                            <div class="col-sm-6">
+                                <div class="input-group" id="datepicker2">
+                                    <input type="text" id="bk_absen_expiredtgl" name="bk_absen_expiredtgl" class="form-control" placeholder="Tahun-Bulan-Tanggal"
+                                        data-date-format="yyyy-mm-dd" data-date-container='#datepicker2'
+                                        data-provide="datepicker" data-date-autoclose="true" value="<?= date("Y-m-d") ?>">
+                                        <div class="input-group-append">
+                                            <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+                                        </div>
+                                    <div class="invalid-feedback error_bk_absen_expiredtgl"></div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="input-group">
+                                    <input id="bk_absen_expiredwaktu" name="bk_absen_expiredwaktu" type="text" class="form-control time ui-timepicker-input">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text"><i class="fa fa-clock"></i></span>
+                                    </div>
+                                </div>
+                                <div class="invalid-feedback error_bk_absen_expiredwaktu"></div>
+                            </div>
                         </div>
                     </div>
                 <?php } ?>
@@ -85,11 +117,17 @@
 </div>
 
 <script>
+    $('#bk_absen_expiredwaktu').timepicker({ 'timeFormat': 'H:i:s' });
     function showDiv(select){
         if(select.value=="Perwakilan"){
             document.getElementById('bk_absen').style.display = "block";
             } else{
             document.getElementById('bk_absen').style.display = "none";
+        }
+        if(select.value=="Mandiri"){
+            document.getElementById('bk_absen_expired').style.display = "block";
+            } else{
+            document.getElementById('bk_absen_expired').style.display = "none";
         }
     } 
     $(document).ready(function() {
@@ -109,6 +147,7 @@
                     bk_absen_status: $('select#bk_absen_status').val(),
                     bk_absen_methode: $('select#bk_absen_methode').val(),
                     bk_absen_koor: $('select#bk_absen_koor').val(),
+                    bk_absen_expired: $('input#bk_absen_expiredtgl').val()+' '+$('input#bk_absen_expiredwaktu').val(),
                 },
                 dataType: "json",
                 beforeSend: function() {

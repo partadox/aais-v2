@@ -167,7 +167,7 @@
 <script>
     $(document).ready(function() {
         $('.js-example-basic-single-edit').select2({
-            
+            dropdownParent: $('#modaledit')
         });
         $('.formedit').submit(function(e) {
             e.preventDefault();

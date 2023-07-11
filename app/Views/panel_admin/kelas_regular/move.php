@@ -48,7 +48,7 @@
 <script>
     $(document).ready(function() {
         $('.js-example-basic-single-pindah').select2({
-            
+            dropdownParent: $('#modalpindah')
         });
         $('.formedit').submit(function(e) {
             e.preventDefault();
