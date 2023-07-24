@@ -154,6 +154,7 @@ $routes->get('kelas-regular/export', 'Admin\KelasReg::export', ["filter" => "aut
 $routes->post('kelas-regular/move', 'Admin\KelasReg::move', ["filter" => "authweb:1-2-3-7"]);
 $routes->post('kelas-regular/delete-peserta', 'Admin\KelasReg::delete_peserta', ["filter" => "authweb:1-2-3-7"]);
 $routes->post('kelas-regular/update-atur-absensi', 'Admin\KelasReg::update_atur_absensi', ["filter" => "authweb:1-2-3-7"]);
+$routes->post('kelas-regular/update-atur-absensi-config', 'Admin\KelasReg::update_atur_absensi_config', ["filter" => "authweb:1-2-3-7"]);
 /*--- Kelas Pembinaan---*/
 $routes->get('kelas-bina', 'Admin\KelasBina::index', ["filter" => "authweb:1-2-3-7"]);
 $routes->post('kelas-bina/input', 'Admin\KelasBina::input', ["filter" => "authweb:1-2-3-7"]);

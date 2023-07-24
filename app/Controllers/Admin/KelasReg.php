@@ -869,4 +869,40 @@ class KelasReg extends BaseController
         echo json_encode($msg);
         
     }
+
+    public function update_atur_absensi_config()
+    {
+        $kelas_id           = $this->request->getVar('kelas_id');
+        $kelas              = $this->kelas->find($kelas_id);
+        $config_absen       = $this->request->getVar('config_absen');
+        if ($config_absen == 1) {
+            $config_absen_txt   = 'TERLIHAT';
+            $config_absen       = 1;
+        } else {
+            $config_absen_txt   = 'TIDAK TERLIHAT';
+            $config_absen       = NULL;
+        }
+        
+
+        if ($this->request->isAJAX()) {
+            $updatedata = [
+                'config_absen'  => $config_absen,
+            ];
+
+            $this->kelas->update($kelas_id, $updatedata);
+
+            $aktivitas = 'Mengubah Pengaturan Metode Absen Menjadi Mandiri di Kelas' . $kelas['nama_kelas'] . ' Dapat Dilihat Pengajar = ' . $config_absen_txt ;
+
+            $this->logging('Admin', 'BERHASIL', $aktivitas);
+
+            $msg = [
+                'sukses' => [
+                    'link' => '/kelas-regular/detail?id='.$kelas_id
+                ]
+            ];
+        }
+
+        echo json_encode($msg);
+        
+    }
 }

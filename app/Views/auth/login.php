@@ -54,8 +54,8 @@
                             <p>Ingat saya</p>
                         </div>
                         <input id="login" type="submit" value="Masuk"></input>
-                        <h6 id="formFooter"><a>Ingin daftar di program Al-Haqq? Silahkan hubungi admin untuk pembuatan akun.</a></h6>
-                        <p id="formFooter"><a>Lupa Username atau Password? Hubungi Admin</a></p>
+                        <h6 id="formFooter"><a href="https://wa.me/6287878900051" target="_blank">Silahkan hubungi admin untuk pendaftaran, pembuatan akun, dan info selengkapnya.</a></h6>
+                        <p id="formFooter"><a href="https://wa.me/6287878900051" target="_blank">Lupa Username atau Password? Hubungi Admin</a></p>
                         <p id="formFooter"><a href="https://alhaqq.or.id/">Kembali ke Website Depan alhaqq.or.id</a></p>
                     <?= form_close() ?>
                 </div>

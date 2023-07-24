@@ -15,10 +15,12 @@
 </a>
 
 <br>
+<?php if($detail_kelas[0]['config_absen'] == 1) { ?>
+    <a> 
+        <button type="button" class="btn btn-warning mb-3" onclick="aturAbsen('<?= $detail_kelas[0]['kelas_id'] ?>')" ><i class=" fa fa-screwdriver"></i> Pengaturan Absensi Mandiri</button>
+    </a>
+<?php } ?>
 
-<a> 
-    <button type="button" class="btn btn-warning mb-3" onclick="aturAbsen('<?= $detail_kelas[0]['kelas_id'] ?>')" ><i class=" fa fa-screwdriver"></i> Pengaturan Absensi Mandiri</button>
-</a>
 
 <h5 style="text-align:center;">Kelas <?= $detail_kelas[0]['nama_kelas'] ?></h5>
 <h6 style="text-align:center;"><?= $detail_kelas[0]['hari_kelas'] ?>, <?= $detail_kelas[0]['waktu_kelas'] ?> - <?= $detail_kelas[0]['metode_kelas'] ?></h6>
