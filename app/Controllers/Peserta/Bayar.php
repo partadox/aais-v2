@@ -93,8 +93,8 @@ class Bayar extends BaseController
         $key        = $this->konfigurasi->flip_key();
         $secret_key = $key->flip_key;
 
-        // curl_setopt($ch, CURLOPT_URL, "https://bigflip.id/api/v2/general/banks?code=".$bank);
-        curl_setopt($ch, CURLOPT_URL, "https://bigflip.id/big_sandbox_api/v2/general/banks?code=".$bank);
+        curl_setopt($ch, CURLOPT_URL, "https://bigflip.id/api/v2/general/banks?code=".$bank);
+        //curl_setopt($ch, CURLOPT_URL, "https://bigflip.id/big_sandbox_api/v2/general/banks?code=".$bank);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
         curl_setopt($ch, CURLOPT_HEADER, FALSE);
 
@@ -121,7 +121,8 @@ class Bayar extends BaseController
         $byr        = ['keterangan_bayar_admin'=>$title];
         $this->bayar->update($bayar_id, $byr);
 
-        curl_setopt($ch, CURLOPT_URL, "https://bigflip.id/big_sandbox_api/v2/pwf/bill");
+        curl_setopt($ch, CURLOPT_URL, "https://bigflip.id/api/v2/pwf/bill");
+        // curl_setopt($ch, CURLOPT_URL, "https://bigflip.id/big_sandbox_api/v2/pwf/bill");
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
         curl_setopt($ch, CURLOPT_HEADER, FALSE);
 
