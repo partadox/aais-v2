@@ -34,7 +34,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="submit" class="btn btn-primary btnsimpan"><i class="fa fa-share-square"></i> Simpan</button>
+                <button type="submit" class="btn btn-primary btnsimpan" style="display: none;" id="btnsubmit"><i class="fa fa-share-square"></i> Simpan</button>
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
             </div>
 
@@ -48,10 +48,12 @@
     document.getElementById('tm').addEventListener('change', function() {
         var tmValue = this.value;
         var divNote = document.getElementById('divNote');
+        var btnsubmit = document.getElementById('btnsubmit');
         var textarea = document.getElementById('note');
 
         if (tmValue) {
         divNote.style.display = 'block';
+        btnsubmit.style.display = 'block';
 
         // Access the corresponding note from the tmNotes object and update the textarea
         textarea.value = tmNotes[tmValue];
