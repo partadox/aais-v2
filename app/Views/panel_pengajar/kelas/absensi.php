@@ -59,6 +59,7 @@ if (session()->getFlashdata('pesan_sukses')) {
             <th width="3%">No.</th>
             <th width="7%">NIS</th>
             <th width="12%"class="name-col" >Nama</th>
+            <th width="2%">Note</th>
             <?php for($i = 1; $i <= 16; $i++): ?>
                 <th width="3%"><?= $i ?>
                     <button type="button" class="btn btn-sm btn-warning" onclick="tm('tm<?=$i?>', <?= $detail_kelas[0]['kelas_id'] ?>, <?= $detail_kelas[0]['data_absen_pengajar'] ?>)" ><i class=" fa fa-edit"></i></button> 
@@ -81,6 +82,9 @@ if (session()->getFlashdata('pesan_sukses')) {
                 <?= $data['nama_peserta'] ?>
                 <?php if($data['status_aktif_peserta'] == 'OFF') { ?></del><?php } ?>
                 <?php if($data['status_aktif_peserta'] == 'OFF') { ?><a class="btn btn-sm btn-danger">OFF</a><?php } ?>
+                </td>
+                <td>
+                    <button type="button" class="mt-2 btn btn-info btn-sm"  onclick="note('<?= $data['absen_peserta_id']?>')"><i class="fa fa-file"></i> Note</button>
                 </td>
                 <?php
                 $total = 0;
@@ -160,6 +164,9 @@ if (session()->getFlashdata('pesan_sukses')) {
 <div class="viewmodalaturabsen">
 </div>
 
+<div class="editNote">
+</div>
+
 <script>
     function tm(tm, kelas_id, data_absen_pengajar) {
         $.ajax({
@@ -192,6 +199,23 @@ if (session()->getFlashdata('pesan_sukses')) {
                 if (response.sukses) {
                     $('.viewmodalaturabsen').html(response.sukses).show();
                     $('#modalatur').modal('show');
+                }
+            }
+        });
+    }
+
+    function note(absen_peserta_id) {
+        $.ajax({
+            type: "post",
+            url: "<?= site_url('/pengajar/absensi-note')?>",
+            data: {
+                absen_peserta_id: absen_peserta_id
+            },
+            dataType: "json",
+            success: function(response) {
+                if (response.sukses) {
+                    $('.editNote').html(response.sukses).show();
+                    $('#modalNote').modal('show');
                 }
             }
         });

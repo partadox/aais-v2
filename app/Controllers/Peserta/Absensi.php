@@ -281,21 +281,32 @@ class Absensi extends BaseController
             $methode   = $this->request->getVar('methode');
             $bk_id     = $this->request->getVar('bk_id');
             $bs_id     = $this->request->getVar('bs_id');
+            $tm        = $this->request->getVar('tm');
 
             $kelas     = $this->bina_kelas->find($bk_id);
-            $list      = $this->bina_peserta->peserta_kelas($bk_id);
-            
-            $list_tm    = $this->bina_absen_peserta->tm_kelas($bk_id);
-                
-            if (!$list_tm) {
-                $tm = 1;
+            $list1     = $this->bina_absen_peserta->absensi_peserta_tm($bk_id, $tm);
+            $list2     = $this->bina_peserta->peserta_kelas($bk_id);
+
+            if (count($list1) == count($list2)) {
+                $list      = $this->bina_absen_peserta->absensi_peserta_tm($bk_id, $tm);
+                $func      = 'update';
+                $tgl_tm    = substr($list[0]['bas_tm_dt'], 0, 10);
             } else {
-                $highest_tm = max(array_column($list_tm, 'bas_tm'));
-                $tm         = $highest_tm + 1;
+                $list      = $this->bina_peserta->peserta_kelas($bk_id);
+                $func      = 'create';
+                $tgl_tm    = date('Y-m-d');
             }
+            //var_dump($list);
+            // $list_tm    = $this->bina_absen_peserta->tm_kelas($bk_id);
+                
+            // if (!$list_tm) {
+            //     $tm = 1;
+            // } else {
+            //     $highest_tm = max(array_column($list_tm, 'bas_tm'));
+            //     $tm         = $highest_tm + 1;
+            // }
 
             if ($methode == 'Perwakilan') {
-                
                 
                 $data = [
                     'title' => 'Absensi Peserta Kelas ' . $kelas['bk_name'] . ' (Perwakilan)',
@@ -303,6 +314,8 @@ class Absensi extends BaseController
                     'kelas' => $kelas,
                     'bs_id' => $bs_id,
                     'list'  => $list,
+                    'func'  => $func,
+                    'tgl_tm'=> $tgl_tm
                 ];
     
                 $msg = [
@@ -368,33 +381,60 @@ class Absensi extends BaseController
 
         if ($metode == 'Perwakilan') {
             $jml_psrt   = $this->request->getPost('jml_psrt');
+            $func       = $this->request->getVar('func');
             $total      = count($jml_psrt);
     
             $this->db->transBegin();
             $results = [];
-            for ($i=1; $i<=$total; $i++){
-                $var_tm = 'check' . $i;
-                $var_psrt = 'psrt' . $i;
-                $bas_nsid = intval($this->request->getPost($var_psrt)); 
-    
-                $check = $this->request->getPost($var_tm);
-                if ($check == NULL) {
-                    $this->db->transRollback();
-                    $this->session->setFlashdata('pesan_error', 'ERROR! Terdapat data peserta pada form absensi belum diisi!, Pilih Hadir atau Tidak Hadir');
-                    return redirect()->to($url_kelas);
+            if ($func == 'create') {
+                for ($i=1; $i<=$total; $i++){
+                    $var_tm = 'check' . $i;
+                    $var_psrt = 'psrt' . $i;
+                    $bas_nsid = intval($this->request->getPost($var_psrt)); 
+        
+                    $check = $this->request->getPost($var_tm);
+                    if ($check == NULL) {
+                        $this->db->transRollback();
+                        $this->session->setFlashdata('pesan_error', 'ERROR! Terdapat data peserta pada form absensi belum diisi!, Pilih Hadir atau Tidak Hadir');
+                        return redirect()->to($url_kelas);
+                    }
+                    $new = [
+                        'bas_nsid' => $bas_nsid,
+                        'bas_bkid' => $bas_bkid,
+                        'bas_tm'   => $bas_tm,
+                        'bas_tm_dt'=> $bas_tm_dt,
+                        'bas_absen'=> $check,
+                        'bas_create'=> date('Y-m-d H:i:s'),
+                        'bas_by'    => $peserta['nis'] .' - '. $peserta['nama_peserta'],
+                    ]; 
+        
+                    $results[] = $this->bina_absen_peserta->insert($new);
                 }
-                $new = [
-                    'bas_nsid' => $bas_nsid,
-                    'bas_bkid' => $bas_bkid,
-                    'bas_tm'   => $bas_tm,
-                    'bas_tm_dt'=> $bas_tm_dt,
-                    'bas_absen'=> $check,
-                    'bas_create'=> date('Y-m-d H:i:s'),
-                    'bas_by'    => $peserta['nis'] .' - '. $peserta['nama_peserta'],
-                ]; 
-    
-                $results[] = $this->bina_absen_peserta->insert($new);
+            } elseif ($func == 'update') {
+                $jml_basid  = $this->request->getPost('jml_basid');
+                $total      = count($jml_basid);
+                for ($i=1; $i<=$total; $i++){
+                    $var_tm    = 'check' . $i;
+                    $var_basid = 'basid' . $i;
+                    $bas_id    = intval($this->request->getPost($var_basid));
+        
+                    $check = $this->request->getPost($var_tm);
+                    if ($check == NULL) {
+                        $this->db->transRollback();
+                        $this->session->setFlashdata('pesan_error', 'ERROR! Terdapat data peserta pada form absensi belum diisi!, Pilih Hadir atau Tidak Hadir');
+                        return redirect()->to($url_kelas);
+                    }
+                    $updateData = [
+                        'bas_tm_dt'=> $bas_tm_dt,
+                        'bas_absen'=> $check,
+                        'bas_create'=> date('Y-m-d H:i:s'),
+                        'bas_by'    => $peserta['nis'] .' - '. $peserta['nama_peserta'],
+                    ]; 
+        
+                    $results[] = $this->bina_absen_peserta->update($bas_id, $updateData);
+                }
             }
+            
             if (in_array(FALSE, $results, true)) {
                 $this->db->transRollback();
                 $aktivitas = "Penyimpanan Absen pada ".$kelas['bk_name']." ada yg Gagal (Perwakilan)";

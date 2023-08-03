@@ -40,10 +40,18 @@ if (session()->getFlashdata('pesan_sukses')) {
 <h5 style="text-align:center;"><?= $kelas['bk_name'] ?></h5>
 <h6 style="text-align:center;"><?= $kelas['bk_hari'] ?>, <?= $kelas['bk_waktu'] ?> - <?= $kelas['bk_tm_methode'] ?></h6>
 
+<hr>
+
 <?php if ($kelas['bk_absen_status'] == 1 && $kelas['bk_absen_methode'] == 'Perwakilan'  && $kelas['bk_absen_koor'] == $peserta_id): ?>
     <div class="row">
-        <div class="col text-center">
-            <button style="text-align:center;" type="button" class="btn btn-info mb-2" onclick="tm('Perwakilan', '<?= $kelas['bk_id'] ?>', '<?= $bs_id ?>')"><i class=" fa fa-edit"></i> Isi Absen sbg Koordinator</button>
+        <div class="col d-flex flex-column align-items-center justify-content-center mb-4">
+            <label for="absen_pilih">Pilih TM Absen yang Akan Diisi <br> <code>(Anda Sebagai Koordinator Kelas)</code></label>
+            <select onchange="tm('Perwakilan', <?= $kelas['bk_id'] ?>, <?= $bs_id ?>, this.value);" class="form-control text-center col-2" name="absen_pilih" id="absen_pilih">
+                <option value="" disabled selected>--PILIH TM--</option>
+                <?php for($i = 1; $i <= $kelas['bk_tm_total']; $i++): ?>
+                    <option value="<?= $i ?>">TM-<?= $i ?></option>
+                <?php endfor; ?> 
+            </select>
         </div>
     </div>
 <?php endif; ?>
@@ -51,7 +59,7 @@ if (session()->getFlashdata('pesan_sukses')) {
 <?php if ($kelas['bk_absen_status'] == 1 && $kelas['bk_absen_methode'] == 'Mandiri' && strtotime(date('Y-m-d H:i:s')) <= strtotime($kelas['bk_absen_expired'])): ?>
     <div class="row">
         <div class="col text-center">
-            <button type="button" class="btn btn-success mb-2" onclick="tm('Mandiri', '<?= $kelas['bk_id'] ?>', '<?= $bs_id ?>')"><i class=" fa fa-edit"></i> Isi Absen Mandiri</button> <br>
+            <button type="button" class="btn btn-success mb-2" onclick="tm('Mandiri', '<?= $kelas['bk_id'] ?>', '<?= $bs_id ?>', '0')"><i class=" fa fa-edit"></i> Isi Absen Mandiri</button> <br>
             Batas Waktu: <p style="color: red;"><?= shortdate_indo(substr($kelas['bk_absen_expired'],0,10)) ?>, <?= substr($kelas['bk_absen_expired'],11,5) ?> WITA</p>
         </div>
     </div>
@@ -85,7 +93,7 @@ if (session()->getFlashdata('pesan_sukses')) {
                     <div class="card-body">
                         <h6>
                         <strong>Catatan: </strong> <?= $data['bas_note'] ?> <br>
-                        <button type="button" class="mt-2 btn btn-warning"  onclick="note('<?= $data['bas_id'] ?>')"><i class="fa fa-edit"></i> Edit Catatan TM-<?= $data['bas_tm'] ?></button>
+                        <button type="button" class="mt-2 btn btn-warning"  onclick="note('<?=$data['bas_id']?>')"><i class="fa fa-edit"></i> Edit Catatan TM-<?= $data['bas_tm'] ?></button>
                         <hr>
                         <strong>Tgl Isi Absen: <br> </strong> <?= shortdate_indo(substr($data['bas_create'],0,10)) ?> <?= substr($data['bas_create'],11,5) ?>,  <br> oleh: <?= $data['bas_by'] ?>
                         </h6>
@@ -100,7 +108,7 @@ if (session()->getFlashdata('pesan_sukses')) {
 <div class="editNote"></div>
 
 <script>
-    function tm(methode, bk_id, bs_id) {
+    function tm(methode, bk_id, bs_id, tm) {
         $.ajax({
             type: "post",
             url: "<?= site_url('peserta/absensi-bina-input') ?>",
@@ -108,6 +116,7 @@ if (session()->getFlashdata('pesan_sukses')) {
                 methode: methode, 
                 bk_id : bk_id,
                 bs_id : bs_id,
+                tm: tm,
             },
             dataType: "json",
             success: function(response) {
@@ -122,7 +131,7 @@ if (session()->getFlashdata('pesan_sukses')) {
     function note(bas_id) {
         $.ajax({
             type: "post",
-            url: "<?= site_url('peserta/absensi-bina-editnote') ?>",
+            url: "<?=site_url('peserta/absensi-bina-editnote')?>",
             data: {
                 bas_id: bas_id
             },

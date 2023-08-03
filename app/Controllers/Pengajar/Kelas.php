@@ -254,4 +254,52 @@ class Kelas extends BaseController
         echo json_encode($msg);
         
     }
+
+    public function absensi_note()
+    {
+        if ($this->request->isAJAX()) {
+
+            $absen_peserta_id   = $this->request->getVar('absen_peserta_id');
+            $absen              = $this->absen_peserta->find($absen_peserta_id);
+            $tm_notes           = [];
+
+            for ($i = 1; $i <= 16; $i++) {
+                $tm_notes[$i] = $absen["note_ps_tm" . $i];
+            }
+
+            $data = [
+                'title'            => 'Note Peserta',
+                'absen_peserta_id' => $absen_peserta_id,
+                'absen'            => $absen,
+                'tm_notes'         => json_encode($tm_notes),
+            ];
+            $msg = [
+                'sukses' => view('panel_pengajar/kelas/edit-note', $data)
+            ];
+            echo json_encode($msg);
+        }
+    }
+
+    public function update_absensi_note()
+    {
+        if ($this->request->isAJAX()) {
+            $absen_peserta_id    = $this->request->getVar('absen_peserta_id');
+            $tm                  = $this->request->getVar('tm');
+            $note_ps_tm          = 'note_ps_tm'.$tm;
+
+            $absen               = $this->absen_peserta->find($absen_peserta_id );
+
+            $update_data = [
+                $note_ps_tm  => str_replace(array("\r", "\n"), ' ',$this->request->getVar('note'))
+            ];
+            $this->absen_peserta->update($absen_peserta_id, $update_data);
+
+            $msg = [
+                'sukses' => [
+                    'link' => '/pengajar/absensi?kelas='.$absen['bckp_absen_peserta_kelas']
+                ]
+            ];
+        }
+        echo json_encode($msg);
+    }
 }

@@ -12,16 +12,13 @@
             ?>
             <?= csrf_field(); ?>
             <div class="modal-body">
-            <?php if ($tm > $kelas['bk_tm_total']): ?>
-                <h5>Sudah Terisi Sesuai Jumlah Max. TM</h5>
-            <?php endif; ?>
-            <?php if ($tm <= $kelas['bk_tm_total']): ?>
                 <div class="form-group row">
                     <label class="col-sm-2 col-form-label">Tatap Muka <code>*</code></label>
                     <div class="col-sm-8">
                         <input type="hidden" id="bk_id" name="bk_id" value="<?= $kelas['bk_id'] ?>" readonly>
                         <input type="hidden" id="bs_id" name="bs_id" value="<?= $bs_id ?>" readonly>
                         <input type="hidden" id="metode" name="metode" value="Perwakilan" readonly>
+                        <input type="hidden" id="func" name="func" value="<?= $func ?>" readonly>
                         <input class="form-control" type="text" id="bas_tm" name="bas_tm" value="<?= $tm ?>" readonly>
                     </div>
                 </div>
@@ -32,7 +29,7 @@
                         <div class="input-group" id="datepicker2">
                             <input type="text" id="bas_tm_dt" name="bas_tm_dt" class="form-control" placeholder="Tahun-Bulan-Tanggal"
                                 data-date-format="yyyy-mm-dd" data-date-container='#datepicker2'
-                                data-provide="datepicker" data-date-autoclose="true" value="<?= date("Y-m-d") ?>">
+                                data-provide="datepicker" data-date-autoclose="true" value="<?= $tgl_tm ?>">
                                 <div class="input-group-append">
                                     <span class="input-group-text"><i class="fa fa-calendar"></i></span>
                                 </div>
@@ -81,6 +78,9 @@
                                 <td>
                                     <?= $data['nis'] ?>
                                     <input type="hidden" name="jml_psrt[]" value="<?= $data['bs_id'] ?>">
+                                    <?php if(isset($data['bas_id'])) : ?>
+                                        <input type="hidden" name="jml_basid[]" value="<?= $data['bas_id'] ?>">
+                                    <?php endif; ?>
                                 </td>
                                 <td>
                                     <?php if($data['bs_status_peserta'] == 'OFF') : ?>
@@ -91,13 +91,18 @@
                                         </del>
                                         <a class="btn btn-sm btn-danger">OFF</a>
                                     <?php endif; ?>
+
                                     <input type="hidden" name="psrt<?= $counter ?>" value="<?= $data['bs_id'] ?>">
+
+                                    <?php if(isset($data['bas_id'])) : ?>
+                                        <input type="hidden" name="basid<?= $counter ?>" value="<?= $data['bas_id'] ?>">
+                                    <?php endif; ?>
                                 </td>
                                 <td>
-                                    <input type="radio" name="check<?= $counter ?>" value="1">
+                                    <input type="radio" name="check<?= $counter ?>" value="1" <?php if(isset($data['bas_absen']) && $data['bas_absen'] == '1') : ?> checked <?php endif;?> >
                                 </td>
                                 <td>
-                                    <input type="radio" name="check<?= $counter ?>" value="0" checked>
+                                    <input type="radio" name="check<?= $counter ?>" value="0" <?php if(isset($data['bas_absen'])&& $data['bas_absen'] == '0') : ?> checked <?php endif;?> >
                                 </td>
                             </tr>
                             <?php endforeach; ?>
@@ -105,10 +110,9 @@
                     </table>
                 </div>
             </div>
-            <?php endif; ?>
             <div class="modal-footer">
                 <?php if ($tm <= $kelas['bk_tm_total']): ?>
-                    <button type="submit" class="btn btn-primary btnsimpan"><i class="fa fa-share-square"></i> Simpan</button>
+                    <button type="submit" onclick="validateForm()" class="btn btn-primary btnsimpan"><i class="fa fa-share-square"></i> Simpan</button>
                 <?php endif; ?>
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
             </div>
@@ -116,3 +120,21 @@
         </div>
     </div>
 </div>
+<script>
+    function validateForm() {
+        var radioSets = <?php echo json_encode(count($list)); ?>; // Assuming $list is your PHP variable
+
+        for (var i = 1; i <= radioSets; i++) {
+            var radio1 = document.querySelector('input[name="check' + i + '"][value="1"]');
+            var radio0 = document.querySelector('input[name="check' + i + '"][value="0"]');
+            
+            if (!radio1.checked && !radio0.checked) {
+                radio1.setAttribute('required', 'required');
+                radio0.setAttribute('required', 'required');
+            } else {
+                radio1.removeAttribute('required');
+                radio0.removeAttribute('required');
+            }
+        }
+    }
+</script>

@@ -336,6 +336,8 @@ $routes->post('pengajar/atur-absensi', 'Pengajar\Kelas::atur_absensi', ["filter"
 $routes->post('pengajar/input-absensi', 'Pengajar\Kelas::input_absensi', ["filter" => "authweb:5-6"]);
 $routes->post('pengajar/save-absensi', 'Pengajar\Kelas::save_absensi', ["filter" => "authweb:5-6"]);
 $routes->post('pengajar/update-atur-absensi', 'Pengajar\Kelas::update_atur_absensi', ["filter" => "authweb:5-6"]);
+$routes->post('pengajar/absensi-note', 'Pengajar\Kelas::absensi_note', ["filter" => "authweb:5-6"]);
+$routes->post('pengajar/update-absensi-note', 'Pengajar\Kelas::update_absensi_note', ["filter" => "authweb:5-6"]);
 /*--- Biodata Pengajar---*/
 $routes->get('biodata-pengajar', 'Pengajar\Biodata::index', ["filter" => "authweb:5-6"]);
 $routes->post('biodata-pengajar/edit-password', 'Pengajar\Biodata::edit_password', ["filter" => "authweb:5-6"]);

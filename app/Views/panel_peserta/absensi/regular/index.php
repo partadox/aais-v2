@@ -84,7 +84,7 @@ if (session()->getFlashdata('pesan_sukses')) {
                     <div class="card-body">
                         <h6>
                         <strong>Catatan: </strong> <?= $absensi[$note_ps_tm] ?> <br>
-                        <button type="button" class="mt-2 btn btn-warning"  onclick="note('<?= $absensi['absen_peserta_id'] ?>', '<?= $note_ps_tm ?>')"><i class="fa fa-edit"></i> Edit Catatan TM-<?= $i ?></button>
+                        <!-- <button type="button" class="mt-2 btn btn-warning"  onclick="note('$absensi['absen_peserta_id']', '$note_ps_tm')"><i class="fa fa-edit"></i> Edit Catatan TM-$i</button> -->
                     </div>
                 </div>
             </div>
@@ -115,23 +115,23 @@ if (session()->getFlashdata('pesan_sukses')) {
         });
     }
 
-    function note(absen_peserta_id, note_ps_tm) {
-        $.ajax({
-            type: "post",
-            url: "<?= site_url('peserta/absensi-regular-editnote') ?>",
-            data: {
-                absen_peserta_id: absen_peserta_id,
-                note_ps_tm: note_ps_tm
-            },
-            dataType: "json",
-            success: function(response) {
-                if (response.sukses) {
-                    $('.editNote').html(response.sukses).show();
-                    $('#modalNote').modal('show');
-                }
-            }
-        });
-    }
+    // function note(absen_peserta_id, note_ps_tm) {
+    //     $.ajax({
+    //         type: "post",
+    //         url: "site_url('peserta/absensi-regular-editnote')",
+    //         data: {
+    //             absen_peserta_id: absen_peserta_id,
+    //             note_ps_tm: note_ps_tm
+    //         },
+    //         dataType: "json",
+    //         success: function(response) {
+    //             if (response.sukses) {
+    //                 $('.editNote').html(response.sukses).show();
+    //                 $('#modalNote').modal('show');
+    //             }
+    //         }
+    //     });
+    // }
 </script>
 
 <?= $this->endSection('isi') ?>

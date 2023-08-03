@@ -14,6 +14,7 @@ class Model_bina_absen_peserta extends Model
     {
         return $this->table('bina_absen_peserta')
         ->where('bas_nsid', $bs_id)
+        ->orderBy('bas_tm', 'ASC')
         ->get()
         ->getResultArray();
     }
@@ -25,5 +26,16 @@ class Model_bina_absen_peserta extends Model
             ->where('bas_bkid', $bk_id)
             ->distinct()
             ->get()->getResultArray();
+    }
+
+    public function absensi_peserta_tm($bk_id, $tm)
+    {
+        return $this->table('bina_peserta')
+        ->join('bina_peserta', 'bina_peserta.bs_id = bina_absen_peserta.bas_nsid')
+        ->join('peserta', 'peserta.peserta_id = bina_peserta.bs_peserta')
+        ->where('bas_bkid', $bk_id)
+        ->where('bas_tm', $tm)
+        ->get()
+        ->getResultArray();
     }
 }
