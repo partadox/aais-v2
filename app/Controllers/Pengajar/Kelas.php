@@ -262,6 +262,7 @@ class Kelas extends BaseController
             $absen_peserta_id   = $this->request->getVar('absen_peserta_id');
             $absen              = $this->absen_peserta->find($absen_peserta_id);
             $tm_notes           = [];
+            $peserta            = $this->request->getVar('nis') . ' - ' . $this->request->getVar('nama');
 
             for ($i = 1; $i <= 16; $i++) {
                 $tm_notes[$i] = $absen["note_ps_tm" . $i];
@@ -272,6 +273,7 @@ class Kelas extends BaseController
                 'absen_peserta_id' => $absen_peserta_id,
                 'absen'            => $absen,
                 'tm_notes'         => json_encode($tm_notes),
+                'peserta'          => $peserta,
             ];
             $msg = [
                 'sukses' => view('panel_pengajar/kelas/edit-note', $data)

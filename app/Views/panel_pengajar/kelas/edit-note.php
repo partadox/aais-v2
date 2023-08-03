@@ -14,7 +14,7 @@
                 <input type="hidden" class="form-control" name="absen_peserta_id" id="absen_peserta_id" value="<?= $absen['absen_peserta_id'] ?>"  readonly>
                 <div class="form-group row">
                     <label for="" class="col-3 col-form-label">Peserta</label>
-                    <input type="text" class="col-7 form-control" readonly value="A92145 - Arta">
+                    <input type="text" class="col-7 form-control" readonly value="<?= $peserta ?>">
                 </div>
                 <div class="form-group row">
                     <label for="" class="col-3 col-form-label">TM</label>
