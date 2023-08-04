@@ -217,6 +217,8 @@ class Bayar extends BaseController
             'waktu_bayar'               => date("H:i:s"),
             'tgl_bayar_konfirmasi'      => '1000-01-01',
             'waktu_bayar_konfirmasi'    => '00:00:00',
+            'tgl_bayar_dl'              => $expired_waktu->format('Y-m-d'),
+            'waktu_bayar_dl'            => $expired_waktu->format('H:i:s'),
             'keterangan_bayar'          => $keterangan_bayar,
         ];
 
