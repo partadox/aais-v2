@@ -163,18 +163,11 @@
         </div>
     </div>
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const copyButton = document.getElementById("copy");
-            const vaInput = document.getElementById("vaCopy");
+        const vaCopy = document.getElementById("vaCopy");
+        const copyButton = document.getElementById("copy");
 
-            copyButton.addEventListener("click", function () {
-                vaInput.select();
-                vaInput.setSelectionRange(0, 99999); // For mobile devices
-                document.execCommand("copy");
-
-                // Update the text of the button
-                copyButton.innerHTML = '<i class="fas fa-check"></i> VA dicopy';
-            });
+        copyButton.addEventListener("click", function() {
+        navigator.clipboard.writeText(vaCopy.value);
         });
         function cardSearch() {
             // Declare variables
