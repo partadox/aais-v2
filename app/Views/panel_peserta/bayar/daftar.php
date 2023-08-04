@@ -413,12 +413,15 @@
                             confirmButtonText: 'Tutup',
                             allowOutsideClick: false,
                             didOpen: () => {
-                                $('#copy').click(function(){
-                                    let $temp = $("<input>");
-                                    $("body").append($temp);
-                                    $temp.val($('#va').text()).select();
-                                    document.execCommand("copy");
-                                    $temp.remove();
+                                $('#copy').click(function () {
+                                    const vaValue = '${va}';
+                                    const tempInput = document.createElement('input');
+                                    tempInput.value = vaValue;
+                                    document.body.appendChild(tempInput);
+                                    tempInput.select();
+                                    tempInput.setSelectionRange(0, 99999); // For mobile devices
+                                    document.execCommand('copy');
+                                    document.body.removeChild(tempInput);
 
                                     // Update the text of the button
                                     $(this).html('<i class="fas fa-check"></i> VA dicopy');

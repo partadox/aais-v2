@@ -628,7 +628,7 @@ class Pembayaran extends BaseController
                 ->setCellValue('Q' . $row, $data->validator)
                 ->setCellValue('R' . $row, $data->tgl_bayar_konfirmasi)
                 ->setCellValue('S' . $row, $data->waktu_bayar_konfirmasi)
-                ->setCellValue('T' . $row, $data->keterangan_bayar_admin.$bill)
+                ->setCellValue('T' . $row, $data->keterangan_bayar_admin)
                 ->setCellValue('U' . $row, $data->awal_bayar)
                 ->setCellValue('V' . $row, $data->awal_bayar_daftar)
                 ->setCellValue('W' . $row, $data->awal_bayar_spp1)
