@@ -413,7 +413,7 @@
                             confirmButtonText: 'Tutup',
                             allowOutsideClick: false,
                             didOpen: () => {
-                                const vaValue = '${va}';
+                                const vaValue = va;
 
                                 $('#copy').click(function () {
                                     const tempInput = document.createElement('input');

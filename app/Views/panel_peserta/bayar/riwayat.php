@@ -89,10 +89,9 @@
                         <?php if($data['metode'] == 'flip') { ?>
                             <strong>Total Transfer: Rp <?= rupiah($data['bill_amount']) ?></strong> <br>
                             <strong>Bank: <?= $data['bill_bank'] ?> </strong> <br>
-                            <strong>VA: <?= $data['bill_va'] ?> </strong>
-                            <input style="display: none;" type="text" id="vaCopy<?= $nomor ?>" value="<?= $data['bill_va'] ?>">
-                            
                             <?php if($data['status_konfirmasi'] == 'Proses') { ?>
+                                <strong>VA: <?= $data['bill_va'] ?> </strong>
+                                <input style="display: none;" type="text" id="vaCopy<?= $nomor ?>" value="<?= $data['bill_va'] ?>">
                                 <br> <strong>Expired: <?= $data['bill_expired'] ?>  </strong> <br>
                             <?php } ?>
                         <?php } ?>
@@ -110,7 +109,7 @@
                                 <a><strong>Infaq:</strong> Rp <?= rupiah($data['awal_bayar_infaq']) ?></a> <br>
                                 <a><strong>Lain:</strong> Rp <?= rupiah($data['awal_bayar_lainnya']) ?></a> 
                                 <?php if($data['metode'] == 'flip') { ?>
-                                    <a><strong>Biaya Transaksi:</strong> Rp <?= rupiah($data['nominal_bayar'] - ($data['awal_bayar_daftar']+$data['awal_bayar_spp1']+$data['awal_bayar_spp2']+$data['awal_bayar_spp3']+$data['awal_bayar_spp4']+$data['awal_bayar_modul']+$data['awal_bayar_infaq']+$data['awal_bayar_lainnya'])) ?></a> 
+                                    <br><a><strong>Biaya Transaksi:</strong> Rp <?= rupiah($data['nominal_bayar'] - ($data['awal_bayar_daftar']+$data['awal_bayar_spp1']+$data['awal_bayar_spp2']+$data['awal_bayar_spp3']+$data['awal_bayar_spp4']+$data['awal_bayar_modul']+$data['awal_bayar_infaq']+$data['awal_bayar_lainnya'])) ?></a> 
                                 <?php } ?>
                             <?php } ?>
                             <?php if($data['status_konfirmasi'] == 'Proses') { ?>
