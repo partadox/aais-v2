@@ -110,7 +110,7 @@
                                 <a><strong>Infaq:</strong> Rp <?= rupiah($data['awal_bayar_infaq']) ?></a> <br>
                                 <a><strong>Lain:</strong> Rp <?= rupiah($data['awal_bayar_lainnya']) ?></a> 
                                 <?php if($data['metode'] == 'flip') { ?>
-                                    <a><strong>Biaya Transaksi:</strong> Rp <?= rupiah($data['nominal_bayar'] - ($data['awal_bayar_daftar']+$data['awal_bayar_spp1']+$data['awal_bayar_spp2']+$data['awal_bayar_spp3']+$data['awal_bayar_spp4']+$data['awal_modul']+$data['awal_infaq']+$data['awal_lainnya'])) ?></a> 
+                                    <a><strong>Biaya Transaksi:</strong> Rp <?= rupiah($data['nominal_bayar'] - ($data['awal_bayar_daftar']+$data['awal_bayar_spp1']+$data['awal_bayar_spp2']+$data['awal_bayar_spp3']+$data['awal_bayar_spp4']+$data['awal_ayar_modul']+$data['awal_ayar_infaq']+$data['awal_ayar_lainnya'])) ?></a> 
                                 <?php } ?>
                             <?php } ?>
                             <?php if($data['status_konfirmasi'] == 'Proses') { ?>
