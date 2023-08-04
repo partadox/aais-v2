@@ -90,8 +90,8 @@
                             <strong>Total Transfer: Rp <?= rupiah($data['bill_amount']) ?></strong> <br>
                             <strong>Bank: <?= $data['bill_bank'] ?> </strong> <br>
                             <strong>VA: <?= $data['bill_va'] ?> </strong>
-                            <input type="hidden" id="vaCopy" value="<?= $data['bill_va'] ?>">
-                            <button id="copy" class="btn btn-success"><i class="fas fa-copy mr-1"></i> Klik utk Copy VA</button> <br>
+                            <input style="display: none;" type="text" id="vaCopy" value="<?= $data['bill_va'] ?>">
+                            <button id="copy" class="btn btn-info btn-sm"><i class="fas fa-copy mr-1"></i> Copy VA</button> <br>
                             <?php if($data['status_konfirmasi'] == 'Proses') { ?>
                                 <strong>Expired: <?= $data['bill_expired'] ?>  </strong> <br>
                             <?php } ?>
