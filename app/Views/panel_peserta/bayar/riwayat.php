@@ -93,7 +93,7 @@
                             <input style="display: none;" type="text" id="vaCopy<?= $nomor ?>" value="<?= $data['bill_va'] ?>">
                             
                             <?php if($data['status_konfirmasi'] == 'Proses') { ?>
-                                <strong>Expired: <?= $data['bill_expired'] ?>  </strong> <br>
+                                <br> <strong>Expired: <?= $data['bill_expired'] ?>  </strong> <br>
                             <?php } ?>
                         <?php } ?>
                         <p class="card-text">
@@ -109,6 +109,9 @@
                                 <a><strong>Modul:</strong> Rp <?= rupiah($data['awal_bayar_modul']) ?></a> <br>
                                 <a><strong>Infaq:</strong> Rp <?= rupiah($data['awal_bayar_infaq']) ?></a> <br>
                                 <a><strong>Lain:</strong> Rp <?= rupiah($data['awal_bayar_lainnya']) ?></a> 
+                                <?php if($data['metode'] == 'flip') { ?>
+                                    <a><strong>Biaya Transaksi:</strong> Rp <?= rupiah($data['nominal_bayar'] - ($data['awal_bayar_daftar']+$data['awal_bayar_spp1']+$data['awal_bayar_spp2']+$data['awal_bayar_spp3']+$data['awal_bayar_spp4']+$data['awal_modul']+$data['awal_infaq']+$data['awal_lainnya'])) ?></a> 
+                                <?php } ?>
                             <?php } ?>
                             <?php if($data['status_konfirmasi'] == 'Proses') { ?>
                                 <button class="btn btn-warning btn-sm mb-2" disabled>Proses</button>

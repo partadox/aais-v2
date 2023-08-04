@@ -413,8 +413,9 @@
                             confirmButtonText: 'Tutup',
                             allowOutsideClick: false,
                             didOpen: () => {
+                                const vaValue = '${va}';
+
                                 $('#copy').click(function () {
-                                    const vaValue = '${va}';
                                     const tempInput = document.createElement('input');
                                     tempInput.value = vaValue;
                                     document.body.appendChild(tempInput);
@@ -425,7 +426,7 @@
 
                                     // Update the text of the button
                                     $(this).html('<i class="fas fa-check"></i> VA dicopy');
-                                });
+                                })
                             },
                                 didClose: () => {
                                 window.location.href = "/daftar";
