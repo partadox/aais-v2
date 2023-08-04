@@ -91,7 +91,7 @@
                             <strong>Bank: <?= $data['bill_bank'] ?> </strong> <br>
                             <strong>VA: <?= $data['bill_va'] ?> </strong>
                             <input style="display: none;" type="text" id="vaCopy<?= $nomor ?>" value="<?= $data['bill_va'] ?>">
-                            <button id="vaCopy<?= $nomor ?>-copy" class="btn btn-info btn-sm"><i class="fas fa-copy mr-1"></i> Copy VA</button> <br>
+                            
                             <?php if($data['status_konfirmasi'] == 'Proses') { ?>
                                 <strong>Expired: <?= $data['bill_expired'] ?>  </strong> <br>
                             <?php } ?>
@@ -170,9 +170,10 @@
             copyButton.innerHTML = "<i class='fas fa-copy mr-1'></i> Copy VA";
             copyButton.addEventListener("click", function() {
                 navigator.clipboard.writeText(vaCopyElement.value);
+                copyButton.innerHTML = "VA Copied";
             });
 
-            vaCopyElement.parentElement.appendChild(copyButton);
+            vaCopyElement.insertAdjacentElement("afterend", copyButton);
         }
         function cardSearch() {
             // Declare variables
