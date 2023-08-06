@@ -164,11 +164,13 @@ class Bayar extends BaseController
         $kelas_id           = $this->request->getPost('kelas_id');
         $cart_id            = $this->request->getPost('cart_id');
         $keterangan_bayar   = $this->request->getVar('keterangan_bayar');
-        $expired_waktu1     = $this->request->getVar('expired_waktu');
-        $expired_waktu      = \DateTime::createFromFormat('Y-m-d H:i:s', $expired_waktu1);
+        // $expired_waktu1     = $this->request->getVar('expired_waktu');
+        // $expired_waktu      = \DateTime::createFromFormat('Y-m-d H:i:s', $expired_waktu1);
+        $expired_waktu1     = date('Y-m-d H:i:s', strtotime('+1440 minutes', strtotime(date('Y-m-d H:i:s'))));
+        $expired_waktu      = new \DateTime($expired_waktu1);
 
         $peserta            = $this->peserta->find($peserta_id);
-        $peserta_nama       = $peserta['nama_peserta'];
+        $peserta_nama       = $peserta['nis'].' - '.$peserta['nama_peserta'];
         $peserta_email      = $peserta['email'];
         $data_kelas         = $this->kelas->find($kelas_id);
 

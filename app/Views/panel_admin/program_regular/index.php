@@ -26,6 +26,7 @@
                 <th>Biaya Daftar</th>
                 <th>Biaya Modul</th>
                 <th>Status</th>
+                <th>Fitur Ujian</th>
                 <th>Tindakan</th>
             </tr>
         </thead>
@@ -44,7 +45,7 @@
                     <td width="10%">Rp <?= rupiah($data['biaya_bulanan']) ?></td>
                     <td width="10%">Rp <?= rupiah($data['biaya_daftar']) ?></td>
                     <td width="10%">Rp <?= rupiah($data['biaya_modul']) ?></td>
-                    <td width="10%">
+                    <td width="5%">
                         <?php if($data['status_program'] == 'aktif') { ?>
                             <button class="btn btn-success btn-sm" disabled>Aktif</button> 
                         <?php } ?>
@@ -53,9 +54,17 @@
                         <?php } ?>
                     </td>
                     <td width="10%">
+                        <?php if($data['ujian_custom_status'] == NULL) { ?>
+                            <button class="btn btn-primary btn-sm" disabled>Standart</button> 
+                        <?php } ?>
+                        <?php if($data['ujian_custom_status'] != NULL) { ?>
+                            <button class="btn btn-info btn-sm" disabled>Custom</button> 
+                        <?php } ?>
+                    </td>
+                    <td width="10%">
                         <button type="button" class="btn btn-warning" onclick="edit('<?= $data['program_id'] ?>')" >
                         <i class=" fa fa-edit mr-1"></i>Edit</button>
-                    </td>
+                        <a href="/program-regular-ujian-setting?id=<?= $data['program_id'] ?>"  class="btn btn-info ml-2" ><i class=" fa fa-wrench mr-1"></i>Fitur Ujian</a>
                 </tr>
 
             <?php endforeach; ?>

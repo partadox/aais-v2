@@ -36,7 +36,7 @@
                         <select class="form-control btn-square" id="kategori_program" name="kategori_program">
                             <option value="REGULER" selected >REGULER</option>
                             <option value="NON-REGULER">NON-REGULER</option>
-                            <option value="PEMBINAAN">PEMBINAAN</option>
+                            <!-- <option value="PEMBINAAN">PEMBINAAN</option> -->
                         </select>
                     </div>
                 </div>

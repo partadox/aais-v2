@@ -24,7 +24,7 @@ class KelasBina extends BaseController
         $list_angkatan      = $this->bina_kelas->list_unik_angkatan();
         $list_kelas         = $this->bina_kelas->list($angkatan);
         $data = [
-            'title'             => 'Manajamen Kelas Non-Regular Angkatan ' . $angkatan,
+            'title'             => 'Manajamen Kelas Pembinaan Angkatan ' . $angkatan,
             'list'              => $list_kelas,
             'list_angkatan'     => $list_angkatan,
             'angkatan_pilih'    => $angkatan,
@@ -40,7 +40,7 @@ class KelasBina extends BaseController
             $angkatan           = $get_angkatan->angkatan_kuliah;
 
             $data = [
-                'title'     => 'Form Input Kelas Non-Regular Baru',
+                'title'     => 'Form Input Pembinaan Baru',
                 'pengajar'  => $this->pengajar->list(),
                 'peserta'   => $this->peserta->list(),
                 'level'     => $this->level->list(),
@@ -60,7 +60,7 @@ class KelasBina extends BaseController
             $bk_id          = $this->request->getVar('bk_id');
             $bina_kelas   =  $this->bina_kelas->find($bk_id);
             $data = [
-                'title'     => 'Ubah Data Kelas Non-Regular '.$bina_kelas['bk_name'],
+                'title'     => 'Ubah Data Kelas Pembinaan '.$bina_kelas['bk_name'],
                 'pengajar'  => $this->pengajar->list(),
                 'bina'    => $bina_kelas,
             ];
@@ -95,7 +95,7 @@ class KelasBina extends BaseController
             }
             
             $data = [
-                'title'             => 'Al-Haqq - Detail Kelas Non-Regular',
+                'title'             => 'Al-Haqq - Detail Kelas Pembinaan',
                 'user'              => $user,
                 'peserta_onkelas'   => $peserta_onkelas,
                 'koor'              => $koor,
@@ -127,7 +127,7 @@ class KelasBina extends BaseController
                 $title = 'Form Input Pengjar';
                 $pengajar = $this->pengajar->list();
             } elseif($modul == 'absensi'){
-                $title        = 'Form Pengaturan Absensi Kelas Non-Regular';
+                $title        = 'Form Pengaturan Absensi Kelas Pembinaan';
                 $koor         = $this->bina_peserta->peserta_onkelas($bk_id);
             }
 
@@ -270,7 +270,7 @@ class KelasBina extends BaseController
                 }
                 $this->db->transComplete();
                 
-                $aktivitas = 'Buat Data Kelas Non-Regular Nama : ' .  $this->request->getVar('nama_kelas');
+                $aktivitas = 'Buat Data Kelas Pembinaan Nama : ' .  $this->request->getVar('nama_kelas');
 
                 if ($this->db->transStatus() === FALSE)
                 {
@@ -396,7 +396,7 @@ class KelasBina extends BaseController
                 $this->bina_kelas->update($bk_id, $updatedata);
 
                 // Data Log END
-                $aktivitas = 'Ubah Data Kelas Non-Regular Nama : ' .  $this->request->getVar('nama_kelas');
+                $aktivitas = 'Ubah Data Kelas Pembinaan Nama : ' .  $this->request->getVar('nama_kelas');
                 $this->logging('Admin', 'BERHASIL', $aktivitas);
 
                 $msg = [
@@ -428,7 +428,7 @@ class KelasBina extends BaseController
                     $this->bina_peserta->insert($bina_peserta_NEW);
                 }
                 $pesan      = 'Berhasil Tambah Data Peserta';
-                $aktivitas  = 'Memasukan data peserta di kelas non regular ' .  $bina['bk_name'];
+                $aktivitas  = 'Memasukan data peserta di kelas pembinaan ' .  $bina['bk_name'];
             } elseif ($modul == 'pengajar') {
                 $pengajar     = $this->request->getPost('bj_pengajar');
                 foreach ($pengajar as $item) {
@@ -439,7 +439,7 @@ class KelasBina extends BaseController
                     $this->bina_pengajar->insert($bina_pengajar_NEW);
                 }
                 $pesan      = 'Berhasil Tambah Data Pengajar';
-                $aktivitas  = 'Memasukan data pengajar di kelas non regular ' .  $bina['bk_name'];
+                $aktivitas  = 'Memasukan data pengajar di kelas pembinaan ' .  $bina['bk_name'];
             } elseif ($modul == 'absensi') {
                 $metode = $this->request->getVar('bk_absen_methode');
                 $koor = NULL;
@@ -457,7 +457,7 @@ class KelasBina extends BaseController
                 ];
                 $this->bina_kelas->update($bk_id, $updatedata);
                 $pesan      = 'Berhasil Ganti Pengaturan Absensi';
-                $aktivitas  = 'Mengubah pengaturan absensi di kelas non regular ' .  $bina['bk_name'];
+                $aktivitas  = 'Mengubah pengaturan absensi di kelas pembinaan ' .  $bina['bk_name'];
             }
 
                 // Data Log END

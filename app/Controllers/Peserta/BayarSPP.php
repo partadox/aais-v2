@@ -285,7 +285,7 @@ class BayarSPP extends BaseController
         $cart_id            = 0;
         // $expired_waktu1     = $this->request->getVar('expired_waktu');
         // $expired_waktu      = \DateTime::createFromFormat('Y-m-d H:i:s', $expired_waktu1);
-        $expired_waktu1     = date('Y-m-d H:i:s', strtotime('+60 minutes', strtotime(date('Y-m-d H:i:s'))));
+        $expired_waktu1     = date('Y-m-d H:i:s', strtotime('+1440 minutes', strtotime(date('Y-m-d H:i:s'))));
         $expired_waktu      = new \DateTime($expired_waktu1);
 
         $peserta            = $this->peserta->find($peserta_id);

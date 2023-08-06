@@ -138,6 +138,10 @@ $routes->post('program-regular/edit', 'Admin\ProgramReg::edit', ["filter" => "au
 $routes->post('program-regular/create', 'Admin\ProgramReg::create', ["filter" => "authweb:1-2-3-7"]);
 $routes->post('program-regular/update', 'Admin\ProgramReg::update', ["filter" => "authweb:1-2-3-7"]);
 
+/*--- Program Regular Atur Fitur Ujian---*/
+$routes->get('program-regular-ujian-setting', 'Admin\ProgramReg::ujian_setting', ["filter" => "authweb:1-2-3-7"]);
+$routes->post('program-regular-ujian-setting/save', 'Admin\ProgramReg::save_ujian_setting', ["filter" => "authweb:1-2-3-7"]);
+
 /*--- Kelas Regular---*/
 $routes->get('kelas-regular', 'Admin\KelasReg::index', ["filter" => "authweb:1-2-3-7"]);
 $routes->post('kelas-regular/input', 'Admin\KelasReg::input', ["filter" => "authweb:1-2-3-7"]);

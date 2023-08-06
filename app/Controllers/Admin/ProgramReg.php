@@ -48,6 +48,41 @@ class ProgramReg extends BaseController
         }
     }
 
+    public function ujian_setting()
+    {
+        $user  = $this->userauth();
+        $uri            = new \CodeIgniter\HTTP\URI(current_url(true));
+        $queryString    = $uri->getQuery();
+        $params         = [];
+        parse_str($queryString, $params);
+
+        if (count($params) == 1 && array_key_exists('id', $params)) {
+            $id   = $params['id'];
+            if (ctype_digit($id)) {
+                $program_id   = $params['id'];
+            }else {
+                return redirect()->to('/program-regular');
+            }
+        } else {
+            return redirect()->to('/program-regular');
+        }
+
+        $program = $this->program->find($program_id);
+        if ($program['ujian_custom_id'] != NULL) {
+            $ujian_custom = $this->ujian_custom_config->find($program['ujian_custom_id']);
+        } else {
+            $ujian_custom = NULL;
+        }
+        $data = [
+            'title'         => 'Pengaturan Fitur Ujian Program Regular',
+            'user'          => $user,
+            'program'       => $program,
+            'ujian_custom'  => $ujian_custom,
+        ];
+
+        return view('panel_admin/program_regular/ujian_setting', $data); 
+    }
+
     /*--- BACKEND ---*/
     public function create()
     {
@@ -260,6 +295,100 @@ class ProgramReg extends BaseController
                 ];
             }
             echo json_encode($msg);
+        }
+    }
+
+    public function save_ujian_setting()
+    {
+        $program_id          = $this->request->getVar('program_id');
+        $ujian_custom_id     = $this->request->getVar('ujian_custom_id');
+        $ujian_custom_status = $this->request->getVar('ujian_custom_status');
+
+        if ($ujian_custom_status != 1) {
+            $updateProgram = [
+                'ujian_custom_status' => NULL,
+            ];
+            $this->program->update($program_id, $updateProgram);
+            $this->session->setFlashdata('pesan_sukses', 'BERHASIL! Fitur Absensi Program ini Diubah');
+            return redirect()->to('/program-regular-ujian-setting?id='.$program_id); 
+        } else {
+            if ($ujian_custom_id != "") {
+                for ($i = 1; $i <= 10; $i++) {
+                    $var_text_status = 'text' . $i . '_status';
+                    $var_text_name = 'text' . $i . '_name';
+                    $var_int_status = 'int' . $i . '_status';
+                    $var_int_name = 'int' . $i . '_name';
+
+                    $variabel[] = array(
+                            $var_text_status => $this->request->getVar($var_text_status),
+                            $var_text_name => $this->request->getVar($var_text_name),
+                            $var_int_status => $this->request->getVar($var_int_status),
+                            $var_int_name => $this->request->getVar($var_int_name),
+                    );
+                }
+
+                $saveData = [];
+                for ($i = 1; $i <= 10; $i++) {
+                    $textStatusKey = "text{$i}_status";
+                    $textNameKey = "text{$i}_name";
+                    $intStatusKey = "int{$i}_status";
+                    $intNameKey = "int{$i}_name";
+
+                    $saveData[$textStatusKey] = $variabel[$i - 1][$textStatusKey] ?? null;
+                    $saveData[$textNameKey] = $variabel[$i - 1][$textNameKey] ?? null;
+                    $saveData[$intStatusKey] = $variabel[$i - 1][$intStatusKey] ?? null;
+                    $saveData[$intNameKey] = $variabel[$i - 1][$intNameKey] ?? null;
+                }
+
+                $this->ujian_custom_config->update($ujian_custom_id, $saveData);
+
+                $updateProgram = [
+                    'ujian_custom_status' => $ujian_custom_status,
+                ];
+                $this->program->update($program_id, $updateProgram);
+
+                $this->session->setFlashdata('pesan_sukses', 'BERHASIL! Fitur Absensi Program ini Diubah');
+                return redirect()->to('/program-regular-ujian-setting?id='.$program_id); 
+                
+            } else {
+                for ($i = 1; $i <= 10; $i++) {
+                    $var_text_status = 'text' . $i . '_status';
+                    $var_text_name = 'text' . $i . '_name';
+                    $var_int_status = 'int' . $i . '_status';
+                    $var_int_name = 'int' . $i . '_name';
+
+                    $variabel[] = array(
+                            $var_text_status => $this->request->getVar($var_text_status),
+                            $var_text_name => $this->request->getVar($var_text_name),
+                            $var_int_status => $this->request->getVar($var_int_status),
+                            $var_int_name => $this->request->getVar($var_int_name),
+                    );
+                }
+
+                $saveData = [];
+                for ($i = 1; $i <= 10; $i++) {
+                    $textStatusKey = "text{$i}_status";
+                    $textNameKey = "text{$i}_name";
+                    $intStatusKey = "int{$i}_status";
+                    $intNameKey = "int{$i}_name";
+
+                    $saveData[$textStatusKey] = $variabel[$i - 1][$textStatusKey] ?? null;
+                    $saveData[$textNameKey] = $variabel[$i - 1][$textNameKey] ?? null;
+                    $saveData[$intStatusKey] = $variabel[$i - 1][$intStatusKey] ?? null;
+                    $saveData[$intNameKey] = $variabel[$i - 1][$intNameKey] ?? null;
+                }
+
+                $this->ujian_custom_config->insert($saveData);
+
+                $updateProgram = [
+                    'ujian_custom_status' => $ujian_custom_status,
+                    'ujian_custom_id'     => $this->ujian_custom_config->insertID(),
+                ];
+                $this->program->update($program_id, $updateProgram);
+
+                $this->session->setFlashdata('pesan_sukses', 'BERHASIL! Fitur Absensi Program ini Diubah');
+                return redirect()->to('/program-regular-ujian-setting?id='.$program_id); 
+            }
         }
     }
 }
