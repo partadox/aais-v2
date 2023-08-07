@@ -39,6 +39,7 @@ use App\Models\Model_payment;
 use App\Models\Model_pekerjaan;
 use App\Models\Model_pengumuman;
 use App\Models\Model_ujian_custom_config;
+use App\Models\Model_ujian_custom_value;
 use CodeIgniter\Controller;
 use CodeIgniter\HTTP\CLIRequest;
 use CodeIgniter\HTTP\IncomingRequest;
@@ -104,7 +105,7 @@ abstract class BaseController extends Controller
 		$this->infaq                = new Model_infaq;
 		$this->bayar_lain           = new Model_bayar_lain;
 		$this->bayar_modul          = new Model_bayar_modul;
-		$this->peserta_kelas        = new Model_peserta_kelas;
+		$this->peserta_kelas        = new Model_peserta_kelas($request);
 		$this->program              = new Model_program;
 		$this->pengajar             = new Model_pengajar;
 		$this->level                = new Model_level;
@@ -127,6 +128,7 @@ abstract class BaseController extends Controller
         $this->bina_absen_peserta   = new Model_bina_absen_peserta();
         $this->pengumuman           = new Model_pengumuman();
         $this->ujian_custom_config  = new Model_ujian_custom_config();
+        $this->ujian_custom_value   = new Model_ujian_custom_value();
         $this->db 			        = \Config\Database::connect();
     }
 

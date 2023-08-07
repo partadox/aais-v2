@@ -204,10 +204,20 @@
                 </a>
             </li>
             <li>
-                <a href="<?= base_url('ujian') ?>" class="waves-effect">
+                <a href="javascript:void(0);" class="waves-effect">
+                    <i class="mdi mdi-book"></i>
+                    <span> Ujian<span class="float-right menu-arrow"><i class="mdi mdi-chevron-right"></i></span></span>
+                </a>
+                <ul class="submenu">
+                    <li><a href="<?= base_url('ujian') ?>"> Standart</a></li>
+                    <li><a href="<?= base_url('ujian-custom') ?>">Custom</a></li>
+                </ul>
+            </li>
+            <!-- <li>
+                <a href="base_url('ujian')" class="waves-effect">
                     <i class="mdi mdi-book"></i><span> Hasil Ujian Reg.</span>
                 </a>
-            </li>
+            </li> -->
         <?php } ?>
     <li>
         <a href="<?= base_url('sertifikat') ?>" class="waves-effect">

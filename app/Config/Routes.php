@@ -243,6 +243,15 @@ $routes->post('ujian/update', 'Admin\Ujian::update', ["filter" => "authweb:1-2-3
 $routes->post('ujian/import', 'Admin\Ujian::import', ["filter" => "authweb:1-2-3-7"]);
 $routes->get('ujian/export', 'Admin\Ujian::export', ["filter" => "authweb:1-2-3-7"]);
 
+//Ujian Custom
+$routes->get('ujian-custom', 'Admin\UjianCustom::index', ["filter" => "authweb:1-2-3-7"]);
+$routes->post('ujian-custom/filter', 'Admin\UjianCustom::filter', ["filter" => "authweb:1-2-3-7"]);
+$routes->post('ujian-custom/list', 'Admin\UjianCustom::list', ["filter" => "authweb:1-2-3-7"]);
+$routes->post('ujian-custom/fetch', 'Admin\UjianCustom::fetch', ["filter" => "authweb:1-2-3-7"]);
+
+$routes->post('ujian-custom/modal', 'Admin\UjianCustom::modal', ["filter" => "authweb:1-2-3-7"]);
+$routes->post('ujian-custom/update', 'Admin\UjianCustom::update', ["filter" => "authweb:1-2-3-7"]);
+
 //Sertifikat
 $routes->get('sertifikat', 'Admin\Sertifikat::index', ["filter" => "authweb:1-2-3-7"]);
 $routes->get('sertifikat/konfirmasi', 'Admin\Sertifikat::konfirmasi', ["filter" => "authweb:1-2-3-7"]);

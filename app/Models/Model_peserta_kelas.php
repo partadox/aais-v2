@@ -3,12 +3,82 @@
 namespace App\Models;
 
 use CodeIgniter\Model;
-
+use CodeIgniter\HTTP\RequestInterface;
 class Model_peserta_kelas extends Model
 {
     protected $table      = 'peserta_kelas';
     protected $primaryKey = 'peserta_kelas_id';
     protected $allowedFields = ['peserta_kelas_id', 'data_peserta_id','data_kelas_id', 'data_absen', 'data_ujian', 'status_peserta_kelas', 'byr_daftar', 'byr_modul','byr_spp1','byr_spp2','byr_spp3', 'byr_spp4', 'spp_status', 'spp_terbayar', 'spp_piutang', 'dt_bayar_daftar', 'dt_bayar_spp2', 'dt_bayar_spp3', 'dt_bayar_spp4', 'dt_konfirmasi_daftar', 'dt_konfirmasi_spp2', 'dt_konfirmasi_spp3', 'dt_konfirmasi_spp4','expired_tgl_daftar','expired_waktu_daftar', 'status_aktif_peserta', 'beasiswa_daftar', 'beasiswa_spp1', 'beasiswa_spp2', 'beasiswa_spp3', 'beasiswa_spp4'];
+
+    protected $column_order = array(null, 'data_peserta_id', 'data_kelas_id', null);
+    protected $column_search = array('data_peserta_id', 'data_kelas_id');
+    protected $order = array('peserta_kelas_id' => 'asc');
+    protected $request;
+    protected $db;
+    protected $dt;
+
+    function __construct(RequestInterface $request, $angkatan = null,  $program_id = null)
+    {
+        parent::__construct();
+        $this->db = db_connect();
+        $this->request = $request;
+
+        $this->dt = $this->db->table($this->table)
+        // ->select('peserta.nis, peserta.nama_peserta, peserta.jenkel, program_kelas.program_id, program_kelas.nama_kelas, program_kelas.angkatan_kelas, pengajar.nama_pengajar, program_kelas.hari_kelas, program_kelas.waktu_kelas, program_kelas.zona_waktu_kelas, ujian_custom_value.*')
+        ->select('*');
+        
+    }
+    private function _get_datatables_query($angkatan = null, $program_id = null)
+    {
+        $i = 0;
+        foreach ($this->column_search as $item) {
+            if (isset($_POST['search']['value'])) {
+                if ($i === 0) {
+                    $this->dt->groupStart();
+                    $this->dt->like($item, $_POST['search']('value'));
+                } else {
+                    $this->dt->orLike($item, $_POST['search']['value']);
+                }
+                if (count($this->column_search) - 1 == $i)
+                    $this->dt->groupEnd();
+            }
+            $i++;
+        }
+        $this->dt->join('program_kelas', 'program_kelas.kelas_id = peserta_kelas.data_kelas_id');
+        $this->dt->join('peserta', 'peserta.peserta_id = peserta_kelas.data_peserta_id');
+        $this->dt->join('pengajar', 'pengajar.pengajar_id = program_kelas.pengajar_id');
+        $this->dt->join('ujian_custom_value', 'ujian_custom_value.ucv_ujian_id = peserta_kelas.data_ujian');
+        $this->dt->select('peserta.nis, peserta.nama_peserta, peserta.jenkel, peserta_kelas.status_peserta_kelas, peserta_kelas.peserta_kelas_id, program_kelas.program_id, program_kelas.nama_kelas, program_kelas.angkatan_kelas, pengajar.nama_pengajar, program_kelas.hari_kelas, program_kelas.waktu_kelas, program_kelas.zona_waktu_kelas, ujian_custom_value.*');
+        $this->dt->orderBy('nama_peserta', 'asc');
+        $this->dt->where('program_kelas.angkatan_kelas', $angkatan);
+        $this->dt->where('program_kelas.program_id', $program_id);
+
+        if (isset($_POST['order'])) {
+            $this->dt->orderBy($this->column_order[$_POST['order']['0']['column']], $_POST['order']['0']['dir']);
+        } else if (isset($this->order)) {
+            $order = $this->order;
+            $this->dt->orderBy(key($order), $order[key($order)]);
+        }
+    }
+    
+    function get_datatables($angkatan = null, $program_id = null)
+    {
+        $this->_get_datatables_query($angkatan, $program_id);
+        if (isset($_POST['length' != -1]))
+            $this->dt->limit($_POST['length'], $_POST['start']);
+        $query = $this->dt->get();
+        return $query->getResult();
+    }
+    function count_filtered($angkatan = null, $program_id = null)
+    {
+        $this->_get_datatables_query($angkatan, $program_id);
+        return $this->dt->countAllResults();
+    }
+    public function count_all()
+    {
+        $tbl_storage = $this->db->table($this->table);
+        return $tbl_storage->countAllResults();
+    }
 
     //Cek jumlah kelas yang diikuti peserta
     public function cek_peserta_kelas($peserta_id)

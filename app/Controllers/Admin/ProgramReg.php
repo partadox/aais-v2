@@ -309,8 +309,14 @@ class ProgramReg extends BaseController
                 'ujian_custom_status' => NULL,
             ];
             $this->program->update($program_id, $updateProgram);
-            $this->session->setFlashdata('pesan_sukses', 'BERHASIL! Fitur Absensi Program ini Diubah');
-            return redirect()->to('/program-regular-ujian-setting?id='.$program_id); 
+
+            $response = [
+                    'status' => 'success',
+                    'message' => 'BERHASIL! Fitur Absensi Program ini Diubah'
+            ];
+        
+            echo json_encode($response);
+            return;
         } else {
             if ($ujian_custom_id != "") {
                 for ($i = 1; $i <= 10; $i++) {
@@ -347,8 +353,13 @@ class ProgramReg extends BaseController
                 ];
                 $this->program->update($program_id, $updateProgram);
 
-                $this->session->setFlashdata('pesan_sukses', 'BERHASIL! Fitur Absensi Program ini Diubah');
-                return redirect()->to('/program-regular-ujian-setting?id='.$program_id); 
+                $response = [
+                    'status' => 'success',
+                    'message' => 'BERHASIL! Fitur Absensi Program ini Diubah'
+                ];
+            
+                echo json_encode($response);
+                return;
                 
             } else {
                 for ($i = 1; $i <= 10; $i++) {
@@ -386,8 +397,33 @@ class ProgramReg extends BaseController
                 ];
                 $this->program->update($program_id, $updateProgram);
 
-                $this->session->setFlashdata('pesan_sukses', 'BERHASIL! Fitur Absensi Program ini Diubah');
-                return redirect()->to('/program-regular-ujian-setting?id='.$program_id); 
+                $db = db_connect();
+                $query = $db->query("
+                    SELECT peserta_kelas.data_ujian, peserta_kelas.data_peserta_id, peserta_kelas.data_kelas_id
+                    FROM peserta_kelas
+                    JOIN program_kelas ON peserta_kelas.data_kelas_id = program_kelas.kelas_id
+                    WHERE program_kelas.program_id = $program_id
+                ");
+
+                $result = $query->getResultArray();
+                foreach ($result as $ujian) {
+                    $saveData = [
+                        'ucv_ujian_id'  => $ujian['data_ujian'],
+                        'ucv_peserta_id'=> $ujian['data_peserta_id'],
+                        'ucv_kelas_id'  => $ujian['data_kelas_id'],
+                    ];
+                    $this->ujian_custom_value->insert($saveData);
+                }
+
+                // $this->session->setFlashdata('pesan_sukses', 'BERHASIL! Fitur Absensi Program ini Diubah');
+                // return redirect()->to('/program-regular-ujian-setting?id='.$program_id); 
+                $response = [
+                    'status' => 'success',
+                    'message' => 'BERHASIL! Fitur Absensi Program ini Diubah'
+                ];
+            
+                echo json_encode($response);
+                return;
             }
         }
     }

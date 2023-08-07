@@ -81,4 +81,13 @@ class Model_program extends Model
             ->where('program_id', $program_id)
             ->countAllResults();
     }
+
+    //Get Ujian Custom
+    public function list_ujian_custom()
+    {
+        return $this->table('program')
+            ->orderBy('nama_program', 'ASC')
+            ->where('ujian_custom_status', '1')
+            ->get()->getResultArray();
+    }
 }

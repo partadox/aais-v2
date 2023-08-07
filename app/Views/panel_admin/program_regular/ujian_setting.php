@@ -9,25 +9,6 @@
 
 <?= $this->section('isi') ?>
 
-<?php
-if (session()->getFlashdata('pesan_error')) {
-    echo '<div class="alert alert-danger alert-dismissible fade show" role="alert">
-    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-        <span aria-hidden="true">×</span>
-    </button> <i class="mdi mdi-alert-circle"></i> <strong>';
-    echo session()->getFlashdata('pesan_error');
-    echo ' </strong> </div>';
-}
-if (session()->getFlashdata('pesan_sukses')) {
-    echo '<div class="alert alert-success alert-dismissible fade show" role="alert">
-    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-        <span aria-hidden="true">×</span>
-    </button> <i class="mdi mdi-check-circle"></i> <strong>';
-    echo session()->getFlashdata('pesan_sukses');
-    echo ' </strong> </div>';
-}
-?>
-
 
 <a href="<?= base_url('/program-regular') ?>"> 
     <button type="button" class="btn btn-secondary mb-3"><i class=" fa fa-arrow-circle-left"></i> Kembali</button>
@@ -153,6 +134,53 @@ if (session()->getFlashdata('pesan_sukses')) {
             inputElement.removeAttribute('required');
         }
     }
+
+    $(document).ready(function() {
+        $('form').submit(function(e) {
+            e.preventDefault();
+
+            // Show loading animation
+            let loadingSwal = Swal.fire({
+                title: 'Loading...',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+
+            $.ajax({
+                type: 'POST',
+                url: $(this).attr('action'),
+                data: $(this).serialize(),
+                dataType: 'json',
+                success: function(response) {
+                    if (response.status === 'success') {
+                        loadingSwal.close(); // Close the loading animation
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success',
+                            text: response.message,
+                            allowOutsideClick: false
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                // Redirect to the specified URL
+                                window.location.href = '/program-regular-ujian-setting?id=<?= $program['program_id'] ?>';
+                            }
+                        });
+                    }
+                },
+                error: function() {
+                    loadingSwal.close(); // Close the loading animation
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'An error occurred.',
+                        allowOutsideClick: false
+                    });
+                }
+            });
+        });
+    });
 </script>
 
 <?= $this->endSection('isi') ?>
