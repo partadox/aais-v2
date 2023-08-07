@@ -496,7 +496,7 @@
                                 });
                             },
                                 didClose: () => {
-                                window.location.href = "/peserta-kelas";
+                                window.location.href = "/bayar/riwayat";
                             }
                         });
                     }

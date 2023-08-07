@@ -429,7 +429,7 @@
                                 })
                             },
                                 didClose: () => {
-                                window.location.href = "/daftar";
+                                window.location.href = "/bayar/riwayat";
                             }
                         });
                     }
