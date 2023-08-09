@@ -1,6 +1,6 @@
 <!-- Modal -->
 <div class="modal fade" id="modalujian" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel"><?= $title ?></h5>
@@ -11,30 +11,78 @@
             
             <div class="modal-body">
                 <h5 style="text-align:center;">Kelas <?= $kelas['nama_kelas'] ?></h5>
-                <h6 style="text-align:center;"><?= $kelas['hari_kelas'] ?>, <?= $kelas['waktu_kelas'] ?> - <?= $kelas['metode_kelas'] ?></h6>
-                <div class="table-responsive">
-                    <table class="table table-striped table-bordered nowrap mt-1" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
-                        <thead>
-                            <tr>
-                            <th width="15%">Pelaksanaan Ujian</th>
-                            <th width="5%">Nilai <br> Ujian</th>
-                            <th width="5%">Nilai <br> Akhir</th>
-                            <th width="10%">Rekomendasi <br> level</th>
-                            <th width="60%">Note dari <br> Pengajar</th>
-                            </tr>
-                        </thead>
-
+                <h6 style="text-align:center;"><?= $nama_pengajar ?></h6>
+                <h6 style="text-align:center;"><?= $kelas['hari_kelas'] ?>, <?= $kelas['waktu_kelas'] ?> <?= $kelas['zona_waktu_kelas'] ?> - <?= $kelas['metode_kelas'] ?></h6>
+                <hr>
+                        <strong>Status Kelulusan: </strong>
+                        <?php if($kelulusan == 'BELUM LULUS') { ?>
+                            <button class="btn btn-secondary btn-sm" disabled>BELUM LULUS</button> 
+                        <?php } ?>
+                        <?php if($kelulusan == 'LULUS') { ?>
+                            <button class="btn btn-success btn-sm" disabled>LULUS</button> 
+                        <?php } ?>
+                        <?php if($kelulusan == 'MENGULANG') { ?>
+                            <button class="btn btn-warning btn-sm" disabled>MENGULANG</button> 
+                        <?php } ?>
+                <?php if($ujian_status != '1') { ?>
+                    <table class="table table-bordered mt-4">
                         <tbody>
                             <tr>
-                                <td><?= $ujian['tgl_ujian'] ?> <?= $ujian['waktu_ujian'] ?></td>
-                                <td><?= $ujian['nilai_ujian'] ?></td>
-                                <td><?= $ujian['nilai_akhir'] ?></td>
-                                <td><?= $ujian['next_level'] ?></td>
-                                <td><?= $ujian['ujian_note'] ?></td>
+                                <th width="5%">Pelaksanaan Ujian: </th>
+                                <th width="95%"><?= $ujian['tgl_ujian'] ?> <?= $ujian['waktu_ujian'] ?></th>
+                            </tr>
+                            <tr>
+                                <th width="5%">Nilai Ujian: </th>
+                                <th width="95%"><?= $ujian['nilai_ujian'] ?></th>
+                            </tr>
+                            <tr>
+                                <th width="5%">Nilai Akhir: </th>
+                                <th width="95%"><?= $ujian['nilai_akhir'] ?></th>
+                            </tr>
+                            <tr>
+                                <th width="5%">Rekomendasi level</th>
+                                <th width="95%"><?= $ujian['next_level'] ?></th>
+                            </tr>
+                            <tr>
+                                <th width="5%">Note dari Pengajar</th>
+                                <th width="95%"><?= $ujian['ujian_note'] ?></th>
                             </tr>
                         </tbody>
                     </table>
-                </div>
+                <?php } ?>
+                <?php if($ujian_status == '1') { ?>
+                    <table class="table table-bordered mt-4">
+                        <tbody>
+                            <?php for ($i=1; $i <= 10; $i++): ?>
+                                <?php
+                                    $col_status = 'text'.$i.'_status';
+                                    $col_name   = 'text'.$i.'_name'  ;
+
+                                    $val        = 'ucv_text'.$i;
+                                    if($ucc[$col_status] == '1') { ?>
+                                        <tr>
+                                            <th width="5%"><?= strtoupper($ucc[$col_name]) ?>: </th>
+                                            <th width="95%"><?= $ujian[$val] ?></th>
+                                        </tr>
+                                    <?php } ?>
+                            <?php endfor; ?>
+
+                            <?php for ($i=1; $i <= 10; $i++): ?>
+                                <?php
+                                    $col_status = 'int'.$i.'_status';
+                                    $col_name   = 'int'.$i.'_name'  ;
+
+                                    $val        = 'ucv_int'.$i;
+                                    if($ucc[$col_status] == '1') { ?>
+                                        <tr>
+                                            <th width="5%"><?= strtoupper($ucc[$col_name]) ?>: </th>
+                                            <th width="95%"><?= $ujian[$val] ?></th>
+                                        </tr>
+                                    <?php } ?>
+                            <?php endfor; ?>
+                        </tbody>
+                    </table>
+                <?php } ?>
             </div>
 
             <div class="modal-footer">

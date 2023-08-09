@@ -136,7 +136,9 @@ if (session()->getFlashdata('pesan_sukses')) {
             ?>
             <?= csrf_field() ?>
             <div class="modal-body">
-                <p class="mt-1">Catatan :<br> 
+                <p class="mt-1">Catatan :<br>
+                    <i class="mdi mdi-information"></i> Template import adalah langsung dari hasil export excel.<br>
+                    <i class="mdi mdi-information"></i> Untuk menghindari salah input harap hapus data ujian yang tidak ingin diisi/diedit (Hapus seluruh row / langsung satu baris).<br> 
                     <i class="mdi mdi-information"></i> Data import Excel maximal berisi 300 Data/Baris. Jika lebih maka data selebihnya akan gagal ter-import ke dalam sistem.<br>
                     <i class="mdi mdi-information"></i> Data yang diproses pada menu import ini hanya data <b>Tgl Ujian, Waktu Ujian, Nilai Ujian, Nilai Akhir, Kelulusan.</b><br>
                     <i class="mdi mdi-information"></i> Harap Diperhatikan ketika import menggunakan excel <b>Tgl Ujian</b> harus berformat <b>Tahun-Bulan-Tgl (YYYY-MM-DD)</b> dan <b>Waktu Ujian</b> harus berformat <b>Jam:Menit:Detik (HH:MM:SS)</b>.<br>

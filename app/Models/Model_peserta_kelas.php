@@ -122,6 +122,18 @@ class Model_peserta_kelas extends Model
             ->get()->getResultArray();
     }
 
+
+    public function peserta_onkelas_ujian_custom($kelas_id)
+    {
+        return $this->table('peserta_kelas')
+            ->join('peserta', 'peserta.peserta_id = peserta_kelas.data_peserta_id')
+            ->join('ujian_custom_value', 'ujian_custom_value.ucv_ujian_id = peserta_kelas.data_ujian')
+            ->where('data_kelas_id', $kelas_id)
+            // ->where('status_peserta_kelas', 'Belum Lulus')
+            ->orderBy('nama_peserta', 'ASC')
+            ->get()->getResultArray();
+    }
+
     //Jumlah peserta dalam kelas - Peserta_Kelas
     public function jumlah_peserta_onkelas($kelas_id)
     {
@@ -228,6 +240,24 @@ class Model_peserta_kelas extends Model
             ->where('spp_status !=', 'BELUM BAYAR PENDAFTARAN')
             ->where('angkatan_kelas', $angkatan)
             ->orderBy('nama_peserta', 'ASC')
+            ->get()->getResultArray();
+    }
+
+    //Rekap data ujian custom peserta - Admin panel
+    public function admin_rekap_ujian_custom($angkatan, $program_id)
+    {
+        return $this->table('peserta_kelas')
+            ->join('peserta', 'peserta.peserta_id = peserta_kelas.data_peserta_id')
+            ->join('program_kelas', 'program_kelas.kelas_id = peserta_kelas.data_kelas_id')
+            ->join('program', 'program.program_id = program_kelas.program_id')
+            ->join('pengajar', 'pengajar.pengajar_id = program_kelas.pengajar_id')
+            ->join('peserta_level', 'peserta_level.peserta_level_id = peserta.level_peserta')
+            ->join('ujian_custom_value', 'ujian_custom_value.ucv_ujian_id = peserta_kelas.data_ujian')
+            ->select('peserta.nis, peserta.nama_peserta, peserta.jenkel, peserta_kelas.status_peserta_kelas, peserta_kelas.peserta_kelas_id, program_kelas.program_id, program_kelas.nama_kelas, program_kelas.angkatan_kelas, pengajar.nama_pengajar, program_kelas.hari_kelas, program_kelas.waktu_kelas, program_kelas.zona_waktu_kelas, ujian_custom_value.*')
+            ->where('peserta_kelas.spp_status !=', 'BELUM BAYAR PENDAFTARAN')
+            ->where('program_kelas.angkatan_kelas', $angkatan)
+            ->where('program_kelas.program_id', $program_id)
+            ->orderBy('peserta.nama_peserta', 'ASC')
             ->get()->getResultArray();
     }
 

@@ -18,41 +18,100 @@
 <h6 style="text-align:center;"><?= $detail_kelas[0]['hari_kelas'] ?>, <?= $detail_kelas[0]['waktu_kelas'] ?> - <?= $detail_kelas[0]['metode_kelas'] ?></h6>
 <h6 style="text-align:center;"><?= $detail_kelas[0]['nama_pengajar'] ?></h6>
 
+<hr>
 
+<?php $nomor = 0;
+foreach ($peserta_onkelas as $data) :
+    $nomor++; ?>
+    <div class="accordion" id="accordionAbsen">
+        <div class="card">
+            <div class="card-header" id="headingOne">
+            <h2 class="mb-0">
+                <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#colapse<?= $nomor?>" aria-expanded="true" aria-controls="colapse<?= $nomor?>" style="color: black; text-decoration: none;">
+                <h6>
+                    <?= $nomor ?>. <?= $data['nis'] ?> - <?= $data['nama_peserta'] ?>
+                    <i class="fa fa-angle-down float-right"></i>
+                </h6>
+                </button>
+            </h2>
+            </div>
 
-<div class="table-responsive">
-    <table class="table table-striped table-bordered nowrap mt-1" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
-        <thead>
-            <tr>
-            <th width="3%">No.</th>
-            <th width="7%">NIS</th>
-            <th width="12%">Nama</th>
-            <th width="20%">Tanggal Ujian</th>
-            <th width="12%">Waktu Ujian</th>
-            <th width="12%">Nilai Ujian</th>
-            <th width="12%">Nilai Akhir</th>
-            <th width="16%">Status Kelulusan</th>
-            </tr>
-        </thead>
+            <div id="colapse<?= $nomor?>" class="collapse" aria-labelledby="headingOne" data-parent="#accordionAbsen">
+                <div class="card-body">
+                    <h6>
+                        <strong>Status Kelulusan: </strong>
+                        <?php if($data['status_peserta_kelas'] == 'BELUM LULUS') { ?>
+                            <button class="btn btn-secondary btn-sm" disabled>BELUM LULUS</button> 
+                        <?php } ?>
+                        <?php if($data['status_peserta_kelas'] == 'LULUS') { ?>
+                            <button class="btn btn-success btn-sm" disabled>LULUS</button> 
+                        <?php } ?>
+                        <?php if($data['status_peserta_kelas'] == 'MENGULANG') { ?>
+                            <button class="btn btn-warning btn-sm" disabled>MENGULANG</button> 
+                        <?php } ?>
+                    <table class="table table-bordered mt-4">
+                        <tbody>
+                            <tr>
+                                <th width="5%">Pelaksanaan Ujian </th>
+                                <th width="95%"><?= $data['tgl_ujian'] ?> <?= $data['waktu_ujian'] ?></th>
+                            </tr>
+                            <tr>
+                                <th width="5%">Nilai Ujian </th>
+                                <th width="95%"><?= $data['nilai_ujian'] ?></th>
+                            </tr>
+                            <tr>
+                                <th width="5%">Nilai Akhir </th>
+                                <th width="95%"><?= $data['nilai_akhir'] ?></th>
+                            </tr>
+                            <tr>
+                                <th width="5%">Rekomendasi level</th>
+                                <th width="95%"><?= $data['next_level'] ?></th>
+                            </tr>
+                            <tr>
+                                <th width="5%">Note dari Pengajar</th>
+                                <th width="95%"><?= $data['ujian_note'] ?></th>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="card-footer">
+                    <button type="button" class="btn btn-info" onclick="edit(<?= $data['ujian_id'] ?>, <?= $data['data_peserta_id'] ?>, <?= $data['data_kelas_id'] ?>, <?= $data['peserta_kelas_id'] ?>)" > <i class="fa fa-edit"></i> Input Nilai</button>
+                </div>
+            </div>
+        </div>
+    </div>
+<?php endforeach; ?>
 
-        <tbody>
-            <?php $nomor = 0;
-            foreach ($peserta_onkelas as $data) :
-                $nomor++; ?>
-                <tr>
-                <td ><?= $nomor ?></td>
-                <td ><?= $data['nis'] ?></td>
-                <td ><?= $data['nama_peserta'] ?></td>
-                <td ><?= $data['tgl_ujian'] ?></td>
-                <td ><?= $data['waktu_ujian'] ?></td>
-                <td ><?= $data['nilai_ujian'] ?></td>
-                <td ><?= $data['nilai_akhir'] ?></td>
-                <td ><?= $data['status_peserta_kelas'] ?></td>
-                </tr>
+<div class="viewmodaldataedit"></div>
 
-            <?php endforeach; ?>
-        </tbody>
-    </table>
-</div>
+<script>
+    $(document).ready(function () {
+        $('.collapse').on('shown.bs.collapse', function () {
+            $(this).parent().find(".fa-angle-down").removeClass("fa-angle-down").addClass("fa-angle-up");
+        }).on('hidden.bs.collapse', function () {
+            $(this).parent().find(".fa-angle-up").removeClass("fa-angle-up").addClass("fa-angle-down");
+        });
+    });
+
+    function edit(ujian_id, peserta_id, kelas_id, peserta_kelas_id) {
+        $.ajax({
+            type: "post",
+            url: "<?= site_url('ujian/edit') ?>",
+            data: {
+                ujian_id : ujian_id,
+                peserta_id : peserta_id,
+                kelas_id : kelas_id,
+                peserta_kelas_id : peserta_kelas_id
+            },
+            dataType: "json",
+            success: function(response) {
+                if (response.sukses) {
+                    $('.viewmodaldataedit').html(response.sukses).show();
+                    $('#modaledit').modal('show');
+                }
+            }
+        });
+    }
+</script>
 
 <?= $this->endSection('isi') ?>

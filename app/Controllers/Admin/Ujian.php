@@ -83,7 +83,7 @@ class Ujian extends BaseController
                 'nilai_ujian'           => $this->request->getVar('nilai_ujian'),
                 'nilai_akhir'           => $this->request->getVar('nilai_akhir'),
                 'next_level'            => $this->request->getVar('next_level'),
-                'ujian_note'            => trim(preg_replace('/\s\s+/', ' ', $this->request->getVar('ujian_note'))),
+                'ujian_note'            => str_replace(array("\r", "\n"), ' ',$this->request->getVar('ujian_note')),
             ];
 
             $update_status= [
@@ -98,13 +98,21 @@ class Ujian extends BaseController
 
             $peserta_id     = $this->request->getVar('peserta_id');
             $peserta        =  $this->peserta->find($peserta_id);
+            $peserta_kelas  = $this->peserta_kelas->find($peserta_kelas_id);
+            
+            $user           = $this->userauth();
 
-            $aktivitas = 'Ubah Data Ujian, NIS : ' .   $peserta['nis'] .  ' Nama : '. $peserta['nama_peserta'];
-            $this->logging('Admin', 'BERHASIL', $aktivitas);
-             
+            if ($user['level'] == '5' || $user['level'] == '6') {
+                $link = '/pengajar/ujian?kelas='.$peserta_kelas['data_kelas_id'];
+            } else {
+                $aktivitas = 'Ubah Data Ujian, NIS : ' .   $peserta['nis'] .  ' Nama : '. $peserta['nama_peserta'];
+                $this->logging('Admin', 'BERHASIL', $aktivitas);
+                $link = '/ujian';
+            }
+
             $msg = [
                 'sukses' => [
-                    'link' => '/ujian'
+                    'link' => $link
                 ]
             ];
             

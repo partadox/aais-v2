@@ -9,7 +9,7 @@
 
 <?= $this->section('isi') ?>
 
-<form method="POST" action="<?= base_url('/ujian-custom/filter') ?>">
+<form method="POST">
     <div class="row">
         <div class="col-auto mb-2">
             <label for="angkatan">Pilih Angkatan Perkuliahan</label>
@@ -30,13 +30,51 @@
             </select>
         </div>
         <div class="col-auto mb-2">
-            <button type="submit" class="btn btn-success mt-4"><i class="fa fa-search"></i> TAMPIL</button>
+            <button type="submit" id="filter" class="btn btn-primary mt-4"><i class="fa fa-search"></i> Filter</button>
+        </div>
+        <div class="col-auto mb-2">
+            <button type="submit" id="export" class="btn btn-secondary mt-4"><i class="fa fa-download"></i> Export Excel</button>
+        </div>
+        <div class="col-auto mb-2">
+            <button type="button" class="btn btn-success mt-4" onclick="modalimport()"  ><i class=" fa fa-file-excel"></i> Import File Excel</button>
         </div>
     </div>
 </form>
 
 <div class="viewdata"></div>
 <div class="viewmodal"></div>
+<div class="viewmodalimport"></div>
+
+<script>
+    $(document).ready(function() {
+
+        $('#filter').click(function (e) {
+            e.preventDefault();
+            $('form').attr('action', '<?= base_url("/ujian-custom/filter") ?>');
+            $('form').submit();
+        });
+
+        $('#export').click(function (e) {
+            e.preventDefault();
+            $('form').attr('action', '<?= base_url("/ujian-custom/export") ?>');
+            $('form').submit();
+        });
+    });
+
+    function modalimport() {
+        $.ajax({
+            type: "post",
+            url: "<?= site_url('ujian-custom/modal-import') ?>",
+            dataType: "json",
+            success: function(response) {
+                if (response.sukses) {
+                    $('.viewmodalimport').html(response.sukses).show();
+                    $('#modalimport').modal('show');
+                }
+            }
+        });
+    }
+</script>
 
 <?php if($modul == 'Filter') { ?>
     <script>
@@ -57,9 +95,6 @@
 
         $(document).ready(function() {
             list('<?= $angkatan ?>', '<?= $program_id ?>');
-            // $('.select2').select2({
-            //     minimumResultsForSearch: Infinity
-            // });
         });
     </script>
 <?php } ?>

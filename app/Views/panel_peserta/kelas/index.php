@@ -131,7 +131,7 @@
                         <a href="/peserta/absensi-regular?absen=<?= $data['data_absen'] ?>&kelas=<?= $data['kelas_id'] ?>" class="btn btn-info mb-2">
                             <i class="fa fa-user-graduate mr-1"></i>Absensi
                         </a>
-                        <button type="button" class="btn btn-warning mb-2" onclick="ujian('<?= $data['data_ujian'] ?>','<?= $data['kelas_id'] ?>')" ><i class="fa fa-file mr-1"></i>Ujian</button>
+                        <button type="button" class="btn btn-warning mb-2" onclick="ujian('<?= $data['data_ujian'] ?>','<?= $data['kelas_id'] ?>', '<?= $data['peserta_kelas_id'] ?>')" ><i class="fa fa-file mr-1"></i>Ujian</button>
                     </div>
                 </div>
             </div>
@@ -183,13 +183,14 @@
     <div class="viewmodalujian"></div>
 
 <script>
-function ujian(ujian, kelas) {
+function ujian(ujian, kelas, peserta_kelas_id) {
     $.ajax({
         type: "post",
         url: "<?= site_url('/peserta/ujian') ?>",
         data: {
             data_ujian : ujian,
-            kelas_id: kelas
+            kelas_id: kelas,
+            peserta_kelas_id: peserta_kelas_id
         },
         dataType: "json",
         success: function(response) {

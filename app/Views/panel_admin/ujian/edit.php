@@ -92,7 +92,7 @@
                     <label for="" class="col-sm-2 col-form-label">Kesan Pengajar</label>
                     
                     <div class="col-sm-10">
-                        <textarea class="form-control" name="ujian_note" id="ujian_note" style="height: 150px;"></textarea>
+                        <textarea class="form-control" name="ujian_note" id="ujian_note" style="height: 150px;"><?= $ujian['ujian_note'] ?></textarea>
                     </div>
                 </div>
 
@@ -110,8 +110,6 @@
     $(document).ready(function() {
         $('.js-example-basic-single-edit').select2({
         });
-
-        $('#ujian_note').val("<?= $ujian['ujian_note'] ?>");
 
         $('.formedit').submit(function(e) {
             e.preventDefault();
@@ -145,7 +143,7 @@
                     } else {
                         Swal.fire({
                             title: "Berhasil!",
-                            text: "Berhasil Edit Data Rekap Pembayaran SPP",
+                            text: "Berhasil Edit Data Ujian",
                             icon: "success",
                             showConfirmButton: false,
                             timer: 1500

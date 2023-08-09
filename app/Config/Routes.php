@@ -237,9 +237,9 @@ $routes->get('absensi-regular/pengajar-export', 'Admin\Absensi::regular_pengajar
 
 //Ujian
 $routes->get('ujian', 'Admin\Ujian::index', ["filter" => "authweb:1-2-3-7"]);
-$routes->post('ujian/edit', 'Admin\Ujian::edit', ["filter" => "authweb:1-2-3-7"]);
+$routes->post('ujian/edit', 'Admin\Ujian::edit', ["filter" => "authweb:1-2-3-7-5-6"]);
 
-$routes->post('ujian/update', 'Admin\Ujian::update', ["filter" => "authweb:1-2-3-7"]);
+$routes->post('ujian/update', 'Admin\Ujian::update', ["filter" => "authweb:1-2-3-7-5-6"]);
 $routes->post('ujian/import', 'Admin\Ujian::import', ["filter" => "authweb:1-2-3-7"]);
 $routes->get('ujian/export', 'Admin\Ujian::export', ["filter" => "authweb:1-2-3-7"]);
 
@@ -249,8 +249,11 @@ $routes->post('ujian-custom/filter', 'Admin\UjianCustom::filter', ["filter" => "
 $routes->post('ujian-custom/list', 'Admin\UjianCustom::list', ["filter" => "authweb:1-2-3-7"]);
 $routes->post('ujian-custom/fetch', 'Admin\UjianCustom::fetch', ["filter" => "authweb:1-2-3-7"]);
 
-$routes->post('ujian-custom/modal', 'Admin\UjianCustom::modal', ["filter" => "authweb:1-2-3-7"]);
-$routes->post('ujian-custom/update', 'Admin\UjianCustom::update', ["filter" => "authweb:1-2-3-7"]);
+$routes->post('ujian-custom/modal', 'Admin\UjianCustom::modal', ["filter" => "authweb:1-2-3-7-5-6"]);
+$routes->post('ujian-custom/modal-import', 'Admin\UjianCustom::modal_import', ["filter" => "authweb:1-2-3-7"]);
+$routes->post('ujian-custom/update', 'Admin\UjianCustom::update', ["filter" => "authweb:1-2-3-7-5-6"]);
+$routes->post('ujian-custom/import', 'Admin\UjianCustom::import', ["filter" => "authweb:1-2-3-7"]);
+$routes->post('ujian-custom/export', 'Admin\UjianCustom::export', ["filter" => "authweb:1-2-3-7"]);
 
 //Sertifikat
 $routes->get('sertifikat', 'Admin\Sertifikat::index', ["filter" => "authweb:1-2-3-7"]);
@@ -345,6 +348,7 @@ $routes->post('biodata-peserta/update-password', 'Peserta\Biodata::update_passwo
 $routes->get('pengajar/kelas', 'Pengajar\Kelas::index', ["filter" => "authweb:5-6"]);
 $routes->get('pengajar/absensi', 'Pengajar\Kelas::absensi', ["filter" => "authweb:5-6"]);
 $routes->get('pengajar/ujian', 'Pengajar\Ujian::index', ["filter" => "authweb:5-6"]);
+$routes->get('pengajar/ujian-custom', 'Pengajar\UjianCustom::index', ["filter" => "authweb:5-6"]);
 $routes->post('pengajar/atur-absensi', 'Pengajar\Kelas::atur_absensi', ["filter" => "authweb:5-6"]);
 $routes->post('pengajar/input-absensi', 'Pengajar\Kelas::input_absensi', ["filter" => "authweb:5-6"]);
 $routes->post('pengajar/save-absensi', 'Pengajar\Kelas::save_absensi', ["filter" => "authweb:5-6"]);

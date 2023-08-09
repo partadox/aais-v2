@@ -60,9 +60,17 @@
                         <a href="/pengajar/absensi?kelas=<?= $data['kelas_id'] ?>" class="btn btn-info mb-2">
                             <i class="fa fa-user-graduate mr-1"></i>Absensi
                         </a>
-                        <a href="/pengajar/ujian?kelas=<?= $data['kelas_id'] ?>" class="btn btn-warning mb-2">
-                            <i class="fa fa-file-archive mr-1"></i>Hasil Ujian
-                        </a>
+                        <?php if($data['ujian_custom_status'] == NULL || $data['ujian_custom_status'] == '0') { ?>
+                            <a href="/pengajar/ujian?kelas=<?= $data['kelas_id'] ?>" class="btn btn-warning mb-2">
+                                <i class="fa fa-file-archive mr-1"></i> Ujian
+                            </a>
+                        <?php } ?>
+                        <?php if($data['ujian_custom_status'] == '1') { ?>
+                            <a href="/pengajar/ujian-custom?kelas=<?= $data['kelas_id'] ?>" class="btn btn-warning mb-2">
+                                <i class="fa fa-file-archive mr-1"></i> Ujian
+                            </a>
+                        <?php } ?>
+                        
                     </div>
                 </div>
             </div>

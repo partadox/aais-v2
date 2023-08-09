@@ -21,12 +21,9 @@
                 <input type="hidden" class="form-control" id="program" value="<?= $kelas['program_id'] ?>" name="program" readonly>
 
                 <div class="form-group row">
-                    <label for="" class="col-sm-2 col-form-label">NIS / Nama</label>
+                    <label for="" class="col-sm-2 col-form-label">NIS - Nama</label>
                     <div class="col-sm-5">
-                        <input type="text" class="form-control" value="<?= $peserta['nis'] ?>" readonly>
-                    </div>
-                    <div class="col-sm-5">
-                        <input type="text" class="form-control" value="<?= $peserta['nama_peserta'] ?>" readonly>
+                        <input type="text" class="form-control" value="<?= $peserta['nis'] ?> - <?= $peserta['nama_peserta'] ?>" readonly>
                     </div>
                 </div>
 
@@ -132,7 +129,7 @@
                     } else {
                         Swal.fire({
                             title: "Berhasil!",
-                            text: "Berhasil Edit Data Rekap Pembayaran SPP",
+                            text: "Berhasil Ubah Data Ujian",
                             icon: "success",
                             showConfirmButton: false,
                             timer: 1500
