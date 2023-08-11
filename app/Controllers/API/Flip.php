@@ -5,6 +5,7 @@ use App\Libraries\JWTCI4;
 use App\Models\Api_peserta;
 use App\Models\Model_kelas;
 use App\Models\Api_bayar;
+use App\Models\Api_peserta_kelas;
 use App\Models\Model_spp1;
 use App\Models\Model_spp2;
 use App\Models\Model_spp3;
@@ -44,7 +45,7 @@ class Flip extends ResourceController
 		$this->infaq                = new Model_infaq;
 		$this->bayar_lain           = new Model_bayar_lain;
 		$this->bayar_modul          = new Model_bayar_modul;
-		$this->peserta_kelas        = new Model_peserta_kelas;
+		$this->peserta_kelas        = new Api_peserta_kelas;
 		$this->program              = new Model_program;
 		$this->pengajar             = new Model_pengajar;
 		$this->log                  = new Model_log;
