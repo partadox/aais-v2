@@ -12,6 +12,7 @@
             <?= csrf_field(); ?>
             <div class="modal-body">
                 <input type="hidden" class="form-control" name="absen_peserta_id" id="absen_peserta_id" value="<?= $absen['absen_peserta_id'] ?>"  readonly>
+                <input type="hidden" class="form-control" name="kelas_id" id="kelas_id" value="<?= $kelas_id ?>"  readonly>
                 <div class="form-group row">
                     <label for="" class="col-3 col-form-label">Peserta</label>
                     <input type="text" class="col-7 form-control" readonly value="<?= $peserta ?>">

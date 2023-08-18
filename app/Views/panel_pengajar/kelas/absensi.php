@@ -84,7 +84,7 @@ if (session()->getFlashdata('pesan_sukses')) {
                 <?php if($data['status_aktif_peserta'] == 'OFF') { ?><a class="btn btn-sm btn-danger">OFF</a><?php } ?>
                 </td>
                 <td>
-                    <button type="button" class="mt-2 btn btn-info btn-sm"  onclick="note('<?= $data['absen_peserta_id']?>', '<?= $data['nis'] ?>', '<?= $data['nama_peserta'] ?>')"><i class="fa fa-file"></i> Note</button>
+                    <button type="button" class="mt-2 btn btn-info btn-sm"  onclick="note('<?= $data['absen_peserta_id']?>', '<?= $data['nis'] ?>', '<?= $data['nama_peserta'] ?>', '<?= $detail_kelas[0]['kelas_id']?>')"><i class="fa fa-file"></i> Note</button>
                 </td>
                 <?php
                 $total = 0;
@@ -204,14 +204,15 @@ if (session()->getFlashdata('pesan_sukses')) {
         });
     }
 
-    function note(absen_peserta_id, nis, nama) {
+    function note(absen_peserta_id, nis, nama, kelas_id) {
         $.ajax({
             type: "post",
             url: "<?= site_url('/pengajar/absensi-note')?>",
             data: {
                 absen_peserta_id: absen_peserta_id,
                 nis: nis,
-                nama: nama
+                nama: nama,
+                kelas_id: kelas_id,
             },
             dataType: "json",
             success: function(response) {

@@ -17,6 +17,16 @@
 <h5 style="text-align:center;">Kelas <?= $detail_kelas[0]['nama_kelas'] ?></h5>
 <h6 style="text-align:center;"><?= $detail_kelas[0]['hari_kelas'] ?>, <?= $detail_kelas[0]['waktu_kelas'] ?> - <?= $detail_kelas[0]['metode_kelas'] ?></h6>
 <h6 style="text-align:center;"><?= $detail_kelas[0]['nama_pengajar'] ?></h6>
+<?php if($detail_kelas[0]['show_ujian'] == NULL || $detail_kelas[0]['show_ujian'] == '0') { ?>
+    <h6 style="text-align:center; color: red;">HASIL UJIAN TIDAK TAMPIL</h6> 
+<?php } ?>
+<?php if($detail_kelas[0]['show_ujian'] == '1') { ?>
+    <h6 style="text-align:center; color: green;">HASIL UJIAN TAMPIL</h6> 
+<?php } ?>
+<div style="text-align:center;">
+    <button type="button" class="mb-2 btn btn-primary"  onclick="show('<?=$detail_kelas[0]['kelas_id']?>')"><i class="fa fa-eye"></i> Tampilkan Hasil Ujian</button>
+</div>
+
 
 <hr>
 
@@ -83,6 +93,7 @@ foreach ($peserta_onkelas as $data) :
 <?php endforeach; ?>
 
 <div class="viewmodaldataedit"></div>
+<div class="viewmodaldatashow"></div>
 
 <script>
     $(document).ready(function () {
@@ -108,6 +119,23 @@ foreach ($peserta_onkelas as $data) :
                 if (response.sukses) {
                     $('.viewmodaldataedit').html(response.sukses).show();
                     $('#modaledit').modal('show');
+                }
+            }
+        });
+    }
+
+    function show(kelas_id) {
+        $.ajax({
+            type: "post",
+            url: "<?= site_url('/pengajar/show-ujian') ?>",
+            data: {
+                kelas_id : kelas_id,
+            },
+            dataType: "json",
+            success: function(response) {
+                if (response.sukses) {
+                    $('.viewmodaldatashow').html(response.sukses).show();
+                    $('#modalshow').modal('show');
                 }
             }
         });

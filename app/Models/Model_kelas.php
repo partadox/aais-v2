@@ -8,7 +8,7 @@ class Model_kelas extends Model
 {
     protected $table      = 'program_kelas';
     protected $primaryKey = 'kelas_id';
-    protected $allowedFields = ['program_id', 'peserta_level','pengajar_id', 'data_absen_pengajar', 'nama_kelas', 'angkatan_kelas', 'hari_kelas', 'waktu_kelas', 'zona_waktu_kelas', 'jenkel', 'status_kerja', 'kouta', 'sisa_kouta', 'jumlah_peserta', 'metode_kelas','status_kelas', 'metode_absen', 'tm_absen',  'config_absen','expired_absen'];
+    protected $allowedFields = ['program_id', 'peserta_level','pengajar_id', 'data_absen_pengajar', 'nama_kelas', 'angkatan_kelas', 'hari_kelas', 'waktu_kelas', 'zona_waktu_kelas', 'jenkel', 'status_kerja', 'kouta', 'sisa_kouta', 'jumlah_peserta', 'metode_kelas','status_kelas', 'metode_absen', 'tm_absen',  'config_absen','expired_absen', 'show_ujian'];
 
     /*--- NEW MODEL ---*/
     public function list_2nd($angkatan)

@@ -10,6 +10,14 @@
             </div>
             <?= form_open('/ujian-custom/update', ['class' => 'formedit']) ?>
             <?= csrf_field(); ?>
+            <style>
+                .modal-dialog {
+                    overflow-y: auto !important;
+                }
+                .modal-body {
+                    max-height: calc(100vh - 150px); /* Adjust the value as needed */
+                }
+            </style>
             <div class="modal-body">
                 <!-- <p class="mt-1">Catatan :<br> 
                     <i class="mdi mdi-information"></i> Semua form input wajib diisi! <br>

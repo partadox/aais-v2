@@ -14,7 +14,11 @@
                 <h6 style="text-align:center;"><?= $nama_pengajar ?></h6>
                 <h6 style="text-align:center;"><?= $kelas['hari_kelas'] ?>, <?= $kelas['waktu_kelas'] ?> <?= $kelas['zona_waktu_kelas'] ?> - <?= $kelas['metode_kelas'] ?></h6>
                 <hr>
-                        <strong>Status Kelulusan: </strong>
+                <?php if($kelas['show_ujian'] == NULL || $kelas['show_ujian'] =='0' ) { ?>
+                    <h6 style="text-align:center;">BELUM ADA DATA</h6>
+                <?php } ?>
+                <?php if($ujian_status != '1' && $kelas['show_ujian'] == '1') { ?>
+                    <strong>Status Kelulusan: </strong>
                         <?php if($kelulusan == 'BELUM LULUS') { ?>
                             <button class="btn btn-secondary btn-sm" disabled>BELUM LULUS</button> 
                         <?php } ?>
@@ -24,7 +28,6 @@
                         <?php if($kelulusan == 'MENGULANG') { ?>
                             <button class="btn btn-warning btn-sm" disabled>MENGULANG</button> 
                         <?php } ?>
-                <?php if($ujian_status != '1') { ?>
                     <table class="table table-bordered mt-4">
                         <tbody>
                             <tr>
@@ -50,7 +53,17 @@
                         </tbody>
                     </table>
                 <?php } ?>
-                <?php if($ujian_status == '1') { ?>
+                <?php if($ujian_status == '1' && $kelas['show_ujian'] == '1') { ?>
+                    <strong>Status Kelulusan: </strong>
+                        <?php if($kelulusan == 'BELUM LULUS') { ?>
+                            <button class="btn btn-secondary btn-sm" disabled>BELUM LULUS</button> 
+                        <?php } ?>
+                        <?php if($kelulusan == 'LULUS') { ?>
+                            <button class="btn btn-success btn-sm" disabled>LULUS</button> 
+                        <?php } ?>
+                        <?php if($kelulusan == 'MENGULANG') { ?>
+                            <button class="btn btn-warning btn-sm" disabled>MENGULANG</button> 
+                        <?php } ?>
                     <table class="table table-bordered mt-4">
                         <tbody>
                             <?php for ($i=1; $i <= 10; $i++): ?>

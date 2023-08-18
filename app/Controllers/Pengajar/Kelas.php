@@ -263,6 +263,7 @@ class Kelas extends BaseController
             $absen              = $this->absen_peserta->find($absen_peserta_id);
             $tm_notes           = [];
             $peserta            = $this->request->getVar('nis') . ' - ' . $this->request->getVar('nama');
+            $kelas_id           = $this->request->getVar('kelas_id');
 
             for ($i = 1; $i <= 16; $i++) {
                 $tm_notes[$i] = $absen["note_ps_tm" . $i];
@@ -274,6 +275,7 @@ class Kelas extends BaseController
                 'absen'            => $absen,
                 'tm_notes'         => json_encode($tm_notes),
                 'peserta'          => $peserta,
+                'kelas_id'         => $kelas_id,
             ];
             $msg = [
                 'sukses' => view('panel_pengajar/kelas/edit-note', $data)
@@ -289,7 +291,7 @@ class Kelas extends BaseController
             $tm                  = $this->request->getVar('tm');
             $note_ps_tm          = 'note_ps_tm'.$tm;
 
-            $absen               = $this->absen_peserta->find($absen_peserta_id );
+            $absen               = $this->absen_peserta->find($absen_peserta_id);
 
             $update_data = [
                 $note_ps_tm  => str_replace(array("\r", "\n"), ' ',$this->request->getVar('note'))
@@ -298,7 +300,7 @@ class Kelas extends BaseController
 
             $msg = [
                 'sukses' => [
-                    'link' => '/pengajar/absensi?kelas='.$absen['bckp_absen_peserta_kelas']
+                    'link' => '/pengajar/absensi?kelas='.$this->request->getVar('kelas_id')
                 ]
             ];
         }
