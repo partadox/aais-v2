@@ -93,9 +93,9 @@
                                 <strong>VA: <?= $data['bill_va'] ?> </strong>
                                 <input style="display: none;" type="text" id="vaCopy<?= $nomor ?>" value="<?= $data['bill_va'] ?>">
                                 <br> <strong>Expired: <?= $data['bill_expired'] ?>  </strong> <br>
-                                <button class="expandPay btn btn-sm btn-default">Lihat Cara Bayar</button>
+                                <button class="expandPay btn btn-sm btn-info">Lihat Cara Bayar</button>
 
-                                <div class="caraBayar mt-2">
+                                <div class="caraBayar mt-2" style="display: none;">
                                     <u>Cara Bayar:</u>
                                     <?php if($data['bill_bank'] == 'BSI') { ?>
                                         <ol>
