@@ -346,59 +346,69 @@
         });
 
         $('#pay-btn').click(function() {
-            Swal.fire({
-                title: 'Form Upload Bukti Bayar',
-                html: ` <p>Total TF = Rp ${formatPrice(total)}</p>
-                        <label>Bukti Transfer<code>*</code></label>
-                        <input type="file" id="pay_image" accept="image/png, image/jpeg" class="form-control mb-3">
-                        <div id="image_preview_div"></div>`,
-                showCancelButton: true,
-                confirmButtonText: 'Upload',
-                cancelButtonText: 'Batal',
-                focusConfirm: false,
-                allowOutsideClick: false,
-                preConfirm: () => {
-                    let keterangan_bayar = document.getElementById('keterangan_bayar').value;
-                    let image = document.getElementById('pay_image').files[0];
-                    let formData = new FormData();
-                    formData.append('keterangan_bayar', keterangan_bayar);
-                    formData.append('image', image);
-                    formData.append('cart', JSON.stringify(cart));
-                    formData.append('total', total);
-                    formData.append('peserta_kelas_id', <?= $peserta_kelas_id ?>);
-                    formData.append('peserta_id', <?= $peserta_id ?>);
-                    formData.append('kelas_id', <?= $kelas_id ?>);
-                    return $.ajax({
-                        url: "<?= site_url('/bayar-spp/save-manual') ?>",
-                        type: "post",
-                        dataType: "json",
-                        processData: false, // This is important
-                        contentType: false, // This is important
-                        data: formData
-                    });
-                }
-            }).then((result) => {
-                if (result.value.error) {
-                    Swal.fire({
-                        title: "Error!",
-                        text: result.value.error,
+            if (total <= 10000) {
+                Swal.fire({
+                        title: "Gagal!",
+                        text: "Harap Pilih SPP yg Dibayar.",
                         icon: "error",
-                        confirmButtonText: 'OK',
+                        showConfirmButton: true,
                         allowOutsideClick: false,
-                    });
-                } else {
-                    Swal.fire({
-                        title: "Berhasil!",
-                        text: "Form Pembayaran Anda Disimpan, Tunggu Konfirmasi dari Admin.",
-                        icon: "success",
-                        showConfirmButton: false,
-                        allowOutsideClick: false,
-                        timer: 1500
-                    }).then(function() {
-                        window.location = '/bayar/spp';
-                    });
-                }
-            });
+                });
+            } else {
+                Swal.fire({
+                    title: 'Form Upload Bukti Bayar',
+                    html: ` <p>Total TF = Rp ${formatPrice(total)}</p>
+                            <label>Bukti Transfer<code>*</code></label>
+                            <input type="file" id="pay_image" accept="image/png, image/jpeg" class="form-control mb-3">
+                            <div id="image_preview_div"></div>`,
+                    showCancelButton: true,
+                    confirmButtonText: 'Upload',
+                    cancelButtonText: 'Batal',
+                    focusConfirm: false,
+                    allowOutsideClick: false,
+                    preConfirm: () => {
+                        let keterangan_bayar = document.getElementById('keterangan_bayar').value;
+                        let image = document.getElementById('pay_image').files[0];
+                        let formData = new FormData();
+                        formData.append('keterangan_bayar', keterangan_bayar);
+                        formData.append('image', image);
+                        formData.append('cart', JSON.stringify(cart));
+                        formData.append('total', total);
+                        formData.append('peserta_kelas_id', <?= $peserta_kelas_id ?>);
+                        formData.append('peserta_id', <?= $peserta_id ?>);
+                        formData.append('kelas_id', <?= $kelas_id ?>);
+                        return $.ajax({
+                            url: "<?= site_url('/bayar-spp/save-manual') ?>",
+                            type: "post",
+                            dataType: "json",
+                            processData: false, // This is important
+                            contentType: false, // This is important
+                            data: formData
+                        });
+                    }
+                }).then((result) => {
+                    if (result.value.error) {
+                        Swal.fire({
+                            title: "Error!",
+                            text: result.value.error,
+                            icon: "error",
+                            confirmButtonText: 'OK',
+                            allowOutsideClick: false,
+                        });
+                    } else {
+                        Swal.fire({
+                            title: "Berhasil!",
+                            text: "Form Pembayaran Anda Disimpan, Tunggu Konfirmasi dari Admin.",
+                            icon: "success",
+                            showConfirmButton: false,
+                            allowOutsideClick: false,
+                            timer: 1500
+                        }).then(function() {
+                            window.location = '/bayar/spp';
+                        });
+                    }
+                });
+            }
         });
 
         $(document).on('change', '#pay_image', function(event) {
@@ -424,89 +434,100 @@
             formData.append('kelas_id', <?= $kelas_id ?>);
             formData.append('keterangan_bayar', keterangan_bayar);
 
-            // Display a loading alert with no buttons
-            Swal.fire({
-                title: 'Loading...',
-                allowEscapeKey: false,
-                allowOutsideClick: false,
-                showConfirmButton: false,
-                didOpen: () => {
-                    Swal.showLoading()
-                }
-            });
+            if (total <= 10000) {
+                Swal.fire({
+                        title: "Gagal!",
+                        text: "Harap Pilih SPP yg Dibayar Terlebih Dahulu.",
+                        icon: "error",
+                        showConfirmButton: true,
+                        allowOutsideClick: false,
+                })
+            } else {
 
-            $.ajax({
-                url: '/bayar-spp/generate-flip',
-                type: 'POST',
-                data: formData,
-                contentType: false,
-                processData: false,
-                success: function(response){
-                    // Close the loading alert
-                    Swal.close();
-
-                    if (response.error) {
-                        // Handle the error: display an alert with the error message
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error',
-                            text: response.error,
-                            confirmButtonText: 'OK',
-                            allowOutsideClick: false,
-                        });
-                    } else {
-
-                        // assuming response is a JSON object and contains account_number and bank_code
-                        let bank = response.bank_code;
-                        let va = response.account_number;
-
-                        Swal.fire({
-                            title: 'Payment details',
-                            html: `
-                            <table class="table table-bordered">
-                            <tbody>
-                                <tr>
-                                <th>Total</th>
-                                <th>Rp ${formatPrice(total)}</th>
-                                </tr>
-                                <tr>
-                                <th>Bank</th>
-                                <th>${bank}</th>
-                                </tr>
-                                <tr>
-                                <th>VA</th>
-                                <th>${va} <br>
-                                    <button id="copy" class="btn btn-success"><i class="fas fa-copy mr-1"></i> Klik utk Copy VA</button></th>
-                                </tr>
-                            </tbody>
-                            </table>
-                            `,
-                            confirmButtonText: 'Tutup',
-                            allowOutsideClick: false,
-                            didOpen: () => {
-                                $('#copy').click(function(){
-                                    let $temp = $("<input>");
-                                    $("body").append($temp);
-                                    $temp.val($('#va').text()).select();
-                                    document.execCommand("copy");
-                                    $temp.remove();
-
-                                    // Update the text of the button
-                                    $(this).html('<i class="fas fa-check"></i> VA dicopy');
-                                });
-                            },
-                                didClose: () => {
-                                window.location.href = "/bayar/riwayat";
-                            }
-                        });
+                // Display a loading alert with no buttons
+                Swal.fire({
+                    title: 'Loading...',
+                    allowEscapeKey: false,
+                    allowOutsideClick: false,
+                    showConfirmButton: false,
+                    didOpen: () => {
+                        Swal.showLoading()
                     }
-                },
-                error: function(jqXHR, textStatus, errorThrown){
-                    // Close the loading alert
-                    Swal.close();
-                    console.log(textStatus, errorThrown);
-                }
-            });
+                });
+
+                $.ajax({
+                    url: '/bayar-spp/generate-flip',
+                    type: 'POST',
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    success: function(response){
+                        // Close the loading alert
+                        Swal.close();
+
+                        if (response.error) {
+                            // Handle the error: display an alert with the error message
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: response.error,
+                                confirmButtonText: 'OK',
+                                allowOutsideClick: false,
+                            });
+                        } else {
+
+                            // assuming response is a JSON object and contains account_number and bank_code
+                            let bank = response.bank_code;
+                            let va = response.account_number;
+
+                            Swal.fire({
+                                title: 'Payment details',
+                                html: `
+                                <table class="table table-bordered">
+                                <tbody>
+                                    <tr>
+                                    <th>Total</th>
+                                    <th>Rp ${formatPrice(total)}</th>
+                                    </tr>
+                                    <tr>
+                                    <th>Bank</th>
+                                    <th>${bank}</th>
+                                    </tr>
+                                    <tr>
+                                    <th>VA</th>
+                                    <th>${va} <br>
+                                        <button id="copy" class="btn btn-success"><i class="fas fa-copy mr-1"></i> Klik utk Copy VA</button></th>
+                                    </tr>
+                                </tbody>
+                                </table>
+                                `,
+                                confirmButtonText: 'Tutup',
+                                allowOutsideClick: false,
+                                didOpen: () => {
+                                    $('#copy').click(function(){
+                                        let $temp = $("<input>");
+                                        $("body").append($temp);
+                                        $temp.val($('#va').text()).select();
+                                        document.execCommand("copy");
+                                        $temp.remove();
+
+                                        // Update the text of the button
+                                        $(this).html('<i class="fas fa-check"></i> VA dicopy');
+                                    });
+                                },
+                                    didClose: () => {
+                                    window.location.href = "/bayar/riwayat";
+                                }
+                            });
+                        }
+                    },
+                    error: function(jqXHR, textStatus, errorThrown){
+                        // Close the loading alert
+                        // Swal.close();
+                        // console.log(textStatus, errorThrown);
+                    }
+                });
+            }
         });
 
         $('#pay-beasiswa-btn').click(function() {

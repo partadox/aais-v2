@@ -93,6 +93,33 @@
                                 <strong>VA: <?= $data['bill_va'] ?> </strong>
                                 <input style="display: none;" type="text" id="vaCopy<?= $nomor ?>" value="<?= $data['bill_va'] ?>">
                                 <br> <strong>Expired: <?= $data['bill_expired'] ?>  </strong> <br>
+                                <button class="expandPay btn btn-sm btn-default">Lihat Cara Bayar</button>
+
+                                <div class="caraBayar mt-2">
+                                    <u>Cara Bayar:</u>
+                                    <?php if($data['bill_bank'] == 'BSI') { ?>
+                                        <ol>
+                                            <li>Buka aplikasi BSI Mobile kemudian pilih menu Transfer.</li>
+                                            <li>Pilih menu Pembayaran.</li>
+                                            <li>Pilih menu E-Commerce.</li>
+                                            <li>Pilih “DOKU”.</li>
+                                            <li>Pilih nomor rekening.</li>
+                                            <li>Masukkan nomor Virtual Account (VA) diatas.</li>
+                                            <li>Pastikan jumlah transfernya sudah sesuai</li>
+                                            <li>Masukkan PIN BSI Mobile.</li>
+                                            <li>Transaksi selesai.</li>
+                                        </ol>
+                                    <?php } ?>
+                                    <?php if($data['bill_bank'] == 'BRI') { ?>
+                                        <ol>
+                                            <li>Buka aplikasi BRIMO kemudian pilih menu BRIVA.</li>
+                                            <li>Masukkan nomor Virtual Account (VA) diatas.</li>
+                                            <li>Pastikan jumlah transfernya sudah sesuai</li>
+                                            <li>Masukkan PIN BRIMO.</li>
+                                            <li>Transaksi selesai.</li>
+                                        </ol>
+                                    <?php } ?>
+                                </div>
                             <?php } ?>
                         <?php } ?>
                         <p class="card-text">
@@ -198,6 +225,9 @@
     $(document).ready(function(){
         $(".expandButton").click(function(){
             $(this).next('.zoom-container').toggle(); // This will only toggle the zoom-container that is directly after the clicked button
+        });
+        $(".expandPay").click(function(){
+            $(this).next('.caraBayar').toggle();
         });
     });
     </script>
