@@ -95,11 +95,10 @@
                         <textarea class="form-control" name="ujian_note" id="ujian_note" style="height: 150px;"><?= $ujian['ujian_note'] ?></textarea>
                     </div>
                 </div>
-
-            </div>
-            <div class="modal-footer">
-                <button type="submit" class="btn btn-primary btnsimpan"><i class="fa fa-share-square"></i> Simpan</button>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <div class="text-right mt-2">
+                    <button type="submit" class="btn btn-primary btnsimpan"><i class="fa fa-share-square"></i> Simpan</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
             </div>
 
             <?= form_close() ?>

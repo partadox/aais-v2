@@ -37,9 +37,9 @@ foreach ($peserta_onkelas as $data) :
         <div class="card">
             <div class="card-header" id="headingOne">
             <h2 class="mb-0">
-                <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#colapse<?= $nomor?>" aria-expanded="true" aria-controls="colapse<?= $nomor?>" style="color: black; text-decoration: none;">
+                <button class="btn btn-link btn-block text-left" type="button" <?php if($data['status_aktif_peserta'] != 'OFF') { ?> data-toggle="collapse" data-target="#colapse<?= $nomor?>" aria-expanded="true" aria-controls="colapse<?= $nomor?>" <?php } ?> style="color: black; text-decoration: none;">
                 <h6>
-                    <?= $nomor ?>. <?= $data['nis'] ?> - <?= $data['nama_peserta'] ?>
+                    <?= $nomor ?>. <?= $data['nis'] ?> - <?= $data['nama_peserta'] ?> <?php if($data['status_aktif_peserta'] == 'OFF') { ?><a style="color: red;">(OFF)</a><?php } ?>
                     <i class="fa fa-angle-down float-right"></i>
                 </h6>
                 </button>

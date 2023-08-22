@@ -86,11 +86,10 @@
                             </div>
                         <?php } ?>
                 <?php endfor; ?>
-
-            </div>
-            <div class="modal-footer">
-                <button type="submit" class="btn btn-primary btnsimpan"><i class="fa fa-share-square"></i> Simpan</button>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <div class="text-right mt-2">
+                    <button type="submit" class="btn btn-primary btnsimpan"><i class="fa fa-share-square"></i> Simpan</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
             </div>
 
             <?= form_close() ?>
