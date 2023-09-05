@@ -228,7 +228,7 @@ class Absensi extends BaseController
             ],
         ];
 
-        $judul = "DATA REKAP ABSEN PESERTA - ACADEMIC ALHAQQ INFORMATION SYSTEM";
+        $judul = "DATA REKAP ABSEN PESERTA - ALHAQQ ACADEMIC INFORMATION SYSTEM";
         $tgl   = "ANGKATAN PERKULIAHAN " . $angkatan . " - " . date("d-m-Y");
 
         $sheet->setCellValue('A1', $judul);

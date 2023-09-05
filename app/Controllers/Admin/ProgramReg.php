@@ -303,10 +303,15 @@ class ProgramReg extends BaseController
         $program_id          = $this->request->getVar('program_id');
         $ujian_custom_id     = $this->request->getVar('ujian_custom_id');
         $ujian_custom_status = $this->request->getVar('ujian_custom_status');
+        $ujian_show          = $this->request->getVar('ujian_show');
+        if ($ujian_show == '0') {
+            $ujian_show = NULL;
+        }
 
         if ($ujian_custom_status != 1) {
             $updateProgram = [
                 'ujian_custom_status' => NULL,
+                'ujian_show'          => $ujian_show
             ];
             $this->program->update($program_id, $updateProgram);
 
@@ -350,6 +355,7 @@ class ProgramReg extends BaseController
 
                 $updateProgram = [
                     'ujian_custom_status' => $ujian_custom_status,
+                    'ujian_show'          => $ujian_show
                 ];
                 $this->program->update($program_id, $updateProgram);
 
@@ -394,6 +400,7 @@ class ProgramReg extends BaseController
                 $updateProgram = [
                     'ujian_custom_status' => $ujian_custom_status,
                     'ujian_custom_id'     => $this->ujian_custom_config->insertID(),
+                    'ujian_show'          => $ujian_show
                 ];
                 $this->program->update($program_id, $updateProgram);
 

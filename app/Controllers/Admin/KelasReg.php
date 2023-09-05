@@ -742,7 +742,7 @@ class KelasReg extends BaseController
             ],
         ];
 
-        $judul = "DATA KELAS ALHAQQ ANGAKATAN ".$angkatan." - ACADEMIC ALHAQQ INFORMATION SYSTEM";
+        $judul = "DATA KELAS ALHAQQ ANGAKATAN ".$angkatan." - ALHAQQ ACADEMIC INFORMATION SYSTEM";
         $tgl   = date("d-m-Y");
 
         $sheet->setCellValue('A1', $judul);

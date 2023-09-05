@@ -13,8 +13,8 @@
 <a href="<?= base_url('/pengajar/kelas') ?>"> 
     <button type="button" class="btn btn-secondary mb-3"><i class=" fa fa-arrow-circle-left"></i> Kembali</button>
 </a>
-<a href="<?= base_url('/pengajar/ujian-custom-tabel?kelas='.$kelas['kelas_id']) ?>"> 
-    <button type="button" class="btn btn-primary mb-3"><i class="fa fa-list"></i> Tampilan Tabel</button>
+<a href="<?= base_url('/pengajar/ujian-custom?kelas='.$kelas['kelas_id']) ?>"> 
+    <button type="button" class="btn btn-success mb-3"><i class="fa fa-bars"></i> Tampilan Baris</button>
 </a>
 
 <h5 style="text-align:center;">Kelas <?= $kelas['nama_kelas'] ?></h5>
@@ -30,26 +30,47 @@
     <button type="button" class="mb-2 btn btn-primary"  onclick="show('<?=$kelas['kelas_id']?>')"><i class="fa fa-eye"></i> Tampilkan Hasil Ujian</button>
 </div> -->
 
-<?php $nomor = 0;
-foreach ($peserta_onkelas as $data) :
-    $nomor++; ?>
-    <div class="accordion" id="accordionAbsen">
-        <div class="card">
-            <div class="card-header" id="headingOne">
-            <h2 class="mb-0">
-                <button class="btn btn-link btn-block text-left" type="button" <?php if($data['status_aktif_peserta'] != 'OFF') { ?> data-toggle="collapse" data-target="#colapse<?= $nomor?>" aria-expanded="true" aria-controls="colapse<?= $nomor?>" <?php } ?> style="color: black; text-decoration: none;">
-                <h6>
-                    <?= $nomor ?>. <?= $data['nis'] ?> - <?= $data['nama_peserta'] ?> <?php if($data['status_aktif_peserta'] == 'OFF') { ?><a style="color: red;">(OFF)</a><?php } ?>
-                    <i class="fa fa-angle-down float-right"></i>
-                </h6>
-                </button>
-            </h2>
-            </div>
+<div class="table-responsive">
+    <table id="datatable" class="table table-striped table-bordered nowrap mt-5" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+        <thead>
+            <tr>
+                <th>No.</th>
+                <th>NIS</th>
+                <th>Nama</th>
+                <th>Status Kelulusan</th>
+                <th>Input Nilai</th>
+                <?php for ($i=1; $i <= 10; $i++): ?>
+                    <?php
+                        $col_status = 'text'.$i.'_status';
+                        $col_name   = 'text'.$i.'_name'  ;
 
-            <div id="colapse<?= $nomor?>" class="collapse" aria-labelledby="headingOne" data-parent="#accordionAbsen">
-                <div class="card-body">
-                    <h6>
-                        <strong>Status Kelulusan: </strong>
+                        $val        = 'ucv_text'.$i;
+                        if($ucc[$col_status] == '1') { ?>
+                            <th><?= $ucc[$col_name] ?> </th>
+                        <?php } ?>
+                <?php endfor; ?>
+                <?php for ($i=1; $i <= 10; $i++): ?>
+                    <?php
+                        $col_status = 'int'.$i.'_status';
+                        $col_name   = 'int'.$i.'_name'  ;
+
+                        $val        = 'ucv_int'.$i;
+                        if($ucc[$col_status] == '1') { ?>
+                            <th><?= $ucc[$col_name] ?> </th>
+                        <?php } ?>
+                <?php endfor; ?>
+            </tr>
+        </thead>
+
+        <tbody>
+            <?php $nomor = 0;
+            foreach ($peserta_onkelas as $data) :
+                $nomor++; ?>
+                <tr>
+                    <td width="2%"><?= $nomor ?></td>
+                    <td width="5%"><?= $data['nis'] ?></td>
+                    <td width="5%"><?= $data['nama_peserta'] ?> <?php if($data['status_aktif_peserta'] == 'OFF') { ?><a style="color: red;">(OFF)</a><?php } ?></td>
+                    <td width="10%">
                         <?php if($data['status_peserta_kelas'] == 'BELUM LULUS') { ?>
                             <button class="btn btn-secondary btn-sm" disabled>BELUM LULUS</button> 
                         <?php } ?>
@@ -59,45 +80,36 @@ foreach ($peserta_onkelas as $data) :
                         <?php if($data['status_peserta_kelas'] == 'MENGULANG') { ?>
                             <button class="btn btn-warning btn-sm" disabled>MENGULANG</button> 
                         <?php } ?>
-                    <table class="table table-bordered mt-4">
-                        <tbody>
-                            <?php for ($i=1; $i <= 10; $i++): ?>
-                                <?php
-                                    $col_status = 'text'.$i.'_status';
-                                    $col_name   = 'text'.$i.'_name'  ;
+                    </td>
+                    <td width="5%">
+                        <button type="button" class="mt-2 btn btn-warning"  onclick="info('<?=$data['ucv_id']?>', '<?=$kelas['program_id']?>', '<?=$data['peserta_kelas_id']?>')"><i class="fa fa-edit"></i></button>
+                    </td>
+                    <?php for ($i=1; $i <= 10; $i++): ?>
+                        <?php
+                            $col_status = 'text'.$i.'_status';
+                            $col_name   = 'text'.$i.'_name'  ;
 
-                                    $val        = 'ucv_text'.$i;
-                                    if($ucc[$col_status] == '1') { ?>
-                                        <tr>
-                                            <th width="5%"><?= $ucc[$col_name] ?> </th>
-                                            <th width="95%"><?= $data[$val] ?></th>
-                                        </tr>
-                                    <?php } ?>
-                            <?php endfor; ?>
+                            $val        = 'ucv_text'.$i;
+                            if($ucc[$col_status] == '1') { ?>
+                                <td width="10%"><?= $data[$val] ?></td>
+                            <?php } ?>
+                    <?php endfor; ?>
+                    <?php for ($i=1; $i <= 10; $i++): ?>
+                        <?php
+                            $col_status = 'int'.$i.'_status';
+                            $col_name   = 'int'.$i.'_name'  ;
 
-                            <?php for ($i=1; $i <= 10; $i++): ?>
-                                <?php
-                                    $col_status = 'int'.$i.'_status';
-                                    $col_name   = 'int'.$i.'_name'  ;
+                            $val        = 'ucv_int'.$i;
+                            if($ucc[$col_status] == '1') { ?>
+                                <td width="10%"><?= $data[$val] ?></td>
+                            <?php } ?>
+                    <?php endfor; ?>
+                </tr>
 
-                                    $val        = 'ucv_int'.$i;
-                                    if($ucc[$col_status] == '1') { ?>
-                                        <tr>
-                                            <th width="5%"><?= $ucc[$col_name] ?> </th>
-                                            <th width="95%"><?= $data[$val] ?></th>
-                                        </tr>
-                                    <?php } ?>
-                            <?php endfor; ?>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="card-footer">
-                    <button type="button" class="mt-2 btn btn-info"  onclick="info('<?=$data['ucv_id']?>', '<?=$kelas['program_id']?>', '<?=$data['peserta_kelas_id']?>')"><i class="fa fa-edit"></i> Input Nilai</button>
-                </div>
-            </div>
-        </div>
-    </div>
-<?php endforeach; ?>
+            <?php endforeach; ?>
+        </tbody>
+    </table>
+</div>
 
 <div class="viewmodal"></div>
 <div class="viewmodaldatashow"></div>

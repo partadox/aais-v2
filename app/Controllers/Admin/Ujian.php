@@ -292,7 +292,7 @@ class Ujian extends BaseController
             ],
         ];
 
-        $judul = "DATA REKAP HASIL UJIAN PESERTA  - ACADEMIC ALHAQQ INFORMATION SYSTEM";
+        $judul = "DATA REKAP HASIL UJIAN PESERTA  - ALHAQQ ACADEMIC INFORMATION SYSTEM";
         $tgl   = "ANGKATAN PERKULIAHAN " . $angkatan . " - " . date("d-m-Y");
 
         $sheet->setCellValue('A1', $judul);

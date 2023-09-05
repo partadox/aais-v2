@@ -27,6 +27,7 @@
                 <th>Biaya Modul</th>
                 <th>Status</th>
                 <th>Fitur Ujian</th>
+                <th>Tampil Nilai Ujian</th>
                 <th>Tindakan</th>
             </tr>
         </thead>
@@ -59,6 +60,14 @@
                         <?php } ?>
                         <?php if($data['ujian_custom_status'] != NULL) { ?>
                             <button class="btn btn-info btn-sm" disabled>Custom</button> 
+                        <?php } ?>
+                    </td>
+                    <td width="10%">
+                        <?php if($data['ujian_show'] == 1) { ?>
+                            <button class="btn btn-success btn-sm" disabled>TAMPIL</button> 
+                        <?php } ?>
+                        <?php if($data['ujian_show'] != 1) { ?>
+                            <button class="btn btn-secondary btn-sm" disabled>TIDAK</button> 
                         <?php } ?>
                     </td>
                     <td width="10%">

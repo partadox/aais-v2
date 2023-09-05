@@ -63,7 +63,7 @@
                         $val        = 'ucv_text'.$i;
                         if($ucc[$col_status] == '1') { ?>
                             <div class="form-group row">
-                                <label for="" class="col-sm-2 col-form-label"><?= strtoupper($ucc[$col_name]) ?></label>
+                                <label for="" class="col-sm-2 col-form-label"><?= $ucc[$col_name] ?></label>
                                 <div class="col-sm-10">
                                     <textarea class="form-control" name="<?= $val ?>" id="<?= $val ?>" style="height: 80px;"><?= $ucv[$val] ?></textarea>
                                 </div>
@@ -79,7 +79,7 @@
                         $val        = 'ucv_int'.$i;
                         if($ucc[$col_status] == '1') { ?>
                             <div class="form-group row">
-                                <label for="" class="col-sm-2 col-form-label"><?= strtoupper($ucc[$col_name]) ?></label>
+                                <label for="" class="col-sm-2 col-form-label"><?= $ucc[$col_name] ?></label>
                                 <div class="col-sm-10">
                                     <input type="number" min="0" max="100" class="form-control" name="<?= $val ?>" id="<?= $val ?>" value="<?= $ucv[$val] ?>">
                                 </div>

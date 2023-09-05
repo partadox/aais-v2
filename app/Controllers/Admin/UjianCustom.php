@@ -433,7 +433,7 @@ class UjianCustom extends BaseController
             ],
         ];
 
-        $judul = "DATA REKAP HASIL UJIAN CUSTOM PESERTA  - ACADEMIC ALHAQQ INFORMATION SYSTEM";
+        $judul = "DATA REKAP HASIL UJIAN CUSTOM PESERTA  - ALHAQQ ACADEMIC INFORMATION SYSTEM";
         $tgl   = "ANGKATAN PERKULIAHAN " . $angkatan . " PROGRAM " . $program['nama_program'] . " - " . date("d-m-Y");
 
         $sheet->setCellValue('A1', $judul);
@@ -469,7 +469,7 @@ class UjianCustom extends BaseController
             if($ucc[$col_status] == 1) {
                 $cell = $col_letter.'4';
                 $spreadsheet->getActiveSheet()
-                ->setCellValue($cell, strtoupper($ucc[$col_name]));
+                ->setCellValue($cell, $ucc[$col_name]);
                 $col_isi = $col_isi+1;
             }
         }
@@ -482,7 +482,7 @@ class UjianCustom extends BaseController
             if($ucc[$col_status] == 1) {
                 $cell = $col_letter.'4';
                 $spreadsheet->getActiveSheet()
-                ->setCellValue($cell, strtoupper($ucc[$col_name]));
+                ->setCellValue($cell, $ucc[$col_name]);
             }
         }
     

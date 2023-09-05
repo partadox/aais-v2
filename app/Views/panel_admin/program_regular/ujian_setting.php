@@ -24,6 +24,12 @@
             <option value="0" <?php if ($program['ujian_custom_status'] == NULL) echo "selected"; ?> >Standart</option>
             <option value="1" <?php if ($program['ujian_custom_status'] != NULL) echo "selected"; ?> >Custom</option>  
         </select>
+        <br>
+        <b>Nilai Ujian Tampil: </b>
+        <select class="form-control text-center col-2" name="ujian_show" id="ujian_show">
+            <option value="0" <?php if ($program['ujian_show'] != 1) echo "selected"; ?> >TIDAK</option>
+            <option value="1" <?php if ($program['ujian_show'] == 1) echo "selected"; ?> >TAMPIL</option>  
+        </select>
         <input type="hidden" name="program_id" id="program_id" value="<?= $program['program_id'] ?>">
         <?php if($ujian_custom == NULL) { ?>
             <input type="hidden" name="ujian_custom_id" id="ujian_custom_id" value="">

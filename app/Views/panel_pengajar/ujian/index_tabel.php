@@ -13,8 +13,8 @@
 <a href="<?= base_url('/pengajar/kelas') ?>"> 
     <button type="button" class="btn btn-secondary mb-3"><i class=" fa fa-arrow-circle-left"></i> Kembali</button>
 </a>
-<a href="<?= base_url('/pengajar/ujian-tabel?kelas='.$detail_kelas[0]['kelas_id']) ?>"> 
-    <button type="button" class="btn btn-primary mb-3"><i class="fa fa-list"></i> Tampilan Tabel</button>
+<a href="<?= base_url('/pengajar/ujian?kelas='.$detail_kelas[0]['kelas_id']) ?>"> 
+    <button type="button" class="btn btn-success mb-3"><i class="fa fa-bars"></i> Tampilan Baris</button>
 </a>
 
 <h5 style="text-align:center;">Kelas <?= $detail_kelas[0]['nama_kelas'] ?></h5>
@@ -33,26 +33,33 @@
 
 <hr>
 
-<?php $nomor = 0;
-foreach ($peserta_onkelas as $data) :
-    $nomor++; ?>
-    <div class="accordion" id="accordionAbsen">
-        <div class="card">
-            <div class="card-header" id="headingOne">
-            <h2 class="mb-0">
-                <button class="btn btn-link btn-block text-left" type="button" <?php if($data['status_aktif_peserta'] != 'OFF') { ?> data-toggle="collapse" data-target="#colapse<?= $nomor?>" aria-expanded="true" aria-controls="colapse<?= $nomor?>" <?php } ?> style="color: black; text-decoration: none;">
-                <h6>
-                    <?= $nomor ?>. <?= $data['nis'] ?> - <?= $data['nama_peserta'] ?> <?php if($data['status_aktif_peserta'] == 'OFF') { ?><a style="color: red;">(OFF)</a><?php } ?>
-                    <i class="fa fa-angle-down float-right"></i>
-                </h6>
-                </button>
-            </h2>
-            </div>
+<div class="table-responsive">
+    <table id="datatable" class="table table-striped table-bordered nowrap mt-5" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+        <thead>
+            <tr>
+                <th>No.</th>
+                <th>NIS</th>
+                <th>Nama</th>
+                <th>Status Kelulusan</th>
+                <th>Input Nilai</th>
+                <th>Pelaksanaan Ujian</th>
+                <th>Nilai Ujian</th>
+                <th>Nilai Akhir</th>
+                <th>Rekomendasi level</th>
+                <th>Note dari Pengajar</th>
+                
+            </tr>
+        </thead>
 
-            <div id="colapse<?= $nomor?>" class="collapse" aria-labelledby="headingOne" data-parent="#accordionAbsen">
-                <div class="card-body">
-                    <h6>
-                        <strong>Status Kelulusan: </strong>
+        <tbody>
+            <?php $nomor = 0;
+            foreach ($peserta_onkelas as $data) :
+                $nomor++; ?>
+                <tr>
+                    <td width="2%"><?= $nomor ?></td>
+                    <td width="5%"><?= $data['nis'] ?></td>
+                    <td width="5%"><?= $data['nama_peserta'] ?> <?php if($data['status_aktif_peserta'] == 'OFF') { ?><a style="color: red;">(OFF)</a><?php } ?></td>
+                    <td width="10%">
                         <?php if($data['status_peserta_kelas'] == 'BELUM LULUS') { ?>
                             <button class="btn btn-secondary btn-sm" disabled>BELUM LULUS</button> 
                         <?php } ?>
@@ -62,38 +69,21 @@ foreach ($peserta_onkelas as $data) :
                         <?php if($data['status_peserta_kelas'] == 'MENGULANG') { ?>
                             <button class="btn btn-warning btn-sm" disabled>MENGULANG</button> 
                         <?php } ?>
-                    <table class="table table-bordered mt-4">
-                        <tbody>
-                            <tr>
-                                <th width="5%">Pelaksanaan Ujian </th>
-                                <th width="95%"><?= $data['tgl_ujian'] ?> <?= $data['waktu_ujian'] ?></th>
-                            </tr>
-                            <tr>
-                                <th width="5%">Nilai Ujian </th>
-                                <th width="95%"><?= $data['nilai_ujian'] ?></th>
-                            </tr>
-                            <tr>
-                                <th width="5%">Nilai Akhir </th>
-                                <th width="95%"><?= $data['nilai_akhir'] ?></th>
-                            </tr>
-                            <tr>
-                                <th width="5%">Rekomendasi level</th>
-                                <th width="95%"><?= $data['next_level'] ?></th>
-                            </tr>
-                            <tr>
-                                <th width="5%">Note dari Pengajar</th>
-                                <th width="95%"><?= $data['ujian_note'] ?></th>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="card-footer">
-                    <button type="button" class="btn btn-info" onclick="edit(<?= $data['ujian_id'] ?>, <?= $data['data_peserta_id'] ?>, <?= $data['data_kelas_id'] ?>, <?= $data['peserta_kelas_id'] ?>)" > <i class="fa fa-edit"></i> Input Nilai</button>
-                </div>
-            </div>
-        </div>
-    </div>
-<?php endforeach; ?>
+                    </td>
+                    <td width="5%">
+                        <button type="button" class="btn btn-warning" onclick="edit(<?= $data['ujian_id'] ?>, <?= $data['data_peserta_id'] ?>, <?= $data['data_kelas_id'] ?>, <?= $data['peserta_kelas_id'] ?>)" > <i class="fa fa-edit"></i></button>
+                    </td>
+                    <td width="10%"><?= $data['tgl_ujian'] ?> <?= $data['waktu_ujian'] ?></td>
+                    <td width="10%"><?= $data['nilai_ujian'] ?></td>
+                    <td width="10%"><?= $data['nilai_akhir'] ?></td>
+                    <td width="10%"><?= $data['next_level'] ?></td>
+                    <td width="10%"><?= $data['ujian_note'] ?></td>
+                </tr>
+
+            <?php endforeach; ?>
+        </tbody>
+    </table>
+</div>
 
 <div class="viewmodaldataedit"></div>
 <div class="viewmodaldatashow"></div>

@@ -428,7 +428,7 @@ class Beasiswa extends BaseController
             ],
         ];
 
-        $judul = "DATA BEASISWA ALHAQQ - ACADEMIC ALHAQQ INFORMATION SYSTEM";
+        $judul = "DATA BEASISWA ALHAQQ - ALHAQQ ACADEMIC INFORMATION SYSTEM";
         $tgl   = date("d-m-Y");
 
         $sheet->setCellValue('A1', $judul);

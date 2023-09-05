@@ -889,7 +889,7 @@ class Pengajar extends BaseController
             ],
         ];
 
-        $judul = "DATA PENGAJAR & PENGUJI ALHAQQ - ACADEMIC ALHAQQ INFORMATION SYSTEM";
+        $judul = "DATA PENGAJAR & PENGUJI ALHAQQ - ALHAQQ ACADEMIC INFORMATION SYSTEM";
         $tgl = date("d-m-Y");
 
         $sheet->setCellValue('A1', $judul);

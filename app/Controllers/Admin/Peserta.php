@@ -1152,7 +1152,7 @@ class Peserta extends BaseController
             ],
         ];
 
-        $judul = "DATA PESERTA ALHAQQ - ACADEMIC ALHAQQ INFORMATION SYSTEM";
+        $judul = "DATA PESERTA ALHAQQ - ALHAQQ ACADEMIC INFORMATION SYSTEM";
         $tgl   = date("d-m-Y");
 
         $sheet->setCellValue('A1', $judul);

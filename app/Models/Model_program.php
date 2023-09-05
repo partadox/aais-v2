@@ -8,7 +8,7 @@ class Model_program extends Model
 {
     protected $table      = 'program';
     protected $primaryKey = 'program_id';
-    protected $allowedFields = ['nama_program', 'jenis_program', 'kategori_program', 'biaya_program', 'biaya_bulanan', 'biaya_modul', 'biaya_daftar', 'status_program', 'ujian_custom_status', 'ujian_custom_id'];
+    protected $allowedFields = ['nama_program', 'jenis_program', 'kategori_program', 'biaya_program', 'biaya_bulanan', 'biaya_modul', 'biaya_daftar', 'status_program', 'ujian_custom_status', 'ujian_custom_id', 'ujian_show'];
 
     //backend
     public function list()

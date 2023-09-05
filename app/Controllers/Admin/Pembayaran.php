@@ -539,7 +539,7 @@ class Pembayaran extends BaseController
             ],
         ];
 
-        $judul = "DATA TRANSAKSI PEMBAYARAN ALHAQQ - ACADEMIC ALHAQQ INFORMATION SYSTEM";
+        $judul = "DATA TRANSAKSI PEMBAYARAN ALHAQQ - ALHAQQ ACADEMIC INFORMATION SYSTEM";
         $tgl   = "ANGKATAN: ".$angkatan." METODE BAYAR: ". $payment . " DIUNDUH PADA " .date("d-m-Y");
 
         $sheet->setCellValue('A1', $judul);
@@ -2159,7 +2159,7 @@ class Pembayaran extends BaseController
             ],
         ];
 
-        $judul = "DATA REKAP PEMBAYARAN SPP ALHAQQ - ACADEMIC ALHAQQ INFORMATION SYSTEM";
+        $judul = "DATA REKAP PEMBAYARAN SPP ALHAQQ - ALHAQQ ACADEMIC INFORMATION SYSTEM";
         $tgl   =  "ANGKATAN " .$angkatan. ' - ' . date("d-m-Y");
 
         $sheet->setCellValue('A1', $judul);
@@ -2456,7 +2456,7 @@ class Pembayaran extends BaseController
             ],
         ];
 
-        $judul = "DATA REKAP PEMBAYARAN INFAQ ALHAQQ - ACADEMIC ALHAQQ INFORMATION SYSTEM";
+        $judul = "DATA REKAP PEMBAYARAN INFAQ ALHAQQ - ALHAQQ ACADEMIC INFORMATION SYSTEM";
         $tgl   = date("d-m-Y");
 
         $sheet->setCellValue('A1', $judul);
@@ -2607,7 +2607,7 @@ class Pembayaran extends BaseController
             ],
         ];
 
-        $judul = "DATA REKAP PEMBAYARAN LAINNYA ALHAQQ - ACADEMIC ALHAQQ INFORMATION SYSTEM";
+        $judul = "DATA REKAP PEMBAYARAN LAINNYA ALHAQQ - ALHAQQ ACADEMIC INFORMATION SYSTEM";
         $tgl   = date("d-m-Y");
 
         $sheet->setCellValue('A1', $judul);

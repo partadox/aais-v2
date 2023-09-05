@@ -14,10 +14,10 @@
                 <h6 style="text-align:center;"><?= $nama_pengajar ?></h6>
                 <h6 style="text-align:center;"><?= $kelas['hari_kelas'] ?>, <?= $kelas['waktu_kelas'] ?> <?= $kelas['zona_waktu_kelas'] ?> - <?= $kelas['metode_kelas'] ?></h6>
                 <hr>
-                <?php if($kelas['show_ujian'] == NULL || $kelas['show_ujian'] =='0' ) { ?>
+                <?php if($program['ujian_show'] == NULL || $program['ujian_show'] =='0' ) { ?>
                     <h6 style="text-align:center;">BELUM ADA DATA</h6>
                 <?php } ?>
-                <?php if($ujian_status != '1' && $kelas['show_ujian'] == '1') { ?>
+                <?php if($ujian_status != '1' && $program['ujian_show'] == '1') { ?>
                     <strong>Status Kelulusan: </strong>
                         <?php if($kelulusan == 'BELUM LULUS') { ?>
                             <button class="btn btn-secondary btn-sm" disabled>BELUM LULUS</button> 
@@ -53,7 +53,7 @@
                         </tbody>
                     </table>
                 <?php } ?>
-                <?php if($ujian_status == '1' && $kelas['show_ujian'] == '1') { ?>
+                <?php if($ujian_status == '1' && $program['ujian_show'] == '1') { ?>
                     <strong>Status Kelulusan: </strong>
                         <?php if($kelulusan == 'BELUM LULUS') { ?>
                             <button class="btn btn-secondary btn-sm" disabled>BELUM LULUS</button> 
@@ -74,7 +74,7 @@
                                     $val        = 'ucv_text'.$i;
                                     if($ucc[$col_status] == '1') { ?>
                                         <tr>
-                                            <th width="5%"><?= strtoupper($ucc[$col_name]) ?>: </th>
+                                            <th width="5%"><?= $ucc[$col_name] ?>: </th>
                                             <th width="95%"><?= $ujian[$val] ?></th>
                                         </tr>
                                     <?php } ?>
@@ -88,7 +88,7 @@
                                     $val        = 'ucv_int'.$i;
                                     if($ucc[$col_status] == '1') { ?>
                                         <tr>
-                                            <th width="5%"><?= strtoupper($ucc[$col_name]) ?>: </th>
+                                            <th width="5%"><?= $ucc[$col_name] ?>: </th>
                                             <th width="95%"><?= $ujian[$val] ?></th>
                                         </tr>
                                     <?php } ?>

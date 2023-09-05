@@ -32,6 +32,7 @@ class Ujian extends BaseController
                 'nama_pengajar'     => $pengajar['nama_pengajar'],
                 'ucc'               => $ucc,
                 'ujian'             => $ujian,
+                'program'           => $program,
             ];
             $msg = [
                 'sukses' => view('panel_peserta/ujian/index', $data)
