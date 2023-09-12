@@ -23,7 +23,7 @@
         <div class="col-sm-8">
           <select onchange="javascript:location.href = this.value;" class="form-control no-search" name="angkatan_kelas" id="angkatan_kelas">
               <?php foreach ($list_angkatan as $key => $data) { ?>
-                <option value="/pembayaran/add_spp?angkatan=<?= $data['angkatan_kelas'] ?>" <?php if ($angkatan_pilih == $data['angkatan_kelas']) echo "selected"; ?> > <?= $data['angkatan_kelas'] ?> </option>
+                <option value="/pembayaran/add-spp?angkatan=<?= $data['angkatan_kelas'] ?>" <?php if ($angkatan_pilih == $data['angkatan_kelas']) echo "selected"; ?> > <?= $data['angkatan_kelas'] ?> </option>
               <?php } ?>
           </select>
         </div>
