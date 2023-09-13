@@ -53,6 +53,7 @@ class Model_kelas extends Model
             ->join('program', 'program.program_id = program_kelas.program_id')
             ->join('pengajar', 'pengajar.pengajar_id = program_kelas.pengajar_id')
             ->join('peserta_level', 'peserta_level.peserta_level_id = program_kelas.peserta_level')
+            ->where('status_kelas','aktif')
             ->where('peserta_level',$peserta_level)
             ->where('jenkel',$peserta_jenkel)
             ->where('angkatan_kelas', $angkatan)
