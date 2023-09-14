@@ -25,7 +25,7 @@
     </div>
     <div class="form-group row">
         <label for="" class="col-sm-2 col-form-label">Password<code>*</code></label>
-        <div class="col-sm-4">
+        <div class="col-sm-4 mb-2">
             <input type="text" class="form-control" placeholder="************" readonly>
         </div>
         <div class="col-sm-4">
@@ -84,8 +84,16 @@
                       <div class="mb-3">
                           <div class="form-group">
                             <label class="form-label">Tanggal Lahir<code>*</code></label>
-                            <input type="date" class="form-control" id="tgl_lahir" name="tgl_lahir"  value="<?= $tgl_lahir ?>">
-                            <div class="invalid-feedback errorTgl_lahir">
+                            
+                            <div class="input-group" id="datepicker2">
+                                <input type="text" id="expired_absen_tgl" name="expired_absen_tgl" class="form-control" placeholder="Tahun-Bulan-Tanggal"
+                                    data-date-format="yyyy-mm-dd" data-date-container='#datepicker2'
+                                    data-provide="datepicker" data-date-autoclose="true" value="<?= $tgl_lahir ?>">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+                                    </div>
+                                    <div class="invalid-feedback errorTgl_lahir">
+                            </div>
                           </div>
                       </div>
                     </div>
@@ -99,7 +107,7 @@
                     <div class="form-group">
                       <div class="mb-3">
                         <label class="form-label">Pendidikan Terakhir<code>*</code></label>
-                        <select class="form-control btn-square" id="pendidikan" name="pendidikan">
+                        <select class="form-control btn-square select2" id="pendidikan" name="pendidikan">
                             <option value="SD" <?php if ($pendidikan == 'SD') echo "selected"; ?>>SD</option>
                             <option value="SLTP" <?php if ($pendidikan == 'SLPT') echo "selected"; ?>>SLTP</option>
                             <option value="SLTA" <?php if ($pendidikan == 'SLTA') echo "selected"; ?>>SLTA</option>
@@ -122,7 +130,7 @@
                     <div class="form-group">
                       <div class="mb-3">
                         <label class="form-label">Status Bekerja<code>*</code></label>
-                        <select class="form-control btn-square" id="status_kerja" name="status_kerja">
+                        <select class="form-control btn-square select2" id="status_kerja" name="status_kerja">
                             <option value="0" <?php if ($status_kerja == '0') echo "selected"; ?>>TIDAK DALAM IKATAN KERJA</option>
                             <option value="1" <?php if ($status_kerja == '1') echo "selected"; ?>>BEKERJA</option>
                         </select>
@@ -132,7 +140,7 @@
                     <div class="form-group">
                     <div class="mb-3">
                       <label class="form-label">Pekerjaan<code>*</code></label>
-                      <select class="form-control btn-square" id="pekerjaan" name="pekerjaan">
+                      <select class="form-control btn-square select2" id="pekerjaan" name="pekerjaan">
                             <option value="WIRASWASTA" <?php if ($pekerjaan == 'WIRASWASTA') echo "selected"; ?>>WIRASWASTA</option>
                             <option value="PEGAWAI SWASTA" <?php if ($pekerjaan == 'PEGAWAI SWASTA') echo "selected"; ?>>PEGAWAI SWASTA</option>
                             <option value="PEMERINTAH/PNS" <?php if ($pekerjaan == 'PEMERINTAH/PNS') echo "selected"; ?>>PEMERINTAH/PNS</option>
@@ -172,7 +180,7 @@
                     <div class="form-group">
                     <div class="mb-3">
                       <label class="form-label">Domisili<code>*</code></label>
-                      <select class="form-control btn-square" id="domisili_peserta" name="domisili_peserta">
+                      <select class="form-control btn-square select2" id="domisili_peserta" name="domisili_peserta">
                         <option value="BALIKPAPAN"  <?php if ($domisili_peserta == 'BALIKPAPAN') echo "selected"; ?>>BALIKPAPAN</option>
                         <option value="LUAR BALIKPAPAN" <?php if ($domisili_peserta == 'LUAR BALIKPAPAN') echo "selected"; ?>>LUAR BALIKPAPAN</option>
                       </select>
@@ -375,5 +383,11 @@
                 }
             });
         })
+
+        $(document).ready(function(){
+            $('.select2').select2({
+                minimumResultsForSearch: Infinity
+            });
+        });
 </script>
 <?= $this->endSection('isi') ?>

@@ -338,6 +338,7 @@
         });
 
         $('#pay-va-btn').click(function() {
+            event.preventDefault();
             let keterangan_bayar = document.getElementById('keterangan_bayar').value;
             let formData = new FormData();
             formData.append('cart', JSON.stringify(cart));

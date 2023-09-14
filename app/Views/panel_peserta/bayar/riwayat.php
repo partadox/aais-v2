@@ -9,6 +9,14 @@
 <?= $this->section('isi') ?>
 
 <div class="row">
+    <div class="col-sm-auto mb-2">
+        <label for="angkatan_kelas">Pilih Angkatan Perkuliahan</label>
+        <select onchange="javascript:location.href = this.value;" class="form-control select2 mb-2" name="angkatan_kelas" id="angkatan_kelas">
+            <?php foreach ($list_angkatan as $key => $data) { ?>
+            <option value="/bayar/riwayat?angkatan=<?= $data['angkatan_kelas'] ?>" <?php if ($angkatan_pilih == $data['angkatan_kelas']) echo "selected"; ?> > <?= $data['angkatan_kelas'] ?> </option>
+            <?php } ?>
+        </select>
+    </div>
     <div class="col-sm-auto">
         <label for="searchInput">Pencarian</label>
         <input class="form-control" type="text" id="searchInput" onkeyup="cardSearch()" placeholder="Ketikan kata kunci..">
@@ -105,7 +113,7 @@
                                             <li>Pilih “DOKU”.</li>
                                             <li>Pilih nomor rekening.</li>
                                             <li>Masukkan nomor Virtual Account (VA) diatas.</li>
-                                            <li>Pastikan jumlah transfernya sudah sesuai</li>
+                                            <li>Pastikan jumlah transfernya sudah sesuai.</li>
                                             <li>Masukkan PIN BSI Mobile.</li>
                                             <li>Transaksi selesai.</li>
                                         </ol>
@@ -114,8 +122,20 @@
                                         <ol>
                                             <li>Buka aplikasi BRIMO kemudian pilih menu BRIVA.</li>
                                             <li>Masukkan nomor Virtual Account (VA) diatas.</li>
-                                            <li>Pastikan jumlah transfernya sudah sesuai</li>
+                                            <li>Pastikan jumlah transfernya sudah sesuai.</li>
                                             <li>Masukkan PIN BRIMO.</li>
+                                            <li>Transaksi selesai.</li>
+                                        </ol>
+                                    <?php } ?>
+                                    <?php if($data['bill_bank'] == 'MANDIRI') { ?>
+                                        <ol>
+                                            <li>Buka aplikasi Livin by Mandiri pilih menu Transfer Rupiah.</li>
+                                            <li>Klik tombol transfer ke penerima baru.</li>
+                                            <li>Pilih Bank penerima yaitu bank Mandiri.</li>
+                                            <li>Masukkan nomor Virtual Account (VA) diatas.</li>
+                                            <li>Klik Lanjutkan.</li>
+                                            <li>Ketikan nominal transfer sesuai dengan Total Transfer diatas.</li>
+                                            <li>Konfirmasi pembayaran dan pastikan terdapat nama anda dibawah tulisan Doku VA Agregrator.</li>
                                             <li>Transaksi selesai.</li>
                                         </ol>
                                     <?php } ?>
@@ -165,20 +185,24 @@
                                 <button class="btn btn-secondary btn-sm mb-2" disabled><?= $data['status_bayar_admin'] ?></button>
                             <?php } ?>
                             <br>
-                            <a>Keterangan Admin: <?= $data['keterangan_bayar_admin'] ?></a>
+                            <a><b>Tgl Bayar:</b> <?= shortdate_indo($data['tgl_bayar']) ?></a>
+                            <br>
+                            <a><b>Waktu Bayar:</b> <?= $data['waktu_bayar'] ?></a>
+                            <br>
+                            <a><b>Keterangan Admin:</b> <?= $data['keterangan_bayar_admin'] ?></a>
 
                             <br>
                             <?php if($data['tgl_bayar_konfirmasi'] == '1000-01-01' || $data['tgl_bayar_konfirmasi'] == NULL) { ?>
-                            <a>Tgl Konfirmasi: -</a> <br>
+                            <a><b>Tgl Konfirmasi:</b> -</a> <br>
                             <?php } ?>
-                            <?php if($data['tgl_bayar_konfirmasi'] != '1000-01-01' && $data['tgl_bayar'] == NULL) { ?>
-                                <a>Tgl Konfirmasi: <?= shortdate_indo($data['tgl_bayar_konfirmasi'])?></a> <br>
+                            <?php if($data['tgl_bayar_konfirmasi'] != '1000-01-01' && $data['tgl_bayar_konfirmasi'] != NULL) { ?>
+                                <a><b>Tgl Konfirmasi:</b> <?= shortdate_indo($data['tgl_bayar_konfirmasi'])?></a> <br>
                             <?php } ?>
                             <?php if($data['waktu_bayar_konfirmasi'] == '00:00:00') { ?>
-                            <a>Waktu Konfirmasi: -</a> <br>
+                            <a><b>Waktu Konfirmasi:</b> -</a> <br>
                             <?php } ?>
                             <?php if($data['waktu_bayar_konfirmasi'] != '00:00:00') { ?>
-                                <p>Waktu Konfirmasi: <?= $data['waktu_bayar_konfirmasi'] ?></p> <br>
+                                <p><b>Waktu Konfirmasi:</b> <?= $data['waktu_bayar_konfirmasi'] ?></p> <br>
                         <?php } ?>
                         </p>
                     </div>
@@ -223,6 +247,9 @@
             }
         }
     $(document).ready(function(){
+        $('.select2').select2({
+            minimumResultsForSearch: Infinity
+        });
         $(".expandButton").click(function(){
             $(this).next('.zoom-container').toggle(); // This will only toggle the zoom-container that is directly after the clicked button
         });

@@ -191,13 +191,14 @@ class Model_bayar extends Model
     }
 
     //Get list pembayran peserta - Panel Peserta
-    public function list_pembayaran_peserta($peserta_id)
+    public function list_pembayaran_peserta($peserta_id,$angkatan)
     {
         return $this->table('program_bayar')
             ->join('program_kelas', 'program_kelas.kelas_id = program_bayar.kelas_id')
             ->join('peserta', 'peserta.peserta_id = program_bayar.bayar_peserta_id')
             ->join('program', 'program_kelas.program_id = program.program_id')
             ->join('flip_bill', 'flip_bill.bill_id= program_bayar.flip_bill_id', 'left') // LEFT JOIN here
+            ->where('angkatan_kelas',$angkatan)
             ->where('bayar_peserta_id', $peserta_id)
             ->where('status_konfirmasi !=', NULL)
             ->orderBy('bayar_id', 'DESC')

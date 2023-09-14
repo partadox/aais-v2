@@ -12,7 +12,7 @@
 <div class="row">
     <div class="col-sm-auto mb-2">
         <label for="angkatan_kelas">Pilih Angkatan Perkuliahan</label>
-        <select onchange="javascript:location.href = this.value;" class="form-control js-example-basic-single" name="angkatan_kelas" id="angkatan_kelas" class="js-example-basic-single mb-2">
+        <select onchange="javascript:location.href = this.value;" class="form-control select2 mb-2" name="angkatan_kelas" id="angkatan_kelas">
             <?php foreach ($list_angkatan as $key => $data) { ?>
             <option value="/peserta-kelas?angkatan=<?= $data['angkatan_kelas'] ?>" <?php if ($angkatan_pilih == $data['angkatan_kelas']) echo "selected"; ?> > <?= $data['angkatan_kelas'] ?> </option>
             <?php } ?>
@@ -183,70 +183,76 @@
     <div class="viewmodalujian"></div>
 
 <script>
-function ujian(ujian, kelas, peserta_kelas_id) {
-    $.ajax({
-        type: "post",
-        url: "<?= site_url('/peserta/ujian') ?>",
-        data: {
-            data_ujian : ujian,
-            kelas_id: kelas,
-            peserta_kelas_id: peserta_kelas_id
-        },
-        dataType: "json",
-        success: function(response) {
-            if (response.sukses) {
-                $('.viewmodalujian').html(response.sukses).show();
-                $('#modalujian').modal('show');
+    function ujian(ujian, kelas, peserta_kelas_id) {
+        $.ajax({
+            type: "post",
+            url: "<?= site_url('/peserta/ujian') ?>",
+            data: {
+                data_ujian : ujian,
+                kelas_id: kelas,
+                peserta_kelas_id: peserta_kelas_id
+            },
+            dataType: "json",
+            success: function(response) {
+                if (response.sukses) {
+                    $('.viewmodalujian').html(response.sukses).show();
+                    $('#modalujian').modal('show');
+                }
             }
-        }
-    });
-}
+        });
+    }
 
-function absensi(absensi, kelas) {
-    $.ajax({
-        type: "post",
-        url: "<?= site_url('/peserta/absensi') ?>",
-        data: {
-            data_absen : absensi,
-            kelas_id: kelas
-        },
-        dataType: "json",
-        success: function(response) {
-            if (response.sukses) {
-                $('.viewmodalabsensi').html(response.sukses).show();
-                $('#modalabsen').modal('show');
+    function absensi(absensi, kelas) {
+        $.ajax({
+            type: "post",
+            url: "<?= site_url('/peserta/absensi') ?>",
+            data: {
+                data_absen : absensi,
+                kelas_id: kelas
+            },
+            dataType: "json",
+            success: function(response) {
+                if (response.sukses) {
+                    $('.viewmodalabsensi').html(response.sukses).show();
+                    $('#modalabsen').modal('show');
+                }
             }
-        }
-    });
-}
+        });
+    }
 
-function cardSearch() {
-    // Declare variables
-    var input, filter, cardRows, cards, title, i, j;
-    input = document.getElementById('searchInput');
-    filter = input.value.toUpperCase();
-    cardRows = document.getElementsByClassName('card-row');
-    for (i = 0; i < cardRows.length; i++) {
-        cards = cardRows[i].getElementsByClassName('card');
-        for (j = 0; j < cards.length; j++) {
-            title = cards[j].querySelector(".card-body h5.card-title");
-            if (title.innerText.toUpperCase().indexOf(filter) > -1) {
-                cards[j].style.display = "";
-            } else {
-                cards[j].style.display = "none";
+    function cardSearch() {
+        // Declare variables
+        var input, filter, cardRows, cards, title, i, j;
+        input = document.getElementById('searchInput');
+        filter = input.value.toUpperCase();
+        cardRows = document.getElementsByClassName('card-row');
+        for (i = 0; i < cardRows.length; i++) {
+            cards = cardRows[i].getElementsByClassName('card');
+            for (j = 0; j < cards.length; j++) {
+                title = cards[j].querySelector(".card-body h5.card-title");
+                if (title.innerText.toUpperCase().indexOf(filter) > -1) {
+                    cards[j].style.display = "";
+                } else {
+                    cards[j].style.display = "none";
+                }
             }
         }
     }
-}
 
 
-$('#angkatan_kelas').bind('change', function () { // bind change event to select
-    var url = $(this).val(); // get selected value
-    if (url != '') { // require a URL
-        window.location = url; // redirect
-    }
-    return false;
-});
+    $('#angkatan_kelas').bind('change', function () { // bind change event to select
+        var url = $(this).val(); // get selected value
+        if (url != '') { // require a URL
+            window.location = url; // redirect
+        }
+        return false;
+    });
+
+    $(document).ready(function(){
+        $('.select2').select2({
+            minimumResultsForSearch: Infinity
+        });
+    });
 </script>
 
 <?= $this->endSection('isi') ?>

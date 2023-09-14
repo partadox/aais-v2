@@ -12,15 +12,15 @@
                         Kode Beasiswa
                     <?php } ?></h6>
 <div class="table-responsive">
-    <table id="listpembayaran" class="table table-striped table-bordered nowrap mt-5" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+    <table id="listpembayaran" class="table table-striped table-bordered mt-5" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
         <thead class="thead-light">
             <tr>
                 <th>No.(ID)</th>
                 <th>Peserta</th>
                 <th>Metode <br> Bayar</th>
                 <th>Upload Bayar</th>
-                <th>Rincian Bayar</th>
-                <th>Status <br> Pembayaran</th>
+                <th class="text-wrap">Rincian Bayar</th>
+                <th class="text-wrap">Status <br> Pembayaran</th>
                 <th>Bukti <br> Transfer</th>
                 <th>Status <br> Konfirmasi</th>
                 <th>Tindakan</th>

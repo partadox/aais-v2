@@ -24,7 +24,6 @@
             });
         });
     </script>
-
 </head>
 
 <body>
@@ -54,9 +53,9 @@
                             <p>Ingat saya</p>
                         </div>
                         <input id="login" type="submit" value="Masuk"></input>
-                        <h6 id="formFooter"><a href="https://wa.me/6287878900051" target="_blank">Silahkan hubungi admin untuk pendaftaran, pembuatan akun, dan info selengkapnya.</a></h6>
-                        <p id="formFooter"><a href="https://wa.me/6287878900051" target="_blank">Lupa Username atau Password? Hubungi Admin</a></p>
-                        <p id="formFooter"><a href="https://alhaqq.or.id/">Kembali ke Website Depan alhaqq.or.id</a></p>
+                        <h6 id="formFooter" class="mobile"><a href="https://wa.me/6287878900051" target="_blank">Silahkan hubungi admin untuk pendaftaran, pembuatan akun, dan info selengkapnya.</a></h6>
+                        <h6 id="formFooter" class="mobile"><a href="https://wa.me/6287878900051" target="_blank">Lupa Username atau Password? Hubungi Admin</a></h6>
+                        <h6 id="formFooter" class="mobile"><a href="https://alhaqq.or.id/">Kembali ke Website Depan alhaqq.or.id</a></h6>
                     <?= form_close() ?>
                 </div>
         </div>
@@ -73,50 +72,50 @@
 
 <script>
     $(document).ready(function () {
-    // Login
-    $(".formlogin").submit(function (e) {
-        e.preventDefault();
-        $.ajax({
-        type: "post",
-        url: $(this).attr("action"),
-        data: $(this).serialize(),
-        dataType: "json",
-        beforeSend: function () {
-            $("#login").attr("disabled", true);
-            $("#login").html(
-            '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> <i>Loading...</i>'
-            );
-        },
-        complete: function () {
-            $("#login").removeAttr("disabled", false);
-            $("#login").html("Login");
-        },
-        success: function (response) {
-            if (response.success == false) {
-            Swal.fire({
-                title: "Error!",
-                text: response.message,
-                icon: "error",
-                showConfirmButton: false,
-                timer: 1350,
+        // Login
+        $(".formlogin").submit(function (e) {
+            e.preventDefault();
+            $.ajax({
+            type: "post",
+            url: $(this).attr("action"),
+            data: $(this).serialize(),
+            dataType: "json",
+            beforeSend: function () {
+                $("#login").attr("disabled", true);
+                $("#login").html(
+                '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> <i>Loading...</i>'
+                );
+            },
+            complete: function () {
+                $("#login").removeAttr("disabled", false);
+                $("#login").html("Login");
+            },
+            success: function (response) {
+                if (response.success == false) {
+                Swal.fire({
+                    title: "Error!",
+                    text: response.message,
+                    icon: "error",
+                    showConfirmButton: false,
+                    timer: 1350,
+                });
+                }
+                if (response.success == true) {
+                Swal.fire({
+                    title: response.data.title,
+                    text: response.message,
+                    icon: response.data.icon,
+                    showConfirmButton: false,
+                    timer: 1250,
+                }).then(function () {
+                    window.location = response.data.link;
+                });
+                }
+            },
             });
-            }
-            if (response.success == true) {
-            Swal.fire({
-                title: response.data.title,
-                text: response.message,
-                icon: response.data.icon,
-                showConfirmButton: false,
-                timer: 1250,
-            }).then(function () {
-                window.location = response.data.link;
-            });
-            }
-        },
+            return false;
         });
-        return false;
     });
-});
 </script>
 
 </html>

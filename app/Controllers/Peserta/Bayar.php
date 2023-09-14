@@ -838,13 +838,36 @@ class Bayar extends BaseController
         $peserta        = $this->peserta->get_peserta($user_id);
         $peserta_id     = $peserta['peserta_id'];
 
+        //Angkatan
+		$uri            = new \CodeIgniter\HTTP\URI(current_url(true));
+        $queryString    = $uri->getQuery();
+        $params         = [];
+        parse_str($queryString, $params);
+
+        if (count($params) == 1 && array_key_exists('angkatan', $params)) {
+            $angkatan           = $params['angkatan'];
+            if (ctype_digit($angkatan)) {
+                $angkatan           = $params['angkatan'];
+            }else {
+                $get_angkatan       = $this->konfigurasi->angkatan_kuliah();
+                $angkatan           = $get_angkatan->angkatan_kuliah;
+            }
+        } else {
+            $get_angkatan       = $this->konfigurasi->angkatan_kuliah();
+            $angkatan           = $get_angkatan->angkatan_kuliah;
+        }
+
+        $list_angkatan      = $this->kelas->list_unik_angkatan();
+
         // Get data peserta_kelas yang belum lulus 
-        $pembayaran     = $this->bayar->list_pembayaran_peserta($peserta_id);
+        $pembayaran     = $this->bayar->list_pembayaran_peserta($peserta_id,$angkatan);
 
         $data = [
             'title'         => 'Riwayat Pembayaran Peserta',
             'user'          => $user,
             'list'          => $pembayaran,
+            'list_angkatan' => $list_angkatan,
+            'angkatan_pilih'=> $angkatan,
         ];
         return view('panel_peserta/bayar/riwayat', $data);
     }
