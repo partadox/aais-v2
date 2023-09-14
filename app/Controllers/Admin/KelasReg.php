@@ -746,16 +746,16 @@ class KelasReg extends BaseController
         $tgl   = date("d-m-Y");
 
         $sheet->setCellValue('A1', $judul);
-        $sheet->mergeCells('A1:M1');
+        $sheet->mergeCells('A1:N1');
         $sheet->getStyle('A1')->applyFromArray($styleColumn);
 
         $sheet->setCellValue('A2', $tgl);
-        $sheet->mergeCells('A2:M2');
+        $sheet->mergeCells('A2:N2');
         $sheet->getStyle('A2')->applyFromArray($styleColumn);
 
-        $sheet->getStyle('A4:M4')->applyFromArray($style_up);
+        $sheet->getStyle('A4:N4')->applyFromArray($style_up);
 
-        $sheet->getStyle('A5:M'.$total_row)->applyFromArray($isi_tengah);
+        $sheet->getStyle('A5:N'.$total_row)->applyFromArray($isi_tengah);
 
         $spreadsheet->setActiveSheetIndex(0)
             ->setCellValue('A4', 'NAMA KELAS')
@@ -770,9 +770,10 @@ class KelasReg extends BaseController
             ->setCellValue('J4', 'KUOTA DAFTAR')
             ->setCellValue('K4', 'SISA KUOTA')
             ->setCellValue('L4', 'JUMLAH PESERTA')
-            ->setCellValue('M4', 'STATUS KELAS');
+            ->setCellValue('M4', 'STATUS KELAS')
+            ->setCellValue('N4', 'KELAS ID');
 
-            $columns = range('A', 'M');
+            $columns = range('A', 'N');
             foreach ($columns as $column) {
                 $spreadsheet->getActiveSheet()->getColumnDimension($column)->setAutoSize(true);
             }
@@ -799,7 +800,8 @@ class KelasReg extends BaseController
                 ->setCellValue('J' . $row, $data['kouta'])
                 ->setCellValue('K' . $row, $data['kouta']-$data['peserta_kelas_count'])
                 ->setCellValue('L' . $row, $data['peserta_kelas_count'])
-                ->setCellValue('M' . $row, $data['status_kelas']);
+                ->setCellValue('M' . $row, $data['status_kelas'])
+                ->setCellValue('N' . $row, $data['kelas_id']);
 
             $row++;
         }
