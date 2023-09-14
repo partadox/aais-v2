@@ -879,15 +879,23 @@ class Pembayaran extends BaseController
                         'bckp_ujian_kelas'       => $kelas_id,
                     ];
                     $this->ujian->insert($dataujian);
+                    $ujianID = $this->ujian->insertID();
                     $PKdaftar = [
                         'byr_daftar'            => $bayar_daftar,
                         'dt_konfirmasi_daftar'  => date('Y-m-d H:i:s'),
                         'data_absen'            => $this->absen_peserta->insertID(),
-                        'data_ujian'            => $this->ujian->insertID(),
+                        'data_ujian'            => $ujianID,
                         'expired_tgl_daftar'    => NULL,
                         'expired_waktu_daftar'  => NULL,
                     ];
                     $this->peserta_kelas->update($peserta_kelas_id, $PKdaftar);
+
+                    $ucvData = [
+                        'ucv_ujian_id'      => $ujianID,
+                        'ucv_peserta_id'    => $peserta_id,
+                        'ucv_kelas_id'      => $kelas_id,
+                    ];
+                    $this->ujian_custom_value->insert($ucvData);
                 }
 
                 if ($bayar_spp1 != '0') {

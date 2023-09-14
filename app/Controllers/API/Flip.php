@@ -319,15 +319,23 @@ class Flip extends ResourceController
                         'bckp_ujian_kelas'       => $kelas_id,
                     ];
                     $results[] = $this->ujian->insert($dataujian);
+                    $ujianID = $this->ujian->insertID();
                     $PKdaftar = [
                         'byr_daftar'            => $daftar,
                         'dt_konfirmasi_daftar'  => date('Y-m-d H:i:s'),
                         'data_absen'            => $this->absen_peserta->insertID(),
-                        'data_ujian'            => $this->ujian->insertID(),
+                        'data_ujian'            => $ujianID,
                         'expired_tgl_daftar'    => NULL,
                         'expired_waktu_daftar'  => NULL,
                     ];
                     $results[] = $this->peserta_kelas->update($peserta_kelas_id, $PKdaftar);
+
+                    $ucvData = [
+                        'ucv_ujian_id'      => $ujianID,
+                        'ucv_peserta_id'    => $peserta_id,
+                        'ucv_kelas_id'      => $kelas_id,
+                    ];
+                    $results[] = $this->ujian_custom_value->insert($ucvData);
                 }
     
                 if ($spp1 != '0') {

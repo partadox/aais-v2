@@ -47,7 +47,7 @@
                             <?php if($data['tgl_bayar'] == '1000-01-01' || $data['tgl_bayar'] == NULL) { ?>
                                 <a><strong>Tgl Bayar:</strong> -</a> <br>
                             <?php } ?>
-                            <?php if($data['tgl_bayar'] != '1000-01-01' && $data['tgl_bayar'] == NULL) { ?>
+                            <?php if($data['tgl_bayar'] != '1000-01-01' && $data['tgl_bayar'] != NULL) { ?>
                                 <a><strong>Tgl Bayar:</strong>  <?= shortdate_indo($data['tgl_bayar'])?></a> <br>
                             <?php } ?>
                             <?php if($data['waktu_bayar'] == '00:00:00') { ?>
@@ -184,10 +184,6 @@
                             <?php if($data['status_bayar_admin'] != 'SESUAI BAYAR') { ?>
                                 <button class="btn btn-secondary btn-sm mb-2" disabled><?= $data['status_bayar_admin'] ?></button>
                             <?php } ?>
-                            <br>
-                            <a><b>Tgl Bayar:</b> <?= shortdate_indo($data['tgl_bayar']) ?></a>
-                            <br>
-                            <a><b>Waktu Bayar:</b> <?= $data['waktu_bayar'] ?></a>
                             <br>
                             <a><b>Keterangan Admin:</b> <?= $data['keterangan_bayar_admin'] ?></a>
 
