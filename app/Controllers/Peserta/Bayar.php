@@ -497,24 +497,33 @@ class Bayar extends BaseController
             $beasiswa_spp3  = ' ';
             $beasiswa_spp4  = ' ';
 
+            $dt_bayar_daftar = NULL;
+            $dt_bayar_spp2   = NULL;
+            $dt_bayar_spp3   = NULL;
+            $dt_bayar_spp4   = NULL;
+
             if ($beasiswa[0]['beasiswa_daftar'] == 1) {
-                $beasiswa_daftar = ' Pendaftaran';
+                $beasiswa_daftar = ' Pendaftaran,';
+                $dt_bayar_daftar = date('Y-m-d H:i:s');
             }
 
             if ($beasiswa[0]['beasiswa_spp1'] == 1) {
-                $beasiswa_spp1 = ' SPP-1';
+                $beasiswa_spp1 = ' SPP-1,';
             }
 
             if ($beasiswa[0]['beasiswa_spp2'] == 1) {
-                $beasiswa_spp2 = ' SPP-2';
+                $beasiswa_spp2 = ' SPP-2,';
+                $dt_bayar_spp2 = date('Y-m-d H:i:s');
             }
 
             if ($beasiswa[0]['beasiswa_spp3'] == 1) {
-                $beasiswa_spp3 = ' SPP-3';
+                $beasiswa_spp3 = ' SPP-3,';
+                $dt_bayar_spp3 = date('Y-m-d H:i:s');
             }
 
             if ($beasiswa[0]['beasiswa_spp4'] == 1) {
                 $beasiswa_spp4 = ' SPP-4';
+                $dt_bayar_spp4 = date('Y-m-d H:i:s');
             }
 
             $data_bayar = [
@@ -530,7 +539,7 @@ class Bayar extends BaseController
                 'nominal_bayar'             => '0',
                 'tgl_bayar'                 => date("Y-m-d"),
                 'waktu_bayar'               => date("H:i:s"),
-                'keterangan_bayar'          => 'Bayar dengan kode beasiswa '.$beasiswa_code . ' free beasiswa untuk'.$beasiswa_daftar.$beasiswa_spp1.$beasiswa_spp2.$beasiswa_spp3.$beasiswa_spp4,
+                'keterangan_bayar'          => 'Bayar dengan kode beasiswa '.$beasiswa_code . ' free beasiswa untuk:'.$beasiswa_daftar.$beasiswa_spp1.$beasiswa_spp2.$beasiswa_spp3.$beasiswa_spp4,
                 'tgl_bayar_konfirmasi'      => date("Y-m-d"),
                 'waktu_bayar_konfirmasi'    => date("H:i:s"),
                 'validator'                 => 'AAIS Sistem',
@@ -575,6 +584,10 @@ class Bayar extends BaseController
                 'data_absen'                => $this->absen_peserta->insertID(),
                 'data_ujian'                => $ujianID,
                 'spp_status'                => $spp_status,
+                'dt_bayar_daftar'           => $dt_bayar_daftar,
+                'dt_bayar_spp2'             => $dt_bayar_spp2,
+                'dt_bayar_spp3'             => $dt_bayar_spp3,
+                'dt_bayar_spp4'             => $dt_bayar_spp4,
                 'expired_tgl_daftar'        => NULL,
                 'expired_waktu_daftar'      => NULL,
                 'beasiswa_daftar'           => $beasiswa[0]['beasiswa_daftar'],

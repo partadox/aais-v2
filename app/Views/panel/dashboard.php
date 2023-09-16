@@ -589,14 +589,65 @@
                 <?php endforeach; ?>
             </div>
         </div>
+    <?php } ?>
+    <?php if ($beasiswa != NULL) { ?>
+        <hr>
+        <h4>Voucher Beasiswa</h4>
+        <div class="container-fluid">
+            <div class="row">
+                <?php $nomor = 0;
+                foreach ($beasiswa as $data) :
+                    $nomor++; ?>
+                <div class="col-sm-3 col-md-3">
+                    <div class="card shadow-lg p-3 mb-5 bg-white rounded">
+                        <div class="card-body">
+                            <h6 class="card-title">Selamat Anda Mendapatkan Kode Voucher Beasiswa! </h6>
+                            <hr>
+                            Program : <b><?= $data['nama_program'] ?></b> <br> <br>
+                            Kode Voucher : <b><?= $data['beasiswa_code'] ?></b> <br> <br>
+                            <input style="display: none;" type="text" id="voucherCopy<?= $nomor ?>" value="<?= $data['beasiswa_code'] ?>"> <br> <br>
+                            Untuk :
+                            <ul>
+                                <?php if ($data['beasiswa_daftar'] == 1) { ?>  <li>Pendaftaran</li> <?php } ?>
+                                <?php if ($data['beasiswa_spp1'] == 1) { ?> <li>SPP-1</li> <?php } ?>
+                                <?php if ($data['beasiswa_spp2'] == 1) { ?> <li>SPP-2</li> <?php } ?>
+                                <?php if ($data['beasiswa_spp3'] == 1) { ?> <li>SPP-3</li> <?php } ?>
+                                <?php if ($data['beasiswa_spp4'] == 1) { ?> <li>SPP-4</li> <?php } ?>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <?php endforeach; ?>
+            </div>
+        </div>
+    <?php } ?>
+    <?php if ($pengumuman != NULL) { ?>
         <script>
             $(document).ready(function(){
                 $(".expandButton").click(function(){
                     $(this).next('.baca').toggle(); // This will only toggle the zoom-container that is directly after the clicked button
                 });
             });
+
         </script>
     <?php } ?>
+    <?php if ($beasiswa != NULL) { ?>
+        <script>
+            const voucherCopyElements = document.querySelectorAll("input[id^='voucherCopy']");
+            for (const voucherCopyElement of voucherCopyElements) {
+                const copyButton = document.createElement("button");
+                copyButton.id = voucherCopyElement.id + "-copy";
+                copyButton.innerHTML = "<i class='fas fa-copy mr-1'></i> Copy Code Voucher";
+                copyButton.addEventListener("click", function() {
+                    navigator.clipboard.writeText(voucherCopyElement.value);
+                    copyButton.innerHTML = "Voucher Copied";
+                });
+
+                voucherCopyElement.insertAdjacentElement("afterend", copyButton);
+            }
+        </script>
+    <?php } ?>
+
 <?php } ?>
 <?php if ($user['level'] == 5 || $user['level'] == 6) { ?>
     <div class="row">

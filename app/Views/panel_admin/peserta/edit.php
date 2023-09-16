@@ -68,7 +68,7 @@
                 <div class="form-group row">
                     <label for="" class="col-sm-4 col-form-label">NIK<code>*</code></label>
                     <div class="col-sm-8">
-                        <input type="number" class="form-control" id="nik" name="nik" value="<?= $peserta['nik'] ?>">
+                        <input type="text" class="form-control" id="nik" name="nik" value="<?= $peserta['nik'] ?>">
                         <div class="invalid-feedback errorNik"></div>
                     </div>
                 </div>

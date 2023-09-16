@@ -162,12 +162,14 @@ class Dashboard extends BaseController
 			$user_id 	= $user['user_id'];
 			$peserta_id = $this->peserta->get_peserta_id($user_id);
 			$peserta_id = $peserta_id->peserta_id;
+			$beasiswa   = $this->beasiswa->find_peserta($peserta_id);
 			$data = [
 				'title'                 => 'Dashboard',
 				'user'					=> $user,
 				'angkatan'              => $angkatan,
 				'list_angkatan'         => $list_angkatan,
 				'angkatan_pilih'        => $angkatan,
+				'beasiswa'				=> $beasiswa,
 				'jml_kelas'				=> count($this->peserta_kelas->jml_kelas_peserta($peserta_id, $angkatan)),
 				'jml_kelas_bina'		=> count($this->bina_peserta->kelas_peserta($peserta_id, $angkatan)),
 				'pengumuman'			=> $this->pengumuman->list_peserta(),

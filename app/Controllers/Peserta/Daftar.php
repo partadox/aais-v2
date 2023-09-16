@@ -10,63 +10,68 @@ class Daftar extends BaseController
         $user           = $this->userauth();
         $user_id        = $user['user_id'];
         $peserta        = $this->peserta->get_peserta($user_id);
-        $level_peserta  = $peserta['level_peserta']; 
-        
-        //Level
-		$uri            = new \CodeIgniter\HTTP\URI(current_url(true));
-        $queryString    = $uri->getQuery();
-        $params         = [];
-        parse_str($queryString, $params);
-
-        if (count($params) == 1 && array_key_exists('level', $params)) {
-            $level           = $params['level'];
-            if (ctype_digit($level)) {
-                $level           = $params['level'];
-            }else {
-                $level = $level_peserta;
-            }
-        } else {
-            $level = $level_peserta;
-        }
-
-        //Get Angkatan Perkuliahan
-        $get_angkatan       = $this->konfigurasi->angkatan_kuliah();
-        $angkatan           = $get_angkatan->angkatan_kuliah;
-
-        //Get data peserta
         $peserta_id             = $peserta['peserta_id'];
-        $peserta_level          = $level;
-        $peserta_jenkel         = $peserta['jenkel'];
-        $peserta_status_kerja   = $peserta['status_kerja'];
-        $peserta_domisili       = $peserta['domisili_peserta'];
-
-        //Jika status bukan pekerja maka akan tampil kelas dengan status_kerja = 0 (Kelas di Weekdays saja)
-        //Else status pekerja maka akan tampil kelas dengan status_kerja 1 dan 0 (Weekdays dan Weekend Akan Tampil)
-
-        //Aktif Filter Pencocokan Domisili dengan Metode Perkuliahahn
-        $get_filter_domisili    = $this->konfigurasi->filter_domisili();
-        $filter_domisili        = $get_filter_domisili->filter_domisili;
-
-        $program = $this->kelas->list_ondaftar($filter_domisili, $peserta_domisili, $peserta_level, $peserta_jenkel, $peserta_status_kerja, $angkatan, $peserta_id );
+        $level_peserta  = $peserta['level_peserta']; 
 
         # Cek Status Pendaftarn
         $get_status_daftar = $this->konfigurasi->status_pendaftaran();
         $status_daftar     = $get_status_daftar->status_pendaftaran;
         # Cek ada data yang belum dibayar
         $cek               = $this->cart->cek_daftar($peserta_id);
-        
+        // var_dump(count($cek));
+        if (count($cek) == 0) {
+            //Level
+            $uri            = new \CodeIgniter\HTTP\URI(current_url(true));
+            $queryString    = $uri->getQuery();
+            $params         = [];
+            parse_str($queryString, $params);
 
-        $data = [
-            'title'              => 'Pendaftaran Kelas Program',
-            'user'               => $user,
-            'level'              => $level,
-            'tampil_ondaftar'    => $this->level->list_tampil_ondaftar(),
-            'peserta'            => $peserta,
-            'program'            => $program,
-            'status_pendaftaran' => $status_daftar,
-            'cek'                => count($cek),
-        ];
-        return view('panel_peserta/daftar/index', $data);
+            if (count($params) == 1 && array_key_exists('level', $params)) {
+                $level           = $params['level'];
+                if (ctype_digit($level)) {
+                    $level           = $params['level'];
+                }else {
+                    $level = $level_peserta;
+                }
+            } else {
+                $level = $level_peserta;
+            }
+
+            //Get Angkatan Perkuliahan
+            $get_angkatan       = $this->konfigurasi->angkatan_kuliah();
+            $angkatan           = $get_angkatan->angkatan_kuliah;
+
+            //Get data peserta
+            $peserta_id             = $peserta['peserta_id'];
+            $peserta_level          = $level;
+            $peserta_jenkel         = $peserta['jenkel'];
+            $peserta_status_kerja   = $peserta['status_kerja'];
+            $peserta_domisili       = $peserta['domisili_peserta'];
+
+            //Jika status bukan pekerja maka akan tampil kelas dengan status_kerja = 0 (Kelas di Weekdays saja)
+            //Else status pekerja maka akan tampil kelas dengan status_kerja 1 dan 0 (Weekdays dan Weekend Akan Tampil)
+
+            //Aktif Filter Pencocokan Domisili dengan Metode Perkuliahahn
+            $get_filter_domisili    = $this->konfigurasi->filter_domisili();
+            $filter_domisili        = $get_filter_domisili->filter_domisili;
+
+            $program = $this->kelas->list_ondaftar($filter_domisili, $peserta_domisili, $peserta_level, $peserta_jenkel, $peserta_status_kerja, $angkatan, $peserta_id );
+
+            $data = [
+                'title'              => 'Pendaftaran Kelas Program',
+                'user'               => $user,
+                'level'              => $level,
+                'tampil_ondaftar'    => $this->level->list_tampil_ondaftar(),
+                'peserta'            => $peserta,
+                'program'            => $program,
+                'status_pendaftaran' => $status_daftar,
+                'cek'                => count($cek),
+            ];
+            return view('panel_peserta/daftar/index', $data);
+        } else {
+            return redirect()->to('/bayar/daftar');
+        }
+        
     }
 
     /*--- BACKEND ---*/

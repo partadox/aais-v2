@@ -29,7 +29,7 @@
                 <div class="card-body">
                     <h5 class="card-title">Proses Pemilihan Kelas Masih Belum Selesai.</h5>
                     <p class="card-text"> 
-                    Anda Perlu Menyelesaikan Proses Pembayaran Sebelum Memilih Kelas Lain
+                    Anda Perlu Menyelesaikan Proses Pembayaran Sebelum Memilih Kelas Lain <?= $cek ?>
                     </p>
                 </div>
             </div>

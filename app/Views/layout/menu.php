@@ -54,11 +54,11 @@
             <i class="mdi mdi-application"></i> <span>Pilih Program</span>
         </a>
     </li>
-    <li>
+    <!-- <li>
         <a href="<?= base_url('bayar/daftar') ?>" class="waves-effect">
             <i class="mdi mdi-cash-register"></i> <span> Pembayaran Daftar </span>
         </a>
-    </li>
+    </li> -->
 
     <li class="menu-title">Akademik</li>
     <li>

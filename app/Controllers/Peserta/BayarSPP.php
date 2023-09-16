@@ -477,6 +477,10 @@ class BayarSPP extends BaseController
             $beasiswa_spp3  = ' ';
             $beasiswa_spp4  = ' ';
 
+            $dt_bayar_spp2  = NULL;
+            $dt_bayar_spp3  = NULL;
+            $dt_bayar_spp4  = NULL;
+
             // if ($beasiswa[0]['beasiswa_daftar'] == 1) {
             //     $beasiswa_daftar = ' Pendaftaran';
             // }
@@ -487,14 +491,17 @@ class BayarSPP extends BaseController
 
             if ($beasiswa[0]['beasiswa_spp2'] == 1) {
                 $beasiswa_spp2 = ' SPP-2';
+                $dt_bayar_spp2 = date('Y-m-d H:i:s');
             }
 
             if ($beasiswa[0]['beasiswa_spp3'] == 1) {
                 $beasiswa_spp3 = ' SPP-3';
+                $dt_bayar_spp3 = date('Y-m-d H:i:s');
             }
 
             if ($beasiswa[0]['beasiswa_spp4'] == 1) {
                 $beasiswa_spp4 = ' SPP-4';
+                $dt_bayar_spp4 = date('Y-m-d H:i:s');
             }
 
             $data_bayar = [
@@ -533,6 +540,9 @@ class BayarSPP extends BaseController
             
             $updatePK = [
                 'spp_status'                => $spp_status,
+                'dt_bayar_spp2'             => $dt_bayar_spp2,
+                'dt_bayar_spp3'             => $dt_bayar_spp3,
+                'dt_bayar_spp4'             => $dt_bayar_spp4,
                 'beasiswa_spp2'             => $beasiswa[0]['beasiswa_spp2'],
                 'beasiswa_spp3'             => $beasiswa[0]['beasiswa_spp3'],
                 'beasiswa_spp4'             => $beasiswa[0]['beasiswa_spp4'],

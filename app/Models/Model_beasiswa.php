@@ -92,4 +92,12 @@ class Model_beasiswa extends Model
             ->where('beasiswa_status', '0')
             ->get()->getResultArray();
     }
+    public function find_peserta($peserta_id)
+    {
+        return $this->table('beasiswa')
+            ->join('program', 'program.program_id = beasiswa.beasiswa_program')
+            ->where('beasiswa_peserta', $peserta_id)
+            ->where('beasiswa_status', '0')
+            ->get()->getResultArray();
+    }
 }
