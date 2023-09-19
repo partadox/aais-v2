@@ -1286,11 +1286,21 @@ class Pembayaran extends BaseController
                 'bckp_ujian_kelas'       => $kelas_id,
             ];
             $this->ujian->insert($dataujian);
+
+            $ujianID = $this->ujian->insertID();
+
+            $ucvData = [
+                'ucv_ujian_id'      => $ujianID,
+                'ucv_peserta_id'    => $peserta_id,
+                'ucv_kelas_id'      => $kelas_id,
+            ];
+            $this->ujian_custom_value->insert($ucvData);
+
             $datapesertakelas = [
                 'data_peserta_id'       => $peserta_id,
                 'data_kelas_id'         => $kelas_id,
                 'data_absen'            => $this->absen_peserta->insertID(),
-                'data_ujian'            => $this->ujian->insertID(),
+                'data_ujian'            => $ujianID,
                 'status_peserta_kelas'  => 'BELUM LULUS',
                 // 'byr_daftar'            => $bayar_daftar,
                 'dt_bayar_daftar'       => date("Y-m-d H:i:s"),
