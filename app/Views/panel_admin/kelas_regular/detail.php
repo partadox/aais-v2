@@ -66,11 +66,35 @@
                         <?php } ?>
                     </td>
                     <td width="10%">
-                        <?php if(($data['biaya_daftar'] + $data['biaya_program']) - ($data['byr_daftar'] + $data['byr_spp1'] + $data['byr_spp2'] + $data['byr_spp3'] + $data['byr_spp4'] ) != 0) { ?>
-                            <button class="btn btn-warning btn-sm mb-2" disabled>BELUM LUNAS</button>
+                        <?php 
+                            $totalBiaya = $data['biaya_daftar'] + $data['biaya_program'];
+                            $totalBayar = $data['byr_daftar'] + $data['byr_spp1'] + $data['byr_spp2'] + $data['byr_spp3'] + $data['byr_spp4'];
+                            $totalBeasiswa = 0;
+
+                            // Jika beasiswa diterima, anggap sebagai pembayaran
+                            if($data['beasiswa_daftar'] == 1) {
+                                $totalBeasiswa += $data['biaya_daftar'];
+                            }
+                            if($data['beasiswa_spp1'] == 1) {
+                                $totalBeasiswa += $data['biaya_bulanan'];
+                            }
+                            if($data['beasiswa_spp2'] == 1) {
+                                $totalBeasiswa += $data['biaya_bulanan'];
+                            }
+                            if($data['beasiswa_spp3'] == 1) {
+                                $totalBeasiswa += $data['biaya_bulanan'];
+                            }
+                            if($data['beasiswa_spp4'] == 1) {
+                                $totalBeasiswa += $data['biaya_bulanan'];
+                            }
+                            // total pembayaran ditambah dengan total beasiswa
+                            $totalBayar += $totalBeasiswa;
+
+                            if($totalBiaya - $totalBayar != 0) { ?>
+                                <button class="btn btn-warning btn-sm mb-2" disabled>BELUM LUNAS</button>
                         <?php } ?>
-                        <?php if(($data['biaya_daftar'] + $data['biaya_program']) - ($data['byr_daftar'] + $data['byr_spp1'] + $data['byr_spp2'] + $data['byr_spp3'] + $data['byr_spp4'] ) == 0) { ?>
-                            <button class="btn btn-success btn-sm mb-2" disabled>LUNAS</button>
+                        <?php if($totalBiaya - $totalBayar == 0) { ?>
+                                <button class="btn btn-success btn-sm mb-2" disabled>LUNAS</button>
                         <?php } ?>
                     </td>
                     <td width="8%">

@@ -491,7 +491,7 @@
                         allowOutsideClick: false,
                         timer: 1500
                     }).then(function() {
-                        window.location = '/bayar/daftar';
+                        window.location = '/bayar/riwayat';
                     });
                 }
             });
