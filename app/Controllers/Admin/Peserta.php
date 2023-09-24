@@ -1156,17 +1156,17 @@ class Peserta extends BaseController
         $tgl   = date("d-m-Y");
 
         $sheet->setCellValue('A1', $judul);
-        $sheet->mergeCells('A1:V1');
+        $sheet->mergeCells('A1:W1');
         $sheet->getStyle('A1')->applyFromArray($styleColumn);
 
         $sheet->setCellValue('A2', $tgl);
-        $sheet->mergeCells('A2:V2');
+        $sheet->mergeCells('A2:W2');
         $sheet->getStyle('A2')->applyFromArray($styleColumn);
 
-        $sheet->getStyle('A4:V4')->applyFromArray($style_up);
+        $sheet->getStyle('A4:W4')->applyFromArray($style_up);
 
-        $sheet->getStyle('v4')->getAlignment()->setWrapText(true);
-        $sheet->getStyle('A5:V'.$total_row)->applyFromArray($isi_tengah);
+        $sheet->getStyle('W4')->getAlignment()->setWrapText(true);
+        $sheet->getStyle('A5:W'.$total_row)->applyFromArray($isi_tengah);
 
         $spreadsheet->setActiveSheetIndex(0)
             ->setCellValue('A4', 'PESERTA ID')
@@ -1190,7 +1190,8 @@ class Peserta extends BaseController
             ->setCellValue('S4', 'HP')
             ->setCellValue('T4', 'EMAIL')
             ->setCellValue('U4', 'TGL GABUNG')
-            ->setCellValue('V4', 'CATATAN');
+            ->setCellValue('V4', 'CATATAN')
+            ->setCellValue('W4', 'STATUS AKUN');
 
         $columns = range('A', 'U');
         foreach ($columns as $column) {
@@ -1198,6 +1199,7 @@ class Peserta extends BaseController
         }
 
         $spreadsheet->getActiveSheet()->getColumnDimension('V')->setWidth(35);
+        $spreadsheet->getActiveSheet()->getColumnDimension('W')->setAutoSize(true);
         $row = 5;
 
         foreach ($peserta as $psrtdata) {
@@ -1229,7 +1231,8 @@ class Peserta extends BaseController
                 ->setCellValue('S' . $row, $psrtdata['hp'])
                 ->setCellValue('T' . $row, $psrtdata['email'])
                 ->setCellValue('U' . $row, $psrtdata['tgl_gabung'])
-                ->setCellValue('V' . $row, $psrtdata['peserta_note']);
+                ->setCellValue('V' . $row, $psrtdata['peserta_note'])
+                ->setCellValue('W' . $row, $psrtdata['active']);
 
             $row++;
         }
@@ -1351,9 +1354,16 @@ class Peserta extends BaseController
                         'peserta_note'          => $excel['22'],
                     ];
 
+                    $updatedatauser   = [
+                        'active'    => $excel['23'],
+                    ];
+
                     // Update Data Peserta
                     $psrtid = $excel['1'];
+                    $usrid  = $excel['2'];
+
                     $this->peserta->update($psrtid, $updatedata);
+                    $this->user->update($usrid, $updatedatauser);
 
                     $aktivitas = 'Edit Data Peserta via Multiple Edit, Peserta : '  .  $excel['4'] . ' | ' .  $excel['5'];
 
