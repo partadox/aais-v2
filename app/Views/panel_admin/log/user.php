@@ -44,6 +44,9 @@
                         <?php if($data['status_log'] == 'EXPIRED') { ?>
                             <button class="btn btn-danger btn-sm" disabled>EXPIRED</button> 
                         <?php } ?>
+                        <?php if($data['status_log'] == 'FAIL') { ?>
+                            <button class="btn btn-danger btn-sm" disabled>FAIL</button> 
+                        <?php } ?>
                     </td>
                     <td width="25%"><?= $data['aktivitas_log'] ?></td>
                 </tr>

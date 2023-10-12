@@ -196,6 +196,7 @@
                 <ul class="submenu">
                     <li><a href="<?= base_url('absensi-regular/peserta') ?>">Peserta</a></li>
                     <li><a href="<?= base_url('absensi-regular/pengajar') ?>">Pengajar</a></li>
+                    <li><a href="<?= base_url('absensi-regular/penguji') ?>">Penguji</a></li>
                 </ul>
             </li>
             <li>
@@ -277,10 +278,20 @@
 <!--  Pengajar Menu Start -->
 <?php if ($user['level'] == 5 || $user['level'] == 6) { ?>
     <li class="menu-title">Akademik</li>
-    <li>
+    <!-- <li>
         <a href="<?= base_url('pengajar/kelas') ?>" class="waves-effect">
             <i class="mdi mdi-school"></i> <span> Kelas </span>
         </a>
+    </li> -->
+    <li>
+        <a href="javascript:void(0);" class="waves-effect">
+            <i class="mdi mdi-school"></i>
+            <span> Kelas<span class="float-right menu-arrow"><i class="mdi mdi-chevron-right"></i></span></span>
+        </a>
+        <ul class="submenu">
+            <li><a href="<?= base_url('pengajar/kelas') ?>"> Pengajar</a></li>
+            <li><a href="<?= base_url('penguji/kelas') ?>"> Penguji</a></li>
+        </ul>
     </li>
     <li class="menu-title">Akun</li>
     <li>

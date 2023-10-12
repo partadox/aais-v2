@@ -154,6 +154,19 @@
                         <div class="invalid-feedback errorStatuskelas"></div>
                     </div>
                 </div>
+                <div class="form-group row">
+                    <label for="" class="col-sm-4 col-form-label">Penguji</label>
+                    <div class="col-sm-8">
+                        <select name="penguji_id" id="penguji_id" class="js-example-basic-single-edit">
+                                <option Disabled=true Selected=true> </option>
+                                <option value="kosong">KOSONGKAN</option>
+                            <?php foreach ($pengajar as $key => $data) { ?>
+                                <option value="<?= $data['pengajar_id'] ?>" <?php if ($data['pengajar_id'] == $kelas['penguji_id']) echo "selected"; ?> ><?= $data['nama_pengajar'] ?></option>
+                            <?php } ?>
+                        </select>
+                        <div class="invalid-feedback errorPenguji"></div>
+                    </div>
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="submit" class="btn btn-primary btnsimpan"><i class="fa fa-share-square"></i> Simpan</button>

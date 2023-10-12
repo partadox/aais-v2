@@ -8,7 +8,7 @@ class Model_kelas extends Model
 {
     protected $table      = 'program_kelas';
     protected $primaryKey = 'kelas_id';
-    protected $allowedFields = ['program_id', 'peserta_level','pengajar_id', 'data_absen_pengajar', 'nama_kelas', 'angkatan_kelas', 'hari_kelas', 'waktu_kelas', 'zona_waktu_kelas', 'jenkel', 'status_kerja', 'kouta', 'sisa_kouta', 'jumlah_peserta', 'metode_kelas','status_kelas', 'metode_absen', 'tm_absen',  'config_absen','expired_absen', 'show_ujian'];
+    protected $allowedFields = ['program_id', 'peserta_level','pengajar_id', 'data_absen_pengajar', 'nama_kelas', 'angkatan_kelas', 'hari_kelas', 'waktu_kelas', 'zona_waktu_kelas', 'jenkel', 'status_kerja', 'kouta', 'sisa_kouta', 'jumlah_peserta', 'metode_kelas','status_kelas', 'metode_absen', 'tm_absen',  'config_absen','expired_absen', 'show_ujian', 'penguji_id', 'absen_penguji'];
 
     /*--- NEW MODEL ---*/
     public function list_2nd($angkatan)
@@ -374,6 +374,28 @@ class Model_kelas extends Model
         return $mainQuery->get()->getResultArray();
     }
 
+    public function kelas_penguji($penguji_id, $angkatan)
+    {
+        $db      = \Config\Database::connect();
+        $builder = $db->table('peserta_kelas');
+
+        $builder->selectCount('data_kelas_id');
+        $builder->where('peserta_kelas.data_kelas_id = program_kelas.kelas_id');
+        $subQuery = $builder->getCompiledSelect();
+
+        $mainQuery = $db->table('program_kelas')
+            ->select('program_kelas.*, program.*, peserta_level.*, pengajar.nama_pengajar, ('.$subQuery.') as peserta_kelas_count')
+            ->join('program', 'program.program_id = program_kelas.program_id')
+            ->join('peserta_level', 'peserta_level.peserta_level_id = program_kelas.peserta_level')
+            ->join('pengajar', 'pengajar.pengajar_id = program_kelas.pengajar_id')
+            ->where('program_kelas.penguji_id', $penguji_id)
+            ->where('angkatan_kelas', $angkatan)
+            ->where('status_kelas', 'aktif')
+            ->orderBy('kelas_id', 'DESC');
+
+        return $mainQuery->get()->getResultArray();
+    }
+
     //Pengajar Panel - Absensi Peserta
     // public function pengajar_onkelas_absen($kelas_id)
     // {
@@ -414,6 +436,21 @@ class Model_kelas extends Model
             ->join('kantor_cabang', 'kantor_cabang.kantor_id = pengajar.asal_kantor')
             ->join('absen_pengajar', 'absen_pengajar.absen_pengajar_id = program_kelas.data_absen_pengajar')
             //->where('spp_status !=', 'BELUM BAYAR PENDAFTARAN')
+            ->where('angkatan_kelas', $angkatan)
+            ->orderBy('nama_pengajar', 'ASC')
+            ->get()->getResultArray();
+    }
+
+    public function admin_rekap_absen_penguji($angkatan)
+    {
+        return $this->table('program_kelas')
+            //->join('peserta', 'peserta.peserta_id = peserta_kelas.data_peserta_id')
+            //->join('program_kelas', 'program_kelas.kelas_id = peserta_kelas.data_kelas_id')
+            ->join('program', 'program.program_id = program_kelas.program_id')
+            ->join('pengajar', 'pengajar.pengajar_id = program_kelas.penguji_id')
+            ->join('peserta_level', 'peserta_level.peserta_level_id = program_kelas.peserta_level')
+            ->join('kantor_cabang', 'kantor_cabang.kantor_id = pengajar.asal_kantor')
+            ->where('penguji_id !=', NULL)
             ->where('angkatan_kelas', $angkatan)
             ->orderBy('nama_pengajar', 'ASC')
             ->get()->getResultArray();

@@ -32,7 +32,7 @@ class Kelas extends BaseController
         $pengajar_id        = $get_pengajar_id->pengajar_id;
         $list               = $this->kelas->kelas_pengajar($pengajar_id, $angkatan);
         $data = [
-            'title'                 => 'Daftar Kelas Anda pada Angkatan '.$angkatan,
+            'title'                 => 'Daftar Kelas Anda pada Angkatan '.$angkatan.' Sebagai Pengajar',
             'user'                  => $user,
             'list_angkatan'         => $list_angkatan,
             'angkatan_pilih'        => $angkatan,

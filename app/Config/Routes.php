@@ -230,10 +230,12 @@ $routes->post('pembayaran/rekap-spp-cek', 'Admin\Pembayaran::rekap_spp_cek', ["f
 //Absensi
 $routes->get('absensi-regular/peserta', 'Admin\Absensi::regular_peserta', ["filter" => "authweb:1-2-3-7"]);
 $routes->get('absensi-regular/pengajar', 'Admin\Absensi::regular_pengajar', ["filter" => "authweb:1-2-3-7"]);
+$routes->get('absensi-regular/penguji', 'Admin\Absensi::regular_penguji', ["filter" => "authweb:1-2-3-7"]);
 $routes->post('absensi-regular/pengajar-note', 'Admin\Absensi::regular_pengajar_note', ["filter" => "authweb:1-2-3-7"]);
 
 $routes->get('absensi-regular/peserta-export', 'Admin\Absensi::regular_peserta_export', ["filter" => "authweb:1-2-3-7"]);
 $routes->get('absensi-regular/pengajar-export', 'Admin\Absensi::regular_pengajar_export', ["filter" => "authweb:1-2-3-7"]);
+$routes->get('absensi-regular/penguji-export', 'Admin\Absensi::regular_penguji_export', ["filter" => "authweb:1-2-3-7"]);
 
 //Ujian
 $routes->get('ujian', 'Admin\Ujian::index', ["filter" => "authweb:1-2-3-7"]);
@@ -357,6 +359,10 @@ $routes->post('pengajar/save-absensi', 'Pengajar\Kelas::save_absensi', ["filter"
 $routes->post('pengajar/update-atur-absensi', 'Pengajar\Kelas::update_atur_absensi', ["filter" => "authweb:5-6"]);
 $routes->post('pengajar/absensi-note', 'Pengajar\Kelas::absensi_note', ["filter" => "authweb:5-6"]);
 $routes->post('pengajar/update-absensi-note', 'Pengajar\Kelas::update_absensi_note', ["filter" => "authweb:5-6"]);
+
+$routes->get('penguji/kelas', 'Pengajar\KelasPenguji::index', ["filter" => "authweb:5-6"]);
+$routes->post('penguji/absen', 'Pengajar\KelasPenguji::form_absen', ["filter" => "authweb:5-6"]);
+$routes->post('penguji/save-absen', 'Pengajar\KelasPenguji::save_absen', ["filter" => "authweb:5-6"]);
 
 /*--- Show Hasil Ujian ---*/
 $routes->post('pengajar/show-ujian', 'Pengajar\Ujian::show_ujian', ["filter" => "authweb:5-6"]);

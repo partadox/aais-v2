@@ -658,9 +658,22 @@
                         <i class="mdi mdi-teach bg-warning  text-white"></i>
                     </div>
                     <div>
-                        <h5 class="font-16">Jumlah Kelas Anda pada Angkatan <?= $angkatan ?></h5>
+                        <h5 class="font-16">Kelas Anda pada Angkatan <?= $angkatan ?> <br> (Sbg Pengajar)</h5>
                     </div>
                     <h3 class="mt-4"><?= $jml_kelas ?></h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-4 col-md-4">
+            <div class="card shadow-lg p-3">
+                <div class="card-heading p-4">
+                    <div class="mini-stat-icon float-right">
+                        <i class="mdi mdi-teach bg-warning  text-white"></i>
+                    </div>
+                    <div>
+                        <h5 class="font-16">Kelas Anda pada Angkatan <?= $angkatan ?> <br> (Sbg Penguji)</h5>
+                    </div>
+                    <h3 class="mt-4"><?= $jml_kelas_penguji ?></h3>
                 </div>
             </div>
         </div>

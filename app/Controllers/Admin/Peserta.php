@@ -964,7 +964,7 @@ class Peserta extends BaseController
                     }
 
                     if ($cek_cabang == false) {
-                        $gagal9 = ', Karena Level Tidak Numerik';
+                        $gagal9 = ', Karena Kolom Cabang Tidak Numerik / Kosong';
                     } else {
                         $gagal9 = '';
                     }
@@ -1019,8 +1019,8 @@ class Peserta extends BaseController
 
                     $aktivitas1 = 'Buat Data Peserta via Import Excel, Peserta : '  . $excel['3'] . ' - ' .  $excel['4'] . $gagal1 . $gagal4 . $gagal5 . $gagal6 . $gagal7 . $gagal8 . $gagal9 . $gagal10 . $gagal11 . $gagal12 . $gagal13 . $gagal14 . $gagal15 . $gagal16 . $gagal17;
 
-                     /*--- Log ---*/
-                     $this->logging('Admin', 'GAGAL', $aktivitas1);
+                    /*--- Log ---*/
+                    $this->logging('Admin', 'GAGAL', $aktivitas1);
 
                 } elseif($nis == 0 
                     || $cek_angkatan == true
@@ -1047,11 +1047,14 @@ class Peserta extends BaseController
                         'active'				=> 1,
                     ];
     
-                    $this->db->transStart();
-                    $this->user->insert($newUser);
+                    $this->db->transBegin();
+                    $results = [];
+                    $results[] = $this->user->insert($newUser);
+
+                    $newuserID = $this->user->insertID();
 
                     $data   = [
-                        'user_id'               => $this->user->insertID(),
+                        'user_id'               => $newuserID,
                         'angkatan'              => $excel['2'],
                         'nis'                   => $excel['3'],
                         'nama_peserta'          => strtoupper($excel['4']),
@@ -1074,21 +1077,24 @@ class Peserta extends BaseController
                         'peserta_note'          => $excel['21'],
                     ];
 
-                    $this->peserta->insert($data);
-                    $this->db->transComplete();
+                    $results[] = $this->peserta->insert($data);
 
-                    $aktivitas = 'Buat Data Peserta via Import Excel, Nama Peserta : ' .  $excel['4'];
+                    $aktivitas = 'Buat Data Peserta via Import Excel, Nama Peserta : ' .  $excel['4'] .' '.$newuserID;
 
-                    if ($this->db->transStatus() === FALSE)
+                    $success = !in_array(FALSE, $results, true);
+
+                    if ($success)
                     {
-                        /*--- Log ---*/
-                        $this->logging('Admin', 'FAIL', $aktivitas);
-                    }
-                    else
-                    {
+                        $this->db->transCommit();
                         $jumlahsukses++;
                         /*--- Log ---*/
                         $this->logging('Admin', 'BERHASIL', $aktivitas);
+                    }
+                    else
+                    {
+                        $this->db->transRollback();
+                        /*--- Log ---*/
+                        $this->logging('Admin', 'FAIL', $aktivitas);
                     }
                 }
             }

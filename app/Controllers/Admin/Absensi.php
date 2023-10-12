@@ -152,6 +152,40 @@ class Absensi extends BaseController
         }
     }
 
+    public function regular_penguji()
+    {
+        $user  = $this->userauth();
+        //Angkatan
+		$uri            = new \CodeIgniter\HTTP\URI(current_url(true));
+        $queryString    = $uri->getQuery();
+        $params         = [];
+        parse_str($queryString, $params);
+
+        if (count($params) == 1 && array_key_exists('angkatan', $params)) {
+            $angkatan           = $params['angkatan'];
+            if (ctype_digit($angkatan)) {
+                $angkatan           = $params['angkatan'];
+            }else {
+                $get_angkatan       = $this->konfigurasi->angkatan_kuliah();
+                $angkatan           = $get_angkatan->angkatan_kuliah;
+            }
+        } else {
+            $get_angkatan       = $this->konfigurasi->angkatan_kuliah();
+            $angkatan           = $get_angkatan->angkatan_kuliah;
+        }
+        $list_angkatan      = $this->kelas->list_unik_angkatan();
+        $list_absensi       = $this->kelas->admin_rekap_absen_penguji($angkatan);
+        
+        $data = [
+            'title'         => 'Data Absensi Penguji pada Angkatan Perkuliahan ' . $angkatan,
+            'user'          => $user,
+            'list'          => $list_absensi,
+            'list_angkatan' => $list_angkatan,
+            'angkatan_pilih'=> $angkatan,
+        ];
+        return view('panel_admin/absensi/regular/penguji', $data);
+    }
+
     //backend
     public function regular_peserta_export()
     {
@@ -1204,4 +1238,126 @@ class Absensi extends BaseController
         $writer->save('php://output');
     }
 
+    public function regular_penguji_export()
+    {
+          //Angkatan
+		$uri            = new \CodeIgniter\HTTP\URI(current_url(true));
+        $queryString    = $uri->getQuery();
+        $params         = [];
+        parse_str($queryString, $params);
+
+        if (count($params) == 1 && array_key_exists('angkatan', $params)) {
+            $angkatan           = $params['angkatan'];
+            if (ctype_digit($angkatan)) {
+                $angkatan           = $params['angkatan'];
+            }else {
+                $get_angkatan       = $this->konfigurasi->angkatan_kuliah();
+                $angkatan           = $get_angkatan->angkatan_kuliah;
+            }
+        } else {
+            $get_angkatan       = $this->konfigurasi->angkatan_kuliah();
+            $angkatan           = $get_angkatan->angkatan_kuliah;
+        }
+
+        $absen_penguji =  $this->kelas->admin_rekap_absen_penguji($angkatan);
+        $judul = "DATA REKAP ABSEN PENGUJI ANGKATAN PERKULIAHAN " . $angkatan;
+        $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
+
+        $sheet = $spreadsheet->getActiveSheet();
+
+        $styleColumn = [
+            'font' => [
+                'bold' => true,
+                'size' => 14,
+            ],
+            'alignment' => [
+                'horizontal'    => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+                'vertical'      => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+            ]
+        ];
+
+        $border = [
+            'borders' => [
+                'outline' => [
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                ],
+            ],
+        ];
+
+        $borderall = [
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                ],
+            ],
+        ];
+
+        $sheet->setCellValue('A1', $judul);
+        $sheet->mergeCells('A1:F1');
+        $sheet->getStyle('A1')->applyFromArray($styleColumn);
+
+        $sheet->setCellValue('A2', date("Y-m-d"));
+        $sheet->mergeCells('A2:F2');
+        $sheet->getStyle('A2')->applyFromArray($styleColumn);
+
+        $spreadsheet->setActiveSheetIndex(0)
+            ->setCellValue('A4', 'ID PENGAJAR')
+            ->setCellValue('B4', 'NAMA PENGUJI')
+            ->setCellValue('C4', 'CABANG')
+            ->setCellValue('D4', 'KELAS')
+            ->setCellValue('E4', 'ANGKATAN PERKULIAHAN')
+            ->setCellValue('F4', 'WAKTU ABSEN');
+        
+        $sheet->getStyle('A4:F4')->applyFromArray($borderall);
+        
+        $spreadsheet->getActiveSheet()->getColumnDimension('A')->setAutoSize(true);
+        $spreadsheet->getActiveSheet()->getColumnDimension('B')->setAutoSize(true);
+        $spreadsheet->getActiveSheet()->getColumnDimension('C')->setWidth(34);
+        $spreadsheet->getActiveSheet()->getColumnDimension('D')->setWidth(37);
+        $spreadsheet->getActiveSheet()->getColumnDimension('E')->setWidth(12.5);
+        $spreadsheet->getActiveSheet()->getColumnDimension('F')->setAutoSize(true);
+        
+
+        $row = 5;
+
+        foreach ($absen_penguji as $absen) {
+
+            if ($absen['absen_penguji'] != NULL) {
+                $waktu_absen = $absen['absen_penguji'];
+            } else {
+                $waktu_absen = '';
+            };
+
+            $spreadsheet->setActiveSheetIndex(0)
+                ->setCellValue('A' . $row, $absen['pengajar_id'])
+                ->setCellValue('B' . $row, $absen['nama_pengajar'])
+                ->setCellValue('C' . $row, $absen['nama_kantor'])
+                ->setCellValue('D' . $row, $absen['nama_kelas'])
+                ->setCellValue('E' . $row, $absen['angkatan_kelas'])
+                ->setCellValue('F' . $row, $waktu_absen);
+
+            $sheet->getStyle('A'. $row)->applyFromArray($border);
+            $sheet->getStyle('B'. $row)->applyFromArray($border);
+            $sheet->getStyle('C'. $row)->applyFromArray($border);
+            $sheet->getStyle('D'. $row)->applyFromArray($border);
+            $sheet->getStyle('E'. $row)->applyFromArray($border);
+            $sheet->getStyle('F'. $row)->applyFromArray($border);
+
+            $row++;
+        }
+
+        $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
+        $filename =  'Data-Rekap-Absen-Penguji-'. date('Y-m-d-His');
+
+        $aktivitas = 'Download Data Rekap Absen Penguji via Export Excel, Waktu : ' .  date('Y-m-d-H:i:s');
+
+        /*--- Log ---*/
+        $this->logging('Admin', 'BERHASIL', $aktivitas);
+
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment;filename=' . $filename . '.xlsx');
+        header('Cache-Control: max-age=0');
+
+        $writer->save('php://output');
+    }
 }

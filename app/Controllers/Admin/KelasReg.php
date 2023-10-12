@@ -468,6 +468,14 @@ class KelasReg extends BaseController
                     $status_kerja   = '0';
                 }
 
+                $penguji_id = $this->request->getVar('penguji_id');
+                if ($penguji_id == "" || $penguji_id == 'kosong') {
+                    $penguji_id = NULL; 
+                } else {
+                    $penguji_id = $penguji_id;
+                }
+                
+
                 $updatedata = [
                     'program_id'        => $this->request->getVar('program_id'),
                     'nama_kelas'        => strtoupper($this->request->getVar('nama_kelas')),
@@ -483,6 +491,7 @@ class KelasReg extends BaseController
                     // 'sisa_kouta'        => $this->request->getVar('sisa_kouta'),
                     'metode_kelas'      => $this->request->getVar('metode_kelas'),
                     'status_kelas'      => $this->request->getVar('status_kelas'),
+                    'penguji_id'        => $penguji_id,
                 ];
 
                 $kelas_id = $this->request->getVar('kelas_id');

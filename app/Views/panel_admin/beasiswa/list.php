@@ -150,7 +150,7 @@
     function hapus(beasiswa_id, nama_peserta, peserta_id) {
         Swal.fire({
             title: 'Yakin Hapus Data Beasiswa ini?',
-            text: `Hapus data beasiswa ke ${nama_peserta}?`,
+            text: `Hapus data beasiswa ke '${encodeURIComponent(nama_peserta)}'?`,
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
