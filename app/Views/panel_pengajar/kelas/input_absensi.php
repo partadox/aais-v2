@@ -29,7 +29,15 @@
                             <div class="form-group row">
                                 <label class="col-sm-2 col-form-label">Tanggal <?= $tm_upper ?></label>
                                 <div class="col-sm-8">
-                                    <input type="date" class="form-control" id="tgl_tm<?= $i ?>" name="tgl_tm<?= $i ?>" value="<?= $tgl_absen ?>">
+                                    <!-- <input type="date" class="form-control" id="tgl_tm<?= $i ?>" name="tgl_tm<?= $i ?>" value="<?= $tgl_absen ?>"> -->
+                                    <div class="input-group" id="datepicker2">
+                                        <input type="text" id="tgl_tm<?= $i ?>" name="tgl_tm<?= $i ?>" class="form-control" placeholder="Tahun-Bulan-Tanggal"
+                                            data-date-format="yyyy-mm-dd" data-date-container='#datepicker2'
+                                            data-provide="datepicker" data-date-autoclose="true" value="<?= $tgl_absen ?>" required>
+                                            <div class="input-group-append">
+                                                <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+                                            </div>
+                                    </div>
                                 </div>
                             </div>
 

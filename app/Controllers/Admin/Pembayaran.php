@@ -873,6 +873,7 @@ class Pembayaran extends BaseController
                         'bckp_absen_peserta_kelas'  => $kelas_id,
                     ];
                     $this->absen_peserta->insert($dataabsen);
+                    $absenID = $this->absen_peserta->insertID();
         
                     $dataujian = [
                         'bckp_ujian_peserta'     => $peserta_id,
@@ -883,7 +884,7 @@ class Pembayaran extends BaseController
                     $PKdaftar = [
                         'byr_daftar'            => $bayar_daftar,
                         'dt_konfirmasi_daftar'  => date('Y-m-d H:i:s'),
-                        'data_absen'            => $this->absen_peserta->insertID(),
+                        'data_absen'            => $absenID,
                         'data_ujian'            => $ujianID,
                         'expired_tgl_daftar'    => NULL,
                         'expired_waktu_daftar'  => NULL,
@@ -1280,6 +1281,7 @@ class Pembayaran extends BaseController
                 'bckp_absen_peserta_kelas'  => $kelas_id,
             ];
             $this->absen_peserta->insert($dataabsen);
+            $absenID = $this->absen_peserta->insertID();
 
             $dataujian = [
                 'bckp_ujian_peserta'     => $peserta_id,
@@ -1299,7 +1301,7 @@ class Pembayaran extends BaseController
             $datapesertakelas = [
                 'data_peserta_id'       => $peserta_id,
                 'data_kelas_id'         => $kelas_id,
-                'data_absen'            => $this->absen_peserta->insertID(),
+                'data_absen'            => $absenID,
                 'data_ujian'            => $ujianID,
                 'status_peserta_kelas'  => 'BELUM LULUS',
                 // 'byr_daftar'            => $bayar_daftar,

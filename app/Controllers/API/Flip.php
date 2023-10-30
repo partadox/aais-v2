@@ -313,6 +313,7 @@ class Flip extends ResourceController
                         'bckp_absen_peserta_kelas'  => $kelas_id,
                     ];
                     $results[] = $this->absen_peserta->insert($dataabsen);
+                    $absenID = $this->absen_peserta->insertID();
         
                     $dataujian = [
                         'bckp_ujian_peserta'     => $peserta_id,
@@ -323,7 +324,7 @@ class Flip extends ResourceController
                     $PKdaftar = [
                         'byr_daftar'            => $daftar,
                         'dt_konfirmasi_daftar'  => date('Y-m-d H:i:s'),
-                        'data_absen'            => $this->absen_peserta->insertID(),
+                        'data_absen'            => $absenID,
                         'data_ujian'            => $ujianID,
                         'expired_tgl_daftar'    => NULL,
                         'expired_waktu_daftar'  => NULL,

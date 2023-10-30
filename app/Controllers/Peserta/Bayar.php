@@ -559,6 +559,7 @@ class Bayar extends BaseController
                 'bckp_absen_peserta_kelas'  => $kelas_id,
             ];
             $this->absen_peserta->insert($dataabsen);
+            $absenID = $this->absen_peserta->insertID();
 
             $dataujian = [
                 'bckp_ujian_peserta'     => $peserta_id,
@@ -581,7 +582,7 @@ class Bayar extends BaseController
             }
             
             $updatePK = [
-                'data_absen'                => $this->absen_peserta->insertID(),
+                'data_absen'                => $absenID,
                 'data_ujian'                => $ujianID,
                 'spp_status'                => $spp_status,
                 'dt_bayar_daftar'           => $dt_bayar_daftar,
@@ -717,6 +718,7 @@ class Bayar extends BaseController
                     'bckp_absen_peserta_kelas'  => $kelas_id,
                 ];
                 $this->absen_peserta->insert($dataabsen);
+                $absenID = $this->absen_peserta->insertID();
     
                 $dataujian = [
                     'bckp_ujian_peserta'     => $peserta_id,
@@ -727,7 +729,7 @@ class Bayar extends BaseController
                 $PKdaftar = [
                     'byr_daftar'            => $daftar,
                     'dt_konfirmasi_daftar'  => date('Y-m-d H:i:s'),
-                    'data_absen'            => $this->absen_peserta->insertID(),
+                    'data_absen'            => $absenID,
                     'data_ujian'            => $ujianID,
                     'expired_tgl_daftar'    => NULL,
                     'expired_waktu_daftar'  => NULL,

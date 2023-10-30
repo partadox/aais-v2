@@ -141,10 +141,10 @@ if (session()->getFlashdata('pesan_sukses')) {
                         <?php endif; ?>
                     </td>
                     <td>
-                        <?php if ($tmData['tanggal'] === '2022-01-01'): ?>
+                        <?php if ($tmData['tanggal'] === '2022-01-01' || $tmData['tanggal'] === NULL): ?>
                             <p>-</p>
                         <?php endif; ?>
-                        <?php if ($tmData['tanggal'] !== '2022-01-01'): ?>
+                        <?php if ($tmData['tanggal'] !== NULL): ?>
                             <?= longdate_indo($tmData['tanggal']) ?>
                         <?php endif; ?>
                     </td>
