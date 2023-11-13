@@ -270,7 +270,7 @@ class KelasBina extends BaseController
                 }
                 $this->db->transComplete();
                 
-                $aktivitas = 'Buat Data Kelas Pembinaan Nama : ' .  $this->request->getVar('nama_kelas');
+                $aktivitas = 'Buat Data Kelas Pembinaan Nama : ' .  $this->request->getVar('bk_name');
 
                 if ($this->db->transStatus() === FALSE)
                 {

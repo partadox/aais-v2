@@ -102,7 +102,7 @@
                                     <input type="radio" name="check<?= $counter ?>" value="1" <?php if(isset($data['bas_absen']) && $data['bas_absen'] == '1') : ?> checked <?php endif;?> >
                                 </td>
                                 <td>
-                                    <input type="radio" name="check<?= $counter ?>" value="0" <?php if(isset($data['bas_absen'])&& $data['bas_absen'] == '0') : ?> checked <?php endif;?> >
+                                    <input type="radio" name="check<?= $counter ?>" value="0" <?php if(isset($data['bas_absen'])&& $data['bas_absen'] == '0') : ?> checked <?php endif;?> <?php if(empty($data['bas_absen'])) : ?> checked <?php endif;?> >
                                 </td>
                             </tr>
                             <?php endforeach; ?>

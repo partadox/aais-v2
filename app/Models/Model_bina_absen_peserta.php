@@ -35,6 +35,7 @@ class Model_bina_absen_peserta extends Model
         ->join('peserta', 'peserta.peserta_id = bina_peserta.bs_peserta')
         ->where('bas_bkid', $bk_id)
         ->where('bas_tm', $tm)
+        ->orderBy('peserta.nama_peserta', 'ASC')
         ->get()
         ->getResultArray();
     }
