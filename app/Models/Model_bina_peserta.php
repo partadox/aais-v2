@@ -34,6 +34,7 @@ class Model_bina_peserta extends Model
         return $this->table('bina_peserta')
         ->join('peserta', 'peserta.peserta_id = bina_peserta.bs_peserta')
         ->where('bs_kelas', $bk_id)
+        ->orderBy('peserta.nama_peserta', 'ASC')
         ->get()
         ->getResultArray();
     }
