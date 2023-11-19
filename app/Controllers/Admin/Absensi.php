@@ -186,6 +186,42 @@ class Absensi extends BaseController
         return view('panel_admin/absensi/regular/penguji', $data);
     }
 
+    public function bina_peserta()
+    {
+        $user  = $this->userauth();
+        //Angkatan
+		$uri            = new \CodeIgniter\HTTP\URI(current_url(true));
+        $queryString    = $uri->getQuery();
+        $params         = [];
+        parse_str($queryString, $params);
+
+        if (count($params) == 1 && array_key_exists('angkatan', $params)) {
+            $angkatan           = $params['angkatan'];
+            if (ctype_digit($angkatan)) {
+                $angkatan           = $params['angkatan'];
+            }else {
+                $get_angkatan       = $this->konfigurasi->angkatan_kuliah();
+                $angkatan           = $get_angkatan->angkatan_kuliah;
+            }
+        } else {
+            $get_angkatan       = $this->konfigurasi->angkatan_kuliah();
+            $angkatan           = $get_angkatan->angkatan_kuliah;
+        }
+        
+        $list_angkatan      = $this->kelas->list_unik_angkatan();
+        $list_absensi       = $this->bina_peserta->rekap_bina_absen($angkatan);
+        // var_dump($list_absensi);
+
+        $data = [
+            'title'         => 'Data Absensi Peserta pada Angkatan Perkuliahan ' . $angkatan,
+            'user'          => $user,
+            'list'          => $list_absensi,
+            'list_angkatan' => $list_angkatan,
+            'angkatan_pilih'=> $angkatan,
+        ];
+        return view('panel_admin/absensi/bina/peserta', $data);
+    }
+
     //backend
     public function regular_peserta_export()
     {
@@ -1350,6 +1386,197 @@ class Absensi extends BaseController
         $filename =  'Data-Rekap-Absen-Penguji-'. date('Y-m-d-His');
 
         $aktivitas = 'Download Data Rekap Absen Penguji via Export Excel, Waktu : ' .  date('Y-m-d-H:i:s');
+
+        /*--- Log ---*/
+        $this->logging('Admin', 'BERHASIL', $aktivitas);
+
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment;filename=' . $filename . '.xlsx');
+        header('Cache-Control: max-age=0');
+
+        $writer->save('php://output');
+    }
+
+    public function bina_peserta_export()
+    {
+        //Angkatan
+		$uri            = new \CodeIgniter\HTTP\URI(current_url(true));
+        $queryString    = $uri->getQuery();
+        $params         = [];
+        parse_str($queryString, $params);
+
+        if (count($params) == 1 && array_key_exists('angkatan', $params)) {
+            $angkatan           = $params['angkatan'];
+            if (ctype_digit($angkatan)) {
+                $angkatan           = $params['angkatan'];
+            }else {
+                $get_angkatan       = $this->konfigurasi->angkatan_kuliah();
+                $angkatan           = $get_angkatan->angkatan_kuliah;
+            }
+        } else {
+            $get_angkatan       = $this->konfigurasi->angkatan_kuliah();
+            $angkatan           = $get_angkatan->angkatan_kuliah;
+        }
+        $absen_peserta = $this->bina_peserta->rekap_bina_absen_export($angkatan);
+        $total_row     = count($absen_peserta) + 5;
+
+        $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
+
+        $sheet = $spreadsheet->getActiveSheet();
+
+        $styleColumn = [
+            'font' => [
+                'bold' => true,
+                'size' => 14,
+            ],
+            'alignment' => [
+                'horizontal'    => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+                'vertical'      => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+            ]
+        ];
+
+        $style_up = [
+            'font' => [
+                'bold' => true,
+                'size' => 11,
+            ],
+            'alignment' => [
+                'horizontal'    => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+                'vertical'      => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+            ],
+            'fill' => [
+                'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+                'startColor' => [
+                    'argb' => 'D9D9D9',
+                ],
+                'endColor' => [
+                    'argb' => 'D9D9D9',
+                ],
+            ],        
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                ],
+            ],
+        ];
+
+        $isi_tengah = [
+            'alignment' => [
+                'horizontal'    => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+                'vertical'      => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+            ],
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                ],
+            ],
+        ];
+
+        $judul = "DATA REKAP ABSEN PESERTA KELAS PEMBINAAN - ALHAQQ ACADEMIC INFORMATION SYSTEM";
+        $tgl   = "ANGKATAN PERKULIAHAN " . $angkatan . " - " . date("d-m-Y");
+
+        $sheet->setCellValue('A1', $judul);
+        $sheet->mergeCells('A1:T1');
+        $sheet->getStyle('A1')->applyFromArray($styleColumn);
+
+        $sheet->setCellValue('A2', $tgl);
+        $sheet->mergeCells('A2:T2');
+        $sheet->getStyle('A2')->applyFromArray($styleColumn);
+
+        $sheet->getStyle('A4:T4')->applyFromArray($style_up);
+
+        $sheet->getStyle('A5:T'.$total_row)->applyFromArray($isi_tengah);
+
+        $spreadsheet->setActiveSheetIndex(0)
+            ->setCellValue('A4', 'NIS')
+            ->setCellValue('B4', 'NAMA')
+            ->setCellValue('C4', 'JENIS KELAMIN')
+            ->setCellValue('D4', 'KELAS')
+            ->setCellValue('E4', 'HARI')
+            ->setCellValue('F4', 'WAKTU')
+            ->setCellValue('G4', 'METODE TATAP MUKA')
+            ->setCellValue('H4', 'ANGKATAN KULIAH')
+            ->setCellValue('I4', 'TM1')
+            ->setCellValue('J4', 'TM2')
+            ->setCellValue('K4', 'TM3')
+            ->setCellValue('L4', 'TM4')
+            ->setCellValue('M4', 'TM5')
+            ->setCellValue('N4', 'TM6')
+            ->setCellValue('O4', 'TM7')
+            ->setCellValue('P4', 'TM8')
+            ->setCellValue('Q4', 'TM9')
+            ->setCellValue('R4', 'TM10')
+            ->setCellValue('S4', 'TM11')
+            ->setCellValue('T4', 'TOTAL HADIR');
+        
+            $columns = range('A', 'T');
+            foreach ($columns as $column) {
+                $spreadsheet->getActiveSheet()->getColumnDimension($column)->setAutoSize(true);
+            }
+            // $spreadsheet->getActiveSheet()->getColumnDimension('AA')->setAutoSize(true);
+
+        $row = 5;
+
+        foreach ($absen_peserta as $absen) {
+            
+            //-----------------------------
+            for ($i = 1; $i <= 11; $i++) {
+                $tmKey = 'tm' . $i;
+                $tmDtKey = $tmKey . '_dt';
+            
+                if ($absen[$tmKey] == '1') {
+                    ${'absen_' . $tmKey} = substr($absen[$tmDtKey], 0, 10);
+                    ${'count_' . $tmKey} = 1;
+                } elseif ($absen[$tmKey] == '0') {
+                    ${'absen_' . $tmKey} = '--';
+                    ${'count_' . $tmKey} = 0;
+                } else {
+                    ${'absen_' . $tmKey} = '';
+                    ${'count_' . $tmKey} = 0;
+                }
+            }
+
+            $total = 0;
+            for ($i = 1; $i <= 11; $i++) {
+                $total += ${'count_tm' . $i};
+            }
+
+            // if($absen['status_aktif_peserta'] == NULL) {
+            //     $status_aktif_peserta = 'AKTIF';
+            // }else {
+            //     $status_aktif_peserta = $absen['status_aktif_peserta'];
+            // }
+            
+            
+            $spreadsheet->setActiveSheetIndex(0)
+                ->setCellValue('A' . $row, $absen['nis'])
+                ->setCellValue('B' . $row, $absen['nama_peserta'])
+                ->setCellValue('C' . $row, $absen['jenkel'])
+                ->setCellValue('D' . $row, $absen['bk_name'])
+                ->setCellValue('E' . $row, $absen['bk_hari'])
+                ->setCellValue('F' . $row, $absen['bk_waktu']. ' ' . $absen['bk_timezone'])
+                ->setCellValue('G' . $row, $absen['bk_tm_methode'])
+                ->setCellValue('H' . $row, $absen['bk_angkatan'])
+
+                ->setCellValue('I' . $row, $absen_tm1)
+                ->setCellValue('J' . $row, $absen_tm2)
+                ->setCellValue('K' . $row, $absen_tm3)
+                ->setCellValue('L' . $row, $absen_tm4)
+                ->setCellValue('M' . $row, $absen_tm5)
+                ->setCellValue('N' . $row, $absen_tm6)
+                ->setCellValue('O' . $row, $absen_tm7)
+                ->setCellValue('P' . $row, $absen_tm8)
+                ->setCellValue('Q' . $row, $absen_tm9)
+                ->setCellValue('R' . $row, $absen_tm10)
+                ->setCellValue('S' . $row, $absen_tm11)
+                ->setCellValue('T' . $row, $total);
+            $row++;
+        }
+
+        $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
+        $filename =  'Data-Rekap-Absen-Peserta-Pembinaan-Angkatan'.$angkatan.'-'. date('Y-m-d-His');
+
+        $aktivitas = 'Download Data Rekap Absen Peserta Kelas Pembinaan via Export Excel, Waktu : ' .  date('Y-m-d-H:i:s') ;
 
         /*--- Log ---*/
         $this->logging('Admin', 'BERHASIL', $aktivitas);

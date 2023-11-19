@@ -237,6 +237,9 @@ $routes->get('absensi-regular/peserta-export', 'Admin\Absensi::regular_peserta_e
 $routes->get('absensi-regular/pengajar-export', 'Admin\Absensi::regular_pengajar_export', ["filter" => "authweb:1-2-3-7"]);
 $routes->get('absensi-regular/penguji-export', 'Admin\Absensi::regular_penguji_export', ["filter" => "authweb:1-2-3-7"]);
 
+$routes->get('absensi-bina/peserta', 'Admin\Absensi::bina_peserta', ["filter" => "authweb:1-2-3-7"]);
+$routes->get('absensi-bina/peserta-export', 'Admin\Absensi::bina_peserta_export', ["filter" => "authweb:1-2-3-7"]);
+
 //Ujian
 $routes->get('ujian', 'Admin\Ujian::index', ["filter" => "authweb:1-2-3-7"]);
 $routes->post('ujian/edit', 'Admin\Ujian::edit', ["filter" => "authweb:1-2-3-7-5-6"]);

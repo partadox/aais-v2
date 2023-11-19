@@ -185,6 +185,12 @@ class Absensi extends BaseController
                 'note_ps_tm'.$tm => $note_ps_tm
             ]; 
             $results[] = $this->absen_peserta->update($absen_peserta_id, $update);
+            //mengabsen pengajar juga
+            $update_pgj = [
+                'tm'.$tm.'_pengajar' => 1,
+                'tgl_tm'.$tm         => date('Y-m-d')
+            ]; 
+            $results[] = $this->absen_pengajar->update($kelas['data_absen_pengajar'], $update_pgj);
             if (in_array(FALSE, $results, true)) {
                 $this->db->transRollback();
                 $aktivitas = "Penyimpanan Absen pada ".$kelas['nama_kelas']." ada yg Gagal (Mandiri)";
