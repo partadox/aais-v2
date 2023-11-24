@@ -75,6 +75,7 @@ if (session()->getFlashdata('pesan_sukses')) {
                     (<?php if ($absensi_pengajar[$tgl_tm] != NULL && $absensi_pengajar[$tgl_tm] != '2022-01-01'): ?>
                         <?= shortdate_indo(substr($absensi_pengajar[$tgl_tm],0,10)) ?>
                     <?php endif; ?>)
+                    <i class="fa fa-angle-down float-right"></i>
                     </h5>
                     </button>
                 </h2>
@@ -96,6 +97,13 @@ if (session()->getFlashdata('pesan_sukses')) {
 <div class="editNote"></div>
 
 <script>
+    $(document).ready(function () {
+        $('.collapse').on('shown.bs.collapse', function () {
+            $(this).parent().find(".fa-angle-down").removeClass("fa-angle-down").addClass("fa-angle-up");
+        }).on('hidden.bs.collapse', function () {
+            $(this).parent().find(".fa-angle-up").removeClass("fa-angle-up").addClass("fa-angle-down");
+        });
+    });
     function tm(methode, absen_peserta_id, kelas_id) {
         $.ajax({
             type: "post",
