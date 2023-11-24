@@ -14,7 +14,7 @@
             <h5 class="card-title">PENDAFTARAAN PROGRAM AL-HAQQ BELUM DIBUKA</h5>
             <h6 class="card-subtitle mb-2 text-muted">Pengumuman</h6>
             <p class="card-text"> <b>Assalamu’alaikum Warahmatullahi Wabarakatuh</b> <br>
-            Kami menginformasikan kepada seluruh peserta atau calon peserta program Al-Haqq, pendaftaran kelas pada program Al-Haqq untuk saat ini belum dibuka. Ikuti terus informasi terbaru kami melalui website atau anda langsung dapat menghubungi kami melalui WhatsApp. <br>
+            Kami menginformasikan kepada seluruh peserta atau calon peserta program Al-Haqq, pendaftaran kelas pada program Al-Haqq untuk saat ini belum dibuka. Ikuti terus informasi terbaru kami melalui website atau anda langsung dapat menghubungi kami melalui kontak berikut : 0899-8049-000. <br>
             <b>Wassalamualaikum Warahmatullahi Wabarakatuh</b> <br> <br>
             <b>Hormat Kami,</b> <br>
             <i>Admin & Pengurus Al-Haqq</i>
