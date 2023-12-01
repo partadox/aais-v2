@@ -3,18 +3,18 @@ namespace App\Controllers\Admin;
 
 use App\Controllers\BaseController;
 
-class ProgramReg extends BaseController
+class ProgramNonReg extends BaseController
 {
     public function index()
     {
         $user  = $this->userauth();
         $data = [
-            'title' => 'Manajemen Program Reguler',
-            'list'  => $this->program->list_reguler(),
+            'title' => 'Manajemen Program Non-Reguler',
+            'list'  => $this->program->list_non_reguler(),
             'user'  => $user,
         ];
 
-        return view('panel_admin/program_regular/index', $data); 
+        return view('panel_admin/program_non_regular/index', $data); 
     }
 
     public function input()
@@ -22,7 +22,7 @@ class ProgramReg extends BaseController
         if ($this->request->isAJAX()) {
 
             $data = [
-                'title'   => 'Form Input Program Regular Baru',
+                'title'   => 'Form Input Program Non-Reguler Baru',
             ];
             $msg = [
                 'sukses' => view('panel_admin/program_regular/add', $data)

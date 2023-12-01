@@ -42,7 +42,7 @@ class Model_bina_peserta extends Model
     //rekap abensi pembinaan admin
     public function rekap_bina_absen($angkatan)
     {
-        $weeks = range(1, 11); // Array of weeks from 1 to 11
+        $weeks = range(1, 15); // Array of weeks from 1 to 15
         $selects = ['peserta.nama_peserta', 'bina_kelas.bk_name', 'bina_kelas.bk_angkatan', 'peserta.nis', 'bina_peserta.bs_status_peserta', 'bina_peserta.bs_status'];
 
         // Adding columns for each week's attendance
@@ -66,7 +66,7 @@ class Model_bina_peserta extends Model
     //rekap abensi pembinaan export
     public function rekap_bina_absen_export($angkatan)
     {
-        $weeks = range(1, 11); // Array of weeks from 1 to 11
+        $weeks = range(1, 15); // Array of weeks from 1 to 11
         $selects = ['peserta.nis', 'peserta.nama_peserta', 'peserta.jenkel', 'bina_kelas.bk_name', 'bina_kelas.bk_angkatan', 'bina_kelas.bk_hari', 'bina_kelas.bk_waktu', 'bina_kelas.bk_timezone', 'bina_kelas.bk_tm_methode', 'bina_peserta.bs_status_peserta', 'bina_peserta.bs_status'];
 
         // Adding columns for each week's attendance

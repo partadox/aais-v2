@@ -1476,16 +1476,16 @@ class Absensi extends BaseController
         $tgl   = "ANGKATAN PERKULIAHAN " . $angkatan . " - " . date("d-m-Y");
 
         $sheet->setCellValue('A1', $judul);
-        $sheet->mergeCells('A1:T1');
+        $sheet->mergeCells('A1:X1');
         $sheet->getStyle('A1')->applyFromArray($styleColumn);
 
         $sheet->setCellValue('A2', $tgl);
-        $sheet->mergeCells('A2:T2');
+        $sheet->mergeCells('A2:X2');
         $sheet->getStyle('A2')->applyFromArray($styleColumn);
 
-        $sheet->getStyle('A4:T4')->applyFromArray($style_up);
+        $sheet->getStyle('A4:X4')->applyFromArray($style_up);
 
-        $sheet->getStyle('A5:T'.$total_row)->applyFromArray($isi_tengah);
+        $sheet->getStyle('A5:X'.$total_row)->applyFromArray($isi_tengah);
 
         $spreadsheet->setActiveSheetIndex(0)
             ->setCellValue('A4', 'NIS')
@@ -1507,9 +1507,13 @@ class Absensi extends BaseController
             ->setCellValue('Q4', 'TM9')
             ->setCellValue('R4', 'TM10')
             ->setCellValue('S4', 'TM11')
-            ->setCellValue('T4', 'TOTAL HADIR');
+            ->setCellValue('T4', 'TM12')
+            ->setCellValue('U4', 'TM13')
+            ->setCellValue('V4', 'TM14')
+            ->setCellValue('W4', 'TM15')
+            ->setCellValue('X4', 'TOTAL HADIR');
         
-            $columns = range('A', 'T');
+            $columns = range('A', 'X');
             foreach ($columns as $column) {
                 $spreadsheet->getActiveSheet()->getColumnDimension($column)->setAutoSize(true);
             }
@@ -1520,7 +1524,7 @@ class Absensi extends BaseController
         foreach ($absen_peserta as $absen) {
             
             //-----------------------------
-            for ($i = 1; $i <= 11; $i++) {
+            for ($i = 1; $i <= 15; $i++) {
                 $tmKey = 'tm' . $i;
                 $tmDtKey = $tmKey . '_dt';
             
@@ -1537,7 +1541,7 @@ class Absensi extends BaseController
             }
 
             $total = 0;
-            for ($i = 1; $i <= 11; $i++) {
+            for ($i = 1; $i <= 15; $i++) {
                 $total += ${'count_tm' . $i};
             }
 
@@ -1569,7 +1573,11 @@ class Absensi extends BaseController
                 ->setCellValue('Q' . $row, $absen_tm9)
                 ->setCellValue('R' . $row, $absen_tm10)
                 ->setCellValue('S' . $row, $absen_tm11)
-                ->setCellValue('T' . $row, $total);
+                ->setCellValue('T' . $row, $absen_tm12)
+                ->setCellValue('U' . $row, $absen_tm13)
+                ->setCellValue('V' . $row, $absen_tm14)
+                ->setCellValue('W' . $row, $absen_tm15)
+                ->setCellValue('X' . $row, $total);
             $row++;
         }
 

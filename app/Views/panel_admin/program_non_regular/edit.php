@@ -1,5 +1,5 @@
 <!-- Modal -->
-<div class="modal fade" id="modaltambah" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
+<div class="modal fade" id="modaledit" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -8,13 +8,14 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <?= form_open('program-regular/create', ['class' => 'formtambah']) ?>
+            <?= form_open('program-regular/update', ['class' => 'formedit']) ?>
             <?= csrf_field(); ?>
             <div class="modal-body">
+                <input type="hidden" class="form-control" id="program_id" value="<?= $program['program_id'] ?>" name="program_id" readonly>
                 <div class="form-group row">
                     <label for="" class="col-sm-4 col-form-label">Nama Program <code>*</code></label>
                     <div class="col-sm-8">
-                        <input type="text" class="form-control text-uppercase" id="nama_program" name="nama_program">
+                        <input type="text" class="form-control text-uppercase" value="<?= $program['nama_program'] ?>" id="nama_program" name="nama_program">
                         <div class="invalid-feedback errorNamaprogram"></div>
                     </div>
                 </div>
@@ -22,10 +23,9 @@
                     <label for="" class="col-sm-4 col-form-label">Jenis Program <code>*</code></label>
                     <div class="col-sm-8">
                         <select class="form-control btn-square" id="jenis_program" name="jenis_program">
-                            <option value="" disabled selected>--PILIH--</option>
-                            <option value="UMUM">UMUM</option>
-                            <option value="KHUSUS">KHUSUS</option>
-                            <option value="KEMITRAAN">KEMITRAAN</option>
+                            <option value="UMUM"  <?php if ($program['jenis_program'] == 'UMUM') echo "selected"; ?>>UMUM</option>
+                            <option value="KHUSUS" <?php if ($program['jenis_program'] == 'KHUSUS') echo "selected"; ?>>KHUSUS</option>
+                            <option value="KEMITRAAN" <?php if ($program['jenis_program'] == 'KEMITRAAN') echo "selected"; ?>>KEMITRAAN</option>
                         </select>
                         <div class="invalid-feedback errorJenisprogram"></div>
                     </div>
@@ -34,37 +34,36 @@
                     <label for="" class="col-sm-4 col-form-label">Kategori Program <code>*untuk jenis umum</code></label>
                     <div class="col-sm-8">
                         <select class="form-control btn-square" id="kategori_program" name="kategori_program">
-                            <option value="REGULER" selected >REGULER</option>
-                            <!-- <option value="NON-REGULER">NON-REGULER</option> -->
-                            <!-- <option value="PEMBINAAN">PEMBINAAN</option> -->
+                            <option value="REGULER" <?php if ($program['kategori_program'] == 'REGULER') echo "selected"; ?> >REGULER</option>
+                            <!-- <option value="NON-REGULER" <?php if ($program['kategori_program'] == 'NON-REGULER') echo "selected"; ?> >NON-REGULER</option> -->
                         </select>
                     </div>
                 </div>
                 <div class="form-group row">
                     <label for="" class="col-sm-4 col-form-label">Biaya Program <code>*</code></label>
                     <div class="col-sm-8">
-                        <input type="text" class="form-control" id="biaya_program" name="biaya_program">
+                        <input type="text" class="form-control" value="<?= rupiah($program['biaya_program']) ?>" id="biaya_program" name="biaya_program">
                         <div class="invalid-feedback errorBiayaprogram"></div>
                     </div>
                 </div>
                 <!-- <div class="form-group row">
                     <label for="" class="col-sm-4 col-form-label">Biaya Bulanan <code>*</code></label>
                     <div class="col-sm-8">
-                        <input type="text" class="form-control" id="biaya_bulanan" name="biaya_bulanan">
+                        <input type="text" class="form-control" value="<?= rupiah($program['biaya_bulanan']) ?>" id="biaya_bulanan" name="biaya_bulanan">
                         <div class="invalid-feedback errorBiayabulanan"></div>
                     </div>
                 </div> -->
                 <div class="form-group row">
                     <label for="" class="col-sm-4 col-form-label">Biaya Daftar <code>*</code></label>
                     <div class="col-sm-8">
-                        <input type="text" class="form-control" id="biaya_daftar" name="biaya_daftar">
+                        <input type="text" class="form-control" value="<?= rupiah($program['biaya_daftar']) ?>" id="biaya_daftar" name="biaya_daftar">
                         <div class="invalid-feedback errorBiayadaftar"></div>
                     </div>
                 </div>
                 <div class="form-group row">
                     <label for="" class="col-sm-4 col-form-label">Biaya Modul <code>*</code></label>
                     <div class="col-sm-8">
-                        <input type="text" class="form-control" id="biaya_modul" name="biaya_modul">
+                        <input type="text" class="form-control" value="<?= rupiah($program['biaya_modul']) ?>" id="biaya_modul" name="biaya_modul">
                         <div class="invalid-feedback errorBiayamodul"></div>
                     </div>
                 </div>
@@ -72,9 +71,8 @@
                     <label for="" class="col-sm-4 col-form-label">Status Program <code>*</code></label>
                     <div class="col-sm-8">
                         <select class="form-control btn-square" id="status_program" name="status_program">
-                            <option value="" disabled selected>--PILIH--</option>
-                            <option value="aktif">AKTIF</option>
-                            <option value="nonaktif">NONAKTIF</option>
+                            <option value="aktif" <?php if ($program['status_program'] == 'aktif') echo "selected"; ?> >AKTIF</option>
+                            <option value="nonaktif" <?php if ($program['status_program'] == 'nonaktif') echo "selected"; ?> >NONAKTIF</option>
                         </select>
                         <div class="invalid-feedback errorStatusprogram"></div>
                     </div>
@@ -84,31 +82,22 @@
                 <button type="submit" class="btn btn-primary btnsimpan"><i class="fa fa-share-square"></i> Simpan</button>
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
             </div>
+
             <?= form_close() ?>
         </div>
     </div>
 </div>
-
 <script>
     $(document).ready(function() {
         $('.js-example-basic-single').select2({
             
         });
-        $('.formtambah').submit(function(e) {
+        $('.formedit').submit(function(e) {
             e.preventDefault();
             $.ajax({
                 type: "post",
                 url: $(this).attr('action'),
-                data: {
-                    nama_program: $('input#nama_program').val(),
-                    jenis_program: $('select#jenis_program').val(),
-                    kategori_program: $('select#kategori_program').val(),
-                    biaya_program: $('input#biaya_program').val(),
-                    // biaya_bulanan: $('input#biaya_bulanan').val(),
-                    biaya_daftar: $('input#biaya_daftar').val(),
-                    biaya_modul: $('input#biaya_modul').val(),
-                    status_program: $('select#status_program').val(),
-                },
+                data: $(this).serialize(),
                 dataType: "json",
                 beforeSend: function() {
                     $('.btnsimpan').attr('disable', 'disable');
@@ -179,12 +168,12 @@
                     } else {
                         Swal.fire({
                             title: "Berhasil!",
-                            text: "Berhasil Tambah Data Program Baru",
+                            text:  "Berhasil Edit Data Program",
                             icon: "success",
                             showConfirmButton: false,
                             timer: 1500
                         }).then(function() {
-                                window.location = response.sukses.link;
+                            window.location = response.sukses.link;
                         });
                     }
                 }

@@ -144,14 +144,14 @@
         </ul>
     </li>
     <?php if ($user['level'] == 1) { ?>
-        <li class="menu-title">Program & Kelas</li>
+        <!-- <li class="menu-title">Program & Kelas</li>
         <li>
             <a href="<?= base_url('program-regular') ?>" class="waves-effect">
                 <i class="mdi mdi-application"></i>
                 <span> Program</span>
             </a>
-        </li>
-        <!-- <li>
+        </li> -->
+        <li>
             <a href="javascript:void(0);" class="waves-effect">
                 <i class="mdi mdi-application"></i>
                 <span> Program<span class="float-right menu-arrow"><i class="mdi mdi-chevron-right"></i></span></span>
@@ -160,7 +160,7 @@
                 <li><a href="<?= base_url('program-regular') ?>">Reguler</a></li>
                 <li><a href="<?= base_url('program-nonreg') ?>">Non-Reguler</a></li>
             </ul>
-        </li> -->
+        </li>
     <?php } ?>
     <li>
         <a href="javascript:void(0);" class="waves-effect">
@@ -235,7 +235,7 @@
         </a>
     </li>
     
-    <li class="menu-title">Peserta & Pengajar</li>
+    <li class="menu-title">User</li>
     <li>
         <a href="<?= base_url('peserta') ?>" class="waves-effect">
             <i class="mdi mdi-account"></i><span> Data Peserta </span>
@@ -246,6 +246,11 @@
             <i class="mdi mdi-account-tie"></i><span> Data Pengajar </span>
         </a>
     </li>
+    <!-- <li>
+        <a href="<?= base_url('pic') ?>" class="waves-effect">
+            <i class="mdi mdi-account-tie"></i><span> PIC Non-Reg</span>
+        </a>
+    </li> -->
 
     <li class="menu-title"> Al-Haqq</li>
     <?php if ($user['level'] == 1) { ?>

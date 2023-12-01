@@ -142,6 +142,18 @@ $routes->post('program-regular/update', 'Admin\ProgramReg::update', ["filter" =>
 $routes->get('program-regular-ujian-setting', 'Admin\ProgramReg::ujian_setting', ["filter" => "authweb:1-2-3-7"]);
 $routes->post('program-regular-ujian-setting/save', 'Admin\ProgramReg::save_ujian_setting', ["filter" => "authweb:1-2-3-7"]);
 
+/*--- Program Non-Regular---*/
+$routes->get('program-nonreg', 'Admin\ProgramNonReg::index', ["filter" => "authweb:1-2-3-7"]);
+$routes->post('program-nonreg/input', 'Admin\ProgramNonReg::input', ["filter" => "authweb:1-2-3-7"]);
+$routes->post('program-nonreg/edit', 'Admin\ProgramNonReg::edit', ["filter" => "authweb:1-2-3-7"]);
+
+$routes->post('program-nonreg/create', 'Admin\ProgramNonReg::create', ["filter" => "authweb:1-2-3-7"]);
+$routes->post('program-nonreg/update', 'Admin\ProgramNonReg::update', ["filter" => "authweb:1-2-3-7"]);
+
+/*--- Program Non-Regular Atur Fitur Ujian---*/
+$routes->get('program-nonreg-ujian-setting', 'Admin\ProgramNonReg::ujian_setting', ["filter" => "authweb:1-2-3-7"]);
+$routes->post('program-nonreg-ujian-setting/save', 'Admin\ProgramNonReg::save_ujian_setting', ["filter" => "authweb:1-2-3-7"]);
+
 /*--- Kelas Regular---*/
 $routes->get('kelas-regular', 'Admin\KelasReg::index', ["filter" => "authweb:1-2-3-7"]);
 $routes->post('kelas-regular/input', 'Admin\KelasReg::input', ["filter" => "authweb:1-2-3-7"]);

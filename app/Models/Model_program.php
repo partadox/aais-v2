@@ -19,6 +19,22 @@ class Model_program extends Model
             ->get()->getResultArray();
     }
 
+    public function list_reguler()
+    {
+        return $this->table('program')
+            //->orderBy('nama_program', 'ASC')
+            ->where('kategori_program !=', 'NON-REGULER')
+            ->get()->getResultArray();
+    }
+
+    public function list_non_reguler()
+    {
+        return $this->table('program')
+            //->orderBy('nama_program', 'ASC')
+            ->where('kategori_program', 'NON-REGULER')
+            ->get()->getResultArray();
+    }
+
     public function list_aktif()
     {
         return $this->table('program')
