@@ -35,6 +35,10 @@ use App\Models\Model_bina_absen_peserta;
 use App\Models\Model_bina_kelas;
 use App\Models\Model_bina_pengajar;
 use App\Models\Model_bina_peserta;
+use App\Models\Model_nonreg_kelas;
+use App\Models\Model_nonreg_peserta;
+use App\Models\Model_nonreg_tipe;
+use App\Models\Model_nonreg_usaha;
 use App\Models\Model_payment;
 use App\Models\Model_pekerjaan;
 use App\Models\Model_pengumuman;
@@ -129,6 +133,10 @@ abstract class BaseController extends Controller
         $this->pengumuman           = new Model_pengumuman();
         $this->ujian_custom_config  = new Model_ujian_custom_config();
         $this->ujian_custom_value   = new Model_ujian_custom_value();
+        $this->nonreg_tipe          = new Model_nonreg_tipe();
+        $this->nonreg_kelas         = new Model_nonreg_kelas();
+        $this->nonreg_peserta       = new Model_nonreg_peserta();
+        $this->nonreg_usaha         = new Model_nonreg_usaha();
         $this->db 			        = \Config\Database::connect();
     }
 

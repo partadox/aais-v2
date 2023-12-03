@@ -150,10 +150,6 @@ $routes->post('program-nonreg/edit', 'Admin\ProgramNonReg::edit', ["filter" => "
 $routes->post('program-nonreg/create', 'Admin\ProgramNonReg::create', ["filter" => "authweb:1-2-3-7"]);
 $routes->post('program-nonreg/update', 'Admin\ProgramNonReg::update', ["filter" => "authweb:1-2-3-7"]);
 
-/*--- Program Non-Regular Atur Fitur Ujian---*/
-$routes->get('program-nonreg-ujian-setting', 'Admin\ProgramNonReg::ujian_setting', ["filter" => "authweb:1-2-3-7"]);
-$routes->post('program-nonreg-ujian-setting/save', 'Admin\ProgramNonReg::save_ujian_setting', ["filter" => "authweb:1-2-3-7"]);
-
 /*--- Kelas Regular---*/
 $routes->get('kelas-regular', 'Admin\KelasReg::index', ["filter" => "authweb:1-2-3-7"]);
 $routes->post('kelas-regular/input', 'Admin\KelasReg::input', ["filter" => "authweb:1-2-3-7"]);
@@ -171,6 +167,20 @@ $routes->post('kelas-regular/move', 'Admin\KelasReg::move', ["filter" => "authwe
 $routes->post('kelas-regular/delete-peserta', 'Admin\KelasReg::delete_peserta', ["filter" => "authweb:1-2-3-7"]);
 $routes->post('kelas-regular/update-atur-absensi', 'Admin\KelasReg::update_atur_absensi', ["filter" => "authweb:1-2-3-7"]);
 $routes->post('kelas-regular/update-atur-absensi-config', 'Admin\KelasReg::update_atur_absensi_config', ["filter" => "authweb:1-2-3-7"]);
+
+/*--- Kelas Non-Regular---*/
+$routes->get('kelas-nonreg', 'Admin\KelasNonReg::index', ["filter" => "authweb:1-2-3-7"]);
+$routes->post('kelas-nonreg/input', 'Admin\KelasNonReg::input', ["filter" => "authweb:1-2-3-7"]);
+$routes->post('kelas-nonreg/edit', 'Admin\KelasNonReg::edit', ["filter" => "authweb:1-2-3-7"]);
+$routes->get('kelas-nonreg/detail', 'Admin\KelasNonReg::detail', ["filter" => "authweb:1-2-3-7"]);
+
+$routes->post('kelas-nonreg/create', 'Admin\KelasNonReg::create', ["filter" => "authweb:1-2-3-7"]);
+$routes->post('kelas-nonreg/update', 'Admin\KelasNonReg::update', ["filter" => "authweb:1-2-3-7"]);
+$routes->get('kelas-nonreg/export', 'Admin\KelasNonReg::export', ["filter" => "authweb:1-2-3-7"]);
+$routes->post('kelas-nonreg/save-peserta', 'Admin\KelasNonReg::save_peserta', ["filter" => "authweb:1-2-3-7"]);
+$routes->post('kelas-nonreg/add-kuota', 'Admin\KelasNonReg::add_kuota', ["filter" => "authweb:1-2-3-7"]);
+$routes->post('kelas-nonreg/delete-peserta', 'Admin\KelasNonReg::delete_peserta', ["filter" => "authweb:1-2-3-7"]);
+
 /*--- Kelas Pembinaan---*/
 $routes->get('kelas-bina', 'Admin\KelasBina::index', ["filter" => "authweb:1-2-3-7"]);
 $routes->post('kelas-bina/input', 'Admin\KelasBina::input', ["filter" => "authweb:1-2-3-7"]);

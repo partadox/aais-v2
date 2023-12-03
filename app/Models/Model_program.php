@@ -43,6 +43,15 @@ class Model_program extends Model
             ->get()->getResultArray();
     }
 
+    public function list_aktif_nonreg()
+    {
+        return $this->table('program')
+            ->orderBy('nama_program', 'ASC')
+            ->where('status_program', 'aktif')
+            ->where('kategori_program', 'NON-REGULER')
+            ->get()->getResultArray();
+    }
+
     //Dashboaed - Admin
     public function jml_program()
     {

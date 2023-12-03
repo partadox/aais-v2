@@ -10,7 +10,7 @@
 <?= $this->section('isi') ?>
 
 
-<a href="<?= base_url('/program-regular') ?>"> 
+<a href="<?= base_url($back_url) ?>"> 
     <button type="button" class="btn btn-secondary mb-3"><i class=" fa fa-arrow-circle-left"></i> Kembali</button>
 </a>
 

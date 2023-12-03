@@ -19,15 +19,14 @@
                 <!-- <th>No.</th> -->
                 <th>ID Program</th>
                 <th>Nama</th>
-                <th>Jenis</th>
                 <th>Kategori</th>
-                <th>Biaya Program</th>
-                <th>SPP Bulanan</th>
+                <th>Tipe Kelas</th>
                 <th>Biaya Daftar</th>
+                <th>SPP Pertemuan</th>
                 <th>Biaya Modul</th>
                 <th>Status</th>
-                <th>Fitur Ujian</th>
-                <th>Tampil Nilai Ujian</th>
+                <!-- <th>Fitur Ujian</th>
+                <th>Tampil Nilai Ujian</th> -->
                 <th>Tindakan</th>
             </tr>
         </thead>
@@ -40,11 +39,11 @@
                     <!-- <td width="5%"><?= $nomor ?></td> -->
                     <td width="5%"><?= $data['program_id'] ?></td>
                     <td width="20%"><?= $data['nama_program'] ?></td>
-                    <td width="12%"><?= $data['jenis_program'] ?></td>
                     <td width="10%"><?= $data['kategori_program'] ?></td>
-                    <td width="10%">Rp <?= rupiah($data['biaya_program']) ?></td>
-                    <td width="10%">Rp <?= rupiah($data['biaya_bulanan']) ?></td>
+                    <td width="12%"><?= $data['jenis_program'] ?></td>
+                    
                     <td width="10%">Rp <?= rupiah($data['biaya_daftar']) ?></td>
+                    <td width="10%">Rp <?= rupiah($data['biaya_bulanan']) ?></td>
                     <td width="10%">Rp <?= rupiah($data['biaya_modul']) ?></td>
                     <td width="5%">
                         <?php if($data['status_program'] == 'aktif') { ?>
@@ -54,7 +53,7 @@
                             <button class="btn btn-secondary btn-sm" disabled>Nonaktif</button> 
                         <?php } ?>
                     </td>
-                    <td width="10%">
+                    <!-- <td width="10%">
                         <?php if($data['ujian_custom_status'] == NULL) { ?>
                             <button class="btn btn-primary btn-sm" disabled>Standart</button> 
                         <?php } ?>
@@ -69,11 +68,11 @@
                         <?php if($data['ujian_show'] != 1) { ?>
                             <button class="btn btn-secondary btn-sm" disabled>TIDAK</button> 
                         <?php } ?>
-                    </td>
+                    </td> -->
                     <td width="10%">
                         <button type="button" class="btn btn-warning" onclick="edit('<?= $data['program_id'] ?>')" >
                         <i class=" fa fa-edit mr-1"></i>Edit</button>
-                        <a href="/program-regular-ujian-setting?id=<?= $data['program_id'] ?>"  class="btn btn-info ml-2" ><i class=" fa fa-wrench mr-1"></i>Fitur Ujian</a>
+                        <!-- <a href="/program-regular-ujian-setting?id=<?= $data['program_id'] ?>"  class="btn btn-info ml-2" ><i class=" fa fa-wrench mr-1"></i>Fitur Ujian</a> -->
                 </tr>
 
             <?php endforeach; ?>
@@ -92,7 +91,7 @@
     function tambah() {
         $.ajax({
             type: "post",
-            url: "<?= site_url('program-regular/input') ?>",
+            url: "<?= site_url('program-nonreg/input') ?>",
             data: {
             },
             dataType: "json",
@@ -108,7 +107,7 @@
     function edit(program_id) {
         $.ajax({
             type: "post",
-            url: "<?= site_url('program-regular/edit') ?>",
+            url: "<?= site_url('program-nonreg/edit') ?>",
             data: {
                 program_id : program_id
             },

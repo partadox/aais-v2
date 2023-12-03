@@ -8,10 +8,16 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <?= form_open('program-regular/update', ['class' => 'formedit']) ?>
+            <?= form_open('program-nonreg/update', ['class' => 'formedit']) ?>
             <?= csrf_field(); ?>
             <div class="modal-body">
                 <input type="hidden" class="form-control" id="program_id" value="<?= $program['program_id'] ?>" name="program_id" readonly>
+                <div class="form-group row">
+                    <label for="" class="col-sm-4 col-form-label">Kategori Program</label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control text-uppercase" id="kategori_program" name="kategori_program" value="NON-REGULER" disabled>
+                    </div>
+                </div>
                 <div class="form-group row">
                     <label for="" class="col-sm-4 col-form-label">Nama Program <code>*</code></label>
                     <div class="col-sm-8">
@@ -20,44 +26,36 @@
                     </div>
                 </div>
                 <div class="form-group row">
-                    <label for="" class="col-sm-4 col-form-label">Jenis Program <code>*</code></label>
+                    <label for="" class="col-sm-4 col-form-label">Tipe Kelas <code>*</code></label>
                     <div class="col-sm-8">
-                        <select class="form-control btn-square" id="jenis_program" name="jenis_program">
-                            <option value="UMUM"  <?php if ($program['jenis_program'] == 'UMUM') echo "selected"; ?>>UMUM</option>
-                            <option value="KHUSUS" <?php if ($program['jenis_program'] == 'KHUSUS') echo "selected"; ?>>KHUSUS</option>
-                            <option value="KEMITRAAN" <?php if ($program['jenis_program'] == 'KEMITRAAN') echo "selected"; ?>>KEMITRAAN</option>
+                        <select name="jenis_program" id="jenis_program" class="js-example-basic-single" required>
+                                <option Disabled=true Selected=true>--Pilih--</option>
+                            <?php foreach ($tipe as $key => $data) { ?>
+                                <option value="<?= $data['nrt_name'] ?>" <?php if ($data['nrt_name'] == $program['jenis_program']) echo "selected"; ?> > <?= $data['nrt_name'] ?></option>
+                            <?php } ?>
                         </select>
                         <div class="invalid-feedback errorJenisprogram"></div>
                     </div>
                 </div>
                 <div class="form-group row">
-                    <label for="" class="col-sm-4 col-form-label">Kategori Program <code>*untuk jenis umum</code></label>
+                    <label for="" class="col-sm-4 col-form-label">Biaya Daftar <code>*</code></label>
                     <div class="col-sm-8">
-                        <select class="form-control btn-square" id="kategori_program" name="kategori_program">
-                            <option value="REGULER" <?php if ($program['kategori_program'] == 'REGULER') echo "selected"; ?> >REGULER</option>
-                            <!-- <option value="NON-REGULER" <?php if ($program['kategori_program'] == 'NON-REGULER') echo "selected"; ?> >NON-REGULER</option> -->
-                        </select>
+                        <input type="text" class="form-control" value="<?= rupiah($program['biaya_daftar']) ?>" id="biaya_daftar" name="biaya_daftar">
+                        <div class="invalid-feedback errorBiayadaftar"></div>
                     </div>
                 </div>
-                <div class="form-group row">
+                <!-- <div class="form-group row">
                     <label for="" class="col-sm-4 col-form-label">Biaya Program <code>*</code></label>
                     <div class="col-sm-8">
                         <input type="text" class="form-control" value="<?= rupiah($program['biaya_program']) ?>" id="biaya_program" name="biaya_program">
                         <div class="invalid-feedback errorBiayaprogram"></div>
                     </div>
-                </div>
-                <!-- <div class="form-group row">
+                </div> -->
+                <div class="form-group row">
                     <label for="" class="col-sm-4 col-form-label">Biaya Bulanan <code>*</code></label>
                     <div class="col-sm-8">
                         <input type="text" class="form-control" value="<?= rupiah($program['biaya_bulanan']) ?>" id="biaya_bulanan" name="biaya_bulanan">
                         <div class="invalid-feedback errorBiayabulanan"></div>
-                    </div>
-                </div> -->
-                <div class="form-group row">
-                    <label for="" class="col-sm-4 col-form-label">Biaya Daftar <code>*</code></label>
-                    <div class="col-sm-8">
-                        <input type="text" class="form-control" value="<?= rupiah($program['biaya_daftar']) ?>" id="biaya_daftar" name="biaya_daftar">
-                        <div class="invalid-feedback errorBiayadaftar"></div>
                     </div>
                 </div>
                 <div class="form-group row">
@@ -90,7 +88,7 @@
 <script>
     $(document).ready(function() {
         $('.js-example-basic-single').select2({
-            
+            minimumResultsForSearch: Infinity
         });
         $('.formedit').submit(function(e) {
             e.preventDefault();
@@ -125,21 +123,21 @@
                             $('.errorJenisprogram').html('');
                         }
 
-                        if (response.error.biaya_program) {
-                            $('#biaya_program').addClass('is-invalid');
-                            $('.errorBiayaprogram').html(response.error.biaya_program);
-                        } else {
-                            $('#biaya_program').removeClass('is-invalid');
-                            $('.errorBiayaprogram').html('');
-                        }
-
-                        // if (response.error.biaya_bulanan) {
-                        //     $('#biaya_bulanan').addClass('is-invalid');
-                        //     $('.errorBiayabulanan').html(response.error.biaya_bulanan);
+                        // if (response.error.biaya_program) {
+                        //     $('#biaya_program').addClass('is-invalid');
+                        //     $('.errorBiayaprogram').html(response.error.biaya_program);
                         // } else {
-                        //     $('#biaya_bulanan').removeClass('is-invalid');
-                        //     $('.errorBiayabulanan').html('');
+                        //     $('#biaya_program').removeClass('is-invalid');
+                        //     $('.errorBiayaprogram').html('');
                         // }
+
+                        if (response.error.biaya_bulanan) {
+                            $('#biaya_bulanan').addClass('is-invalid');
+                            $('.errorBiayabulanan').html(response.error.biaya_bulanan);
+                        } else {
+                            $('#biaya_bulanan').removeClass('is-invalid');
+                            $('.errorBiayabulanan').html('');
+                        }
 
                         if (response.error.biaya_daftar) {
                             $('#biaya_daftar').addClass('is-invalid');
@@ -182,9 +180,9 @@
     });
 
     $(document).ready(function () {
-    $('#biaya_program').maskMoney({prefix:'Rp. ', thousands:'.', decimal:',', precision:0, allowZero:true});
+    // $('#biaya_program').maskMoney({prefix:'Rp. ', thousands:'.', decimal:',', precision:0, allowZero:true});
     $('#biaya_daftar').maskMoney({prefix:'Rp. ', thousands:'.', decimal:',', precision:0, allowZero:true});
-    // $('#biaya_bulanan').maskMoney({prefix:'Rp. ', thousands:'.', decimal:',', precision:0, allowZero:true});
+    $('#biaya_bulanan').maskMoney({prefix:'Rp. ', thousands:'.', decimal:',', precision:0, allowZero:true});
     $('#biaya_modul').maskMoney({prefix:'Rp. ', thousands:'.', decimal:',', precision:0, allowZero:true});
   });
 </script>

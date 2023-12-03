@@ -50,7 +50,7 @@ class ProgramReg extends BaseController
 
     public function ujian_setting()
     {
-        $user  = $this->userauth();
+        $user           = $this->userauth();
         $uri            = new \CodeIgniter\HTTP\URI(current_url(true));
         $queryString    = $uri->getQuery();
         $params         = [];
@@ -73,11 +73,19 @@ class ProgramReg extends BaseController
         } else {
             $ujian_custom = NULL;
         }
+
+        if ($program['kategori_program'] == 'REGULER') {
+            $back_url = '/program-regular';
+        } else {
+            $back_url = '/program-nonreg';
+        }
+        
         $data = [
             'title'         => 'Pengaturan Fitur Ujian Program Regular',
             'user'          => $user,
             'program'       => $program,
             'ujian_custom'  => $ujian_custom,
+            'back_url'      => $back_url,
         ];
 
         return view('panel_admin/program_regular/ujian_setting', $data); 
@@ -361,7 +369,7 @@ class ProgramReg extends BaseController
 
                 $response = [
                     'status' => 'success',
-                    'message' => 'BERHASIL! Fitur Absensi Program ini Diubah'
+                    'message' => 'BERHASIL! Fitur Ujian Program ini Diubah'
                 ];
             
                 echo json_encode($response);
@@ -426,7 +434,7 @@ class ProgramReg extends BaseController
                 // return redirect()->to('/program-regular-ujian-setting?id='.$program_id); 
                 $response = [
                     'status' => 'success',
-                    'message' => 'BERHASIL! Fitur Absensi Program ini Diubah'
+                    'message' => 'BERHASIL! Fitur Ujian Program ini Diubah'
                 ];
             
                 echo json_encode($response);
