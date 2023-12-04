@@ -60,149 +60,35 @@ class Biodata extends BaseController
     public function update()
     {
         if ($this->request->isAJAX()) {
-            $validation = \Config\Services::validation();
-            $valid = $this->validate([
-                'nik' => [
-                    'label' => 'nik',
-                    'rules' => 'required',
-                    'errors' => [
-                        'required' => '{field} tidak boleh kosong',
-                    ]
-                ],
-                'nama' => [
-                    'label' => 'Nama',
-                    'rules' => 'required',
-                    'errors' => [
-                        'required' => '{field} tidak boleh kosong',
-                    ]
-                ],
-                'tmp_lahir' => [
-                    'label' => 'tmp_lahir',
-                    'rules' => 'required',
-                    'errors' => [
-                        'required' => '{field} tidak boleh kosong',
-                    ]
-                ],
-                'tgl_lahir' => [
-                    'label' => 'tgl_lahir',
-                    'rules' => 'required',
-                    'errors' => [
-                        'required' => '{field} tidak boleh kosong',
-                    ]
-                ],
-                'jenkel' => [
-                    'label' => 'jenkel',
-                    'rules' => 'required',
-                    'errors' => [
-                        'required' => '{field} tidak boleh kosong',
-                    ]
-                ],
-                'pendidikan' => [
-                    'label' => 'pendidikan',
-                    'rules' => 'required',
-                    'errors' => [
-                        'required' => '{field} tidak boleh kosong',
-                    ]
-                ],
-                'jurusan' => [
-                    'label' => 'jurusan',
-                    'rules' => 'required',
-                    'errors' => [
-                        'required' => '{field} tidak boleh kosong',
-                    ]
-                ],
-                'status_kerja' => [
-                    'label' => 'status_kerja',
-                    'rules' => 'required',
-                    'errors' => [
-                        'required' => '{field} tidak boleh kosong',
-                    ]
-                ],
-                'pekerjaan' => [
-                    'label' => 'pekerjaan',
-                    'rules' => 'required',
-                    'errors' => [
-                        'required' => '{field} tidak boleh kosong',
-                    ]
-                ],
-                'hp' => [
-                    'label' => 'hp',
-                    'rules' => 'required',
-                    'errors' => [
-                        'required' => '{field} tidak boleh kosong',
-                    ]
-                ],
-                'email' => [
-                    'label' => 'email',
-                    'rules' => 'required',
-                    'errors' => [
-                        'required' => '{field} tidak boleh kosong',
-                    ]
-                ],
-                'domisili_peserta' => [
-                    'label' => 'domisili_peserta',
-                    'rules' => 'required',
-                    'errors' => [
-                        'required' => '{field} tidak boleh kosong',
-                    ]
-                ],
-                'alamat' => [
-                    'label' => 'alamat',
-                    'rules' => 'required',
-                    'errors' => [
-                        'required' => '{field} tidak boleh kosong',
-                    ]
-                ],
-            ]);
-            if (!$valid) {
-                $msg = [
-                    'error' => [
-                        'nik'               => $validation->getError('nik'),
-                        'nama'              => $validation->getError('nama'),
-                        'tmp_lahir'         => $validation->getError('tmp_lahir'),
-                        'tgl_lahir'         => $validation->getError('tgl_lahir'),
-                        'jenkel'            => $validation->getError('jenkel'),
-                        'pendidikan'        => $validation->getError('pendidikan'),
-                        'jurusan'           => $validation->getError('jurusan'),
-                        'status_kerja'      => $validation->getError('status_kerja'),
-                        'pekerjaan'         => $validation->getError('pekerjaan'),
-                        'hp'                => $validation->getError('hp'),
-                        'email'             => $validation->getError('email'),
-                        'domisili_peserta'  => $validation->getError('domisili_peserta'),
-                        'alamat'            => $validation->getError('alamat'),
-                    ]
-                ];
-            } else {
+            $update_data = [
+                'user_id'               => $this->request->getVar('user_id'),
+                'nik'                   => $this->request->getVar('nik'),
+                'nama_peserta'          => strtoupper($this->request->getVar('nama')),
+                'tmp_lahir'             => strtoupper($this->request->getVar('tmp_lahir')),
+                'tgl_lahir'             => $this->request->getVar('tgl_lahir'),
+                'jenkel'                => $this->request->getVar('jenkel'),
+                'pendidikan'            => $this->request->getVar('pendidikan'),
+                'jurusan'               => strtoupper($this->request->getVar('jurusan')),
+                'status_kerja'          => $this->request->getVar('status_kerja'),
+                'pekerjaan'             => $this->request->getVar('pekerjaan'),
+                'hp'                    => $this->request->getVar('hp'),
+                'email'                 => strtolower($this->request->getVar('email')),
+                'domisili_peserta'      => $this->request->getVar('domisili_peserta'),
+                'alamat'                => strtoupper($this->request->getVar('alamat')),
+            ];
 
-                $update_data = [
-                    'user_id'               => $this->request->getVar('user_id'),
-                    'nik'                   => $this->request->getVar('nik'),
-                    'nama_peserta'          => strtoupper($this->request->getVar('nama')),
-                    'tmp_lahir'             => strtoupper($this->request->getVar('tmp_lahir')),
-                    'tgl_lahir'             => $this->request->getVar('tgl_lahir'),
-                    'jenkel'                => $this->request->getVar('jenkel'),
-                    'pendidikan'            => $this->request->getVar('pendidikan'),
-                    'jurusan'               => strtoupper($this->request->getVar('jurusan')),
-                    'status_kerja'          => $this->request->getVar('status_kerja'),
-                    'pekerjaan'             => $this->request->getVar('pekerjaan'),
-                    'hp'                    => $this->request->getVar('hp'),
-                    'email'                 => strtolower($this->request->getVar('email')),
-                    'domisili_peserta'      => $this->request->getVar('domisili_peserta'),
-                    'alamat'                => strtoupper($this->request->getVar('alamat')),
-                ];
+            $peserta_id = $this->request->getVar('peserta_id');
+            $this->peserta->update($peserta_id, $update_data);
 
-                $peserta_id = $this->request->getVar('peserta_id');
-                $this->peserta->update($peserta_id, $update_data);
+            $aktivitas = "Peserta mengubah biodata dirinya";
+            $this->logging('Peserta', 'BERHASIL', $aktivitas);
 
-                $aktivitas = "Peserta mengubah biodata dirinya";
-                $this->logging('Peserta', 'BERHASIL', $aktivitas);
-
-                $msg = [
-                    'sukses' => [
-                        'link' => 'biodata-peserta'
-                    ]
-                ];
-            }
+            $msg = [
+                'sukses' => [
+                    'link' => 'biodata-peserta'
+                ]
+            ];
+            
             echo json_encode($msg);
         }
     }
