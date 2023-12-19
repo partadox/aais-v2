@@ -39,4 +39,17 @@ class Model_bina_absen_peserta extends Model
         ->get()
         ->getResultArray();
     }
+
+    public function absensi_peserta_tm_NEW($bk_id, $tm)
+    {
+        return $this->table('bina_peserta')
+        ->select('bs_id,bs_status_peserta,bas_id,bas_absen,bas_tm_dt,nama_peserta,nis')
+        ->join('bina_peserta', 'bina_peserta.bs_id = bina_absen_peserta.bas_nsid')
+        ->join('peserta', 'peserta.peserta_id = bina_peserta.bs_peserta')
+        ->where('bas_bkid', $bk_id)
+        ->where('bas_tm', $tm)
+        ->orderBy('peserta.nama_peserta', 'ASC')
+        ->get()
+        ->getResultArray();
+    }
 }

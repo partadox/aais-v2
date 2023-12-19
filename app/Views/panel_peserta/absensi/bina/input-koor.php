@@ -69,6 +69,7 @@
                         <tbody>
                             <?php 
                             $counter = 0;
+                            $b = 0;
                             foreach ($list as $data) :
                                 $counter++;
                                 $isChecked = '';
@@ -80,6 +81,9 @@
                                     <input type="hidden" name="jml_psrt[]" value="<?= $data['bs_id'] ?>">
                                     <?php if(isset($data['bas_id'])) : ?>
                                         <input type="hidden" name="jml_basid[]" value="<?= $data['bas_id'] ?>">
+                                    <?php endif; ?>
+                                    <?php if(!isset($data['bas_id'])) : ?>
+                                        <input type="hidden" name="jml_basid_new[]" value="<?= $data['bs_id'] ?>">
                                     <?php endif; ?>
                                 </td>
                                 <td>

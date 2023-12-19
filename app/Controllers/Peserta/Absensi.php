@@ -290,17 +290,48 @@ class Absensi extends BaseController
             $tm        = $this->request->getVar('tm');
 
             $kelas     = $this->bina_kelas->find($bk_id);
-            $list1     = $this->bina_absen_peserta->absensi_peserta_tm($bk_id, $tm);
-            $list2     = $this->bina_peserta->peserta_kelas($bk_id);
+            $list1     = $this->bina_absen_peserta->absensi_peserta_tm_NEW($bk_id, $tm);
+            $list2     = $this->bina_peserta->peserta_kelas_NEW($bk_id);
 
             if (count($list1) == count($list2)) {
-                $list      = $this->bina_absen_peserta->absensi_peserta_tm($bk_id, $tm);
+                $list      = $this->bina_absen_peserta->absensi_peserta_tm_NEW($bk_id, $tm);
                 $func      = 'update';
                 $tgl_tm    = substr($list[0]['bas_tm_dt'], 0, 10);
-            } else {
-                $list      = $this->bina_peserta->peserta_kelas($bk_id);
+            } elseif(count($list1) == 0) {
+                $list      = $this->bina_peserta->peserta_kelas_NEW($bk_id);
                 $func      = 'create';
                 $tgl_tm    = date('Y-m-d');
+            } else{
+                // Find the differences between list1 and list2
+                $mapList1 = [];
+                foreach ($list1 as $item) {
+                    $mapList1[$item['nis']] = $item;
+                }
+
+                // Iterate through list2 and compare with list1
+                foreach ($list2 as $item2) {
+                    $nis = $item2['nis'];
+                    
+                    if (isset($mapList1[$nis])) {
+                        // If the NIS exists in list1, update the existing entry
+                        $list1Item = $mapList1[$nis];
+                        foreach ($item2 as $key => $value) {
+                            $list1Item[$key] = $value;
+                        }
+                    } else {
+                        // If the NIS doesn't exist in list1, add a new entry to list1
+                        $list1Item = $item2;
+                        $list1Item['bas_id'] = NULL;
+                        $list1Item['bas_absen'] = NULL;
+                        $list1Item['bas_tm_dt'] = NULL;
+                        $list1[] = $list1Item;
+                    }
+                }
+
+                // Now $list1 contains the combined data from both lists
+                $list = $list1;
+                $func = 'update'; // or 'create' depending on your logic
+                $tgl_tm = $list[0]['bas_tm_dt']; 
             }
             //var_dump($list);
             // $list_tm    = $this->bina_absen_peserta->tm_kelas($bk_id);
@@ -313,6 +344,7 @@ class Absensi extends BaseController
             // }
 
             if ($methode == 'Perwakilan') {
+                // var_dump($list);
                 
                 $data = [
                     'title' => 'Absensi Peserta Kelas ' . $kelas['bk_name'] . ' (Perwakilan)',
@@ -439,6 +471,34 @@ class Absensi extends BaseController
         
                     $results[] = $this->bina_absen_peserta->update($bas_id, $updateData);
                 }
+
+                $jml_basid_new  = $this->request->getPost('jml_basid_new');
+                if ($jml_basid_new != NULL) {
+                    $total_new      = count($jml_basid_new);
+                    for ($i=0; $i<=$total_new-1; $i++){
+                        $var_psrt = 'psrt_new' . $i;
+                        $bas_nsid = $jml_basid_new[$i]; 
+            
+                        // $check = $this->request->getPost($var_tm);
+                        // if ($check == NULL) {
+                        //     $this->db->transRollback();
+                        //     $this->session->setFlashdata('pesan_error', 'ERROR! Terdapat data peserta pada form absensi belum diisi!, Pilih Hadir atau Tidak Hadir');
+                        //     return redirect()->to($url_kelas);
+                        // }
+                        $new = [
+                            'bas_nsid' => $bas_nsid,
+                            'bas_bkid' => $bas_bkid,
+                            'bas_tm'   => $bas_tm,
+                            'bas_tm_dt'=> $bas_tm_dt,
+                            'bas_absen'=> 0,
+                            'bas_create'=> date('Y-m-d H:i:s'),
+                            'bas_by'    => $peserta['nis'] .' - '. $peserta['nama_peserta'],
+                        ]; 
+            
+                        $results[] = $this->bina_absen_peserta->insert($new);
+                    }
+                }
+                
             }
             
             if (in_array(FALSE, $results, true)) {

@@ -39,6 +39,17 @@ class Model_bina_peserta extends Model
         ->getResultArray();
     }
 
+    public function peserta_kelas_NEW($bk_id)
+    {
+        return $this->table('bina_peserta')
+        ->select('bs_id,bs_status_peserta,nama_peserta,nis')
+        ->join('peserta', 'peserta.peserta_id = bina_peserta.bs_peserta')
+        ->where('bs_kelas', $bk_id)
+        ->orderBy('peserta.nama_peserta', 'ASC')
+        ->get()
+        ->getResultArray();
+    }
+
     //rekap abensi pembinaan admin
     public function rekap_bina_absen($angkatan)
     {
