@@ -64,6 +64,27 @@
             </div>
         </div>
     </div>
+    <div class="col-md-6">
+        <div class="card card-body shadow-lg">
+            <div class="card-title">
+                <h6>Level Peserta</h6>
+                <hr>
+            </div>
+            <div class="card-text">
+                <button type="button" class="btn btn-warning mb-3" onclick="showModalLevel('<?= $detail_kelas['nk_id'] ?>')"><i class="fa fa-edit"></i> Edit Level</button>
+                <table class="table table-bordered table-sm">
+                    <tbody>
+                        <?php foreach ($level as $data) : ?>
+                            <tr>
+                                <td><?= $data['nama_level'] ?></td>
+                                <td><button class="btn btn-danger btn-sm" onclick="hapusLevel(event,'<?= $data['nkl_id'] ?>')"><i class="fa fa-trash"></i></button></td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
+        </div>                            
+    </div>
 </div>
 
 <div class="table-responsive">
@@ -76,7 +97,8 @@
                     <th>No.</th>
                     <th>Peserta</th>
                     <td style="display: none;">ID</td>
-                    <th>Kurangi Kuota</th>
+                    <th>Level</th>
+                    <th></th>
                 </tr>
             </thead>
 
@@ -88,10 +110,26 @@
                         <td width="5%"><?= $nomor ?></td>
                         <td width="15%" contenteditable="true" class="text-uppercase"><?= $row['np_nama'] ?></td>
                         <td style="display: none;"><?= $row['np_id'] ?></td>
+                        <td width="15%">
+                            <select name="np_level" id="np_level<?= $row['np_id'] ?>" required>
+                                <option value="0" <?php if ($row['np_level'] == NULL || $row['np_level'] == "0") echo "selected"; ?> >BELUM DITENTUKAN</option>
+                                <?php foreach ($level as $key => $data) { ?>
+                                    <option value="<?= $data['peserta_level_id'] ?>" <?php if ($row['np_level'] == $data['peserta_level_id']) echo "selected"; ?> ><?= $data['nama_level'] ?></option>
+                                <?php } ?>
+                            </select>
+                        </td>
                         <td width="5%">
                             <button class="btn btn-danger btn-sm" onclick="hapus(event,'<?= $row['np_id'] ?>')"><i class="fa fa-trash"></i></button>
                         </td>
                     </tr>
+
+                    <script>
+                        $(document).ready(function () {
+                            $('#np_level<?= $row['np_id'] ?>').select2({
+                                minimumResultsForSearch: -1
+                            });
+                        });
+                    </script>
 
                 <?php endforeach; ?>
             </tbody>
@@ -102,6 +140,9 @@
 </div>
 
 <div class="viewmodal">
+</div>
+
+<div class="viewmodaledit">
 </div>
 
 <script>
@@ -124,10 +165,20 @@
         var tableData = [];
         $('#datatable tbody tr').each(function() {
             var rowData = {};
+
+            // Iterate through the cells in the current row
             $(this).find('td').each(function(index, element) {
                 var columnName = 'column_' + index;
-                rowData[columnName] = $(this).text().trim();
+
+                // If the cell contains a select element, get the selected value
+                if ($(this).find('select').length > 0) {
+                    rowData[columnName] = $(this).find('select').val();
+                } else {
+                    // Otherwise, get the text content
+                    rowData[columnName] = $(this).text().trim();
+                }
             });
+
             tableData.push(rowData);
         });
 
@@ -144,10 +195,9 @@
             contentType: false,
             processData: false,
             success: function(response) {
-
                 // Close loading spinner
                 loadingSpinner.close();
-                
+
                 if (response.success == true) {
                     // Show SweetAlert 2 with the success message
                     Swal.fire({
@@ -161,8 +211,7 @@
                             window.location.href = response.redirect;
                         }
                     });
-                } 
-                if(response.success == false) {
+                } else {
                     // Show SweetAlert 2 with the error message
                     Swal.fire({
                         icon: 'warning',
@@ -178,7 +227,6 @@
                 }
             },
             error: function(response) {
-
                 // Close loading spinner
                 loadingSpinner.close();
 
@@ -189,9 +237,9 @@
                     text: 'Terjadi Error Dalam Proses Simpan Data.',
                     confirmButtonText: 'OK'
                 }).then((result) => {
-                        if (result.isConfirmed) {
-                            window.location.href = '/kelas-nonreg/detail?id=<?= $detail_kelas['nk_id'] ?>';
-                        }
+                    if (result.isConfirmed) {
+                        window.location.href = '/kelas-nonreg/detail?id=<?= $detail_kelas['nk_id'] ?>';
+                    }
                 });
             }
         });
@@ -287,6 +335,62 @@
                             Swal.fire({
                                 title: "Berhasil!",
                                 text: "Anda berhasil mengurangi kuota!",
+                                icon: "success",
+                                showConfirmButton: false,
+                                timer: 1500
+                            }).then(function() {
+                                window.location = response.sukses.link;
+                        });
+                        }
+                    }
+                });
+            }
+        })
+    }
+
+    function showModalLevel(nk_id) {
+        $.ajax({
+            type: "post",
+            url: "<?= site_url('kelas-nonreg/edit-level') ?>",
+            data: {
+                nk_id : nk_id
+            },
+            dataType: "json",
+            success: function(response) {
+                if (response.sukses) {
+                    $('.viewmodaledit').html(response.sukses).show();
+                    $('#modaledit').modal('show');
+                }
+            }
+        });
+    }
+
+    function hapusLevel(e,nkl_id) {
+        e.preventDefault();
+        e.stopPropagation();
+        Swal.fire({
+            title: 'Yakin Menghapus Level Ini?',
+            icon: 'warning',
+            allowOutsideClick: false,
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Ya',
+            cancelButtonText: 'Tidak'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: "<?= site_url('/kelas-nonreg/delete-level') ?>",
+                    type: "post",
+                    dataType: "json",
+                    data: {
+                        nkl_id : nkl_id,
+                    },
+                    success: function(response) {
+                        if (response.sukses) {
+                            Swal.fire({
+                                title: "Berhasil!",
+                                text: "Anda berhasil menghapus level!",
                                 icon: "success",
                                 showConfirmButton: false,
                                 timer: 1500

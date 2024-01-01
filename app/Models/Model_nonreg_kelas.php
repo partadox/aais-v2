@@ -9,7 +9,7 @@ class Model_nonreg_kelas extends Model
     protected $table            = 'nonreg_kelas';
     protected $primaryKey       = 'nk_id';
     protected $useAutoIncrement = false;
-    protected $allowedFields    = ['nk_id', 'nk_nama', 'nk_angkatan', 'nk_program', 'nk_tipe', 'nk_usaha', 'nk_level', 'nk_kuota', 'nk_tm_total', 'nk_tm_ambil', 'nk_hari', 'nk_waktu', 'nk_timezone', 'nk_pengajar', 'nk_pic_name', 'nk_pic_hp', 'nk_pic_otoritas', 'nk_lokasi', 'nk_absen_metode', 'nk_status', 'nk_status_daftar', 'nk_status_bayar', 'nk_created'];
+    protected $allowedFields    = ['nk_id', 'nk_nama', 'nk_angkatan', 'nk_program', 'nk_tipe', 'nk_usaha', 'nk_level', 'nk_kuota', 'nk_tm_total', 'nk_tm_ambil', 'nk_hari', 'nk_waktu', 'nk_timezone', 'nk_pengajar', 'nk_pic_name', 'nk_pic_hp', 'nk_pic_otoritas', 'nk_lokasi', 'nk_absen_metode', 'nk_status', 'nk_status_daftar', 'nk_status_bayar', 'nk_keterangan','nk_created'];
 
     public function list($angkatan)
     {
@@ -21,8 +21,9 @@ class Model_nonreg_kelas extends Model
         $subQuery = $builder->getCompiledSelect();
 
         $mainQuery = $db->table('nonreg_kelas')
-            ->select('nonreg_kelas.*, ('.$subQuery.') as peserta_nonreg_count, pengajar.nama_pengajar')
+            ->select('nonreg_kelas.*, ('.$subQuery.') as peserta_nonreg_count, pengajar.nama_pengajar, program.nama_program')
             ->join('pengajar', 'pengajar.pengajar_id = nonreg_kelas.nk_pengajar')
+            ->join('program', 'program.program_id = nonreg_kelas.nk_program')
             ->where('nk_angkatan', $angkatan)
             ->orderBy('nk_id', 'DESC');
 
@@ -36,6 +37,26 @@ class Model_nonreg_kelas extends Model
             ->select('nk_angkatan')
             ->orderBy('nk_angkatan', 'DESC')
             ->distinct()
+            ->get()->getResultArray();
+    }
+
+    //List belum bayar daftar
+    public function list_not_daftar()
+    {
+        return $this->table('nonreg_kelas')
+            ->join('program', 'program.program_id = nonreg_kelas.nk_pengajar')
+            ->where('nk_status_daftar', 0)
+            ->orderBy('nk_id', 'DESC')
+            ->get()->getResultArray();
+    }
+
+    //List sudah bayar daftar (extend)
+    public function list_extend()
+    {
+        return $this->table('nonreg_kelas')
+            ->join('program', 'program.program_id = nonreg_kelas.nk_pengajar')
+            ->where('nk_status_daftar', 1)
+            ->orderBy('nk_id', 'DESC')
             ->get()->getResultArray();
     }
 }

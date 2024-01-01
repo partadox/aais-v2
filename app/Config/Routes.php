@@ -172,6 +172,7 @@ $routes->post('kelas-regular/update-atur-absensi-config', 'Admin\KelasReg::updat
 $routes->get('kelas-nonreg', 'Admin\KelasNonReg::index', ["filter" => "authweb:1-2-3-7"]);
 $routes->post('kelas-nonreg/input', 'Admin\KelasNonReg::input', ["filter" => "authweb:1-2-3-7"]);
 $routes->post('kelas-nonreg/edit', 'Admin\KelasNonReg::edit', ["filter" => "authweb:1-2-3-7"]);
+$routes->post('kelas-nonreg/edit-level', 'Admin\KelasNonReg::edit_level', ["filter" => "authweb:1-2-3-7"]);
 $routes->get('kelas-nonreg/detail', 'Admin\KelasNonReg::detail', ["filter" => "authweb:1-2-3-7"]);
 
 $routes->post('kelas-nonreg/create', 'Admin\KelasNonReg::create', ["filter" => "authweb:1-2-3-7"]);
@@ -180,6 +181,8 @@ $routes->get('kelas-nonreg/export', 'Admin\KelasNonReg::export', ["filter" => "a
 $routes->post('kelas-nonreg/save-peserta', 'Admin\KelasNonReg::save_peserta', ["filter" => "authweb:1-2-3-7"]);
 $routes->post('kelas-nonreg/add-kuota', 'Admin\KelasNonReg::add_kuota', ["filter" => "authweb:1-2-3-7"]);
 $routes->post('kelas-nonreg/delete-peserta', 'Admin\KelasNonReg::delete_peserta', ["filter" => "authweb:1-2-3-7"]);
+$routes->post('kelas-nonreg/update-level', 'Admin\KelasNonReg::update_level', ["filter" => "authweb:1-2-3-7"]);
+$routes->post('kelas-nonreg/delete-level', 'Admin\KelasNonReg::delete_level', ["filter" => "authweb:1-2-3-7"]);
 
 /*--- Kelas Pembinaan---*/
 $routes->get('kelas-bina', 'Admin\KelasBina::index', ["filter" => "authweb:1-2-3-7"]);
@@ -226,10 +229,12 @@ $routes->post('pembayaran/save-konfirmasi', 'Admin\Pembayaran::save_konfirmasi',
 $routes->get('pembayaran/add-daftar', 'Admin\Pembayaran::add_daftar', ["filter" => "authweb:1-2-3-7"]);
 $routes->get('pembayaran/add-spp', 'Admin\Pembayaran::add_spp', ["filter" => "authweb:1-2-3-7"]);
 $routes->get('pembayaran/add-lain', 'Admin\Pembayaran::add_lain', ["filter" => "authweb:1-2-3-7"]);
+$routes->get('pembayaran/add-nonreg', 'Admin\Pembayaran::add_nonreg', ["filter" => "authweb:1-2-3-7"]);
 
 $routes->post('pembayaran/save-daftar', 'Admin\Pembayaran::save_daftar', ["filter" => "authweb:1-2-3-7"]);
 $routes->post('pembayaran/save-spp', 'Admin\Pembayaran::save_spp', ["filter" => "authweb:1-2-3-7"]);
 $routes->post('pembayaran/save-lain', 'Admin\Pembayaran::save_lain', ["filter" => "authweb:1-2-3-7"]);
+$routes->post('pembayaran/save-nonreg', 'Admin\Pembayaran::save_nonreg', ["filter" => "authweb:1-2-3-7"]);
 
 //Rekap
 $routes->get('pembayaran/rekap-spp', 'Admin\Pembayaran::rekap_spp', ["filter" => "authweb:1-2-3-7"]);

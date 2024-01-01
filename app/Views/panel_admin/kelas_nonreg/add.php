@@ -111,22 +111,21 @@
                 <div class="form-group row">
                     <label for="" class="col-sm-4 col-form-label">Maksimal Pertemuan <code>*</code></label>
                     <div class="col-sm-8">
-                        <input type="number" class="form-control" id="nk_tm_total" name="nk_tm_total" placeholder="" min="1" max="50" value="21" required>
+                        <input type="number" class="form-control" id="nk_tm_total" name="nk_tm_total" placeholder="" min="1" max="50" value="20" required>
                     </div>
                 </div>
-                <div class="form-group row">
-                    <label for="" class="col-sm-4 col-form-label">Pertemuan Diambil<code>*</code></label>
+                <div class="form-group row" style="display:none">
+                    <label for="" class="col-sm-4 col-form-label">Pertemuan Diambil </label>
                     <div class="col-sm-8">
-                        <input type="number" class="form-control" id="nk_tm_ambil" name="nk_tm_ambil" placeholder="" min="1" max="50" value="0" required>
+                        <input type="number" class="form-control" id="nk_tm_ambil" name="nk_tm_ambil" placeholder="" min="1" value="0" readonly>
                     </div>
                 </div>
                 <div class="form-group row">
                     <label for="" class="col-sm-4 col-form-label">Level Peserta <code>*</code></label>
                     <div class="col-sm-8">
-                        <select name="nk_level" id="nk_level" class="select2Search" required>
-                                <option Disabled=true Selected=true> </option>
+                        <select name="nk_level[]" id="nk_level"  multiple="multiple" class="select2Search" required>
                             <?php foreach ($level as $key => $data) { ?>
-                                <option value="<?= $data['nama_level'] ?>"><?= $data['nama_level'] ?></option>
+                                <option value="<?= $data['peserta_level_id'] ?>"><?= $data['nama_level'] ?></option>
                             <?php } ?>
                         </select>
                     </div>
@@ -137,15 +136,15 @@
                         <input type="number" class="form-control" id="nk_kuota" name="nk_kuota" placeholder="" min="1" max="100" required>
                     </div>
                 </div>
-                <div class="form-group row">
+                <!-- <div class="form-group row">
                     <label for="" class="col-sm-4 col-form-label">Metode Absen<code>*</code></label>
                     <div class="col-sm-8">
                         <select class="form-control btn-square" id="nk_absen_metode" name="nk_absen_metode" required>
-                            <option value="Pengajar" selected>Pengajar</option>
-                            <option value="PIC">PIC</option>
+                            <option value="PIC" selected>PIC</option>
+                            <option value="Pengajar">Pengajar</option>
                         </select>
                     </div>
-                </div>
+                </div> -->
                 <div class="form-group row">
                     <label for="" class="col-sm-4 col-form-label">Status Kelas <code>*</code></label>
                     <div class="col-sm-8">
@@ -153,6 +152,18 @@
                             <option value=1 selected>AKTIF</option>
                             <option value=0>NONAKTIF</option>
                         </select>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="" class="col-sm-4 col-form-label">Alamat Lokasi Kelas<code>*</code></label>
+                    <div class="col-sm-8">
+                        <textarea class="form-control text-uppercase" name="nk_lokasi" id="nk_lokasi" cols="10" rows="2" required></textarea>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="" class="col-sm-4 col-form-label">Keterangan Kelas</label>
+                    <div class="col-sm-8">
+                        <textarea class="form-control" name="nk_keterangan" id="nk_keterangan" cols="10" rows="2"></textarea>
                     </div>
                 </div>
                 <hr>
@@ -168,12 +179,6 @@
                         <input type="text" class="form-control text-uppercase" id="nk_pic_hp" name="nk_pic_hp" required>
                     </div>
                 </div>
-                <div class="form-group row">
-                    <label for="" class="col-sm-4 col-form-label">Alamat Lokasi Kelas<code>*</code></label>
-                    <div class="col-sm-8">
-                        <textarea class="form-control text-uppercase" name="nk_lokasi" id="nk_lokasi" cols="30" rows="10" required></textarea>
-                    </div>
-                </div>
             </div>
             <div class="modal-footer">
                 <button type="submit" class="btn btn-primary btnsimpan"><i class="fa fa-share-square"></i> Simpan</button>
@@ -185,6 +190,16 @@
 </div>
 
 <script>
+    // Maksimal value tm_ambil adalah dari value tm_total
+    var nk_tm_total = document.getElementById("nk_tm_total");
+    var nk_tm_ambil = document.getElementById("nk_tm_ambil");
+    function updateMax() {
+        var total = Number(nk_tm_total.value);
+        nk_tm_ambil.setAttribute("max", total);
+    }
+    updateMax();
+    nk_tm_total.addEventListener("input", updateMax);
+
     $(document).ready(function() {
         $('.select2Search').select2({
             dropdownParent: $('#modaltambah')
@@ -207,7 +222,8 @@
                     nk_tm_ambil: $('input#nk_tm_ambil').val(),
                     nk_level: $('select#nk_level').val(),
                     nk_kuota: $('input#nk_kuota').val(),
-                    nk_absen_metode: $('select#nk_absen_metode').val(),
+                    // nk_absen_metode: $('select#nk_absen_metode').val(),
+                    nk_keterangan: $('textarea#nk_keterangan').val(),
                     nk_pic_name: $('input#nk_pic_name').val(),
                     nk_pic_hp: $('input#nk_pic_hp').val(),
                     nk_lokasi: $('textarea#nk_lokasi').val(),

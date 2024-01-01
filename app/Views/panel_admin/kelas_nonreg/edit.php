@@ -27,7 +27,7 @@
                         <select name="program_id" id="program_id" class="select2SearchEdit" required>
                                 <option Disabled=true Selected=true> </option>
                             <?php foreach ($program as $key => $data) { ?>
-                                <option value="<?= $data['program_id'] ?>" <?php if ($data['nama_program'] == $nonreg['nk_program']) echo "selected"; ?> > <?= $data['nama_program'] ?> - <?= $data['jenis_program'] ?></option>
+                                <option value="<?= $data['program_id'] ?>" <?php if ($data['program_id'] == $nonreg['nk_program']) echo "selected"; ?> > <?= $data['nama_program'] ?> - <?= $data['jenis_program'] ?></option>
                             <?php } ?>
                         </select>
                     </div>
@@ -125,22 +125,12 @@
                     </div>
                 </div>
                 <div class="form-group row">
-                    <label for="" class="col-sm-4 col-form-label">Level Peserta <code>*</code></label>
-                    <div class="col-sm-8">
-                        <select name="nk_level" id="nk_level" class="select2SearchEdit" required>
-                            <?php foreach ($level as $key => $data) { ?>
-                                <option value="<?= $data['nama_level'] ?>" <?php if ($data['nama_level'] == $nonreg['nk_level']) echo "selected"; ?> ><?= $data['nama_level'] ?></option>
-                            <?php } ?>
-                        </select>
-                    </div>
-                </div>
-                <div class="form-group row">
                     <label for="" class="col-sm-4 col-form-label">Jumlah Peserta <code>*</code></label>
                     <div class="col-sm-8">
                         <input type="number" class="form-control" id="nk_kuota" name="nk_kuota" value="<?= $nonreg['nk_kuota'] ?>" readonly>
                     </div>
                 </div>
-                <div class="form-group row">
+                <!-- <div class="form-group row">
                     <label for="" class="col-sm-4 col-form-label">Metode Absen<code>*</code></label>
                     <div class="col-sm-8">
                         <select class="form-control btn-square" id="nk_absen_metode" name="nk_absen_metode" required>
@@ -148,7 +138,7 @@
                             <option value="PIC" <?php if ($nonreg['nk_absen_metode'] == 'PIC') echo "selected"; ?> >PIC</option>
                         </select>
                     </div>
-                </div>
+                </div> -->
                 <div class="form-group row">
                     <label for="" class="col-sm-4 col-form-label">Status Kelas <code>*</code></label>
                     <div class="col-sm-8">
@@ -156,6 +146,18 @@
                             <option value=1 <?php if ($nonreg['nk_status'] == 1) echo "selected"; ?> >AKTIF</option>
                             <option value=0 <?php if ($nonreg['nk_status'] == 0) echo "selected"; ?> >NONAKTIF</option>
                         </select>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="" class="col-sm-4 col-form-label">Alamat Lokasi Kelas<code>*</code></label>
+                    <div class="col-sm-8">
+                        <textarea class="form-control text-uppercase" name="nk_lokasi" id="nk_lokasi" cols="10" rows="2" required><?= $nonreg['nk_lokasi'] ?></textarea>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="" class="col-sm-4 col-form-label">Keterangan Kelas</label>
+                    <div class="col-sm-8">
+                        <textarea class="form-control" name="nk_keterangan" id="nk_keterangan" cols="10" rows="2" required><?= $nonreg['nk_keterangan'] ?></textarea>
                     </div>
                 </div>
                 <hr>
@@ -178,12 +180,6 @@
                             <option value=1 <?php if ($nonreg['nk_pic_otoritas'] == 1) echo "selected"; ?> >BISA</option>
                             <option value=0 <?php if ($nonreg['nk_pic_otoritas'] == 0) echo "selected"; ?> >TIDAK</option>
                         </select>
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <label for="" class="col-sm-4 col-form-label">Alamat Lokasi Kelas<code>*</code></label>
-                    <div class="col-sm-8">
-                        <textarea class="form-control text-uppercase" name="nk_lokasi" id="nk_lokasi" cols="30" rows="10" required><?= $nonreg['nk_lokasi'] ?></textarea>
                     </div>
                 </div>
             </div>

@@ -107,6 +107,7 @@
             <li><a href="<?= base_url('pembayaran/add-daftar') ?>">Pendaftaran</a></li>
             <li><a href="<?= base_url('pembayaran/add-spp') ?>">SPP</a></li>
             <li><a href="<?= base_url('pembayaran/add-lain') ?>">Infaq & Lain</a></li>
+            <li><a href="<?= base_url('pembayaran/add-nonreg') ?>">Non-Reguler</a></li>
         </ul>
     </li>
 
@@ -117,12 +118,12 @@
         </a>
     </li>
 
-    <li>
+    <!-- <li>
         <a href="<?= base_url('sertifikat/konfirmasi') ?>" class="waves-effect">
             <i class="mdi mdi-cash-usd"></i>
             <span> Konfirmasi Byr Sertifikat</span>
         </a>
-    </li>
+    </li> -->
 
     <li>
         <a href="<?= base_url('pembayaran') ?>" class="waves-effect">

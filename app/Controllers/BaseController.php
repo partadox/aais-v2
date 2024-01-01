@@ -36,6 +36,7 @@ use App\Models\Model_bina_kelas;
 use App\Models\Model_bina_pengajar;
 use App\Models\Model_bina_peserta;
 use App\Models\Model_nonreg_kelas;
+use App\Models\Model_nonreg_kelas_level;
 use App\Models\Model_nonreg_peserta;
 use App\Models\Model_nonreg_tipe;
 use App\Models\Model_nonreg_usaha;
@@ -137,6 +138,7 @@ abstract class BaseController extends Controller
         $this->nonreg_kelas         = new Model_nonreg_kelas();
         $this->nonreg_peserta       = new Model_nonreg_peserta();
         $this->nonreg_usaha         = new Model_nonreg_usaha();
+        $this->nonreg_kelas_level   = new Model_nonreg_kelas_level();
         $this->db 			        = \Config\Database::connect();
     }
 

@@ -46,11 +46,11 @@
                 <th>Hari</th>
                 <th>Jam</th>
                 <th>Pengajar</th>
-                <th>Level</th>
+                <!-- <th>Level</th> -->
                 <th>Jml. <br> Peserta</th>
                 <th>Jml. <br> Pertemuan</th>
                 <th>Status Kelas</th>
-                <th>Bayar Daftar</th>
+                <th>Pembayaran</th>
                 <th>Tindakan</th>
             </tr>
         </thead>
@@ -63,13 +63,13 @@
                     <td width="7%"><?= $data['nk_id'] ?></td>
                     <td width="15%"><?= $data['nk_nama'] ?></td>
                     <td width="5%"><?= $data['nk_angkatan'] ?></td>
-                    <td width="10%"><?= $data['nk_program'] ?></td>
+                    <td width="10%"><?= $data['nama_program'] ?></td>
                     <td width="10%"><?= $data['nk_tipe'] ?></td>
                     <td width="10%"><?= $data['nk_usaha'] ?></td>
                     <td width="5%"><?= $data['nk_hari'] ?></td>
                     <td width="5%"><?= $data['nk_waktu'] ?> <?= $data['nk_timezone'] ?></td>
                     <td width="10%"><?= $data['nama_pengajar'] ?></td>
-                    <td width="10%"><?= $data['nk_level'] ?></td>
+                    <!-- <td width="10%"><?= $data['nk_level'] ?></td> -->
                     <td width="10%"><?= $data['nk_kuota'] ?></td>
                     <td>
                         <p>Diambil: <?= $data['nk_tm_ambil'] ?></p>
@@ -84,11 +84,20 @@
                         <?php } ?>
                     </td>
                     <td width="5%">
-                        <?php if($data['nk_status_daftar'] == 1) { ?>
-                            <button class="btn btn-success btn-sm" disabled>LUNAS</button> 
+                        Daftar: 
+                        <?php if($data['nk_status_daftar'] == "1") { ?>
+                            <button class="btn btn-success btn-sm" disabled><i class="fa fa-check"></i></button> 
                         <?php } ?>
-                        <?php if($data['nk_status_daftar'] == 0) { ?>
-                            <button class="btn btn-secondary btn-sm" disabled>BELUM BAYAR</button> 
+                        <?php if($data['nk_status_daftar'] == "0") { ?>
+                            <button class="btn btn-secondary btn-sm" disabled><i class="fa fa-hourglass-half"></i></button> 
+                        <?php } ?>
+                        <br> <br>
+                        Extend: 
+                        <?php if($data['nk_status_bayar'] == "1") { ?>
+                            <button class="btn btn-success btn-sm" disabled><i class="fa fa-check"></i></button> 
+                        <?php } ?>
+                        <?php if($data['nk_status_bayar'] == "0") { ?>
+                            <button class="btn btn-secondary btn-sm" disabled><i class="fa fa-hourglass-half"></i></button> 
                         <?php } ?>
                     </td>
                     <td width="10%">

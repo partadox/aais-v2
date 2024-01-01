@@ -15,7 +15,7 @@
                 <div class="form-group row">
                     <label for="" class="col-sm-4 col-form-label">Kategori Program</label>
                     <div class="col-sm-8">
-                        <input type="text" class="form-control text-uppercase" id="kategori_program" name="kategori_program" value="NON-REGULER" disabled>
+                        <input type="text" class="form-control text-uppercase" id="kategori_program" name="kategori_program" value="NON-REGULER" readonly>
                     </div>
                 </div>
                 <div class="form-group row">

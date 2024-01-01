@@ -8,7 +8,7 @@ class Model_nonreg_peserta extends Model
 {
     protected $table            = 'nonreg_peserta';
     protected $primaryKey       = 'np_id';
-    protected $allowedFields    = ['np_nama', 'np_kelas'];
+    protected $allowedFields    = ['np_nama', 'np_kelas', 'np_level'];
 
     public function peserta_onkelas($nk_id)
     {

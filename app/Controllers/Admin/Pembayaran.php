@@ -1095,6 +1095,45 @@ class Pembayaran extends BaseController
         return view('panel_admin/pembayaran/tambah/lain', $data);
     }
 
+    public function add_nonreg()
+    {
+        $user         = $this->userauth();
+        $uri            = new \CodeIgniter\HTTP\URI(current_url(true));
+        $queryString    = $uri->getQuery();
+        $params         = [];
+        parse_str($queryString, $params);
+
+        if (count($params) == 1 && array_key_exists('id', $params)) {
+            $nk_id  = $params['id'];
+            $nk     = $this->nonreg_kelas->find($nk_id);
+            $nk_prog= $this->program->find($nk['nk_program']);
+            if ($nk['nk_status_daftar'] == 0) {
+                $form = "daftar";
+            } elseif ($nk['nk_status_daftar'] == 1) {
+                $form = "extend";
+            }
+            
+            $data = [
+                'title'         => 'Form Pembayaran Program Non Reguler',
+                'user'          => $user,
+                'form'          => $form,
+                'kelas_daftar'  => NULL,
+                'kelas_extend'  => NULL,
+                'nk'            => $nk,
+                'nk_prog'       => $nk_prog,
+            ];
+        }else{
+            $data = [
+                'title'         => 'Tambah Pembayaran Program Non Reguler',
+                'user'          => $user,
+                'form'          => 'pilih',
+                'kelas_daftar'  => $this->nonreg_kelas->list_not_daftar(),
+                'kelas_extend'  => $this->nonreg_kelas->list_extend(),
+            ];
+        }
+        return view('panel_admin/pembayaran/tambah/nonreg', $data);
+    }
+
     //backend
     public function save_daftar()
     {
@@ -1881,6 +1920,156 @@ class Pembayaran extends BaseController
                 $this->session->setFlashdata('pesan_sukses', 'Pembuatan Pembayaran Infaq & Pembayaran Lain oleh Admin Berhasil.');
                 return redirect()->to('/pembayaran/add-lain');
             }
+    }
+
+    public function save_nonreg()
+    {
+        $validation = \Config\Services::validation();
+
+        //Get Tgl Today
+        $tgl        = date("Y-m-d");
+        $waktu      = date("H:i:s");
+        $strwaktu   = date("H-i-s");
+
+        //Get id
+        $nk_id   = $this->request->getVar('nk_id');
+
+        $valid = $this->validate([
+            'foto' => [
+                'rules' => 'uploaded[foto]|mime_in[foto,image/png,image/jpg,image/jpeg]|is_image[foto]',
+                'errors' => [
+                    'mime_in' => 'Harus gambar!'
+                ]
+            ]
+        ]);
+
+        if (!$valid) {
+            $this->session->setFlashdata('pesan_eror', 'ERROR! Harap Upload Bukti Bayar!');
+            return redirect()->to('/pembayaran/add-nonreg?id='.$nk_id);
+        } else {
+
+            $user               = $this->userauth();
+            $validator          = $user['username'];
+
+            //Get inputan peserta, kelas, status bayar dan keterangan admin
+            $status_bayar_admin = $this->request->getVar('status_bayar_admin');
+            $keterangan_admin   = str_replace(array("\r", "\n"), ' ',strtoupper($this->request->getVar('keterangan_admin')));
+
+            //Get Data Peserta-Kelas, Peserta, dan Data Kelas
+            $kelas                  = $this->nonreg_kelas->find($nk_id);
+            $program_id             = $kelas['nk_program'];
+            $program                = $this->program->find($program_id);
+
+            if ($kelas['nk_status_daftar'] == NULL || $kelas['nk_status_daftar'] == "0" ) {
+                $jenis_bayar = "Pendaftaran";
+                $extend      = NULL;
+                $daftar      = $this->request->getVar('daftar');
+            } else {
+                $jenis_bayar = "Extend";
+                $extend      = 1;
+                $daftar      = 0;
+            }
+            
+            // get file foto from input
+            $filefoto = $this->request->getFile('foto');
+            // ambil nama file
+            //$namafoto = $filefoto->getName();
+            // nama foto baru
+            $ext            = $filefoto->guessExtension();
+            $namafoto_new   = $kelas['nk_id'].'-'.date('Ymd-His').'.'.$ext;
+
+            //Get nominal (on rupiah curenncy format) input from view
+            $total             = $this->request->getVar('total');
+            $spp               = $this->request->getVar('spp')*$this->request->getVar('spp1');
+            $modul             = $this->request->getVar('modul');
+            $get_bayar_infaq   = $this->request->getVar('infaq');
+            $get_bayar_lain    = $this->request->getVar('lain');
+
+            //Get Data from Input view
+            $bayar_infaq        = str_replace(str_split('Rp. .'), '', $get_bayar_infaq);
+            $bayar_lain         = str_replace(str_split('Rp. .'), '', $get_bayar_lain);
+
+            $data_bayar = [
+                'kelas_id'                  => "1",
+                'bayar_peserta_id'          => "1",
+                'bayar_tipe'                => 'nonreg',
+                'status_bayar'              => 'Lunas',
+                'status_bayar_admin'        => $status_bayar_admin,
+                'status_konfirmasi'         => 'Terkonfirmasi',
+                'awal_bayar'                => $total,
+                'awal_bayar_daftar'         => $daftar,
+                'awal_bayar_infaq'          => $bayar_infaq,
+                'awal_bayar_spp1'           => $spp,
+                'awal_bayar_lainnya'        => $bayar_lain,
+                'awal_bayar_modul'          => $modul,
+                'bukti_bayar'               => $namafoto_new,
+                'tgl_bayar'                 => $tgl,
+                'waktu_bayar'               => $waktu,
+                'keterangan_bayar'          => $jenis_bayar." Program Non-Reguler NIK ".$nk_id." PIC (".$kelas['nk_pic_name'].")"." - Ambil TM = ".$this->request->getVar('spp1'),
+                'keterangan_bayar_admin'    => $keterangan_admin,
+                'tgl_bayar_konfirmasi'      => $tgl,
+                'waktu_bayar_konfirmasi'    => $waktu,
+                'nominal_bayar'             => $total,
+                'validator'                 => $validator,
+            ];
+
+            $this->db->transStart();
+            $state[]= $this->bayar->insert($data_bayar);
+            $state[]= $filefoto->move('public/img/transfer/', $namafoto_new);
+            $bayar_id = $this->bayar->insertID();
+
+            $updateNK = [
+                'nk_tm_ambil'       => $kelas['nk_tm_ambil']+$this->request->getVar('spp1'),
+                'nk_status_daftar'  => 1,
+                'nk_status_bayar'   => $extend,
+            ];
+
+            $state[]= $this->nonreg_kelas->update($nk_id,$updateNK);
+
+            if ($bayar_lain != '0') {
+                $data_lain = [
+                    'lainnya_bayar_id'        => $bayar_id,
+                    'bayar_lainnya'           => $bayar_lain,
+                    'data_peserta_id_lain'    => '1',
+                    'status_bayar_lainnya'    => 'Lunas',
+                ];
+                $state[]= $this->bayar_lain->insert($data_lain);
+            }
+
+            if ($bayar_infaq != '0') {
+                $data_infaq = [
+                    'infaq_bayar_id'        => $bayar_id,
+                    'bayar_infaq'           => $bayar_infaq,
+                    'data_peserta_id_infaq' => '1'
+                ];
+                $state[]= $this->infaq->insert($data_infaq);
+            }
+
+            $aktivitas = 'Buat Data Pembayaran '.$jenis_bayar.' Program Non_Reguler, NIK : ' . $nk_id . ' - ' . $kelas['nk_nama'] . ' - PIC = ' . $kelas['nk_pic_name'];
+
+            $state = json_encode($state);
+
+            if ($this->db->transStatus() === FALSE)
+            {
+                $this->db->transRollback();
+                /*--- Log ---*/
+                $this->logging('Admin', 'FAIL', $aktivitas);
+                $pesan      = 'pesan_eror';
+                $pesanisi   = 'Pembuatan Pembayaran oleh Admin Gagal '. $state;
+            }
+            else
+            {
+                $this->db->transComplete();
+                /*--- Log ---*/
+                $this->logging('Admin', 'BERHASIL', $aktivitas);
+                $pesan      = 'pesan_sukses';
+                $pesanisi   = 'Pembuatan Pembayaran oleh Admin Berhasil.';
+            }
+
+
+            $this->session->setFlashdata($pesan , $pesanisi);
+            return redirect()->to('/pembayaran/add-nonreg');
+        }
     }
 
     /*--- REKAP BAYAR SPP ---*/
