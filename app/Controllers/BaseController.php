@@ -211,9 +211,14 @@ abstract class BaseController extends Controller
         $sertifikat = $this->sertifikat->find($sertifikat_id);
         $program    = $this->program->find($sertifikat['sertifikat_program']);
         $peserta    = $this->peserta->find($sertifikat['sertifikat_peserta_id']);
+        $template   = $program['sertemp_program'];
+        if ($template == NULL) {
+            $template = "Sertifikat_Tes.pdf";
+        }
+        
 
         // Set the source file (PDF, image, etc.)
-        $sourceFile     = 'public/assets/template/'.$program['sertemp_program'];
+        $sourceFile     = 'public/assets/template/'.$template;
         // Output file path
         $outputFilePath = 'public/sertifikat/'.$sertifikat['sertifikat_file'];
 
