@@ -71,9 +71,11 @@
                         <?php } ?>
                     </td>
                     <td width="10%">
-                        <button type="button" class="btn btn-warning" onclick="edit('<?= $data['program_id'] ?>')" >
+                        <button type="button" class="btn btn-warning" onclick="edit('edit','<?= $data['program_id'] ?>')" >
                         <i class=" fa fa-edit mr-1"></i>Edit</button>
                         <a href="/program-regular-ujian-setting?id=<?= $data['program_id'] ?>"  class="btn btn-info ml-2" ><i class=" fa fa-wrench mr-1"></i>Fitur Ujian</a>
+                        <button type="button" class="btn btn-success" onclick="edit('template','<?= $data['program_id'] ?>')" >
+                        <i class=" mdi mdi-certificate mr-1"></i>Template Sertifikat</button>
                 </tr>
 
             <?php endforeach; ?>
@@ -105,11 +107,12 @@
         });
     }
 
-    function edit(program_id) {
+    function edit(form, program_id) {
         $.ajax({
             type: "post",
             url: "<?= site_url('program-regular/edit') ?>",
             data: {
+                form: form,
                 program_id : program_id
             },
             dataType: "json",

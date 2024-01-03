@@ -69,6 +69,12 @@
                     </div>
                 </div>
                 <div class="form-group row">
+                    <label for="" class="col-sm-4 col-form-label">Kode Program (utk Sertifikat max 3 huruf) <code>*</code></label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control text-uppercase" maxlength="3" id="kode_program" name="kode_program" required>
+                    </div>
+                </div>
+                <div class="form-group row">
                     <label for="" class="col-sm-4 col-form-label">Status Program <code>*</code></label>
                     <div class="col-sm-8">
                         <select class="form-control btn-square" id="status_program" name="status_program">
@@ -108,6 +114,7 @@
                     biaya_daftar: $('input#biaya_daftar').val(),
                     biaya_modul: $('input#biaya_modul').val(),
                     status_program: $('select#status_program').val(),
+                    kode_program:  $('input#kode_program').val(),
                 },
                 dataType: "json",
                 beforeSend: function() {

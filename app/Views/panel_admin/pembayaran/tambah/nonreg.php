@@ -8,11 +8,11 @@
 
 <?= $this->section('isi') ?>
 </p>
-
-<a href="<?= base_url('/pembayaran/add-nonreg') ?>"> 
-    <button type="button" class="btn btn-secondary mb-3"><i class=" fa fa-arrow-circle-left"></i> Kembali</button>
-</a>
-
+<?php if ($form != "pilih") { ?>
+  <a href="<?= base_url('/pembayaran/add-nonreg') ?>"> 
+      <button type="button" class="btn btn-secondary mb-3"><i class=" fa fa-arrow-circle-left"></i> Kembali</button>
+  </a>
+<?php } ?>
 
 <div class="card shadow-lg">
   <div class="card-header pb-0">

@@ -11,11 +11,11 @@
             <?= form_open('/sertifikat/save-atur', ['class' => 'formatur']) ?>
             <?= csrf_field(); ?>
             <div class="modal-body">
-            <p class="mt-1">Catatan :<br> 
+                <!-- <p class="mt-1">Catatan :<br> 
                     <i class="mdi mdi-information"></i> Admin harus mengaktifkan <b>Status Pendaftaran Cetak Sertifikat</b> agar peserta dapat mengakses menu cetak sertifikat. <br>
                     <i class="mdi mdi-information"></i> Isikan periode cetak sertifikat juga. <br>
-                </p>
-                <div class="form-group row">
+                </p> -->
+                <div class="form-group row" style="display: none;">
                     <label for="" class="col-sm-4 col-form-label">Periode Sertifikat <code>*</code></label>
                     <div class="col-sm-8">
                         <input type="number" class="form-control"  value="<?= $konfig[0]['periode_sertifikat'] ?>" id="periode_sertifikat" name="periode_sertifikat">
@@ -23,7 +23,7 @@
                     </div>
                 </div>
                 <div class="form-group row">
-                    <label for="" class="col-sm-4 col-form-label">Status Menu Cetak Sertifikat<code>*</code></label>
+                    <label for="" class="col-sm-4 col-form-label">Status Menu Sertifikat<code>*</code></label>
                     <div class="col-sm-8">
                         <select class="form-control btn-square" id="status_menu_sertifikat" name="status_menu_sertifikat">
                             <option value="TUTUP" <?php if ($konfig[0]['status_menu_sertifikat'] == 'TUTUP') echo "selected"; ?>>DITUTUP</option>
@@ -33,7 +33,7 @@
                     </div>
                 </div>
                 <div class="form-group row">
-                    <label for="" class="col-sm-4 col-form-label">Biaya Cetak Sertifikat <code>*</code></label>
+                    <label for="" class="col-sm-4 col-form-label">Biaya Sertifikat <code>*</code></label>
                     <div class="col-sm-8">
                         <input type="text" class="form-control"  value="<?= $konfig[0]['biaya_sertifikat'] ?>" id="biaya_sertifikat" name="biaya_sertifikat">
                         <div class="invalid-feedback errorBiaya_sertifikat"></div>

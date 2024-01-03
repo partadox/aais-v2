@@ -137,6 +137,7 @@ $routes->post('program-regular/edit', 'Admin\ProgramReg::edit', ["filter" => "au
 
 $routes->post('program-regular/create', 'Admin\ProgramReg::create', ["filter" => "authweb:1-2-3-7"]);
 $routes->post('program-regular/update', 'Admin\ProgramReg::update', ["filter" => "authweb:1-2-3-7"]);
+$routes->post('program-regular/update-sertifikat', 'Admin\ProgramReg::update_sertifikat', ["filter" => "authweb:1-2-3-7"]);
 
 /*--- Program Regular Atur Fitur Ujian---*/
 $routes->get('program-regular-ujian-setting', 'Admin\ProgramReg::ujian_setting', ["filter" => "authweb:1-2-3-7"]);
@@ -230,11 +231,13 @@ $routes->get('pembayaran/add-daftar', 'Admin\Pembayaran::add_daftar', ["filter" 
 $routes->get('pembayaran/add-spp', 'Admin\Pembayaran::add_spp', ["filter" => "authweb:1-2-3-7"]);
 $routes->get('pembayaran/add-lain', 'Admin\Pembayaran::add_lain', ["filter" => "authweb:1-2-3-7"]);
 $routes->get('pembayaran/add-nonreg', 'Admin\Pembayaran::add_nonreg', ["filter" => "authweb:1-2-3-7"]);
+$routes->get('pembayaran/add-sertifikat', 'Admin\Pembayaran::add_sertifikat', ["filter" => "authweb:1-2-3-7"]);
 
 $routes->post('pembayaran/save-daftar', 'Admin\Pembayaran::save_daftar', ["filter" => "authweb:1-2-3-7"]);
 $routes->post('pembayaran/save-spp', 'Admin\Pembayaran::save_spp', ["filter" => "authweb:1-2-3-7"]);
 $routes->post('pembayaran/save-lain', 'Admin\Pembayaran::save_lain', ["filter" => "authweb:1-2-3-7"]);
 $routes->post('pembayaran/save-nonreg', 'Admin\Pembayaran::save_nonreg', ["filter" => "authweb:1-2-3-7"]);
+$routes->post('pembayaran/save-sertifikat', 'Admin\Pembayaran::save_sertifikat', ["filter" => "authweb:1-2-3-7"]);
 
 //Rekap
 $routes->get('pembayaran/rekap-spp', 'Admin\Pembayaran::rekap_spp', ["filter" => "authweb:1-2-3-7"]);
@@ -293,6 +296,7 @@ $routes->get('sertifikat/konfirmasi', 'Admin\Sertifikat::konfirmasi', ["filter" 
 $routes->post('sertifikat/edit', 'Admin\Sertifikat::edit', ["filter" => "authweb:1-2-3-7"]);
 $routes->post('sertifikat/input-atur', 'Admin\Sertifikat::input_atur', ["filter" => "authweb:1-2-3-7"]);
 $routes->post('sertifikat/input-konfirmasi', 'Admin\Sertifikat::input_konfirmasi', ["filter" => "authweb:1-2-3-7"]);
+$routes->get('sertifikat/detail', 'Admin\Sertifikat::detail', ["filter" => "authweb:1-2-3-7"]);
 
 $routes->post('sertifikat/save-atur', 'Admin\Sertifikat::save_atur', ["filter" => "authweb:1-2-3-7"]);
 $routes->post('sertifikat/save-konfirmasi', 'Admin\Sertifikat::save_konfirmasi', ["filter" => "authweb:1-2-3-7"]);

@@ -2,6 +2,7 @@
 namespace App\Controllers\Admin;
 
 use App\Controllers\BaseController;
+use Mpdf\Mpdf;
 
 class Sertifikat extends BaseController
 {
@@ -31,7 +32,7 @@ class Sertifikat extends BaseController
         $list_sertifikat    = $this->sertifikat->list($periode);
 
         $data = [
-            'title'         => 'Data Cetak Sertifikat Peserta Periode ' . $periode,
+            'title'         => 'Data Sertifikat Digital Peserta ',
             'user'          => $user,
             'list'          => $list_sertifikat,
             'list_periode'  => $list_periode,
@@ -45,7 +46,7 @@ class Sertifikat extends BaseController
         if ($this->request->isAJAX()) {
 
             $data = [
-                'title'   => 'Form Pengaturan Pendaftaran Sertifikat',
+                'title'   => 'Form Pengaturan Menu Sertifikat',
                 'konfig'  => $this->konfigurasi->list()
             ];
             $msg = [
@@ -84,27 +85,27 @@ class Sertifikat extends BaseController
     public function edit()
     {
         if ($this->request->isAJAX()) {
-
+            $form            = $this->request->getVar('form');        
             $sertifikat_id   = $this->request->getVar('sertifikat_id');
             $data_sertifikat = $this->sertifikat->find($sertifikat_id);
             $peserta_id      = $data_sertifikat['sertifikat_peserta_id'];
             $data_peserta    = $this->peserta->find($peserta_id); 
 
+            if ($form == 'show') {
+                $title = "Detail Sertifikat";
+            } elseif($form == 'edit') {
+                $title = "Form Ubah Sertifikat";
+            }
+            
+
             $data = [
-                'title'                 => 'Edit Data Pendaftaran Sertifikat',
+                'title'                 => 'Sertifikat',
+                'form'                  => $form,
                 'sertifikat_id'         => $sertifikat_id,
                 'data_sertifikat'       => $data_sertifikat,
-                'nama_peserta'          => $data_peserta[0]['nama_peserta'],
-                'nis'                   => $data_peserta[0]['nis'],
-                'sertifikat_level'      => $data_sertifikat[0]['sertifikat_level'],
-                'nominal_bayar_cetak'   => $data_sertifikat[0]['nominal_bayar_cetak'],
-                'keterangan_cetak'      => $data_sertifikat[0]['keterangan_cetak'],
-                'nomor_sertifikat'      => $data_sertifikat[0]['nomor_sertifikat'],
-                'status_cetak'          => $data_sertifikat[0]['status_cetak'],
-                'link_cetak'            => $data_sertifikat[0]['link_cetak'],
             ];
             $msg = [
-                'sukses' => view('auth/akademik/edit_sertifikat', $data)
+                'sukses' => view('panel_admin/sertifikat/edit', $data)
             ];
             echo json_encode($msg);
         }
@@ -143,6 +144,90 @@ class Sertifikat extends BaseController
             'periode_pilih' => $periode,
         ];
         return view('panel_admin/sertifikat/konfirmasi', $data);
+    }
+
+    public function detail()
+    {
+        $user  = $this->userauth();
+        //Angkatan
+		$uri            = new \CodeIgniter\HTTP\URI(current_url(true));
+        $queryString    = $uri->getQuery();
+        $params         = [];
+        parse_str($queryString, $params);
+
+        if (count($params) == 1 && array_key_exists('id', $params)) {
+            $sertifikat_id           = $params['id'];
+            if (ctype_digit($sertifikat_id)) {
+                $sertifikat_id           = $params['id'];
+            }else {
+                return redirect()->to('/sertifikat');
+            }
+        } else {
+            return redirect()->to('/sertifikat');
+        }
+        
+        $sert       = $this->sertifikat->find($sertifikat_id);
+        $peserta    = $this->peserta->find($sert['sertifikat_peserta_id']); 
+
+        // Create Mpdf instance
+        $mpdf = new Mpdf([
+            'mode' => 'utf-8',
+            'format' => 'A4-L',
+            'orientation' => 'L'
+        ]);
+        // Add a page
+        $mpdf->AddPage();
+
+        // Set the source file (PDF, image, etc.)
+        $sourceFile     = 'public/assets/template/Sertifikat_Mushafy.pdf'; // Replace with the actual path to your source file
+        // Output file path
+        $outputFilePath = 'public/sertifikat/certificate_' . date('YmdHis') . '.pdf';
+
+        $pageCount = $mpdf->SetSourceFile($sourceFile);
+
+        // Import a page from the source file
+        $templateId = $mpdf->ImportPage($pageCount);
+
+        // Use the imported page as a template
+        $mpdf->UseTemplate($templateId);
+
+        $pageWidth = $mpdf->w;
+
+        // Variable Nomor Sertifikat
+        $mpdf->SetFont('arial', '', 15);
+        $mpdf->SetTextColor(235, 183, 52);
+        $textWidth  = $mpdf->GetStringWidth($sert['nomor_sertifikat']);
+        $centerX    = ($pageWidth - $textWidth) / 2;
+        $y          = 77;
+        $mpdf->Text($centerX, $y, $sert['nomor_sertifikat']);
+
+        // Variable Nama Peserta
+        $mpdf->SetFont('sertifikat-nama', '', 0); //
+        $mpdf->SetTextColor(255, 255, 255);
+        $namaSert   = ucwords(strtolower($peserta['nama_peserta'])); 
+        $textWidth  = $mpdf->GetStringWidth($namaSert);
+        $centerX    = ($pageWidth - $textWidth) / 2;
+        $y          = 118;
+        $mpdf->Text($centerX, $y, $namaSert);
+
+        // Variable tgl
+        $mpdf->SetFont('arial', '', 13);
+        $mpdf->SetTextColor(255, 255, 255);
+        $varTgl     = substr($sert['dt_konfirmasi'], 0, 10);
+        $tglSert    = "Balikpapan, ". date_indo($varTgl);
+        $textWidth  = $mpdf->GetStringWidth($tglSert);
+        $centerX    = (($pageWidth - $textWidth)+6) / 2;
+        $y          = 153;
+        $mpdf->Text($centerX, $y, $tglSert); // Adjusted coordinates for certificate number
+
+        // Save the generated PDF
+        $mpdf->Output($outputFilePath, 'F');
+        var_dump($namaSert);
+
+        // Display the PDF in the browser
+        // header('Content-Type: application/pdf');
+        // header('Content-Disposition: inline; filename="certificate_' . $sert['sertifikat_id'] . '.pdf"');
+        // readfile($outputFilePath);
     }
 
     /*--- BACKEND ---*/
@@ -364,7 +449,7 @@ class Sertifikat extends BaseController
         }
 
         $sertifikat = $this->sertifikat->list($periode);
-        $judul = "DATA REKAP PENGAJUAN CETAK SERTIFIKAT PERIODE " . $periode;
+        $judul = "DATA REKAP SERTIFIKAT ";
         $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
 
         $sheet = $spreadsheet->getActiveSheet();
@@ -389,26 +474,27 @@ class Sertifikat extends BaseController
         ];
 
         $sheet->setCellValue('A1', $judul);
-        $sheet->mergeCells('A1:L1');
+        $sheet->mergeCells('A1:M1');
         $sheet->getStyle('A1')->applyFromArray($styleColumn);
 
         $sheet->setCellValue('A2', date("Y-m-d"));
-        $sheet->mergeCells('A2:L2');
+        $sheet->mergeCells('A2:M2');
         $sheet->getStyle('A2')->applyFromArray($styleColumn);
 
         $spreadsheet->setActiveSheetIndex(0)
             ->setCellValue('A4', 'SERTIFIKAT ID')
-            ->setCellValue('B4', 'NIS')
-            ->setCellValue('C4', 'NAMA')
-            ->setCellValue('D4', 'JENIS KELAMIN')
-            ->setCellValue('E4', 'SERTIFIKAT LEVEL')
-            ->setCellValue('F4', 'STATUS SERTIFIKAT')
-            ->setCellValue('G4', 'WAKTU PENGAJUAN')
-            ->setCellValue('H4', 'WAKTU KONFIRMASI')
+            ->setCellValue('B4', 'NO. SERTIFIKAT')
+            ->setCellValue('C4', 'NIS')
+            ->setCellValue('D4', 'NAMA')
+            ->setCellValue('E4', 'JENIS KELAMIN')
+            ->setCellValue('F4', 'PROGRAM')
+            ->setCellValue('G4', 'STATUS')
+            ->setCellValue('H4', 'TGL SERTIFIKAT')
             ->setCellValue('I4', 'NOMINAL BAYAR')
-            ->setCellValue('J4', 'KETERANGAN')
-            ->setCellValue('K4', 'NO. SERTIFIKAT')
-            ->setCellValue('L4', 'LINK UNDUH');
+            ->setCellValue('J4', 'TRANSAKSI ID')
+            ->setCellValue('K4', 'DATA KELAS')
+            ->setCellValue('L4', 'KETERANGAN')
+            ->setCellValue('M4', 'FILENAME');
         
         $sheet->getStyle('A4')->applyFromArray($border);
         $sheet->getStyle('B4')->applyFromArray($border);
@@ -422,6 +508,7 @@ class Sertifikat extends BaseController
         $sheet->getStyle('J4')->applyFromArray($border);
         $sheet->getStyle('K4')->applyFromArray($border);
         $sheet->getStyle('L4')->applyFromArray($border);
+        $sheet->getStyle('M4')->applyFromArray($border);
         
 
         $spreadsheet->getActiveSheet()->getColumnDimension('A')->setAutoSize(true);
@@ -436,24 +523,39 @@ class Sertifikat extends BaseController
         $spreadsheet->getActiveSheet()->getColumnDimension('J')->setAutoSize(true);
         $spreadsheet->getActiveSheet()->getColumnDimension('K')->setAutoSize(true);
         $spreadsheet->getActiveSheet()->getColumnDimension('L')->setAutoSize(true);
+        $spreadsheet->getActiveSheet()->getColumnDimension('M')->setAutoSize(true);
 
         $row = 5;
 
         foreach ($sertifikat as $data) {
 
+            if ($data['status'] == 1) {
+                $status = "Terkonfirmasi";
+            } else {
+                $status = "Proses";
+            }
+            
+
+            if ($data['sertifikat_aais'] == 1) {
+                $kelas = "-";
+            } else {
+                $kelas = $data['nama_kelas'];
+            }
+
                 $spreadsheet->setActiveSheetIndex(0)
                 ->setCellValue('A' . $row, $data['sertifikat_id'])
-                ->setCellValue('B' . $row, $data['nis'])
-                ->setCellValue('C' . $row, $data['nama_peserta'])
-                ->setCellValue('D' . $row, $data['jenkel'])
-                ->setCellValue('E' . $row, $data['sertifikat_level'])
-                ->setCellValue('F' . $row, $data['status_cetak'])
-                ->setCellValue('G' . $row, $data['dt_ajuan'])
-                ->setCellValue('H' . $row, $data['dt_konfirmasi'])
+                ->setCellValue('B' . $row, $data['nomor_sertifikat'])
+                ->setCellValue('C' . $row, $data['nis'])
+                ->setCellValue('D' . $row, $data['nama_peserta'])
+                ->setCellValue('E' . $row, $data['jenkel'])
+                ->setCellValue('F' . $row, $data['nama_program'])
+                ->setCellValue('G' . $row, $status)
+                ->setCellValue('H' . $row, $data['sertifikat_tgl'])
                 ->setCellValue('I' . $row, $data['nominal_bayar_cetak'])
-                ->setCellValue('J' . $row, $data['keterangan_cetak'])
-                ->setCellValue('K' . $row, $data['nomor_sertifikat'])
-                ->setCellValue('L' . $row, $data['link_cetak']);
+                ->setCellValue('J' . $row, $data['bukti_bayar_cetak'])
+                ->setCellValue('K' . $row, $kelas)
+                ->setCellValue('L' . $row, $data['keterangan_cetak'])
+                ->setCellValue('M' . $row, $data['sertifikat_file']);
 
             $sheet->getStyle('A' . $row)->applyFromArray($border);
             $sheet->getStyle('B' . $row)->applyFromArray($border);
@@ -467,14 +569,15 @@ class Sertifikat extends BaseController
             $sheet->getStyle('J' . $row)->applyFromArray($border);
             $sheet->getStyle('K' . $row)->applyFromArray($border);
             $sheet->getStyle('L' . $row)->applyFromArray($border);
+            $sheet->getStyle('M' . $row)->applyFromArray($border);
 
             $row++;
         }
 
         $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
-        $filename =  'Data-Rekap-Sertifikat-Cetak-Periode-' . $periode  . '-' . date('Y-m-d-His');
+        $filename =  'Data-Rekap-Sertifikat'.'-' . date('Y-m-d-His');
 
-        $aktivitas = 'Download Data Rekap Pengajuan Sertifikat via Export Excel, Waktu : ' .  date('Y-m-d-H:i:s');
+        $aktivitas = 'Download Data Rekap Sertifikat via Export Excel, Waktu : ' .  date('Y-m-d-H:i:s');
         $this->logging('Admin', 'BERHASIL', $aktivitas);
 
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');

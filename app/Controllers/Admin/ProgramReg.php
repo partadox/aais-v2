@@ -34,15 +34,24 @@ class ProgramReg extends BaseController
     public function edit()
     {
         if ($this->request->isAJAX()) {
-
+            $form       = $this->request->getVar('form');
             $program_id = $this->request->getVar('program_id');
             $program    =  $this->program->find($program_id);
+
             $data = [
-                'title'     => 'Ubah Data Program Regular',
-                'program'    => $program,
+                'title'             => 'Ubah Data Program Regular',
+                'program'           => $program,
+                
             ];
+
+            if ($form == 'edit') {
+                $form = 'edit';
+            } else {
+                $form = 'edit_template';
+            }
+            
             $msg = [
-                'sukses' => view('panel_admin/program_regular/edit', $data)
+                'sukses' => view('panel_admin/program_regular/'.$form, $data)
             ];
             echo json_encode($msg);
         }
@@ -182,6 +191,7 @@ class ProgramReg extends BaseController
                     'biaya_daftar'    => $biaya_daftar,
                     'biaya_modul'     => $biaya_modul, 
                     'status_program'  => $this->request->getVar('status_program'),
+                    'kode_program'    => strtoupper($this->request->getVar('kode_program')),
                 ];
 
                 $this->program->insert($simpandata);
@@ -288,6 +298,7 @@ class ProgramReg extends BaseController
                     'biaya_daftar'    => $biaya_daftar,
                     'biaya_modul'     => $biaya_modul,
                     'status_program'  => $this->request->getVar('status_program'),
+                    'kode_program'    => strtoupper($this->request->getVar('kode_program')),
                 ];
 
                 $program_id = $this->request->getVar('program_id');
@@ -302,6 +313,37 @@ class ProgramReg extends BaseController
                     ]
                 ];
             }
+            echo json_encode($msg);
+        }
+    }
+
+    public function update_sertifikat()
+    {
+        if ($this->request->isAJAX()) {
+
+            $program_id     = $this->request->getVar('program_id');
+            $program        = $this->program->find($program_id);
+            $filetemplate   = $this->request->getFile('template');
+            $ext            = $filetemplate->guessExtension();
+            $template_new   = 'Sertifikat_'.$program['nama_program'].'.'.$ext;
+            if ($program['sertemp_program'] != NULL && $program['sertemp_program'] != 'Sertifikat_Tes.pdf') {
+                unlink('public/assets/template/' . $program['sertemp_program']);
+            }
+            $filetemplate->move('public/assets/template/', $template_new);
+            $updatedata = [
+                'sertemp_program' => $template_new ,
+            ];
+            $this->program->update($program_id, $updatedata);
+
+            $aktivitas = 'Ubah Template Program Nama : ' .  $program['nama_program'];
+            $this->logging('Admin', 'BERHASIL', $aktivitas);
+
+            $msg = [
+                'sukses' => [
+                    'link' => 'program-regular'
+                ]
+            ];
+        
             echo json_encode($msg);
         }
     }

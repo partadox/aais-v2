@@ -52,6 +52,7 @@ use CodeIgniter\HTTP\RequestInterface;
 use CodeIgniter\HTTP\ResponseInterface;
 use Psr\Log\LoggerInterface;
 
+use Mpdf\Mpdf;
 /**
  * Class BaseController
  *
@@ -175,4 +176,86 @@ abstract class BaseController extends Controller
             $this->log_user->insert($log);
         }
 	}
+
+    public function generate_nomor_sertifikat($kodeProgram)
+    {
+        $last           = $this->sertifikat->orderBy('sertifikat_id', 'desc')->first();  
+        if ($last != NULL) {
+            $part       = explode("/", $last['nomor_sertifikat']); 
+            $nomor_urut = $part[0];
+            $tahun      = $part[4];
+
+            if ($tahun == date('Y')) {
+                $nomor_urut     = str_pad(($part[0]+1),4,"0",STR_PAD_LEFT);
+            }else{
+                $nomor_urut     = '0001';
+            }
+        } else{
+            $nomor_urut     = '0001';
+        }
+        $bulan = romawi(date('m'));
+        $nomor_sertifikat = $nomor_urut.'/SER'.'/'.$kodeProgram.'/'.$bulan.'/'.date('Y');
+        return $nomor_sertifikat;
+    }
+
+    public function generate_sertifikat($sertifikat_id)
+    {
+        // Create Mpdf instance
+        $mpdf = new Mpdf([
+            'mode' => 'utf-8',
+            'format' => 'A4-L',
+            'orientation' => 'L'
+        ]);
+        // Add a page
+        $mpdf->AddPage();
+        $sertifikat = $this->sertifikat->find($sertifikat_id);
+        $program    = $this->program->find($sertifikat['sertifikat_program']);
+        $peserta    = $this->peserta->find($sertifikat['sertifikat_peserta_id']);
+
+        // Set the source file (PDF, image, etc.)
+        $sourceFile     = 'public/assets/template/'.$program['sertemp_program'];
+        // Output file path
+        $outputFilePath = 'public/sertifikat/'.$sertifikat['sertifikat_file'];
+
+        $pageCount = $mpdf->SetSourceFile($sourceFile);
+
+        // Import a page from the source file
+        $templateId = $mpdf->ImportPage($pageCount);
+
+        // Use the imported page as a template
+        $mpdf->UseTemplate($templateId);
+
+        $pageWidth = $mpdf->w;
+
+        // Variable Nomor Sertifikat
+        $mpdf->SetFont('arial', '', 15);
+        $mpdf->SetTextColor(235, 183, 52);
+        $textWidth  = $mpdf->GetStringWidth($sertifikat['nomor_sertifikat']);
+        $centerX    = ($pageWidth - $textWidth) / 2;
+        $y          = 77;
+        $mpdf->Text($centerX, $y, $sertifikat['nomor_sertifikat']);
+
+        // Variable Nama Peserta
+        $mpdf->SetFont('sertifikat-nama', '', 80); //
+        $mpdf->SetTextColor(255, 255, 255);
+        $namaSert   = ucwords(strtolower($peserta['nama_peserta'])); 
+        $textWidth  = $mpdf->GetStringWidth($namaSert);
+        $centerX    = ($pageWidth - $textWidth) / 2;
+        $y          = 118;
+        $mpdf->Text($centerX, $y, $namaSert);
+
+        // Variable tgl
+        $mpdf->SetFont('arial', '', 13);
+        $mpdf->SetTextColor(255, 255, 255);
+        $varTgl     = $sertifikat['sertifikat_tgl'];
+        $tglSert    = "Balikpapan, ". date_indo($varTgl);
+        $textWidth  = $mpdf->GetStringWidth($tglSert);
+        $centerX    = (($pageWidth - $textWidth)+15) / 2;
+        $y          = 153;
+        $mpdf->Text($centerX, $y, $tglSert); // Adjusted coordinates for certificate number
+
+        // Save the generated PDF
+        $mpdf->Output($outputFilePath, 'F');
+        return True;
+    }
 }

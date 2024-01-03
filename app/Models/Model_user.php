@@ -191,6 +191,7 @@ class Model_user extends Model
     {
         return $this->table('user')
         ->where('level', 4)
+        ->orwhere('level',8)
         ->countAllResults();
     }
 

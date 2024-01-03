@@ -10,39 +10,42 @@
 <?= $this->section('isi') ?>
 
 <div class="row">
-    <div class="col-sm-auto mb-2">
-        <label for="absen_pilih">Export Excel (Download)</label>
-        <select onchange="javascript:location.href = this.value;" class="form-control js-example-basic-single" name="absen_pilih" id="absen_pilih" class="js-example-basic-single mb-2">
-            <option value="" disabled selected>Download...</option>
+    <!-- <div class="col-sm-auto mb-2">
+        <label for="exportSertifikat">Export Excel (Download)</label>
+        <select onchange="javascript:location.href = this.value;" class="form-control js-example-basic-single  mb-2" name="exportSertifikat" id="exportSertifikat">
+            <option value="" disabled selected>--Pilih--</option>
             <?php foreach ($list_periode as $key => $data) { ?>
-            <option value="/sertifikat/export?angkatan=<?= $data['periode_cetak'] ?>">Periode - <?= $data['periode_cetak'] ?> </option>
+            <option value="/sertifikat/export?angkatan=<?= $data['periode_cetak'] ?>">Download </option>
             <?php } ?>
         </select>
-    </div>
+    </div> -->
 
-    <div class="col-sm-auto ml-4 mb-2">
+    <!-- <div class="col-sm-auto ml-4 mb-2">
         <label for="angkatan_kelas">Pilih Periode Cetak Sertifikat</label>
         <select onchange="javascript:location.href = this.value;" class="form-control js-example-basic-single" name="periode_cetak" id="periode_cetak" class="js-example-basic-single mb-2">
             <?php foreach ($list_periode as $key => $data) { ?>
-            <option value="/sertifikat?periode=<?= $data['periode_cetak'] ?>" <?php if ($periode_pilih == $data['periode_cetak']) echo "selected"; ?>> <?= $data['periode_cetak'] ?> </option>
+            <option value="/sertifikat?periode=<?= $data['periode_cetak'] ?>" <?php if ($periode_pilih == $data['periode_cetak']) echo "selected"; ?> > <?= $data['periode_cetak'] ?> </option>
             <?php } ?>
         </select>
+    </div> -->
+
+    <!-- <a class="ml-5"> 
+        <button type="button" class="btn btn-success mb-3" data-toggle="modal" data-target="#importexcel" ><i class=" fa fa-file-excel"></i> Import File Excel</button>
+    </a> -->
+    <div class="col-sm-auto">
+        <a type="button" class="btn btn-success mb-3" href="/sertifikat/export?angkatan=1" ><i class="fa fa-file-excel"></i> Export</a>
     </div>
 
-    <a class="ml-5"> 
-        <button type="button" class="btn btn-success mb-3" data-toggle="modal" data-target="#importexcel" ><i class=" fa fa-file-excel"></i> Import File Excel</button>
-    </a>
-
     <div class="col-sm-auto">
-        <button type="button" class="btn btn-warning mb-3" onclick="AturSertifikat('')" ><i class="fa fa-screwdriver"></i> Pengaturan Pendaftaran</button>
+        <button type="button" class="btn btn-warning mb-3" onclick="AturSertifikat('')" ><i class="fa fa-screwdriver"></i> Pengaturan Menu Sertifikat</button>
     </div>
     
 </div>
 
-<p class="mt-1">Catatan :<br> 
+<!-- <p class="mt-1">Catatan :<br> 
     <i class="mdi mdi-information"></i> Status Cetak <b>"Proses"</b> = Sudah bayar dan input form tapi belum dikonfirmasi admin. <br>
     <i class="mdi mdi-information"></i> Status Cetak <b>"Terkonfirmasi"</b> = Sudah bayar sudah dikonfirmasi admin, hanya tinggal dilakukan proses pembuatan sertifikat dan upload link download. <br>
-</p>
+</p> -->
 
 <?php
 if (session()->getFlashdata('pesan_error')) {
@@ -75,11 +78,13 @@ if (session()->getFlashdata('pesan_sukses')) {
                 <th>NIS</th>
                 <th>Nama</th>
                 <th>Jenis <br> Kelamin</th>
-                <th>Sertifikat <br> Level</th>
-                <th>Waktu</th>
+                <th>Program</th>
+                <th>Tgl Sertifikat</th>
                 <th>Status <br> Sertifikat</th>
-                <th>Ketrangan & Link</th>
-                <th>Tindakan</th>
+                <th>Biaya</th>
+                <th>Transaksi ID</th>
+                <th>Keterangan</th>
+                <th></th>
             </tr>
         </thead>
 
@@ -93,35 +98,26 @@ if (session()->getFlashdata('pesan_sukses')) {
                     <td width="5%"><?= $data['nis'] ?></td>
                     <td width="10%"><?= $data['nama_peserta'] ?></td>
                     <td width="5%"><?= $data['jenkel'] ?></td>
-                    <td width="4%"><?= $data['sertifikat_level'] ?></td>
-                    <td width="4%">
-                        <p>Pengajuan : <?= $data['dt_ajuan'] ?></p> 
-                        <?php if($data['dt_konfirmasi'] == '1000-01-01 00:00:00') { ?>
-                            <p>Konfirmasi : </p>
-                        <?php } ?>
-                        <?php if($data['dt_konfirmasi'] != '1000-01-01 00:00:00') { ?>
-                            <p>Konfirmasi : <?= $data['dt_konfirmasi'] ?></p>
-                        <?php } ?>
-                    </td>
+                    <td width="4%"><?= $data['nama_program'] ?></td>
+                    <td width="4%"><?= $data['sertifikat_tgl'] ?></td>
                     <td width="5%">
-                        <?php if($data['status_cetak'] == 'Proses') { ?>
+                        <?php if($data['status'] == 0) { ?>
                             <button class="btn btn-warning btn-sm" disabled>Proses</button> 
                         <?php } ?>
-                        <?php if($data['status_cetak'] == 'Terkonfirmasi') { ?>
+                        <?php if($data['status'] == 1) { ?>
                             <button class="btn btn-success btn-sm" disabled>Terkonfirmasi</button> 
                         <?php } ?>
                     </td>
                     <td width="5%">Rp <?= rupiah($data['nominal_bayar_cetak']) ?></td>
-                    
+                    <td width="5%"><?= $data['bukti_bayar_cetak'] ?></td>
                     <td width="10%">
-                        Link: <a href="<?= $data['link_cetak'] ?>" class="btn btn-info"><i class="fa fa-file-download"></i></a> <br> <br>
-                        Ket: <?= $data['keterangan_cetak'] ?>
+                        <?= $data['keterangan_cetak'] ?>
                     </td>
                     <td width="5%"> 
-                        <?php if($data['status_cetak'] == 'Proses') { ?>
-                            <button class="btn btn-success" onclick="konfirmasi('<?= $data['sertifikat_id'] ?>')"> <i class="fa fa-check"></i> Konfirmasi</button> <br>
-                        <?php } ?>
-                            <button class="btn btn-warning mt-2" onclick="edit('<?= $data['sertifikat_id'] ?>')"> <i class="fa fa-edit"></i> Edit</button> 
+                            <?php if($data['status'] == 1) { ?>
+                                <button class="btn btn-info mt-2" onclick="modal('show','<?= $data['sertifikat_id'] ?>')"> <i class="mdi mdi-certificate"></i> e-Sertifikat</button> <br>
+                                <!-- <button class="btn btn-warning mt-2" onclick="modal('edit','<?= $data['sertifikat_id'] ?>')"> <i class="fa fa-edit"></i> Edit</button>  <br> -->
+                            <?php } ?>
                     </td>
                 </tr>
 
@@ -133,7 +129,7 @@ if (session()->getFlashdata('pesan_sukses')) {
 <div class="viewmodalkonfirmasi">
 </div>
 
-<div class="viewmodaledit">
+<div class="viewmodal">
 </div>
 
 <div class="viewmodalatur">
@@ -212,17 +208,19 @@ if (session()->getFlashdata('pesan_sukses')) {
         });
     }
 
-    function edit() {
+    function modal(form, sertifikat_id) {
         $.ajax({
             type: "post",
             url: "<?= site_url('/sertifikat/edit') ?>",
             data: {
+                form : form,
+                sertifikat_id : sertifikat_id
             },
             dataType: "json",
             success: function(response) {
                 if (response.sukses) {
-                    $('.viewmodaledit').html(response.sukses).show();
-                    $('#modaledit').modal('show');
+                    $('.viewmodal').html(response.sukses).show();
+                    $('#modal').modal('show');
                 }
             }
         });

@@ -108,6 +108,7 @@
             <li><a href="<?= base_url('pembayaran/add-spp') ?>">SPP</a></li>
             <li><a href="<?= base_url('pembayaran/add-lain') ?>">Infaq & Lain</a></li>
             <li><a href="<?= base_url('pembayaran/add-nonreg') ?>">Non-Reguler</a></li>
+            <li><a href="<?= base_url('pembayaran/add-sertifikat') ?>">Sertifikat</a></li>
         </ul>
     </li>
 
@@ -144,50 +145,50 @@
             <!-- <li><a href="<?= base_url('pembayaran/rekap-beasiswa') ?>">Beasiswa</a></li> -->
         </ul>
     </li>
-    <?php if ($user['level'] == 1) { ?>
-        <!-- <li class="menu-title">Program & Kelas</li>
-        <li>
-            <a href="<?= base_url('program-regular') ?>" class="waves-effect">
-                <i class="mdi mdi-application"></i>
-                <span> Program</span>
-            </a>
-        </li> -->
-        <li>
-            <a href="javascript:void(0);" class="waves-effect">
-                <i class="mdi mdi-application"></i>
-                <span> Program<span class="float-right menu-arrow"><i class="mdi mdi-chevron-right"></i></span></span>
-            </a>
-            <ul class="submenu">
-                <li><a href="<?= base_url('program-regular') ?>">Reguler</a></li>
-                <li><a href="<?= base_url('program-nonreg') ?>">Non-Reguler</a></li>
-            </ul>
-        </li>
-    <?php } ?>
-    <li>
-        <a href="javascript:void(0);" class="waves-effect">
-            <i class="mdi mdi-school"></i>
-            <span> Kelas<span class="float-right menu-arrow"><i class="mdi mdi-chevron-right"></i></span></span>
-        </a>
-        <ul class="submenu">
-            <li><a href="<?= base_url('kelas-regular') ?>">Reguler</a></li>
-            <li><a href="<?= base_url('kelas-bina') ?>">Pembinaan</a></li>
-            <li><a href="<?= base_url('kelas-nonreg') ?>">Non-Reguler</a></li>
-        </ul>
-    </li>
-    <?php if ($user['level'] == 1) { ?>
-        <li>
-            <a href="<?= base_url('level') ?>" class="waves-effect">
-                <i class="mdi mdi-account-badge-horizontal-outline"></i><span> Level</span>
-            </a>
-        </li>
-    <?php } ?>
-    <li>
-        <a href="<?= base_url('beasiswa') ?>" class="waves-effect">
-            <i class="mdi mdi-sale"></i><span> Beasiswa</span>
-        </a>
-    </li>
     
     <li class="menu-title">Akademik</li>
+        <?php if ($user['level'] == 1) { ?>
+            <!-- <li class="menu-title">Program & Kelas</li>
+            <li>
+                <a href="<?= base_url('program-regular') ?>" class="waves-effect">
+                    <i class="mdi mdi-application"></i>
+                    <span> Program</span>
+                </a>
+            </li> -->
+            <li>
+                <a href="javascript:void(0);" class="waves-effect">
+                    <i class="mdi mdi-application"></i>
+                    <span> Program<span class="float-right menu-arrow"><i class="mdi mdi-chevron-right"></i></span></span>
+                </a>
+                <ul class="submenu">
+                    <li><a href="<?= base_url('program-regular') ?>">Reguler</a></li>
+                    <li><a href="<?= base_url('program-nonreg') ?>">Non-Reguler</a></li>
+                </ul>
+            </li>
+        <?php } ?>
+        <li>
+            <a href="javascript:void(0);" class="waves-effect">
+                <i class="mdi mdi-school"></i>
+                <span> Kelas<span class="float-right menu-arrow"><i class="mdi mdi-chevron-right"></i></span></span>
+            </a>
+            <ul class="submenu">
+                <li><a href="<?= base_url('kelas-regular') ?>">Reguler</a></li>
+                <li><a href="<?= base_url('kelas-bina') ?>">Pembinaan</a></li>
+                <li><a href="<?= base_url('kelas-nonreg') ?>">Non-Reguler</a></li>
+            </ul>
+        </li>
+        <?php if ($user['level'] == 1) { ?>
+            <li>
+                <a href="<?= base_url('level') ?>" class="waves-effect">
+                    <i class="mdi mdi-account-badge-horizontal-outline"></i><span> Level</span>
+                </a>
+            </li>
+        <?php } ?>
+        <li>
+            <a href="<?= base_url('beasiswa') ?>" class="waves-effect">
+                <i class="mdi mdi-sale"></i><span> Beasiswa</span>
+            </a>
+        </li>
         <?php if ($user['level'] == 1 || $user['level'] == 2) { ?>
             <li>
                 <a href="javascript:void(0);" class="waves-effect">
@@ -253,7 +254,7 @@
         </a>
     </li> -->
 
-    <li class="menu-title"> Al-Haqq</li>
+    <li class="menu-title"> Pengaturan</li>
     <?php if ($user['level'] == 1) { ?>
         <li>
             <a href="<?= base_url('akun') ?>" class="waves-effect">

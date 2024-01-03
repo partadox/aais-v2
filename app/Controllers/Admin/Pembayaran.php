@@ -1134,6 +1134,60 @@ class Pembayaran extends BaseController
         return view('panel_admin/pembayaran/tambah/nonreg', $data);
     }
 
+    public function add_sertifikat()
+    {
+        $user         = $this->userauth();
+        $uri            = new \CodeIgniter\HTTP\URI(current_url(true));
+        $queryString    = $uri->getQuery();
+        $params         = [];
+        parse_str($queryString, $params);
+
+        if (count($params) == 2  && array_key_exists('type', $params) && array_key_exists('id', $params)) {
+            $type               = $params['type'];
+            $id                 = $params['id'];
+            $bSert              = $this->konfigurasi->biaya_sertifikat();
+            $biaya_sertifikat   = $bSert->biaya_sertifikat;
+
+            if ($type == 'nonaais') {
+                $peserta            = $this->peserta->find($id);
+                $data = [
+                    'title'             => 'Form Pembayaran Sertifikat',
+                    'user'              => $user,
+                    'form'              => $type,
+                    'peserta'           => $peserta,
+                    'program'           => $this->program->findAll(),
+                    'biaya_sertifikat'  => $biaya_sertifikat,
+                ];
+            } elseif($type == 'aais') {
+                $pk     = $this->peserta_kelas->find($id);
+                $peserta= $this->peserta->find($pk['data_peserta_id']);
+                $kelas  = $this->kelas->find($pk['data_kelas_id']);
+                $program= $this->program->find($kelas['program_id']);
+                $data = [
+                    'title'             => 'Form Pembayaran Sertifikat',
+                    'user'              => $user,
+                    'form'              => 'aais',
+                    'pk'                => $pk,
+                    'peserta'           => $peserta,
+                    'kelas'             => $kelas,
+                    'program'           => $program,
+                    'biaya_sertifikat'  => $biaya_sertifikat,
+                ];
+            }
+            
+        }else{
+            $data = [
+                'title'         => 'Tambah Pembayaran Sertifikat',
+                'user'          => $user,
+                'form'          => 'pilih',
+                'peserta'       => $this->peserta->list(),
+                'peserta_kelas' => $this->peserta_kelas->list_lulus()
+            ];
+        }
+        return view('panel_admin/pembayaran/tambah/sertifikat', $data);
+    }
+
+
     //backend
     public function save_daftar()
     {
@@ -2005,7 +2059,7 @@ class Pembayaran extends BaseController
                 'bukti_bayar'               => $namafoto_new,
                 'tgl_bayar'                 => $tgl,
                 'waktu_bayar'               => $waktu,
-                'keterangan_bayar'          => $jenis_bayar." Program Non-Reguler NIK ".$nk_id." PIC (".$kelas['nk_pic_name'].")"." - Ambil TM = ".$this->request->getVar('spp1'),
+                'keterangan_bayar'          => "Bayar Program Non-Reguler#".$jenis_bayar."#".$kelas['nk_id']."#".$program['nama_program']."#"."PIC (".$kelas['nk_pic_name'].")"."Ambil TM = ".$this->request->getVar('spp1'),
                 'keterangan_bayar_admin'    => $keterangan_admin,
                 'tgl_bayar_konfirmasi'      => $tgl,
                 'waktu_bayar_konfirmasi'    => $waktu,
@@ -2069,6 +2123,148 @@ class Pembayaran extends BaseController
 
             $this->session->setFlashdata($pesan , $pesanisi);
             return redirect()->to('/pembayaran/add-nonreg');
+        }
+    }
+
+    public function save_sertifikat()
+    {
+        $validation = \Config\Services::validation();
+
+        //Get Tgl Today
+        $tgl        = date("Y-m-d");
+        $waktu      = date("H:i:s");
+        $strwaktu   = date("H-i-s");
+
+        $valid = $this->validate([
+            'foto' => [
+                'rules' => 'uploaded[foto]|mime_in[foto,image/png,image/jpg,image/jpeg]|is_image[foto]',
+                'errors' => [
+                    'mime_in' => 'Harus gambar!'
+                ]
+            ]
+        ]);
+
+        if (!$valid) {
+            $this->session->setFlashdata('pesan_eror', 'ERROR! Harap Upload Bukti Bayar!');
+            return redirect()->to('/pembayaran/add-sertifikat');
+        } else {
+
+            $user               = $this->userauth();
+            $validator          = $user['username'];
+
+            //Get value
+            $typeForm               = $this->request->getVar('typeForm');
+            if ($typeForm == 'aais') {
+                $peserta_kelas_id   = $this->request->getVar('peserta_kelas_id');
+                $peserta_kelas      = $this->peserta_kelas->find($peserta_kelas_id);
+                $peserta_id         = $peserta_kelas['data_peserta_id'];
+                $kelas              = $this->kelas->find($peserta_kelas['data_kelas_id']);
+                $program_id         = $kelas['program_id'];
+                $sertifikat_aais    = $peserta_kelas['data_kelas_id'];
+            } elseif($typeForm == 'nonaais') {
+                $peserta_id         = $this->request->getVar('peserta_id');
+                $program_id         = $this->request->getVar('program_id');
+                $sertifikat_aais    = 1;
+            }
+
+            //Get inputan peserta, kelas, status bayar dan keterangan admin
+            $status_bayar_admin     = $this->request->getVar('status_bayar_admin');
+            $keterangan_admin       = str_replace(array("\r", "\n"), ' ',strtoupper($this->request->getVar('keterangan_admin')));
+
+            //Get Data Peserta-Kelas, Peserta, dan Data Kelas
+            $peserta                = $this->peserta->find($peserta_id);
+            $program                = $this->program->find($program_id);
+            
+            // get file foto from input
+            $filefoto           = $this->request->getFile('foto');
+            $ext                = $filefoto->guessExtension();
+            $namafoto_new       = $peserta['nis'].'-Sertifikat-'.date('Ymd-His').'.'.$ext;
+
+            //Get nominal (on rupiah curenncy format) input from view
+            $total              = $this->request->getVar('total');
+            $nominal_bayar_cetak= $this->request->getVar('nominal_bayar_cetak');
+            $get_bayar_infaq    = $this->request->getVar('infaq');
+
+            //Get Data from Input view
+            $bayar_infaq        = str_replace(str_split('Rp. .'), '', $get_bayar_infaq);
+
+            $data_bayar = [
+                'kelas_id'                  => "1",
+                'bayar_peserta_id'          => "1",
+                'bayar_tipe'                => 'sertifikat',
+                'status_bayar'              => 'Lunas',
+                'status_bayar_admin'        => $status_bayar_admin,
+                'status_konfirmasi'         => 'Terkonfirmasi',
+                'awal_bayar'                => $total,
+                'awal_bayar_infaq'          => $bayar_infaq,
+                'awal_bayar_spp1'           => $nominal_bayar_cetak,
+                'bukti_bayar'               => $namafoto_new,
+                'tgl_bayar'                 => $tgl,
+                'waktu_bayar'               => $waktu,
+                'keterangan_bayar'          => "Bayar Sertifikat#".strtoupper($typeForm)."#".$peserta['nis']." - ".$peserta['nama_peserta']."#".$program['nama_program'],
+                'keterangan_bayar_admin'    => $keterangan_admin,
+                'tgl_bayar_konfirmasi'      => $tgl,
+                'waktu_bayar_konfirmasi'    => $waktu,
+                'nominal_bayar'             => $total,
+                'validator'                 => $validator,
+            ];
+
+            $this->db->transStart();
+            $state[]    = $this->bayar->insert($data_bayar);
+            $state[]    = $filefoto->move('public/img/transfer/', $namafoto_new);
+            $bayar_id   = $this->bayar->insertID();
+
+            $newSertifikat = [
+                'sertifikat_peserta_id' => $peserta_id,
+                'sertifikat_program'    => $program_id,
+                'periode_cetak'         => 1,
+                'nomor_sertifikat'      => $this->generate_nomor_sertifikat($program['kode_program']),
+                'nominal_bayar_cetak'   => $nominal_bayar_cetak,
+                'status'                => 1,
+                'bukti_bayar_cetak'     => $bayar_id,
+                'keterangan_cetak'      => $keterangan_admin,
+                'sertifikat_tgl'        => date('Y-m-d'),
+                'sertifikat_file'       => $peserta['nis']."-".$program['kode_program']."-". date('YmdHis') . '.pdf',
+                'sertifikat_aais'       => $sertifikat_aais,
+            ];
+
+            $state[]        = $this->sertifikat->insert($newSertifikat);
+            $sertifikat_id  = $this->sertifikat->insertID();
+            $state[]        = $this->generate_sertifikat($sertifikat_id);           
+
+            if ($bayar_infaq != '0') {
+                $data_infaq = [
+                    'infaq_bayar_id'        => $bayar_id,
+                    'bayar_infaq'           => $bayar_infaq,
+                    'data_peserta_id_infaq' => '1'
+                ];
+                $state[]= $this->infaq->insert($data_infaq);
+            }
+
+            $aktivitas = 'Buat Data Pembayaran Sertifikat '.strtoupper($typeForm).', Peserta : ' . $peserta['nis'] . ' - ' . $peserta['nama_peserta'] . ' - Program ' . $program['nama_program'];
+
+            $state = json_encode($state);
+
+            if ($this->db->transStatus() === FALSE)
+            {
+                $this->db->transRollback();
+                /*--- Log ---*/
+                $this->logging('Admin', 'FAIL', $aktivitas);
+                $pesan      = 'pesan_eror';
+                $pesanisi   = 'Pembuatan Pembayaran oleh Admin Gagal '. $state;
+            }
+            else
+            {
+                $this->db->transComplete();
+                /*--- Log ---*/
+                $this->logging('Admin', 'BERHASIL', $aktivitas);
+                $pesan      = 'pesan_sukses';
+                $pesanisi   = 'Pembuatan Pembayaran oleh Admin Berhasil.';
+            }
+
+
+            $this->session->setFlashdata($pesan , $pesanisi);
+            return redirect()->to('/pembayaran/add-sertifikat');
         }
     }
 
