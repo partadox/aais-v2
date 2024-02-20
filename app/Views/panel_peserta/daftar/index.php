@@ -98,7 +98,7 @@
                     <?php if( $data['peserta_status'] == 1) { ?>
                         <br><b>ANDA SUDAH TERDAFTAR DI KELAS INI</b>
                     <?php } ?>
-                    <?php if($data['peserta_status'] == 0 && $data['kouta']-$data['peserta_kelas_count'] != '0') { ?>
+                    <?php if($data['peserta_status'] == 0 && $data['kouta']-$data['peserta_kelas_count'] > '0') { ?>
                         <input type='submit' class='btn btn-warning align-right btnsimpan' value='Daftar' onclick="daftar('<?= $data['kelas_id'] ?>')"></input>
                     <?php } ?>
                     
