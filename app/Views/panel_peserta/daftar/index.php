@@ -92,7 +92,7 @@
                     <input type="hidden" name="kelas_id" id="kelas_id" value="<?= $data['kelas_id'] ?>" />
                     <input type="hidden" name="biaya_daftar" id="biaya_daftar" value="<?= $data['biaya_daftar'] ?>" />
                     <input type="hidden" name="biaya_bulanan" id="biaya_bulanan" value="<?= $data['biaya_bulanan'] ?>" />
-                    <?php if( $data['kouta']-$data['peserta_kelas_count'] == '0') { ?>
+                    <?php if( $data['kouta']-$data['peserta_kelas_count'] <= '0') { ?>
                         <button type="button" class="btn btn-danger btn-sm" disabled>PENUH</button>
                     <?php } ?>
                     <?php if( $data['peserta_status'] == 1) { ?>
