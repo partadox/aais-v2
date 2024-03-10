@@ -36,7 +36,7 @@
                     </td>
                     <td width="20%"><?= shortdate_indo(substr($data['datetime'],0,10)) ?> <?= substr($data['datetime'],11,5) ?> WITA</td>
                     <td width="10%">
-                        <button type="button" class="btn btn-warning mb-2" onclick="cek('<?= $data['id'] ?>','<?= $data['key'] ?>')" >
+                        <button type="button" class="btn btn-warning mb-2" onclick="cek('<?= $data['id'] ?>','<?= $data['wa_key'] ?>')" >
                         <i class=" fa fa-sync mr-1"></i>Cek Session</button>
                         <?php if($data['status'] == '0') { ?>
                             <a href="https://91102.aais-alhaqq.or.id/start-session?session=aaisjan&scan=true" type="button" class="btn btn-success mb-2" target="_blank"><i class="fa fa-plus-square mr-1"></i>New Session</a>
