@@ -52,6 +52,7 @@ class UjianCustom extends BaseController
             $ucv_id        = $this->request->getVar('ucv_id');
             $program_id    = $this->request->getVar('program_id');
             $peserta_kelas_id= $this->request->getVar('peserta_kelas_id');
+            $kelasId       = $this->request->getVar('kelas_id');
 
             $ucv           = $this->ujian_custom_value->find($ucv_id);
             $peserta       = $this->peserta->find($ucv['ucv_peserta_id']);
@@ -71,6 +72,7 @@ class UjianCustom extends BaseController
                 'kelulusan' => $kelulusan,
                 'peserta'   => $peserta,
                 'kelas'     => $kelas,
+                'kelasId'   => $kelasId
             ];
             $msg = [
                 'sukses' => view('panel_admin/ujian_custom/modal', $data)
@@ -213,6 +215,7 @@ class UjianCustom extends BaseController
                 'status_peserta_kelas'   => $this->request->getVar('status_peserta_kelas'),
             ];
             $peserta_kelas_id   = $this->request->getVar('peserta_kelas_id');
+            $kelasId            = $this->request->getVar('kelasId');
             $this->peserta_kelas->update($peserta_kelas_id, $update_status);
 
             $peserta_id     = $this->request->getVar('peserta_id');
@@ -223,7 +226,7 @@ class UjianCustom extends BaseController
             $user           = $this->userauth();
 
             if ($user['level'] == '5' || $user['level'] == '6') {
-                $link = '/pengajar/ujian-custom?kelas='.$kelas_id;
+                $link = '/pengajar/ujian-custom?kelas='.$kelasId;
             } else {
                 $aktivitas = 'Ubah Data Ujian Custom, NIS : ' .   $peserta['nis'] .  ' Nama : '. $peserta['nama_peserta'];
                 $this->logging('Admin', 'BERHASIL', $aktivitas);

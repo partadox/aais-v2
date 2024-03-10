@@ -82,7 +82,7 @@
                         <?php } ?>
                     </td>
                     <td width="5%">
-                        <button type="button" class="mt-2 btn btn-warning"  onclick="info('<?=$data['ucv_id']?>', '<?=$kelas['program_id']?>', '<?=$data['peserta_kelas_id']?>')"><i class="fa fa-edit"></i></button>
+                        <button type="button" class="mt-2 btn btn-warning"  onclick="info('<?=$data['ucv_id']?>', '<?=$kelas['program_id']?>', '<?=$data['peserta_kelas_id']?>', '<?=$kelas['kelas_id']?>')"><i class="fa fa-edit"></i></button>
                     </td>
                     <?php for ($i=1; $i <= 10; $i++): ?>
                         <?php
@@ -122,7 +122,7 @@
         });
     });
 
-    function info(ucv_id, program_id, peserta_kelas_id) {
+    function info(ucv_id, program_id, peserta_kelas_id, kelas_id) {
         $.ajax({
             type: "post",
             url: "<?= site_url('/ujian-custom/modal') ?>",
@@ -130,6 +130,7 @@
                 ucv_id : ucv_id,
                 program_id: program_id,
                 peserta_kelas_id: peserta_kelas_id,
+                kelas_id: kelas_id
             },
             dataType: "json",
             success: function(response) {

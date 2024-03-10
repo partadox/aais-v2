@@ -45,6 +45,7 @@ use App\Models\Model_pekerjaan;
 use App\Models\Model_pengumuman;
 use App\Models\Model_ujian_custom_config;
 use App\Models\Model_ujian_custom_value;
+use App\Models\Model_wa;
 use CodeIgniter\Controller;
 use CodeIgniter\HTTP\CLIRequest;
 use CodeIgniter\HTTP\IncomingRequest;
@@ -140,6 +141,7 @@ abstract class BaseController extends Controller
         $this->nonreg_peserta       = new Model_nonreg_peserta();
         $this->nonreg_usaha         = new Model_nonreg_usaha();
         $this->nonreg_kelas_level   = new Model_nonreg_kelas_level();
+        $this->wa                   = new Model_wa();
         $this->db 			        = \Config\Database::connect();
     }
 

@@ -27,6 +27,7 @@
                 <input type="hidden" class="form-control" id="peserta_kelas_id" value="<?= $peserta_kelas_id ?>" name="peserta_kelas_id" readonly>
                 <input type="hidden" class="form-control" id="angkatan" value="<?= $kelas['angkatan_kelas'] ?>" name="angkatan" readonly>
                 <input type="hidden" class="form-control" id="program" value="<?= $kelas['program_id'] ?>" name="program" readonly>
+                <input type="hidden" id="kelasId" name="kelasId" value="<?= $kelasId ?>">
 
                 <div class="form-group row">
                     <label for="" class="col-sm-2 col-form-label">NIS - Nama</label>
@@ -109,7 +110,8 @@
                 peserta_kelas_id: $('input#peserta_kelas_id').val(),
                 angkatan: $('input#angkatan').val(),
                 program: $('input#program').val(),
-                status_peserta_kelas: $('select#status_peserta_kelas').val()
+                status_peserta_kelas: $('select#status_peserta_kelas').val(),
+                kelasId: $('input#kelasId').val(),
             };
 
             for (var i = 1; i <= 10; i++) {

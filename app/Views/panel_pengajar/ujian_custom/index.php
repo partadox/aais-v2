@@ -92,7 +92,7 @@ foreach ($peserta_onkelas as $data) :
                     </table>
                 </div>
                 <div class="card-footer">
-                    <button type="button" class="mt-2 btn btn-info"  onclick="info('<?=$data['ucv_id']?>', '<?=$kelas['program_id']?>', '<?=$data['peserta_kelas_id']?>')"><i class="fa fa-edit"></i> Input Nilai</button>
+                    <button type="button" class="mt-2 btn btn-info"  onclick="info('<?=$data['ucv_id']?>', '<?=$kelas['program_id']?>', '<?=$data['peserta_kelas_id']?>', '<?=$kelas['kelas_id']?>')"><i class="fa fa-edit"></i> Input Nilai</button>
                 </div>
             </div>
         </div>
@@ -110,7 +110,7 @@ foreach ($peserta_onkelas as $data) :
         });
     });
 
-    function info(ucv_id, program_id, peserta_kelas_id) {
+    function info(ucv_id, program_id, peserta_kelas_id, kelas_id) {
         $.ajax({
             type: "post",
             url: "<?= site_url('/ujian-custom/modal') ?>",
@@ -118,6 +118,7 @@ foreach ($peserta_onkelas as $data) :
                 ucv_id : ucv_id,
                 program_id: program_id,
                 peserta_kelas_id: peserta_kelas_id,
+                kelas_id: kelas_id
             },
             dataType: "json",
             success: function(response) {
