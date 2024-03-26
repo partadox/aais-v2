@@ -54,7 +54,242 @@
     $('.datepicker2').datepicker({
         format: 'yyyy-mm-dd',
     });
-    
+    <?php if ($user['level'] == 1 || $user['level'] == 2 || $user['level'] == 3) { ?>
+        $(document).ready(function() {
+            function updateWhatsAppStatus() {
+                $.ajax({
+                    url: "<?= site_url('/wa-status') ?>", 
+                    type: "GET",
+                    dataType: "json", 
+                    success: function(response) {
+                        $('#statusWa').text(response.statusShow);
+                        $('#datetimeWa').text(response.datetimeShow); 
+
+                        $('#divCreateWa').hide(); 
+                        $('#divTesWa').show(); 
+                        $('#divDelWa').hide(); 
+
+                        $('#waCek').attr('onclick', 'waCek(event, "' + response.id + '", "' + response.key + '");');
+                        $('#waDel').attr('onclick', 'waDel(event, "' + response.id + '");');
+
+                        if(response.status == "0") {
+                            // For status "0"
+                            $('.noti-icon-badge').removeClass('text-secondary').addClass('text-danger');
+                            $('.noti-icon-badge').html('<i class="mdi mdi-close-circle mdi-18px"></i>');
+                            // $('#divCreateWa').show(); 
+                            // $('#divTesWa').hide(); 
+                            // $('#divDelWa').hide(); 
+                        } else if(response.status == "1") {
+                            $('.noti-icon-badge').removeClass('text-secondary').addClass('text-success');
+                            $('.noti-icon-badge').html('<i class="mdi mdi-check-circle mdi-18px"></i>');
+                            // $('#divCreateWa').hide(); 
+                            // $('#divTesWa').show(); 
+                            // $('#divDelWa').show(); 
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error("An error occurred: " + status + ", " + error);
+                    }
+                });
+            }
+            updateWhatsAppStatus();
+        });
+
+        function waCek(event,id,key) {
+            event.preventDefault();
+            var loadingSpinner = Swal.fire({
+                title: 'Loading...',
+                text: 'Harap tunggu',
+                allowOutsideClick: false,
+                showConfirmButton: false,
+                willOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+            $.ajax({
+                type: "GET",
+                url: "https://91102.aais-alhaqq.or.id/sessions?key="+key,
+                dataType: "json",
+                success: function(response) {
+                    $.ajax({
+                        type: "POST",
+                        url: "<?= site_url('/wa-update') ?>",
+                        data: {
+                            id: id,
+                            response: response.data.length,
+                            modul: "cek"
+                        },
+                    });
+                    loadingSpinner.close();
+                    if (response.data.length === 0) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Session Expired',
+                            allowOutsideClick: false,
+                            showConfirmButton: true,
+                            confirmButtonColor: '#e1be0d',
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                window.location.reload();
+                            }
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Anda memiliki session WA',
+                            allowOutsideClick: false,
+                            showConfirmButton: true,
+                            confirmButtonColor: '#e1be0d',
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                window.location.reload();
+                            }
+                        });
+                    }
+                },
+                error: function(xhr, status, error) {
+                    // Handle errors here
+                }
+            });
+        }
+
+        function waDel(event,id) {
+            event.preventDefault();
+            Swal.fire({
+                title: "Hapus Session WA?",
+                icon: "warning",
+                showCancelButton: true,
+                cancelButtonText: "Batal",
+                confirmButtonText: "Hapus",
+                confirmButtonColor: '#fc0341',
+                allowOutsideClick: false,
+                }).then((result) => {
+                if (result.isConfirmed) {
+                    var loadingSpinner = Swal.fire({
+                        title: 'Loading...',
+                        text: 'Harap tunggu',
+                        allowOutsideClick: false,
+                        showConfirmButton: false,
+                        willOpen: () => {
+                            Swal.showLoading();
+                        }
+                    });
+                    $.ajax({
+                        type: "GET",
+                        url: "https://91102.aais-alhaqq.or.id/delete-session?session=aaisjan",
+                        dataType: "json",
+                        success: function(response) {
+                            $.ajax({
+                                type: "POST",
+                                url: "<?= site_url('/wa-update') ?>",
+                                data: {
+                                    id: id,
+                                    modul: "hapus"
+                                },
+                                success: function (response) {
+                                    // Close loading spinner
+                                    loadingSpinner.close();
+
+                                    if (response.success == false) {
+                                        Swal.fire({
+                                            title: "Error!",
+                                            text: "Terjadi kesalahan",
+                                            icon: "error",
+                                            allowOutsideClick: false,
+                                            showConfirmButton: true,
+                                            confirmButtonColor: '#e1be0d',
+                                            timer: 9000,
+                                        });
+                                    } 
+                                    
+                                    if (response.success == true) {
+                                        Swal.fire({
+                                            title: "Session Terhapus",
+                                            text: "Berhasil hapus session",
+                                            icon: "success",
+                                            allowOutsideClick: false,
+                                            showConfirmButton: true,
+                                            confirmButtonColor: '#e1be0d',
+                                        }).then((result) => {
+                                            if (result.isConfirmed) {
+                                                window.location.reload();
+                                            }
+                                        });
+                                    }
+                                },
+                                error: function (xhr, status, error) {
+                                    // Close loading spinner
+                                    loadingSpinner.close();
+                                    Swal.fire({
+                                        title: "Error!",
+                                        text: "Terjadi kesalahan dalam request.",
+                                        icon: "error",
+                                        allowOutsideClick: false,
+                                        showConfirmButton: true,
+                                        confirmButtonColor: '#e1be0d',
+                                        timer: 9000,
+                                    });
+                                }
+                            });
+                        },
+                        error: function(xhr, status, error) {
+                            // Handle errors here
+                        }
+                    });
+                }
+            });
+        }
+
+        function waTes(event) {
+            event.preventDefault();
+            Swal.fire({
+                title: "Masukan Nomor HP Anda, Format (628xxxxxx)",
+                input: "text",
+                inputAttributes: {
+                    autocapitalize: "off"
+                },
+                showCancelButton: true,
+                cancelButtonText: "Batal",
+                confirmButtonText: "Kirim WA Tes",
+                confirmButtonColor: '#e1be0d',
+                showLoaderOnConfirm: true,
+                preConfirm: async (phoneNumber) => {
+                    try {
+                        const url = `https://91102.aais-alhaqq.or.id/send-message?session=aaisjan&to=${phoneNumber}&text=WA-Gateway%0ATes%0AKirim%20Pesan`;
+                        const response = await fetch(url);
+                        if (!response.ok) {
+                            return Swal.showValidationMessage(`
+                            ${JSON.stringify(await response.json())}
+                            `);
+                    }
+
+                    return response.json();
+                    } catch (error) {
+                        Swal.showValidationMessage(`
+                            Request failed: ${error}
+                        `);
+                    }
+                },
+                allowOutsideClick: () => !Swal.isLoading()
+                }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire({
+                        title: "Pesan Terkirim",
+                        icon: 'success',
+                        text: "Harap Cek WA Anda",
+                        showCancelButton: false,
+                        showConfirmButton: true,
+                        confirmButtonText: "Tutup",
+                        confirmButtonColor: '#e1be0d',
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.reload();
+                        }
+                    });
+                }
+            });
+        }
+    <?php } ?>
 </script>
 
 <script>

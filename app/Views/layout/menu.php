@@ -11,10 +11,47 @@
             <a href="javascript:void(0);"> <?= $user['nama'] ?> </a>
         </li>
 
+        <?php if ($user['level'] == 1 || $user['level'] == 2 || $user['level'] == 3) { ?>
+            <li class="dropdown notification-list list-inline-item">
+                <div class="dropdown notification-list">
+                    <a class="dropdown-toggle nav-link arrow-none noti-icon" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false" style="color: green;">
+                        <i class="mdi mdi-whatsapp mdi-24px noti-icon"></i> <span class="noti-icon-badge text-secondary"><i class="mdi mdi-dots-horizontal mdi-18px"></i></span>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right profile-dropdown ">
+                        <!-- item-->
+                        <a class="dropdown-item">Session Status <br> <p id="statusWa"></p></a>
+                        <a class="dropdown-item">Cek Terakhir <br> <p id="datetimeWa"></p></a>
+                        
+                            <hr>
+                            <div class="d-flex justify-content-around">
+                                <?php if ($user['level'] == 1) { ?>
+                                    <div id="divCreateWa" style="display: none;">
+                                        <a href="https://91102.aais-alhaqq.or.id/start-session?session=aaisjan&scan=true" target="_blank"><i class="mdi mdi-qrcode"></i>New</a>
+                                    </div>
+                                <?php } ?>
+                                <div id="divCheckWa" style="display: block;">
+                                    <a id="waCek" href="#" onclick="waCek(event);"><i class="mdi mdi-refresh"></i>Cek</a>
+                                </div>
+                                <?php if ($user['level'] == 1) { ?>
+                                    <div id="divDelWa" style="display: block;">
+                                        <a id="waDel" href="#" onclick="waDel(event);"><i class="mdi mdi-delete"></i>Del</a>
+                                    </div>
+                                <?php } ?>
+                                <div id="divTesWa" style="display: block;">
+                                    <a id="waTes" href="#" onclick="waTes(event);"><i class="mdi mdi-email"></i>Tes</a>
+                                </div>
+                            </div>
+                        
+                    </div>
+                </div>
+            </li>
+        <?php } ?>
+
         <li class="dropdown notification-list list-inline-item">
             <div class="dropdown notification-list nav-pro-img">
                 <a class="dropdown-toggle nav-link arrow-none nav-user" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
-                    <img src="<?= base_url('public/img/user/' . $user['foto']) ?>" alt="user" class="rounded-circle">
+                    <!-- <img src="<?= base_url('public/img/user/' . $user['foto']) ?>" alt="user" class="rounded-circle"> -->
+                    <i class="mdi mdi-account-circle mdi-36px" style="color: orange;"></i>
                 </a>
                 <div class="dropdown-menu dropdown-menu-right profile-dropdown ">
                     <!-- item-->

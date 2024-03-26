@@ -63,4 +63,27 @@ class WaCabang extends BaseController
         }
     }
 
+    public function wa_status()
+    {
+        $wa = $this->wa->find("1");
+        if ($wa) {
+            if ($wa['status'] == 1) {
+                $statusShow = "AKTIF";
+            }else {
+                $statusShow = "NONAKTIF";
+            }
+            $responseData = [
+                'status'        => $wa['status'],
+                'statusShow'    => $statusShow,
+                'datetime'      => $wa['datetime'],
+                'datetimeShow'  => shortdate_indo(substr($wa['datetime'],0,10))." ".substr($wa['datetime'],11,5)." WITA",
+                'id'            => $wa['id'],
+                'key'           => $wa['wa_key']
+            ];
+            return $this->response->setJSON($responseData);
+        } else {
+            return $this->response->setStatusCode(404)->setJSON(['error' => 'Data not found']);
+        }
+    }
+
 }

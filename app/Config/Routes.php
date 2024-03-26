@@ -113,8 +113,9 @@ $routes->post('kantor/create', 'Admin\Kantor::create', ["filter" => "authweb:1"]
 $routes->post('kantor/update', 'Admin\Kantor::update', ["filter" => "authweb:1"]);
 
 /*--- WA Gateway Cabang ---*/
-$routes->get('wa-cabang', 'Admin\WaCabang::index', ["filter" => "authweb:1"]);
-$routes->post('wa-update', 'Admin\WaCabang::update', ["filter" => "authweb:1"]);
+$routes->get('wa-cabang', 'Admin\WaCabang::index', ["filter" => "authweb:1-2-3"]);
+$routes->get('wa-status', 'Admin\WaCabang::wa_status', ["filter" => "authweb:1-2-3"]);
+$routes->post('wa-update', 'Admin\WaCabang::update', ["filter" => "authweb:1-2-3"]);
 
 /*--- Payment ---*/
 $routes->get('payment-methode', 'Admin\Payment::index', ["filter" => "authweb:1"]);

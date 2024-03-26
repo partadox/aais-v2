@@ -265,4 +265,25 @@ abstract class BaseController extends Controller
         $mpdf->Output($outputFilePath, 'F');
         return True;
     }
+
+    public function sendWA($session, $to, $text) 
+    {
+        // API URL
+        $apiUrl = 'https://91102.aais-alhaqq.or.id/send-message?session='.$session.'&to='.$to.'&text='.urlencode($text);
+
+        // Initialize cURL session
+        $ch = curl_init($apiUrl);
+
+        // Set cURL options
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_HTTPGET, true); 
+
+        // Execute cURL session
+        $response = curl_exec($ch);
+
+        // Close cURL session
+        curl_close($ch);
+
+        return $response;
+    }
 }
