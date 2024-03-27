@@ -65,9 +65,9 @@
                         $('#statusWa').text(response.statusShow);
                         $('#datetimeWa').text(response.datetimeShow); 
 
-                        $('#divCreateWa').hide(); 
-                        $('#divTesWa').show(); 
-                        $('#divDelWa').hide(); 
+                        // $('#divCreateWa').hide(); 
+                        // $('#divTesWa').show(); 
+                        // $('#divDelWa').hide(); 
 
                         $('#waCek').attr('onclick', 'waCek(event, "' + response.id + '", "' + response.key + '");');
                         $('#waDel').attr('onclick', 'waDel(event, "' + response.id + '");');
@@ -76,15 +76,15 @@
                             // For status "0"
                             $('.noti-icon-badge').removeClass('text-secondary').addClass('text-danger');
                             $('.noti-icon-badge').html('<i class="mdi mdi-close-circle mdi-18px"></i>');
-                            // $('#divCreateWa').show(); 
-                            // $('#divTesWa').hide(); 
-                            // $('#divDelWa').hide(); 
+                            $('#divCreateWa').show(); 
+                            $('#divTesWa').hide(); 
+                            $('#divDelWa').hide(); 
                         } else if(response.status == "1") {
                             $('.noti-icon-badge').removeClass('text-secondary').addClass('text-success');
                             $('.noti-icon-badge').html('<i class="mdi mdi-check-circle mdi-18px"></i>');
-                            // $('#divCreateWa').hide(); 
-                            // $('#divTesWa').show(); 
-                            // $('#divDelWa').show(); 
+                            $('#divCreateWa').hide(); 
+                            $('#divTesWa').show(); 
+                            $('#divDelWa').show(); 
                         }
                     },
                     error: function(xhr, status, error) {
