@@ -26,7 +26,7 @@
                             <div class="d-flex justify-content-around">
                                 <?php if ($user['level'] == 1) { ?>
                                     <div id="divCreateWa" style="display: none;">
-                                        <a href="https://91102.aais-alhaqq.or.id/start-session?session=aaisjan&scan=true" target="_blank"><i class="mdi mdi-qrcode"></i>New</a>
+                                        <a href="https://wa-gateway.alhaqq.or.id/start-session?session=aaispusat&scan=true" target="_blank"><i class="mdi mdi-qrcode"></i>New</a>
                                     </div>
                                 <?php } ?>
                                 <div id="divCheckWa" style="display: block;">

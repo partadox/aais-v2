@@ -269,7 +269,7 @@ abstract class BaseController extends Controller
     public function sendWA($session, $to, $text) 
     {
         // API URL
-        $apiUrl = 'https://91102.aais-alhaqq.or.id/send-message?session='.$session.'&to='.$to.'&text='.urlencode($text);
+        $apiUrl = 'https://wa-gateway.alhaqq.or.id/send-message?session='.$session.'&to='.$to.'&text='.urlencode($text);
 
         // Initialize cURL session
         $ch = curl_init($apiUrl);

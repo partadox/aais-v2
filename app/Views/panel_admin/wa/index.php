@@ -39,7 +39,7 @@
                         <button type="button" class="btn btn-warning mb-2" onclick="cek('<?= $data['id'] ?>','<?= $data['wa_key'] ?>')" >
                         <i class=" fa fa-sync mr-1"></i>Cek Session</button>
                         <?php if($data['status'] == '0') { ?>
-                            <a href="https://91102.aais-alhaqq.or.id/start-session?session=aaisjan&scan=true" type="button" class="btn btn-success mb-2" target="_blank"><i class="fa fa-plus-square mr-1"></i>New Session</a>
+                            <a href="https://wa-gateway.alhaqq.or.id/start-session?session=aaispusat&scan=true" type="button" class="btn btn-success mb-2" target="_blank"><i class="fa fa-plus-square mr-1"></i>New Session</a>
                         <?php } ?>
                         <?php if($data['status'] == '1') { ?>
                             <button type="button" class="btn btn-danger mb-2"  onclick="hapus('<?= $data['id'] ?>')"><i class="fa fa-trash mr-1"></i>Hapus Sesion</button>
@@ -67,7 +67,7 @@
         });
         $.ajax({
             type: "GET",
-            url: "https://91102.aais-alhaqq.or.id/sessions?key="+key,
+            url: "https://wa-gateway.alhaqq.or.id/sessions?key="+key,
             dataType: "json",
             success: function(response) {
                 $.ajax({
@@ -134,7 +134,7 @@
                 });
                 $.ajax({
                     type: "GET",
-                    url: "https://91102.aais-alhaqq.or.id/delete-session?session=aaisjan",
+                    url: "https://wa-gateway.alhaqq.or.id/delete-session?session=aaispusat",
                     dataType: "json",
                     success: function(response) {
                         $.ajax({
@@ -212,7 +212,7 @@
             showLoaderOnConfirm: true,
             preConfirm: async (phoneNumber) => {
                 try {
-                    const url = `https://91102.aais-alhaqq.or.id/send-message?session=aaisjan&to=${phoneNumber}&text=WA-Gateway%0ATes%0AKirim%20Pesan`;
+                    const url = `https://wa-gateway.alhaqq.or.id/send-message?session=aaispusat&to=${phoneNumber}&text=WA-Gateway%0ATes%0AKirim%20Pesan`;
                     const response = await fetch(url);
                     if (!response.ok) {
                         return Swal.showValidationMessage(`

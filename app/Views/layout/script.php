@@ -108,7 +108,7 @@
             });
             $.ajax({
                 type: "GET",
-                url: "https://91102.aais-alhaqq.or.id/sessions?key="+key,
+                url: "https://wa-gateway.alhaqq.or.id/sessions?key="+key,
                 dataType: "json",
                 success: function(response) {
                     $.ajax({
@@ -176,7 +176,7 @@
                     });
                     $.ajax({
                         type: "GET",
-                        url: "https://91102.aais-alhaqq.or.id/delete-session?session=aaisjan",
+                        url: "https://wa-gateway.alhaqq.or.id/delete-session?session=aaispusat",
                         dataType: "json",
                         success: function(response) {
                             $.ajax({
@@ -255,7 +255,7 @@
                 showLoaderOnConfirm: true,
                 preConfirm: async (phoneNumber) => {
                     try {
-                        const url = `https://91102.aais-alhaqq.or.id/send-message?session=aaisjan&to=${phoneNumber}&text=WA-Gateway%0ATes%0AKirim%20Pesan`;
+                        const url = `https://wa-gateway.alhaqq.or.id/send-message?session=aaispusat&to=${phoneNumber}&text=WA-Gateway%0ATes%0AKirim%20Pesan`;
                         const response = await fetch(url);
                         if (!response.ok) {
                             return Swal.showValidationMessage(`
