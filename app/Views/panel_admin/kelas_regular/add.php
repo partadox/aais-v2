@@ -169,6 +169,12 @@
                         <div class="invalid-feedback errorStatuskelas"></div>
                     </div>
                 </div>
+                <div class="form-group row">
+                    <label for="" class="col-sm-4 col-form-label">Link WAG Kelas</label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control" id="wag" name="wag">
+                    </div>
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="submit" class="btn btn-primary btnsimpan"><i class="fa fa-share-square"></i> Simpan</button>
@@ -203,6 +209,7 @@
                     kouta: $('input#kouta').val(),
                     metode_kelas: $('select#metode_kelas').val(),
                     status_kelas: $('select#status_kelas').val(),
+                    wag: $('input#wag').val(),
                 },
                 dataType: "json",
                 beforeSend: function() {

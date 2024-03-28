@@ -318,6 +318,9 @@ $routes->post('pengumuman/create', 'Admin\Pengumuman::create', ["filter" => "aut
 $routes->post('pengumuman/update', 'Admin\Pengumuman::update', ["filter" => "authweb:1-2-3-7"]);
 $routes->post('pengumuman/delete', 'Admin\Pengumuman::delete', ["filter" => "authweb:1-2-3-7"]);
 
+$routes->post('pengumuman/wa-input', 'Admin\Pengumuman::wa_input', ["filter" => "authweb:1-2-3-7"]);
+$routes->post('pengumuman/wa-update', 'Admin\Pengumuman::wa_update', ["filter" => "authweb:1-2-3-7"]);
+
 /*--- Log ---*/
 $routes->get('log-admin', 'Admin\Log::admin', ["filter" => "authweb:1-2-3-7"]);
 $routes->get('log-user', 'Admin\Log::user', ["filter" => "authweb:1-2-3-7"]);

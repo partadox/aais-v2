@@ -65,7 +65,15 @@ class WaCabang extends BaseController
 
     public function wa_status()
     {
-        $wa = $this->wa->find("1");
+        //id
+		$uri            = new \CodeIgniter\HTTP\URI(current_url(true));
+        $queryString    = $uri->getQuery();
+        $params         = [];
+        parse_str($queryString, $params);
+
+        $id           = $params['id'];
+
+        $wa = $this->wa->find($id);
         if ($wa) {
             if ($wa['status'] == 1) {
                 $statusShow = "AKTIF";

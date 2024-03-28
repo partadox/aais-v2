@@ -167,6 +167,12 @@
                         <div class="invalid-feedback errorPenguji"></div>
                     </div>
                 </div>
+                <div class="form-group row">
+                    <label for="" class="col-sm-4 col-form-label">Link WAG Kelas</label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control" id="wag" name="wag" value="<?= $kelas['wag'] ?>">
+                    </div>
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="submit" class="btn btn-primary btnsimpan"><i class="fa fa-share-square"></i> Simpan</button>

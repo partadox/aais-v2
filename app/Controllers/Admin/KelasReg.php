@@ -298,6 +298,11 @@ class KelasReg extends BaseController
                     $status_kerja   = '0';
                 }
 
+                $wag = $this->request->getVar('wag');
+                if ($wag == "") {
+                    $wag == NULL;
+                }
+
                 //Create data absen pengajar
                 $dataabsen = [
                     'bckp_absen_pengajar_id'      => $this->request->getVar('pengajar_id'),
@@ -323,6 +328,7 @@ class KelasReg extends BaseController
                     'jumlah_peserta'        => '0',
                     'metode_kelas'          => $this->request->getVar('metode_kelas'),
                     'status_kelas'          => $this->request->getVar('status_kelas'),
+                    'wag'                   => $wag,
                 ];
                 $this->kelas->insert($simpandata);
                 $this->db->transComplete();
@@ -468,6 +474,11 @@ class KelasReg extends BaseController
                     $status_kerja   = '0';
                 }
 
+                $wag = $this->request->getVar('wag');
+                if ($wag == "") {
+                    $wag == NULL;
+                }
+
                 $penguji_id = $this->request->getVar('penguji_id');
                 if ($penguji_id == "" || $penguji_id == 'kosong') {
                     $penguji_id = NULL; 
@@ -492,6 +503,7 @@ class KelasReg extends BaseController
                     'metode_kelas'      => $this->request->getVar('metode_kelas'),
                     'status_kelas'      => $this->request->getVar('status_kelas'),
                     'penguji_id'        => $penguji_id,
+                    'wag'               => $wag,
                 ];
 
                 $kelas_id = $this->request->getVar('kelas_id');

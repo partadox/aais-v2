@@ -343,6 +343,7 @@ class Bayar extends BaseController
         $expired_waktu      = $this->request->getVar('expired_waktu');
         $expired_waktu      = \DateTime::createFromFormat('Y-m-d H:i:s', $expired_waktu);
         $data_kelas         = $this->kelas->find($kelas_id);
+        $peserta            = $this->peserta->find($peserta_id);
 
         $now                = new \DateTime();
 
@@ -454,6 +455,8 @@ class Bayar extends BaseController
             $this->db->transComplete();
             /*--- Log ---*/
             $this->logging('Peserta', 'BERHASIL', $aktivitas);
+            // $msgWA  = "Terima kasih ".$peserta['nama_peserta'].", ".$peserta['nis']." Anda telah melakukan input pembayaran pendaftaran pada Kelas ".$data_kelas['nama_kelas']." sebesar Rp ".rupiah($total)." pada ".date('d-m-Y H:i')." WITA "."\n\nHarap hubungi Admin jika dalam 2x24 jam (hari kerja) pembayaran anda belum dikonfirmasi."."\n\nAdmin\n628787890 0052\nLTTQ Al Haqq Balikpapan (Pusat)";
+            // $this->sendWA("aaispusat", $peserta['hp'],$msgWA);
         }
         
         return $this->response->setJSON(['success' => 'Your operation was successful.']);
@@ -473,6 +476,7 @@ class Bayar extends BaseController
         $expired_waktu      = \DateTime::createFromFormat('Y-m-d H:i:s', $expired_waktu);
         $data_kelas         = $this->kelas->find($kelas_id);
         $program_id         = $data_kelas['program_id'];
+        $peserta            = $this->peserta->find($peserta_id);
 
         $now                = new \DateTime();
 
@@ -617,6 +621,13 @@ class Bayar extends BaseController
             $this->db->transComplete();
             /*--- Log ---*/
             $this->logging('Peserta', 'BERHASIL', $aktivitas);
+            // if ($data_kelas['wag'] != null) {
+            //     $wag = "Silahkan bergabung dengan WA Group kelas pada link berikut ".$data_kelas['wag'];
+            // }else {
+            //     $wag = "Jika dalam waktu 5 hari kedepan Anda belum di masukkan kedalam Grup WA harap segera menghubungi Admin AAIS di 6287878900052";
+            // }
+            // $msgWA  = "Selamat ".$peserta['nama_peserta'].", NIS = ".$peserta['nis']."\n\n Anda berhasil mendaftar pada kelas: ".$data_kelas['nama_kelas']." menggunakan kode beasiswa pada ".date("d-m-Y H:i")." WITA\n\n$wag"."\n\nKami ucapkan selamat bergabung kedalam keluarga besar LTTQ Al Haqq Balikpapan (Pusat). Semoga Allah SWT memberikan Anda kekuatan, kesabaran dan keistiqomahan untuk mengikuti program di LTTQ Al Haqq Balikpapan (Pusat)"."."."\n\nAdmin\n6287878900052\nLTTQ Al Haqq Balikpapan (Pusat)";
+            // $this->sendWA("aaispusat", $peserta['hp'],$msgWA);
         }
         
         return $this->response->setJSON(['success' => 'Your operation was successful.']);

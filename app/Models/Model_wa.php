@@ -8,7 +8,7 @@ class Model_wa extends Model
 {
     protected $table      = 'wa';
     protected $primaryKey = 'id';
-    protected $allowedFields = ['session', 'status', 'datetime', 'wa_key'];
+    protected $allowedFields = ['session', 'status', 'datetime', 'wa_key', 'footer'];
 
     //backend
     public function list()

@@ -257,7 +257,7 @@ abstract class BaseController extends Controller
         $varTgl     = $sertifikat['sertifikat_tgl'];
         $tglSert    = "Balikpapan, ". date_indo($varTgl);
         $textWidth  = $mpdf->GetStringWidth($tglSert);
-        $centerX    = (($pageWidth - $textWidth)+15) / 2;
+        $centerX    = (($pageWidth - $textWidth)) / 2;
         $y          = 153;
         $mpdf->Text($centerX, $y, $tglSert); // Adjusted coordinates for certificate number
 
@@ -268,6 +268,9 @@ abstract class BaseController extends Controller
 
     public function sendWA($session, $to, $text) 
     {
+        if ($to[0] == '0') {
+            $to = '62' . substr($to, 1);
+        }
         // API URL
         $apiUrl = 'https://wa-gateway.alhaqq.or.id/send-message?session='.$session.'&to='.$to.'&text='.urlencode($text);
 

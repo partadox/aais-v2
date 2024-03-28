@@ -12,14 +12,16 @@
         </li>
 
         <?php if ($user['level'] == 1 || $user['level'] == 2 || $user['level'] == 3) { ?>
+            <!-- Pusat -->
             <li class="dropdown notification-list list-inline-item">
                 <div class="dropdown notification-list">
                     <a class="dropdown-toggle nav-link arrow-none noti-icon" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false" style="color: green;">
-                        <i class="mdi mdi-whatsapp mdi-24px noti-icon"></i> <span class="noti-icon-badge text-secondary"><i class="mdi mdi-dots-horizontal mdi-18px"></i></span>
+                        <i class="mdi mdi-whatsapp mdi-24px noti-icon"></i> <span class="noti-icon-badge wag-icon text-secondary"><i class="mdi mdi-dots-horizontal mdi-18px"></i></span>
                     </a>
                     <div class="dropdown-menu dropdown-menu-right profile-dropdown ">
                         <!-- item-->
-                        <a class="dropdown-item">Session Status <br> <p id="statusWa"></p></a>
+                        <a class="dropdown-item">WA Pusat</a>
+                        <a class="dropdown-item">Status <br> <p id="statusWa"></p></a>
                         <a class="dropdown-item">Cek Terakhir <br> <p id="datetimeWa"></p></a>
                         
                             <hr>
@@ -39,6 +41,41 @@
                                 <?php } ?>
                                 <div id="divTesWa" style="display: block;">
                                     <a id="waTes" href="#" onclick="waTes(event);"><i class="mdi mdi-email"></i>Tes</a>
+                                </div>
+                            </div>
+                        
+                    </div>
+                </div>
+            </li>
+            <!-- Cabang -->
+            <li class="dropdown notification-list list-inline-item">
+                <div class="dropdown notification-list">
+                    <a class="dropdown-toggle nav-link arrow-none noti-icon" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false" style="color: orange;">
+                        <i class="mdi mdi-whatsapp mdi-24px noti-icon"></i> <span class="noti-icon-badge wag-icon2 text-secondary"><i class="mdi mdi-dots-horizontal mdi-18px"></i></span>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right profile-dropdown ">
+                        <!-- item-->
+                        <a class="dropdown-item">WA Cabang</a>
+                        <a class="dropdown-item">Status <br> <p id="statusWa2"></p></a>
+                        <a class="dropdown-item">Cek Terakhir<br> <p id="datetimeWa2"></p></a>
+                        
+                            <hr>
+                            <div class="d-flex justify-content-around">
+                                <?php if ($user['level'] == 1) { ?>
+                                    <div id="divCreateWa2" style="display: none;">
+                                        <a href="https://wa-gateway.alhaqq.or.id/start-session?session=aaispusat&scan=true" target="_blank"><i class="mdi mdi-qrcode"></i>New</a>
+                                    </div>
+                                <?php } ?>
+                                <div id="divCheckWa2" style="display: block;">
+                                    <a id="waCek2" href="#" onclick="waCek2(event);"><i class="mdi mdi-refresh"></i>Cek</a>
+                                </div>
+                                <?php if ($user['level'] == 1) { ?>
+                                    <div id="divDelWa2" style="display: block;">
+                                        <a id="waDel2" href="#" onclick="waDel2(event);"><i class="mdi mdi-delete"></i>Del</a>
+                                    </div>
+                                <?php } ?>
+                                <div id="divTesWa2" style="display: block;">
+                                    <a id="waTes2" href="#" onclick="waTes2(event);"><i class="mdi mdi-email"></i>Tes</a>
                                 </div>
                             </div>
                         
