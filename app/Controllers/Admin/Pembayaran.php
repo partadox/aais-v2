@@ -1028,7 +1028,7 @@ class Pembayaran extends BaseController
                         $msgWA  = "Konfirmasi Pembayaran Kelas "."\n\nSelamat ".$data_peserta['nama_peserta'].", NIS = ".$data_peserta['nis']."\n\nPembayaran Anda atas kelas: ".$data_kelas['nama_kelas']." telah di konfirmasi oleh Admin pada ".date("d-m-Y H:i")." WITA\n\n$wag"."\n\nKami ucapkan selamat bergabung kedalam keluarga besar LTTQ Al Haqq Balikpapan (Pusat)".". Semoga Allah SWT memberikan Anda kekuatan, kesabaran dan keistiqomahan untuk mengikuti program di LTTQ Al Haqq Balikpapan (Pusat)"."\n\nAdmin\n6287878900052\nLTTQ Al Haqq Balikpapan (Pusat)";
                         $this->sendWA("aaispusat", $data_peserta['hp'],$msgWA);
                     } elseif($waJenis == "spp"){
-                        $msgWA  = "Konfirmasi Pembayaran Kelas "."\n\nSelamat ".$data_peserta['nama_peserta'].", NIS = ".$data_peserta['nis']."\n\nPembayaran Anda atas kelas: ".$data_kelas['nama_kelas']." telah di konfirmasi oleh Admin pada ".date("d-m-Y H:i")."\n\nKami ucapkan terimakasih atas pembayaran yang telah Anda lakukan."."\n\nAdmin\n6287878900052\nLTTQ Al Haqq Balikpapan (Pusat)";
+                        $msgWA  = "Konfirmasi Pembayaran Kelas "."\n\nSelamat ".$data_peserta['nama_peserta'].", NIS = ".$data_peserta['nis']."\n\nPembayaran Anda atas kelas: ".$data_kelas['nama_kelas']." telah di konfirmasi oleh Admin pada ".date("d-m-Y H:i")." WITA"."\n\nKami ucapkan terimakasih atas pembayaran yang telah Anda lakukan."."\n\nAdmin\n6287878900052\nLTTQ Al Haqq Balikpapan (Pusat)";
                         $this->sendWA("aaispusat", $data_peserta['hp'],$msgWA);
                     }
                 }
