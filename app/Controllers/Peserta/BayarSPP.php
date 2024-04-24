@@ -179,7 +179,7 @@ class BayarSPP extends BaseController
             $this->db->transComplete();
             /*--- Log ---*/
             $this->logging('Peserta', 'BERHASIL', $aktivitas);
-            $msgWA  = "Terima kasih ".$peserta['nama_peserta'].", ".$peserta['nis']." Anda telah melakukan input pembayaran SPP pada Kelas ".$data_kelas['name']." sebesar Rp ".rupiah($total)." pada ".date('d-m-Y H:i')." WITA"."\n\nHarap hubungi Admin jika dalam 2x24 jam (hari kerja) pembayaran anda belum dikonfirmasi."."\n\nAdmin\n6287878900052\nLTTQ Al Haqq Balikpapan (Pusat)";
+            $msgWA  = "Terima kasih ".$peserta['nama_peserta'].", ".$peserta['nis']." Anda telah melakukan input pembayaran SPP pada Kelas ".$data_kelas['nama_kelas']." sebesar Rp ".rupiah($total)." pada ".date('d-m-Y H:i')." WITA"."\n\nHarap hubungi Admin jika dalam 2x24 jam (hari kerja) pembayaran anda belum dikonfirmasi."."\n\nAdmin\n6287878900052\nLTTQ Al Haqq Balikpapan (Pusat)";
             $this->sendWA("aaispusat", $peserta['hp'],$msgWA);
         }
         
@@ -568,7 +568,7 @@ class BayarSPP extends BaseController
                 $this->db->transComplete();
                 /*--- Log ---*/
                 $this->logging('Peserta', 'BERHASIL', $aktivitas);
-                $msgWA  = "Terima kasih ".$peserta['name'].", ".$peserta['nis']." Anda telah melakukan input pembayaran SPP pada Kelas ".$data_kelas['name']." pada ".date('d-m-Y H:i')." WITA"." menggunakan kode beasiswa."."\n\nAdmin\n6287878900052\nLTTQ Al Haqq Balikpapan (Pusat)";
+                $msgWA  = "Terima kasih ".$peserta['nama_peserta'].", ".$peserta['nis']." Anda telah melakukan input pembayaran SPP pada Kelas ".$data_kelas['nama_kelas']." pada ".date('d-m-Y H:i')." WITA"." menggunakan kode beasiswa."."\n\nAdmin\n6287878900052\nLTTQ Al Haqq Balikpapan (Pusat)";
                 $this->sendWA("aaispusat", $peserta['hp'],$msgWA);
             }
             
