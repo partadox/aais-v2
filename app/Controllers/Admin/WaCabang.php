@@ -76,9 +76,9 @@ class WaCabang extends BaseController
         $wa = $this->wa->find($id);
         if ($wa) {
             if ($wa['status'] == 1) {
-                $statusShow = "AKTIF";
+                $statusShow = "CONNECT";
             }else {
-                $statusShow = "NONAKTIF";
+                $statusShow = "DISCONNECT";
             }
             $responseData = [
                 'status'        => $wa['status'],
@@ -94,4 +94,123 @@ class WaCabang extends BaseController
         }
     }
 
+    public function wa_check()
+    {
+        if ($this->request->isAJAX()) {
+            $idWA = $this->request->getVar('idWA');
+            $dataWA= $this->wa->find($idWA);
+            $curl = curl_init();
+
+            curl_setopt_array($curl, array(
+            CURLOPT_URL => 'https://api.fonnte.com/device',
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => 'POST',
+            CURLOPT_HTTPHEADER => array(
+                'Authorization: '.$dataWA['wa_key']
+            ),
+            ));
+
+            $response = curl_exec($curl);
+            $response = json_decode($response, true);
+            curl_close($curl);
+
+            if ($response["device_status"] === "connect") {
+                $status = 1;
+            } else {
+                $status = 0;
+            }
+            $updatedata = [
+                'status'     => $status,
+                'datetime'   => date('Y-m-d H:i:s'),
+            ];
+            $this->wa->update($idWA, $updatedata);
+            return $this->response->setJSON(
+                [
+                    'success' => $status,
+                    'code'    => '200',
+                    'data'    => [
+                        'title' => 'Berhasil',
+                    ],
+                ]);
+        }
+    }
+
+    public function wa_test()
+    {
+        $uri            = new \CodeIgniter\HTTP\URI(current_url(true));
+        $queryString    = $uri->getQuery();
+        $params         = [];
+        parse_str($queryString, $params);
+
+        if (count($params) == 1 && array_key_exists('to', $params)) {
+            $to     = $params['to'];
+            $idWA   = $this->request->getVar('idWA');
+            $dataWA = $this->wa->find($idWA);
+
+            $curl = curl_init();
+
+            curl_setopt_array($curl, array(
+                CURLOPT_URL => 'https://api.fonnte.com/send',
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_ENCODING => '',
+                CURLOPT_MAXREDIRS => 10,
+                CURLOPT_TIMEOUT => 0,
+                CURLOPT_FOLLOWLOCATION => true,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST => 'POST',
+                CURLOPT_POSTFIELDS => array(
+                    'target' => $to,
+                    'message' => "Test Kirim Pesan dari WA Gateway", 
+                    'countryCode' => '62', //optional
+                ),
+                CURLOPT_HTTPHEADER => array(
+                    'Authorization:'.$dataWA['wa_key'] //change TOKEN to your actual token
+                ),
+            ));
+
+            $response = curl_exec($curl);
+            $response = json_decode($response, true);
+            if (curl_errno($curl)) {
+                $error_msg = curl_error($curl);
+            }
+            curl_close($curl);
+            if ($response["status"] == true) {
+                return $this->response
+                ->setStatusCode(200) // Use setStatusCode for HTTP status code
+                ->setJSON([
+                    'success' => 1,
+                    'message' => 1 ? 'Operation successful.' : 'Operation failed.',
+                    'data'    => [
+                        'title' => 'Berhasil',
+                    ],
+                ]);
+            } else {
+                return $this->response
+                ->setStatusCode(200) // Use setStatusCode for HTTP status code
+                ->setJSON([
+                    'success' => 0,
+                    'message' => 0 ? 'Operation successful.' : 'Operation failed.',
+                    'data'    => [
+                        'title' => 'Gagal',
+                    ],
+                ]);
+            }
+            
+        } else {
+            return $this->response
+            ->setStatusCode(400) // Use setStatusCode for HTTP status code
+            ->setJSON([
+                'success' => 0,
+                'message' => 0 ? 'Operation successful.' : 'Operation failed.',
+                'data'    => [
+                    'title' => 'Berhasil',
+                ],
+            ]);
+        }
+    }
 }

@@ -26,21 +26,21 @@
                         
                             <hr>
                             <div class="d-flex justify-content-around">
-                                <?php if ($user['level'] == 1) { ?>
+                                <!-- <?php if ($user['level'] == 1) { ?>
                                     <div id="divCreateWa" style="display: none;">
                                         <a href="https://wa-gateway.alhaqq.or.id/start-session?session=aaispusat&scan=true" target="_blank"><i class="mdi mdi-qrcode"></i>New</a>
                                     </div>
-                                <?php } ?>
+                                <?php } ?> -->
                                 <div id="divCheckWa" style="display: block;">
-                                    <a id="waCek" href="#" onclick="waCek(event);"><i class="mdi mdi-refresh"></i>Cek</a>
+                                    <a id="waCek" href="#" onclick="waCek(1);"><i class="mdi mdi-refresh"></i>Cek</a>
                                 </div>
-                                <?php if ($user['level'] == 1) { ?>
+                                <!-- <?php if ($user['level'] == 1) { ?>
                                     <div id="divDelWa" style="display: block;">
                                         <a id="waDel" href="#" onclick="waDel(event);"><i class="mdi mdi-delete"></i>Del</a>
                                     </div>
-                                <?php } ?>
+                                <?php } ?> -->
                                 <div id="divTesWa" style="display: block;">
-                                    <a id="waTes" href="#" onclick="waTes(event);"><i class="mdi mdi-email"></i>Tes</a>
+                                    <a id="waTes" href="#" onclick="waTes(1);"><i class="mdi mdi-email"></i>Tes</a>
                                 </div>
                             </div>
                         
@@ -61,21 +61,21 @@
                         
                             <hr>
                             <div class="d-flex justify-content-around">
-                                <?php if ($user['level'] == 1) { ?>
+                                <!-- <?php if ($user['level'] == 1) { ?>
                                     <div id="divCreateWa2" style="display: none;">
                                         <a href="https://wa-gateway.alhaqq.or.id/start-session?session=aaispusat&scan=true" target="_blank"><i class="mdi mdi-qrcode"></i>New</a>
                                     </div>
-                                <?php } ?>
+                                <?php } ?> -->
                                 <div id="divCheckWa2" style="display: block;">
-                                    <a id="waCek2" href="#" onclick="waCek2(event);"><i class="mdi mdi-refresh"></i>Cek</a>
+                                    <a id="waCek2" href="#" onclick="waCek(2);"><i class="mdi mdi-refresh"></i>Cek</a>
                                 </div>
-                                <?php if ($user['level'] == 1) { ?>
+                                <!-- <?php if ($user['level'] == 1) { ?>
                                     <div id="divDelWa2" style="display: block;">
                                         <a id="waDel2" href="#" onclick="waDel2(event);"><i class="mdi mdi-delete"></i>Del</a>
                                     </div>
-                                <?php } ?>
+                                <?php } ?> -->
                                 <div id="divTesWa2" style="display: block;">
-                                    <a id="waTes2" href="#" onclick="waTes2(event);"><i class="mdi mdi-email"></i>Tes</a>
+                                    <a id="waTes2" href="#" onclick="waTes(2);"><i class="mdi mdi-email"></i>Tes</a>
                                 </div>
                             </div>
                         

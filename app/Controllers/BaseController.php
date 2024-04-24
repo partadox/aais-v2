@@ -271,22 +271,52 @@ abstract class BaseController extends Controller
         if ($to[0] == '0') {
             $to = '62' . substr($to, 1);
         }
-        // API URL
-        $apiUrl = 'https://wa-gateway.alhaqq.or.id/send-message?session='.$session.'&to='.$to.'&text='.urlencode($text);
+        // // API URL
+        // $apiUrl = 'https://wa-gateway.alhaqq.or.id/send-message?session='.$session.'&to='.$to.'&text='.urlencode($text);
 
-        // Initialize cURL session
-        $ch = curl_init($apiUrl);
+        // // Initialize cURL session
+        // $ch = curl_init($apiUrl);
 
-        // Set cURL options
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_HTTPGET, true); 
+        // // Set cURL options
+        // curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        // curl_setopt($ch, CURLOPT_HTTPGET, true); 
 
-        // Execute cURL session
-        $response = curl_exec($ch);
+        // // Execute cURL session
+        // $response = curl_exec($ch);
 
-        // Close cURL session
-        curl_close($ch);
+        // // Close cURL session
+        // curl_close($ch);
 
+        // return $response;
+
+        $dataWA = $this->wa->find(1);
+
+        $curl = curl_init();
+
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => 'https://api.fonnte.com/send',
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => 'POST',
+            CURLOPT_POSTFIELDS => array(
+                'target' => $to,
+                'message' => $text, 
+                'countryCode' => '62', //optional
+            ),
+            CURLOPT_HTTPHEADER => array(
+                'Authorization:'.$dataWA['wa_key'] //change TOKEN to your actual token
+            ),
+        ));
+
+        $response = curl_exec($curl);
+        if (curl_errno($curl)) {
+            $error_msg = curl_error($curl);
+        }
+        curl_close($curl);
         return $response;
     }
 }
