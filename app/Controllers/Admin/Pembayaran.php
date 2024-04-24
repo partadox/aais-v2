@@ -822,7 +822,7 @@ class Pembayaran extends BaseController
                 $status_bayar_admin = $this->request->getVar('status_bayar_admin');
                 $keterangan_admin   = strtoupper($this->request->getVar('keterangan_bayar_admin'));
 
-                $waJenis    = "SPP";
+                $waJenis    = "spp";
                 $data_kelas = $this->kelas->find($kelas_id);
 
                 //Get nominal (on rupiah curenncy format) input from view
