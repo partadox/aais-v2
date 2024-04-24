@@ -170,9 +170,10 @@
                     </div>
                 </div>
                 <div class="form-group row">
-                    <label for="" class="col-sm-4 col-form-label">Link WAG Kelas</label>
+                    <label for="" class="col-sm-4 col-form-label">Link WAG Kelas <code>*</code></label>
                     <div class="col-sm-8">
                         <input type="text" class="form-control" id="wag" name="wag">
+                        <div class="invalid-feedback errorWag"></div>
                     </div>
                 </div>
             </div>
@@ -324,6 +325,14 @@
                         } else {
                             $('#status_kelas').removeClass('is-invalid');
                             $('.errorStatuskelas').html('');
+                        }
+
+                        if (response.error.wag) {
+                            $('#wag').addClass('is-invalid');
+                            $('.errorWag').html(response.error.wag);
+                        } else {
+                            $('#wag').removeClass('is-invalid');
+                            $('.errorWag').html('');
                         }
 
                     } else {

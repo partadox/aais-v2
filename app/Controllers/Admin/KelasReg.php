@@ -269,6 +269,13 @@ class KelasReg extends BaseController
                         'required' => '{field} tidak boleh kosong',
                     ]
                 ],
+                'wag' => [
+                    'label' => 'wag',
+                    'rules' => 'required',
+                    'errors' => [
+                        'required' => '{field} tidak boleh kosong',
+                    ]
+                ],
             ]);
             if (!$valid) {
                 $msg = [
@@ -286,6 +293,7 @@ class KelasReg extends BaseController
                         'kouta'             => $validation->getError('kouta'),
                         'metode_kelas'      => $validation->getError('metode_kelas'),
                         'status_kelas'      => $validation->getError('status_kelas'),
+                        'wag'               => $validation->getError('wag'),
                     ]
                 ];
             } else {

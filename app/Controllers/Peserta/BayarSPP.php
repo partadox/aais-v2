@@ -179,8 +179,12 @@ class BayarSPP extends BaseController
             $this->db->transComplete();
             /*--- Log ---*/
             $this->logging('Peserta', 'BERHASIL', $aktivitas);
-            $msgWA  = "Terima kasih ".$peserta['nama_peserta'].", ".$peserta['nis']." Anda telah melakukan input pembayaran SPP pada Kelas ".$data_kelas['nama_kelas']." sebesar Rp ".rupiah($total)." pada ".date('d-m-Y H:i')." WITA"."\n\nHarap hubungi Admin jika dalam 2x24 jam (hari kerja) pembayaran anda belum dikonfirmasi."."\n\nAdmin\n6287878900052\nLTTQ Al Haqq Balikpapan (Pusat)";
-            $this->sendWA("aaispusat", $peserta['hp'],$msgWA);
+            $onWA = $this->wa_switch->find("peserta-bayar-spp-tf");
+            if ($onWA['status'] == 1) {
+                $dataWA = $this->wa->find(1);
+                $msgWA  = "Terima kasih ".$peserta['nama_peserta'].", ".$peserta['nis']." Anda telah melakukan input pembayaran SPP pada Kelas ".$data_kelas['nama_kelas']." sebesar Rp ".rupiah($total)." pada ".date('d-m-Y H:i')." WITA"."\n\nHarap hubungi Admin jika dalam 2x24 jam (hari kerja) pembayaran anda belum dikonfirmasi."."\n\nAdmin\n+628998049000\nLTTQ Al Haqq Balikpapan (Pusat)".$dataWA['footer'];
+                $this->sendWA("aaispusat", $peserta['hp'],$msgWA);
+            }
         }
         
         return $this->response->setJSON(['success' => 'Your operation was successful.']);
@@ -568,8 +572,12 @@ class BayarSPP extends BaseController
                 $this->db->transComplete();
                 /*--- Log ---*/
                 $this->logging('Peserta', 'BERHASIL', $aktivitas);
-                $msgWA  = "Terima kasih ".$peserta['nama_peserta'].", ".$peserta['nis']." Anda telah melakukan input pembayaran SPP pada Kelas ".$data_kelas['nama_kelas']." pada ".date('d-m-Y H:i')." WITA"." menggunakan kode beasiswa."."\n\nAdmin\n6287878900052\nLTTQ Al Haqq Balikpapan (Pusat)";
-                $this->sendWA("aaispusat", $peserta['hp'],$msgWA);
+                $onWA = $this->wa_switch->find("peserta-bayar-spp-bs");
+                if ($onWA['status'] == 1) {
+                    $dataWA = $this->wa->find(1);
+                    $msgWA  = "Terima kasih ".$peserta['nama_peserta'].", ".$peserta['nis']." Anda telah melakukan input pembayaran SPP pada Kelas ".$data_kelas['nama_kelas']." pada ".date('d-m-Y H:i')." WITA"." menggunakan kode beasiswa."."\n\nAdmin\n+628998049000\nLTTQ Al Haqq Balikpapan (Pusat)".$dataWA['footer'];
+                    $this->sendWA("aaispusat", $peserta['hp'],$msgWA);
+                }
             }
             
             return $this->response->setJSON(['success' => 'Your operation was successful.']);

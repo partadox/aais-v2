@@ -122,8 +122,12 @@ class Daftar extends BaseController
                 $this->db->transComplete();
                 /*--- Log ---*/
                 $this->logging('Peserta', 'BERHASIL', $aktivitas);
-                $msgWA  = "Konfirmasi Pemesanan Kelas "."\n\nSelamat ".$peserta['nama_peserta'].", NIS = ".$peserta['nis']." \n\nAnda telah melakukan pemesanan kelas: ".$kelas['nama_kelas']." pada ".date("d-m-Y H:i")." WITA"."\n\nUntuk selanjutnya harap segera login ke aplikasi Alhaqq Academic Information System (AAIS) untuk melakukan pembayaran atas pemesanan tersebut https://aais.alhaqq.or.id"."\n\nPemesanan Anda akan dibatalkan oleh sistem secara otomatis jika tidak terjadi pembayaran setelah melewati ".$dateTime->format('d-m-Y H:i')." WITA\n\nAdmin\n628787890 0052\nLTTQ Al Haqq Balikpapan (Pusat)";
-                $this->sendWA("aaispusat", $peserta['hp'],$msgWA);
+                $onWA = $this->wa_switch->find("peserta-pilih-kelas");
+                if ($onWA['status'] == 1) {
+                    $dataWA = $this->wa->find(1);
+                    $msgWA  = "Konfirmasi Pemesanan Kelas "."\n\nSelamat ".$peserta['nama_peserta'].", NIS = ".$peserta['nis']." \n\nAnda telah melakukan pemesanan kelas: ".$kelas['nama_kelas']." pada ".date("d-m-Y H:i")." WITA"."\n\nUntuk selanjutnya harap segera login ke aplikasi Alhaqq Academic Information System (AAIS) untuk melakukan pembayaran atas pemesanan tersebut https://aais.alhaqq.or.id"."\n\nPemesanan Anda akan dibatalkan oleh sistem secara otomatis jika tidak terjadi pembayaran setelah melewati ".$dateTime->format('d-m-Y H:i')." WITA\n\nAdmin\n+628998049000\nLTTQ Al Haqq Balikpapan (Pusat)".$dataWA['footer'];
+                    $this->sendWA("aaispusat", $peserta['hp'],$msgWA);
+                }
             }
 
             $msg = [

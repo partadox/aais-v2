@@ -3,65 +3,58 @@ namespace App\Controllers\Admin;
 
 use App\Controllers\BaseController;
 
-class WaCabang extends BaseController
+class WA extends BaseController
 {
     public function index()
     {
         $user  = $this->userauth();
         $data = [
-            'title' => 'Manajemen Session Fitur WA Gateway AAIS Cabang',
-            'list'  => $this->wa->list(),
+            'title' => 'WA Gateway',
+            'list'  => $this->wa_switch->list(),
             'user'  => $user,
         ];
 
         return view('panel_admin/wa/index', $data); 
     }
 
-    public function update()
+    public function wa_input_footer()
     {
         if ($this->request->isAJAX()) {
-            $modul = $this->request->getVar('modul');
-            if ($modul == "cek") {
-                $response = $this->request->getVar('response');
-                if ($response == 0) {
-                    $status = 0;
-                    $statusLog = 'EXPIRED';
-                } else {
-                    $status = 1;
-                    $statusLog = 'AKTIF';
-                }
-                
-                $updatedata = [
-                    'status'     => $status,
-                    'datetime'   => date('Y-m-d H:i:s'),
-                ];
-
-                $id = $this->request->getVar('id');
-                $this->wa->update($id, $updatedata);
-                $aktivitas = 'Cek session WA Cabang, Status = ' .  $statusLog;
-                $this->logging('Admin', 'BERHASIL', $aktivitas);
-            } elseif ($modul == "hapus") {
-                $updatedata = [
-                    'status'     => 0,
-                    'datetime'   => date('Y-m-d H:i:s'),
-                ];
-                $id = $this->request->getVar('id');
-                $this->wa->update($id, $updatedata);
-                $aktivitas = 'Hapus session WA Cabang';
-                $this->logging('Admin', 'BERHASIL', $aktivitas);
-                return $this->response->setJSON(
-					[
-						'success' => true,
-						'code'    => '200',
-						'data'    => [
-							'title' => 'Berhasil',
-						],
-						'message' => 'Pengisian Form Berhasil.' ,
-					]);
-            } 
-            
+            $user  = $this->userauth();
+            $data = [
+                'title' => 'Form Template Footer WA Notif',
+                'user'  => $user,
+                'wa'    => $this->wa->find(1),
+            ];
+            $msg = [
+                'sukses' => view('panel_admin/wa/footer', $data)
+            ];
+            echo json_encode($msg);
         }
     }
+
+    public function wa_input_action()
+    {
+        if ($this->request->isAJAX()) {
+            $user  = $this->userauth();
+            $code  = $this->request->getVar('code');
+            $modul = $this->request->getVar('modul');
+
+            $wa    = $this->wa_switch->find($code);
+            $data = [
+                'title' => $wa['name'],
+                'user'  => $user,
+                'wa'    => $wa,
+                'modul' => $modul,
+            ];
+            $msg = [
+                'sukses' => view('panel_admin/wa/action', $data)
+            ];
+            echo json_encode($msg);
+        }
+    }
+
+    /*--- BACKEND ---*/
 
     public function wa_status()
     {
@@ -211,6 +204,60 @@ class WaCabang extends BaseController
                     'title' => 'Berhasil',
                 ],
             ]);
+        }
+    }
+
+    public function wa_update_footer()
+    {
+        if ($this->request->isAJAX()) {
+            $footer = $this->request->getVar('footer');
+            if ($footer == "") {
+                $footer == NULL;
+            }
+            $update_data = [
+                'footer'       => $footer,
+            ];
+            
+            $this->wa->update(1, $update_data);
+
+            $aktivitas = 'Edit Data WA Notif Template Footer';
+            $this->logging('Admin', 'BERHASIL', $aktivitas);
+
+
+            $msg = [
+                'sukses' => [
+                    'link' => 'wa-gateway'
+                ]
+            ];
+            
+            echo json_encode($msg);
+        }
+    }
+
+    public function wa_update_action()
+    {
+        if ($this->request->isAJAX()) {
+            $code   = $this->request->getVar('code');
+            $status = $this->request->getVar('status');
+            $wa     = $this->wa_switch->find($code);
+
+            $update_data = [
+                'status'       => $status,
+            ];
+
+            $this->wa_switch->update($code, $update_data);
+
+            $aktivitas = 'Nonaktif WA Notif pada Fitur '.$wa['name'];
+            $this->logging('Admin', 'BERHASIL', $aktivitas);
+
+
+            $msg = [
+                'sukses' => [
+                    'link' => 'wa-gateway'
+                ]
+            ];
+            
+            echo json_encode($msg);
         }
     }
 }

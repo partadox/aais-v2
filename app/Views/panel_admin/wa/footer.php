@@ -8,12 +8,12 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <?= form_open('pengumuman/wa-update', ['class' => 'formtambah']) ?>
+            <?= form_open('wa-update-footer', ['class' => 'formtambah']) ?>
             <?= csrf_field(); ?>
             <div class="modal-body">
                 <label for="" class="col-form-label">Template Deskriptif Footer Pada Notif WA</label>
-                <div class="row ml-2">
-                    <textarea name="footer" id="footer" cols="100" rows="10"><?= $wa['footer'] ?></textarea>
+                <div class="row ml-2 mr-2">
+                    <textarea class="form-control" name="footer" id="footer" rows="10"><?= $wa['footer'] ?></textarea>
                 </div>
             </div>
             <div class="modal-footer">

@@ -112,12 +112,17 @@ $routes->post('kantor/edit', 'Admin\Kantor::edit', ["filter" => "authweb:1"]);
 $routes->post('kantor/create', 'Admin\Kantor::create', ["filter" => "authweb:1"]);
 $routes->post('kantor/update', 'Admin\Kantor::update', ["filter" => "authweb:1"]);
 
-/*--- WA Gateway Cabang ---*/
-$routes->get('wa-cabang', 'Admin\WaCabang::index', ["filter" => "authweb:1-2-3"]);
-$routes->get('wa-status', 'Admin\WaCabang::wa_status', ["filter" => "authweb:1-2-3"]);
-$routes->post('wa-update', 'Admin\WaCabang::update', ["filter" => "authweb:1-2-3"]);
-$routes->post('wa-check', 'Admin\WaCabang::wa_check', ["filter" => "authweb:1-2-3"]);
-$routes->post('wa-test', 'Admin\WaCabang::wa_test', ["filter" => "authweb:1-2-3"]);
+/*--- WA Gateway ---*/
+$routes->get('wa-gateway', 'Admin\WA::index', ["filter" => "authweb:1-2-3"]);
+$routes->get('wa-status', 'Admin\WA::wa_status', ["filter" => "authweb:1-2-3"]);
+$routes->post('wa-check', 'Admin\WA::wa_check', ["filter" => "authweb:1-2-3"]);
+$routes->post('wa-test', 'Admin\WA::wa_test', ["filter" => "authweb:1-2-3"]);
+
+$routes->post('wa-input-footer', 'Admin\WA::wa_input_footer', ["filter" => "authweb:1-2-3"]);
+$routes->post('wa-update-footer', 'Admin\WA::wa_update_footer', ["filter" => "authweb:1-2-3"]);
+
+$routes->post('wa-input-action', 'Admin\WA::wa_input_action', ["filter" => "authweb:1-2-3"]);
+$routes->post('wa-update-action', 'Admin\WA::wa_update_action', ["filter" => "authweb:1-2-3"]);
 
 /*--- Payment ---*/
 $routes->get('payment-methode', 'Admin\Payment::index', ["filter" => "authweb:1"]);
@@ -319,9 +324,6 @@ $routes->post('pengumuman/edit', 'Admin\Pengumuman::edit', ["filter" => "authweb
 $routes->post('pengumuman/create', 'Admin\Pengumuman::create', ["filter" => "authweb:1-2-3-7"]);
 $routes->post('pengumuman/update', 'Admin\Pengumuman::update', ["filter" => "authweb:1-2-3-7"]);
 $routes->post('pengumuman/delete', 'Admin\Pengumuman::delete', ["filter" => "authweb:1-2-3-7"]);
-
-$routes->post('pengumuman/wa-input', 'Admin\Pengumuman::wa_input', ["filter" => "authweb:1-2-3-7"]);
-$routes->post('pengumuman/wa-update', 'Admin\Pengumuman::wa_update', ["filter" => "authweb:1-2-3-7"]);
 
 /*--- Log ---*/
 $routes->get('log-admin', 'Admin\Log::admin', ["filter" => "authweb:1-2-3-7"]);

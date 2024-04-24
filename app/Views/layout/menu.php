@@ -340,11 +340,11 @@
                 <i class="mdi mdi-office-building"></i><span> Kantor & Cabang</span>
             </a>
         </li>
-        <!-- <li>
-            <a href="<?= base_url('wa-cabang') ?>" class="waves-effect">
-                <i class="mdi mdi-whatsapp"></i><span> WA Gateway Cabang</span>
+        <li>
+            <a href="<?= base_url('wa-gateway') ?>" class="waves-effect">
+                <i class="mdi mdi-whatsapp"></i><span> WA Gateway</span>
             </a>
-        </li> -->
+        </li>
         <li>
             <a href="<?= base_url('payment-methode') ?>" class="waves-effect">
                 <i class="mdi mdi-bank-transfer"></i><span> Metode Pembayaran</span>

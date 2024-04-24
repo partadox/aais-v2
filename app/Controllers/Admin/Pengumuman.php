@@ -48,22 +48,6 @@ class Pengumuman extends BaseController
         }
     }
 
-    public function wa_input()
-    {
-        if ($this->request->isAJAX()) {
-            $user  = $this->userauth();
-            $data = [
-                'title' => 'Form Template Footer WA Notif',
-                'user'  => $user,
-                'wa'    => $this->wa->find(1),
-            ];
-            $msg = [
-                'sukses' => view('panel_admin/pengumuman/wa', $data)
-            ];
-            echo json_encode($msg);
-        }
-    }
-
     /*--- BACKEND ---*/
 
     public function create()
@@ -206,33 +190,6 @@ class Pengumuman extends BaseController
                     'link' => 'pengumuman'
                 ]
             ];
-            echo json_encode($msg);
-        }
-    }
-
-    public function wa_update()
-    {
-        if ($this->request->isAJAX()) {
-            $footer = $this->request->getVar('footer');
-            if ($footer == "") {
-                $footer == NULL;
-            }
-            $update_data = [
-                'footer'       => $footer,
-            ];
-            
-            $this->wa->update(1, $update_data);
-
-            $aktivitas = 'Edit Data WA Notif Template Footer';
-            $this->logging('Admin', 'BERHASIL', $aktivitas);
-
-
-            $msg = [
-                'sukses' => [
-                    'link' => 'pengumuman'
-                ]
-            ];
-            
             echo json_encode($msg);
         }
     }

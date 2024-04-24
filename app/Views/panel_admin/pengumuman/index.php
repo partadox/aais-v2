@@ -12,10 +12,6 @@
     <button type="button" class="btn btn-primary mb-3" onclick="tambah('')" ><i class=" fa fa-plus-circle"></i> Tambah Pengumuman</button>
 </a>
 
-<a> 
-    <button type="button" class="btn btn-success mb-3" onclick="waTm('')" ><i class="mdi mdi-whatsapp"></i> Template Footer WA Notif</button>
-</a>
-
 
 <div class="table-responsive">
     <table id="datatable" class="table table-striped table-bordered wrap mt-5" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
@@ -84,9 +80,6 @@
 <div class="viewmodaldataedit">
 </div>
 
-<div class="viewmodalwa">
-</div>
-
 <script>
     $(document).ready(function(){
         $(".expandButton").click(function(){
@@ -105,22 +98,6 @@
                 if (response.sukses) {
                     $('.modalpengumumantambah').html(response.sukses).show();
                     $('#modalpengumumantambah').modal('show');
-                }
-            }
-        });
-    }
-
-    function waTm() {
-        $.ajax({
-            type: "post",
-            url: "<?= site_url('pengumuman/wa-input') ?>",
-            data: {
-            },
-            dataType: "json",
-            success: function(response) {
-                if (response.sukses) {
-                    $('.viewmodalwa').html(response.sukses).show();
-                    $('#modalwa').modal('show');
                 }
             }
         });
