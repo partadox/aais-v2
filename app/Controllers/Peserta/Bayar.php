@@ -458,7 +458,7 @@ class Bayar extends BaseController
             $onWA = $this->wa_switch->find("peserta-bayar-daftar-tf");
             if ($onWA['status'] == 1) {
                 $dataWA = $this->wa->find(1);
-                $msgWA  = "Terima kasih ".$peserta['nama_peserta'].", ".$peserta['nis']." Anda telah melakukan input pembayaran pendaftaran pada Kelas ".$data_kelas['nama_kelas']." sebesar Rp ".rupiah($total)." pada ".date('d-m-Y H:i')." WITA "."\n\nHarap hubungi Admin jika dalam 2x24 jam (hari kerja) pembayaran anda belum dikonfirmasi."."\n\nAdmin\n628787890 0052\nLTTQ Al Haqq Balikpapan (Pusat)".$dataWA['footer'];
+                $msgWA  = "Terima kasih ".$peserta['nama_peserta'].", ".$peserta['nis']." Anda telah melakukan input pembayaran pendaftaran pada Kelas ".$data_kelas['nama_kelas']." sebesar Rp ".rupiah($total)." pada ".date('d-m-Y H:i')." WITA "."\n\nHarap hubungi Admin jika dalam 2x24 jam (hari kerja) pembayaran anda belum dikonfirmasi."."\n\nAdmin\n+628998049000\nLTTQ Al Haqq Balikpapan (Pusat)".$dataWA['footer'];
                 $this->sendWA("aaispusat", $peserta['hp'],$msgWA);
             }
         }
