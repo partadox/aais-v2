@@ -35,7 +35,7 @@
                 <div class="form-group row">
                     <label for="" class="col-sm-4 col-form-label">Biaya Sertifikat <code>*</code></label>
                     <div class="col-sm-8">
-                        <input type="text" class="form-control"  value="<?= $konfig[0]['biaya_sertifikat'] ?>" id="biaya_sertifikat" name="biaya_sertifikat">
+                        <input type="text" class="form-control"  value="Rp. <?= rupiah($konfig[0]['biaya_sertifikat']) ?>" id="biaya_sertifikat" name="biaya_sertifikat">
                         <div class="invalid-feedback errorBiaya_sertifikat"></div>
                     </div>
                 </div>

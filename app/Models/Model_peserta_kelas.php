@@ -487,4 +487,19 @@ class Model_peserta_kelas extends Model
         ->getResultArray();
     }
 
+    //Sertifikat peserta - peserta panel
+    public function list_kelas_peserta_lulus($peserta_id)
+    {
+        return $this->table('peserta_kelas')
+            ->select('peserta.nis, peserta.nama_peserta, program_kelas.nama_kelas, program.nama_program, peserta_kelas.status_peserta_kelas, program_kelas.kelas_id, pengajar.nama_pengajar, program_kelas.angkatan_kelas')
+            ->join('peserta', 'peserta.peserta_id = peserta_kelas.data_peserta_id')
+            ->join('program_kelas', 'program_kelas.kelas_id = peserta_kelas.data_kelas_id')
+            ->join('program', 'program.program_id = program_kelas.program_id')
+            ->join('pengajar', 'pengajar.pengajar_id = program_kelas.pengajar_id')
+            ->where('data_peserta_id', $peserta_id)
+            ->where('status_peserta_kelas', 'LULUS')
+            // ->orderBy('angkatan_kelas', 'DESC')
+            ->get()->getResultArray();
+    }
+
 }

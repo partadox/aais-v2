@@ -79,11 +79,12 @@ if (session()->getFlashdata('pesan_sukses')) {
                 <th>Nama</th>
                 <th>Jenis <br> Kelamin</th>
                 <th>Program</th>
+                <th>Kelas</th>
                 <th>Tgl Sertifikat</th>
                 <th>Status <br> Sertifikat</th>
-                <th>Biaya</th>
+                <!-- <th>Biaya</th> -->
                 <th>Transaksi ID</th>
-                <th>Keterangan</th>
+                <!-- <th>Keterangan</th> -->
                 <th></th>
             </tr>
         </thead>
@@ -99,6 +100,14 @@ if (session()->getFlashdata('pesan_sukses')) {
                     <td width="10%"><?= $data['nama_peserta'] ?></td>
                     <td width="5%"><?= $data['jenkel'] ?></td>
                     <td width="4%"><?= $data['nama_program'] ?></td>
+                    <td width="4%">
+                        <?php if ($data['sertifikat_kelas'] != '1') {?>
+                            <?= $data['nama_kelas'] ?> <br>
+                            <button type="button" class="btn btn-info btn-sm" onclick="dataLulus('<?= $data['bukti_bayar_cetak'] ?>', '<?= $data['sertifikat_id']?>', '<?= $data['sertifikat_kelas']?>', 'kelas')" >
+                                <i class="fa fa-file"></i> Data Kelulusan
+                            </button>
+                        <?php }?>
+                    </td>
                     <td width="4%"><?= $data['sertifikat_tgl'] ?></td>
                     <td width="5%">
                         <?php if($data['status'] == 0) { ?>
@@ -108,11 +117,7 @@ if (session()->getFlashdata('pesan_sukses')) {
                             <button class="btn btn-success btn-sm" disabled>Terkonfirmasi</button> 
                         <?php } ?>
                     </td>
-                    <td width="5%">Rp <?= rupiah($data['nominal_bayar_cetak']) ?></td>
                     <td width="5%"><?= $data['bukti_bayar_cetak'] ?></td>
-                    <td width="10%">
-                        <?= $data['keterangan_cetak'] ?>
-                    </td>
                     <td width="5%"> 
                             <?php if($data['status'] == 1) { ?>
                                 <button class="btn btn-info mt-2" onclick="modal('show','<?= $data['sertifikat_id'] ?>')"> <i class="mdi mdi-certificate"></i> e-Sertifikat</button> <br>
@@ -175,6 +180,26 @@ if (session()->getFlashdata('pesan_sukses')) {
         }
         return false;
     });
+
+    function dataLulus(bayar_id, sertifikat_id, kelas_id, jenisModal) {
+        $.ajax({
+            type: "post",
+            url: "<?= site_url('pembayaran/input-konfirmasi-sertifikat') ?>",
+            data: {
+                bayar_id : bayar_id,
+                sertifikat_id : sertifikat_id,
+                kelas_id: kelas_id,
+                jenis : jenisModal,
+            },
+            dataType: "json",
+            success: function(response) {
+                if (response.sukses) {
+                    $('.viewmodal').html(response.sukses).show();
+                    $('#modal').modal('show');
+                }
+            }
+        });
+    }
 
     function AturSertifikat() {
         $.ajax({

@@ -232,11 +232,17 @@ $routes->post('pembayaran/update-bukti', 'Admin\Pembayaran::update_bukti', ["fil
 $routes->post('pembayaran/delete', 'Admin\Pembayaran::delete', ["filter" => "authweb:1-2-3-7"]);
 $routes->post('pembayaran/export', 'Admin\Pembayaran::export', ["filter" => "authweb:1-2-3-7"]);
 
+$routes->get('pembayaran-sertifikat', 'Admin\Pembayaran::index_pembayaran_sertifikat', ["filter" => "authweb:1-2-3-7"]);
+
 //Konfirmasi Bayar
 $routes->get('pembayaran/konfirmasi', 'Admin\Pembayaran::index_konfirmasi', ["filter" => "authweb:1-2-3-7"]);
 $routes->post('pembayaran/input-konfirmasi', 'Admin\Pembayaran::input_konfirmasi', ["filter" => "authweb:1-2-3-7"]);
 
 $routes->post('pembayaran/save-konfirmasi', 'Admin\Pembayaran::save_konfirmasi', ["filter" => "authweb:1-2-3-7"]);
+
+$routes->get('pembayaran/konfirmasi-sertifikat', 'Admin\Pembayaran::index_konfirmasi_sertifikat', ["filter" => "authweb:1-2-3-7"]);
+$routes->post('pembayaran/input-konfirmasi-sertifikat', 'Admin\Pembayaran::input_konfirmasi_sertifikat', ["filter" => "authweb:1-2-3-7"]);
+$routes->post('pembayaran/save-konfirmasi-sertifikat', 'Admin\Pembayaran::save_konfirmasi_sertifikat', ["filter" => "authweb:1-2-3-7"]);
 
 //Tambah Bayar
 $routes->get('pembayaran/add-daftar', 'Admin\Pembayaran::add_daftar', ["filter" => "authweb:1-2-3-7"]);
@@ -386,6 +392,12 @@ $routes->get('biodata-peserta', 'Peserta\Biodata::index', ["filter" => "authweb:
 $routes->post('biodata-peserta/edit-password', 'Peserta\Biodata::edit_password', ["filter" => "authweb:4"]);
 $routes->post('biodata-peserta/update', 'Peserta\Biodata::update', ["filter" => "authweb:4"]);
 $routes->post('biodata-peserta/update-password', 'Peserta\Biodata::update_password', ["filter" => "authweb:4"]);
+
+/*--- Sertifikat Peserta---*/
+$routes->get('peserta/sertifikat', 'Peserta\Sertifikat::index', ["filter" => "authweb:4"]);
+$routes->get('peserta/sertifikat-input', 'Peserta\Sertifikat::input', ["filter" => "authweb:4"]);
+$routes->post('peserta/sertifikat-show', 'Peserta\Sertifikat::show_sertifikat', ["filter" => "authweb:4"]);
+$routes->post('peserta/save-sertifikat', 'Peserta\Sertifikat::save_sertifikat', ["filter" => "authweb:4"]);
 
 /*
  * --------------------------------------------------------------------

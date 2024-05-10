@@ -536,7 +536,7 @@ class Sertifikat extends BaseController
             }
             
 
-            if ($data['sertifikat_aais'] == 1) {
+            if ($data['sertifikat_kelas'] == 1) {
                 $kelas = "-";
             } else {
                 $kelas = $data['nama_kelas'];

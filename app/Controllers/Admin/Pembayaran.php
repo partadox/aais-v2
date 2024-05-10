@@ -229,6 +229,18 @@ class Pembayaran extends BaseController
         }
     }
 
+    public function index_pembayaran_sertifikat()
+	{
+		$user           = $this->userauth(); // Return Array
+        $program_bayar  = $this->sertifikat->bayar_sertifikat();
+        $data = [
+            'title'    => 'Pembayaran Sertifikat',
+            'list'     => $program_bayar,
+            'user'     => $user,
+        ];
+        return view('panel_admin/pembayaran/index_sertifikat', $data);
+	}
+
     //Backend
 
     public function update()
@@ -706,6 +718,86 @@ class Pembayaran extends BaseController
         }
     }
 
+    public function index_konfirmasi_sertifikat()
+	{
+		$user           = $this->userauth(); // Return Array
+        $program_bayar  = $this->sertifikat->bayar_konfirmasi_sertifikat();
+        $data = [
+            'title'    => 'Konfirmasi Pembayaran Sertifikat',
+            'list'     => $program_bayar,
+            'user'     => $user,
+        ];
+        return view('panel_admin/pembayaran/konfirmasi/index_sertifikat', $data);
+	}
+
+    public function input_konfirmasi_sertifikat()
+    {
+        if ($this->request->isAJAX()) {
+
+            $jenis      = $this->request->getVar('jenis');
+
+            if ($jenis == "kelas") {
+                $kelas_id             = $this->request->getVar('kelas_id');
+                $sertifikat_id        = $this->request->getVar('sertifikat_id');
+                $sertifikat           = $this->sertifikat->find($sertifikat_id);
+
+                $get_peserta_kelas_id = $this->peserta_kelas->get_peserta_kelas_id($sertifikat['sertifikat_peserta_id'], $kelas_id);
+                $peserta_kelas_id     = $get_peserta_kelas_id->peserta_kelas_id;
+                $peserta_kelas        = $this->peserta_kelas->find($peserta_kelas_id);
+
+                $kelas                = $this->kelas->find($kelas_id);
+                $program              = $this->program->find($kelas['program_id']);
+                $ucc                  = NULL;
+                $pengajar             = $this->pengajar->find($kelas['pengajar_id']);
+
+                if ($program['ujian_custom_status'] == '1') {
+                    $ucc              = $this->ujian_custom_config->find($program['ujian_custom_id']); 
+                    $dataujian        = $this->ujian_custom_value->find_with_ujianid($peserta_kelas['data_ujian']);
+                    $ujian            = $dataujian[0];
+                } else {
+                    $ujian            = $this->ujian->find($peserta_kelas['data_ujian']);
+                }
+                $data = [
+                    'title'             => 'Data Kelulusan Peserta',
+                    'kelas'             => $kelas,
+                    'kelulusan'         => $peserta_kelas['status_peserta_kelas'],
+                    'ujian_status'      => $program['ujian_custom_status'],
+                    'nama_pengajar'     => $pengajar['nama_pengajar'],
+                    'ucc'               => $ucc,
+                    'ujian'             => $ujian,
+                    'program'           => $program,
+                    'jenis'             => $jenis,
+                    'peserta'           => $this->peserta->find($sertifikat['sertifikat_peserta_id']),
+                ];
+            } else {
+                $bayar_id   = $this->request->getVar('bayar_id');
+                $pembayaran = $this->bayar->find($bayar_id);
+
+                $kelas_id   = $this->request->getVar('kelas_id');
+                $kelas      = $this->kelas->find($kelas_id);
+
+                $sertifikat_id   = $this->request->getVar('sertifikat_id');
+                $sertifikat      = $this->sertifikat->find($sertifikat_id);
+
+                $data = [
+                    'title'               => 'Konfirmasi & Input Nominal Bayar',
+                    'bayar_id'            => $bayar_id,
+                    'kelas_id'            => $kelas_id,
+                    'pembayaran'          => $pembayaran,
+                    'kelas'               => $kelas,
+                    'sertifikat'          => $sertifikat,
+                    'jenis'               => $jenis,
+                ];
+            }
+
+            
+            $msg = [
+                'sukses' => view('panel_admin/pembayaran/konfirmasi/modal_sertifikat', $data)
+            ];
+            echo json_encode($msg);
+        }
+    }
+
     //backend
     public function save_konfirmasi()
     {
@@ -1048,6 +1140,123 @@ class Pembayaran extends BaseController
                     ]
                 ];
             }
+            echo json_encode($msg);
+        }
+    }
+
+    public function save_konfirmasi_sertifikat()
+    {
+        if ($this->request->isAJAX()) {
+            //Get Tgl Today
+            $tgl        = date("Y-m-d");
+            $waktu      = date("H:i:s");
+            $strwaktu   = date("H-i-s");
+
+            $get_angkatan       = $this->konfigurasi->angkatan_kuliah();
+            $angkatan           = $get_angkatan->angkatan_kuliah;
+
+            $get_periode       = $this->konfigurasi->periode_sertifikat();
+            $periode           = $get_periode->periode_sertifikat;
+
+            $user               = $this->userauth();
+            $validator          = $user['username'];
+
+            $bayar_id   = $this->request->getVar('bayar_id');
+            $pembayaran = $this->bayar->find($bayar_id);
+
+            $kelas_id   = $this->request->getVar('kelas_id');
+            $kelas      = $this->kelas->find($kelas_id);
+
+            $sertifikat_id   = $this->request->getVar('sertifikat_id');
+            $sertifikat      = $this->sertifikat->find($sertifikat_id);
+
+            $program    = $this->program->find($sertifikat['sertifikat_program']);
+            $peserta    = $this->peserta->find($sertifikat['sertifikat_peserta_id']);
+
+            //Get inputan peserta, kelas, status bayar dan keterangan admin
+            $status_bayar_admin     = $this->request->getVar('status_bayar_admin');
+            $keterangan_admin       = str_replace(array("\r", "\n"), ' ',strtoupper($this->request->getVar('keterangan_admin')));
+
+            if ($sertifikat['sertifikat_kelas'] == '1') {
+                $padaWA = " untuk kelulusan Program ".$program['nama_program'];
+            } else {
+                $padaWA = " untuk kelulusan Program ".$program['nama_program']." kelas ".$kelas['nama_kelas'];
+            }
+
+            $get_nominal_bayar = $this->request->getVar('nominal_bayar');
+            $get_bayar_spp1    = $this->request->getVar('bayar_spp1');
+            $get_bayar_infaq   = $this->request->getVar('bayar_infaq');
+
+            //Get Data from Input view
+            $nominal_bayar     = str_replace(str_split('Rp. .'), '', $get_nominal_bayar);
+            $bayar_spp1        = str_replace(str_split('Rp. .'), '', $get_bayar_spp1);
+            $bayar_infaq       = str_replace(str_split('Rp. .'), '', $get_bayar_infaq);
+
+            $dataSertifikat = [
+                'nomor_sertifikat'      => $this->generate_nomor_sertifikat($program['kode_program']),
+                'status'                => 1,
+                'keterangan_cetak'      => $keterangan_admin,
+                'sertifikat_tgl'        => date('Y-m-d'),
+                'sertifikat_file'       => $peserta['nis']."-".$program['kode_program']."-". date('YmdHis') . '.pdf',
+            ];
+
+            $state[]        = $this->sertifikat->update($sertifikat_id, $dataSertifikat);
+            $state[]        = $this->generate_sertifikat($sertifikat_id);  
+
+            $data_bayar = [
+                'status_bayar'              => 'Lunas',
+                'status_bayar_admin'        => $status_bayar_admin,
+                'status_konfirmasi'         => 'Terkonfirmasi',
+                'awal_bayar'                => $nominal_bayar,
+                'awal_bayar_infaq'          => $bayar_infaq,
+                'awal_bayar_spp1'           => $bayar_spp1,
+                'keterangan_bayar_admin'    => $keterangan_admin,
+                'tgl_bayar_konfirmasi'      => $tgl,
+                'waktu_bayar_konfirmasi'    => $waktu,
+                'nominal_bayar'             => $nominal_bayar,
+                'validator'                 => $validator,
+            ];
+
+            $this->db->transStart();
+            $state[]    = $this->bayar->update($bayar_id, $data_bayar);
+
+            if ($bayar_infaq != '0') {
+                $data_infaq = [
+                    'infaq_bayar_id'        => $bayar_id,
+                    'bayar_infaq'           => $bayar_infaq,
+                    'data_peserta_id_infaq' => '1'
+                ];
+                $state[]= $this->infaq->insert($data_infaq);
+            }
+
+            $aktivitas = 'Konfirmasi Pembayaran Sertifikat '.', Peserta : ' . $peserta['nis'] . ' - ' . $peserta['nama_peserta'] . ' - Program ' . $program['nama_program'];
+
+            $state = json_encode($state);
+
+            if ($this->db->transStatus() === FALSE)
+            {
+                $this->db->transRollback();
+                /*--- Log ---*/
+                $this->logging('Admin', 'FAIL', $aktivitas);
+            }
+            else
+            {
+                $this->db->transComplete();
+                /*--- Log ---*/
+                $this->logging('Admin', 'BERHASIL', $aktivitas);
+                $onWA = $this->wa_switch->find("admin-konfirmasi-sertifikat");
+                if ($onWA['status'] == 1) {
+                    $dataWA = $this->wa->find(1);
+                    $msgWA  = "Konfirmasi Pembayaran Sertifikat "."\n\n ".$peserta['nama_peserta'].", NIS = ".$peserta['nis']."\n\nPembayaran sertifikat Anda sebesar Rp ".rupiah($nominal_bayar)." ".$padaWA." telah dikonfirmasi oleh Admin pada ".date("d-m-Y H:i")." WITA"."\n\nKami ucapkan terimakasih atas pembayaran yang telah Anda lakukan."."\n\nAdmin\n+628998049000\nLTTQ Al Haqq Balikpapan (Pusat)".$dataWA['footer'];
+                    $this->sendWA("aaispusat", $peserta['hp'],$msgWA);
+                }
+            }
+            $msg = [
+                'sukses' => [
+                    'link' => '/pembayaran/konfirmasi-sertifikat'
+                ]
+            ];
+        
             echo json_encode($msg);
         }
     }
@@ -1572,7 +1781,7 @@ class Pembayaran extends BaseController
                     }else {
                         $wag = "Jika dalam waktu 5 hari kedepan Anda belum di masukkan kedalam Grup WA harap segera menghubungi Admin AAIS di +628998049000";
                     }
-                    $msgWA  = "Konfirmasi Pembayaran Kelas "."\n\nSelamat ".$peserta['nama_peserta'].", NIS = ".$peserta['nis']."\n\nPembayaran Anda atas kelas: ".$kelas['nama_kelas']." telah diinputkan dan dikonfirmasi oleh Admin pada ".date("d-m-Y H:i")." WITA\n\n$wag"."\n\nKami ucapkan selamat bergabung kedalam keluarga besar LTTQ Al Haqq Balikpapan (Pusat)".". Semoga Allah SWT memberikan Anda kekuatan, kesabaran dan keistiqomahan untuk mengikuti program di LTTQ Al Haqq Balikpapan (Pusat)"."\n\nAdmin\n+628998049000\nLTTQ Al Haqq Balikpapan (Pusat)".$dataWA['footer'];
+                    $msgWA  = "Konfirmasi Pembayaran Kelas "."\n\nSelamat ".$peserta['nama_peserta'].", NIS = ".$peserta['nis']."\n\nPembayaran Anda sebesar Rp ".rupiah($nominal_bayar)." atas kelas: ".$kelas['nama_kelas']." telah diinputkan dan dikonfirmasi oleh Admin pada ".date("d-m-Y H:i")." WITA\n\n$wag"."\n\nKami ucapkan selamat bergabung kedalam keluarga besar LTTQ Al Haqq Balikpapan (Pusat)".". Semoga Allah SWT memberikan Anda kekuatan, kesabaran dan keistiqomahan untuk mengikuti program di LTTQ Al Haqq Balikpapan (Pusat)"."\n\nAdmin\n+628998049000\nLTTQ Al Haqq Balikpapan (Pusat)".$dataWA['footer'];
                     $this->sendWA("aaispusat", $peserta['hp'],$msgWA);
                 }
             }
@@ -1857,7 +2066,7 @@ class Pembayaran extends BaseController
                 $onWA = $this->wa_switch->find("admin-input-spp");
                 if ($onWA['status'] == 1) {
                     $dataWA = $this->wa->find(1);
-                    $msgWA  = "Konfirmasi Pembayaran Kelas "."\n\nSelamat ".$peserta['nama_peserta'].", NIS = ".$peserta['nis']."\n\nPembayaran Anda atas kelas: ".$kelas['nama_kelas']." telah diinputkan dan dikonfirmasi oleh Admin pada ".date("d-m-Y H:i")."\n\nKami ucapkan terimakasih atas pembayaran yang telah Anda lakukan."."\n\nAdmin\n+628998049000\nLTTQ Al Haqq Balikpapan (Pusat)".$dataWA['footer'];
+                    $msgWA  = "Konfirmasi Pembayaran Kelas "."\n\nSelamat ".$peserta['nama_peserta'].", NIS = ".$peserta['nis']."\n\nPembayaran Anda sebesar Rp ".rupiah($nominal_bayar)." atas kelas: ".$kelas['nama_kelas']." telah diinputkan dan dikonfirmasi oleh Admin pada ".date("d-m-Y H:i")."\n\nKami ucapkan terimakasih atas pembayaran yang telah Anda lakukan."."\n\nAdmin\n+628998049000\nLTTQ Al Haqq Balikpapan (Pusat)".$dataWA['footer'];
                     $this->sendWA("aaispusat", $peserta['hp'],$msgWA);
                 }
             }
@@ -2179,6 +2388,12 @@ class Pembayaran extends BaseController
         $waktu      = date("H:i:s");
         $strwaktu   = date("H-i-s");
 
+        $get_angkatan       = $this->konfigurasi->angkatan_kuliah();
+        $angkatan           = $get_angkatan->angkatan_kuliah;
+
+        $get_periode       = $this->konfigurasi->periode_sertifikat();
+        $periode           = $get_periode->periode_sertifikat;
+
         $valid = $this->validate([
             'foto' => [
                 'rules' => 'uploaded[foto]|mime_in[foto,image/png,image/jpg,image/jpeg]|is_image[foto]',
@@ -2204,11 +2419,15 @@ class Pembayaran extends BaseController
                 $peserta_id         = $peserta_kelas['data_peserta_id'];
                 $kelas              = $this->kelas->find($peserta_kelas['data_kelas_id']);
                 $program_id         = $kelas['program_id'];
-                $sertifikat_aais    = $peserta_kelas['data_kelas_id'];
+                $program            = $this->program->find($program_id);
+                $sertifikat_kelas   = $peserta_kelas['data_kelas_id'];
+                $padaWA = " untuk kelulusan Program ".$program['nama_program']." kelas ".$kelas['nama_kelas'];
             } elseif($typeForm == 'nonaais') {
                 $peserta_id         = $this->request->getVar('peserta_id');
                 $program_id         = $this->request->getVar('program_id');
-                $sertifikat_aais    = 1;
+                $program            = $this->program->find($program_id);
+                $sertifikat_kelas   = 1;
+                $padaWA = " untuk kelulusan Program ".$program['nama_program'];
             }
 
             //Get inputan peserta, kelas, status bayar dan keterangan admin
@@ -2261,7 +2480,8 @@ class Pembayaran extends BaseController
             $newSertifikat = [
                 'sertifikat_peserta_id' => $peserta_id,
                 'sertifikat_program'    => $program_id,
-                'periode_cetak'         => 1,
+                'periode_cetak'         => $periode,
+                'angkatan_sertifikat'   => $angkatan,
                 'nomor_sertifikat'      => $this->generate_nomor_sertifikat($program['kode_program']),
                 'nominal_bayar_cetak'   => $nominal_bayar_cetak,
                 'status'                => 1,
@@ -2269,7 +2489,7 @@ class Pembayaran extends BaseController
                 'keterangan_cetak'      => $keterangan_admin,
                 'sertifikat_tgl'        => date('Y-m-d'),
                 'sertifikat_file'       => $peserta['nis']."-".$program['kode_program']."-". date('YmdHis') . '.pdf',
-                'sertifikat_aais'       => $sertifikat_aais,
+                'sertifikat_kelas'       => $sertifikat_kelas,
             ];
 
             $state[]        = $this->sertifikat->insert($newSertifikat);
@@ -2304,6 +2524,12 @@ class Pembayaran extends BaseController
                 $this->logging('Admin', 'BERHASIL', $aktivitas);
                 $pesan      = 'pesan_sukses';
                 $pesanisi   = 'Pembuatan Pembayaran oleh Admin Berhasil.';
+                $onWA = $this->wa_switch->find("admin-input-sertifikat");
+                if ($onWA['status'] == 1) {
+                    $dataWA = $this->wa->find(1);
+                    $msgWA  = "Konfirmasi Pembayaran Sertifikat "."\n\n ".$peserta['nama_peserta'].", NIS = ".$peserta['nis']."\n\nPembayaran sertifikat Anda sebesar Rp ".rupiah($total)." ".$padaWA." telah diinputkan dan dikonfirmasi oleh Admin pada ".date("d-m-Y H:i")." WITA"."\n\nKami ucapkan terimakasih atas pembayaran yang telah Anda lakukan."."\n\nAdmin\n+628998049000\nLTTQ Al Haqq Balikpapan (Pusat)".$dataWA['footer'];
+                    $this->sendWA("aaispusat", $peserta['hp'],$msgWA);
+                }
             }
 
 

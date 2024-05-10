@@ -183,7 +183,7 @@ abstract class BaseController extends Controller
 
     public function generate_nomor_sertifikat($kodeProgram)
     {
-        $last           = $this->sertifikat->orderBy('sertifikat_id', 'desc')->first();  
+        $last           = $this->sertifikat->where('status','1')->orderBy('sertifikat_id', 'desc')->first();  
         if ($last != NULL) {
             $part       = explode("/", $last['nomor_sertifikat']); 
             $nomor_urut = $part[0];

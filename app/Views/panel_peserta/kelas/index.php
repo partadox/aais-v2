@@ -45,6 +45,15 @@
                             <?php if($data['metode_kelas'] == 'OFFLINE') { ?>
                                 <span class="badge badge-info">OFFLINE</span>
                             <?php } ?><br>
+                            <?php if($data['status_peserta_kelas'] == "LULUS") { ?>
+                                <strong>Status Kelulusan: </strong> <button class="btn btn-success btn-sm mb-2" disabled>LULUS</button> <br>
+                            <?php } ?>
+                            <?php if($data['status_peserta_kelas'] == "BELUM LULUS") { ?>
+                                <strong>Status Kelulusan: </strong> <button class="btn btn-secondary btn-sm mb-2" disabled>BELUM LULUS</button> <br>
+                            <?php } ?>
+                            <?php if($data['status_peserta_kelas'] == "MENGULANG") { ?>
+                                <strong>Status Kelulusan: </strong> <button class="btn btn-warning btn-sm mb-2" disabled>MENGULANG</button> <br>
+                            <?php } ?>
                             <hr>
                             <?php 
                                 $totalBiaya = $data['biaya_daftar'] + $data['biaya_program'];

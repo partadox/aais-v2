@@ -140,11 +140,11 @@
             <i class="mdi mdi-school"></i> <span> Kelas </span>
         </a>
     </li>
-    <!-- <li>
-        <a href="<?= base_url('peserta-sertifikat') ?>" class="waves-effect">
+    <li>
+        <a href="<?= base_url('peserta/sertifikat') ?>" class="waves-effect">
             <i class="mdi mdi-certificate"></i> <span> Sertifikat</span>
         </a>
-    </li> -->
+    </li>
     <li>
         <a href="<?= base_url('bayar/riwayat') ?>" class="waves-effect">
             <i class="mdi mdi-history"></i> <span> Riwayat Pembayaran </span>
@@ -187,11 +187,22 @@
     </li>
 
     <li>
+        <a href="javascript:void(0);" class="waves-effect">
+            <i class="mdi mdi-cash-usd"></i>
+            <span> Konfirmasi Bayar <span class="float-right menu-arrow"><i class="mdi mdi-chevron-right"></i></span></span>
+        </a>
+        <ul class="submenu">
+            <li><a href="<?= base_url('pembayaran/konfirmasi') ?>">Pendaftaran & SPP</a></li>
+            <li><a href="<?= base_url('pembayaran/konfirmasi-sertifikat') ?>">Sertifikat</a></li>
+        </ul>
+    </li>
+
+    <!-- <li>
         <a href="<?= base_url('pembayaran/konfirmasi') ?>" class="waves-effect">
             <i class="mdi mdi-cash-usd"></i>
             <span> Konfirmasi Bayar</span>
         </a>
-    </li>
+    </li> -->
 
     <!-- <li>
         <a href="<?= base_url('sertifikat/konfirmasi') ?>" class="waves-effect">
@@ -200,11 +211,22 @@
         </a>
     </li> -->
 
-    <li>
+    <!-- <li>
         <a href="<?= base_url('pembayaran') ?>" class="waves-effect">
             <i class="mdi mdi-cash-register"></i>
             <span> Transaksi Bayar</span>
         </a>
+    </li> -->
+
+    <li>
+        <a href="javascript:void(0);" class="waves-effect">
+            <i class="mdi mdi-cash-register"></i>
+            <span> Transaksi Bayar <span class="float-right menu-arrow"><i class="mdi mdi-chevron-right"></i></span></span>
+        </a>
+        <ul class="submenu">
+            <li><a href="<?= base_url('pembayaran') ?>">Pendaftaran & SPP</a></li>
+            <li><a href="<?= base_url('pembayaran-sertifikat') ?>">Sertifikat</a></li>
+        </ul>
     </li>
 
     <li>
