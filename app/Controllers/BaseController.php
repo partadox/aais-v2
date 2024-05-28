@@ -273,6 +273,13 @@ abstract class BaseController extends Controller
         if ($to[0] == '0') {
             $to = '62' . substr($to, 1);
         }
+
+        $countryCode ="62";
+        if (substr($to, 0, 2) == "62" || substr($to, 0, 2) == "08") {
+            $countryCode ="62";
+        } else {
+            $countryCode = substr($to, 0, 2);
+        }
         // // API URL
         // $apiUrl = 'https://wa-gateway.alhaqq.or.id/send-message?session='.$session.'&to='.$to.'&text='.urlencode($text);
 
@@ -307,7 +314,7 @@ abstract class BaseController extends Controller
             CURLOPT_POSTFIELDS => array(
                 'target' => $to,
                 'message' => $text, 
-                'countryCode' => '62', //optional
+                'countryCode' => $countryCode, //optional
             ),
             CURLOPT_HTTPHEADER => array(
                 'Authorization:'.$dataWA['wa_key'] //change TOKEN to your actual token

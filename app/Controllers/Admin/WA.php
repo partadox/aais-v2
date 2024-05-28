@@ -145,6 +145,13 @@ class WA extends BaseController
             $idWA   = $this->request->getVar('idWA');
             $dataWA = $this->wa->find($idWA);
 
+            $countryCode ="62";
+            if (substr($to, 0, 2) == "62" || substr($to, 0, 2) == "08") {
+                $countryCode ="62";
+            } else {
+                $countryCode = substr($to, 0, 2);
+            }
+
             $curl = curl_init();
 
             curl_setopt_array($curl, array(
@@ -159,7 +166,7 @@ class WA extends BaseController
                 CURLOPT_POSTFIELDS => array(
                     'target' => $to,
                     'message' => "Test Kirim Pesan dari WA Gateway", 
-                    'countryCode' => '62', //optional
+                    'countryCode' => $countryCode, //optional
                 ),
                 CURLOPT_HTTPHEADER => array(
                     'Authorization:'.$dataWA['wa_key'] //change TOKEN to your actual token

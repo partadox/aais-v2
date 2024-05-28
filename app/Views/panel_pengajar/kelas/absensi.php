@@ -52,7 +52,7 @@ if (session()->getFlashdata('pesan_sukses')) {
 }
 ?>
 
-<div class="table-responsive">
+<div class="table">
     <table class="table table-striped table-bordered nowrap mt-1" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
         <thead>
             <tr>
@@ -114,7 +114,7 @@ if (session()->getFlashdata('pesan_sukses')) {
 
 <h5 class="mt-3"> <u> Absensi dan Catatan Pengajar</u></h5>
 
-<div class="table-responsive">
+<div class="table">
     <table class="table table-striped table-bordered nowrap mt-1" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
         <thead>
             <tr>

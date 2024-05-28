@@ -152,7 +152,7 @@
                 dataType: "json",
                 success: function(response) {
                     loadingSpinner.close();
-                    if (response.response === 0) {
+                    if (response.success === 0) {
                         Swal.fire({
                             icon: 'error',
                             title: 'Device Disconnect',
