@@ -142,8 +142,21 @@ class UjianCustom extends BaseController
             $data 		= [];
             $no 		= $this->request->getPost('start');
 
+            // Menghapus duplikasi berdasarkan ucv_ujian_id
+            $temp_array = array();
+            $key_array = array();
 
-            foreach ($lists as $list) {
+            foreach ($lists as $val) {
+                if (!in_array($val->ucv_ujian_id, $key_array)) {
+                    $key_array[] = $val->ucv_ujian_id;
+                    $temp_array[] = $val;
+                }
+            }
+
+            $lists_unique = array_values($temp_array);
+
+
+            foreach ($lists_unique as $list) {
                 $no++;
 
                 $btn_info = "<button type=\"button\" class=\"btn btn-sm btn-info mb-2 mr-2\" onclick=\"info('$list->ucv_id', '$list->program_id', '$list->peserta_kelas_id')\" ><i class=\" fa fa-arrow-circle-right\"></i> Data Ujian</button>";
@@ -383,6 +396,19 @@ class UjianCustom extends BaseController
         $ucc        = $this->ujian_custom_config->find($program['ujian_custom_id']);
         $total_row  = count($ujian) + 4;
         $col_isi    = 0;
+
+        // Menghapus duplikasi berdasarkan ucv_ujian_id
+        $temp_array = array();
+        $key_array = array();
+
+        foreach ($ujian as $val) {
+            if (!in_array($val['ucv_ujian_id'], $key_array)) {
+                $key_array[] = $val['ucv_ujian_id'];
+                $temp_array[] = $val;
+            }
+        }
+        
+        $ujian = array_values($temp_array);
 
         $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
 

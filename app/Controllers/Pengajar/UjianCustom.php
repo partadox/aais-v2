@@ -30,12 +30,25 @@ class UjianCustom extends BaseController
         $program                = $this->program->find($kelas['program_id']);
         $ucc                    = $this->ujian_custom_config->find($program['ujian_custom_id']);
 
+        // Menghapus duplikasi berdasarkan ucv_ujian_id
+        $temp_array = array();
+        $key_array = array();
+
+        foreach ($peserta_onkelas as $val) {
+            if (!in_array($val['ucv_ujian_id'], $key_array)) {
+                $key_array[] = $val['ucv_ujian_id'];
+                $temp_array[] = $val;
+            }
+        }
+        
+        $peserta_onkelas_unique = array_values($temp_array);
+
         $data = [
             'title'             => 'Hasil Ujian Peserta Kelas',
             'user'              => $user,
             // 'list'              => $this->kelas->list(),
             'nama_pengajar'     => $pengajar['nama_pengajar'],
-            'peserta_onkelas'   => $peserta_onkelas,
+            'peserta_onkelas'   => $peserta_onkelas_unique,
             'ucc'               => $ucc,
             'kelas'             => $kelas,
             'program'           => $program
