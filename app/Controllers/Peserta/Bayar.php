@@ -393,7 +393,7 @@ class Bayar extends BaseController
 
         // Define mapping from ids to column names
         $idColumnMap = [
-            // 1 => 'dt_bayar_spp1',
+            1 => 'dt_bayar_spp1',
             2 => 'dt_bayar_spp2',
             3 => 'dt_bayar_spp3',
             4 => 'dt_bayar_spp4',
