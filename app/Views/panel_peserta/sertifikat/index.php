@@ -114,7 +114,7 @@
                                 <?php }?><br>
                     </div>
                     <div class="card-footer text-left">
-                        <?php if ($data['sertifikat_status'] == 1) {?>
+                        <?php if ($data['sertifikat_status'] == 1 && $data['unshow'] != 1) {?>
                             <button type="button" class="btn btn-warning mb-2" onclick="modal('<?= $data['sertifikat_id'] ?>')" ><i class="mdi mdi-certificate mr-1"></i>e-Sertifikat</button>
                         <?php }?>
                     </div>

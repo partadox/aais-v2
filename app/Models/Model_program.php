@@ -8,7 +8,7 @@ class Model_program extends Model
 {
     protected $table      = 'program';
     protected $primaryKey = 'program_id';
-    protected $allowedFields = ['nama_program', 'jenis_program', 'kategori_program', 'biaya_program', 'biaya_bulanan', 'biaya_modul', 'biaya_daftar', 'status_program', 'ujian_custom_status', 'ujian_custom_id', 'ujian_show', 'kode_program', 'sertemp_program'];
+    protected $allowedFields = ['nama_program', 'jenis_program', 'kategori_program', 'biaya_program', 'biaya_bulanan', 'biaya_modul', 'biaya_daftar', 'status_program', 'ujian_custom_status', 'ujian_custom_id', 'ujian_show', 'kode_program', 'sertemp_program', 'sert_status'];
 
     //backend
     public function list()
@@ -113,6 +113,14 @@ class Model_program extends Model
         return $this->table('program')
             ->orderBy('nama_program', 'ASC')
             ->where('ujian_custom_status', '1')
+            ->get()->getResultArray();
+    }
+
+    public function list_program_sertifikat()
+    {
+        return $this->table('program')
+            ->orderBy('nama_program', 'ASC')
+            ->where('sert_status', '1')
             ->get()->getResultArray();
     }
 }

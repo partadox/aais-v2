@@ -192,6 +192,7 @@ class ProgramReg extends BaseController
                     'biaya_modul'     => $biaya_modul, 
                     'status_program'  => $this->request->getVar('status_program'),
                     'kode_program'    => strtoupper($this->request->getVar('kode_program')),
+                    'sert_status'     => $this->request->getVar('sert_status'),
                 ];
 
                 $this->program->insert($simpandata);
@@ -299,6 +300,7 @@ class ProgramReg extends BaseController
                     'biaya_modul'     => $biaya_modul,
                     'status_program'  => $this->request->getVar('status_program'),
                     'kode_program'    => strtoupper($this->request->getVar('kode_program')),
+                    'sert_status'     => $this->request->getVar('sert_status'),
                 ];
 
                 $program_id = $this->request->getVar('program_id');

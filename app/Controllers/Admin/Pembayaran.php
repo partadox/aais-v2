@@ -1389,7 +1389,7 @@ class Pembayaran extends BaseController
                     'user'              => $user,
                     'form'              => $type,
                     'peserta'           => $peserta,
-                    'program'           => $this->program->findAll(),
+                    'program'           => $this->program->list_program_sertifikat(),
                     'biaya_sertifikat'  => $biaya_sertifikat,
                 ];
             } elseif($type == 'aais') {

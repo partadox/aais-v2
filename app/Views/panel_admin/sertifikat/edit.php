@@ -27,13 +27,42 @@
                     <div class="form-group row">
                         <label for="" class="col-sm-4 col-form-label">Nomor Sertifikat</label>
                         <div class="col-sm-8">
-                            <input type="text" class="form-control text-uppercase" id="nomor_sertifikat" name="nomor_sertifikat" value="<?= $data_sertifikat['nomor_sertifikat'] ?>">
+                            <input type="text" class="form-control" value="<?= $data_sertifikat['nomor_sertifikat']?>" readonly>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label for="" class="col-sm-4 col-form-label">Peserta</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" value="<?= $data_peserta['nis'] . ' - '. $data_peserta['nama_peserta'] ?>" readonly>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label for="" class="col-sm-4 col-form-label">Tindakan</label>
+                        <div class="col-sm-8">
+                            <select class="form-control" name="tindakan" id="tindakan">
+                                <option value="" disabled selected>--PILIH--</option>
+                                <option value="tampil"> Atur Tampilan e-Sertifikat di Peserta</option>
+                                <option value="hapus"> Hapus e-Sertifikat</option>
+                            </select>
+                        </div>
+                    </div>
+
+
+                    <div class="form-group row" id="tampil" style="display: none;">
+                        <label for="" class="col-sm-4 col-form-label">e-Sertifikat Tampil di Sisi Peserta</label>
+                        <div class="col-sm-8">
+                            <select class="form-control" name="unshow" id="unshow">
+                                <option value="0" <?php if($data_sertifikat['unshow'] != '1'){?> selected <?php } ?>  >Tampil</option>
+                                <option value="1" <?php if($data_sertifikat['unshow'] == '1'){?> selected <?php } ?> >Tidak</option>
+                            </select>
                         </div>
                     </div>
                 
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-warning btnsimpan"><i class="fa fa-save"></i> Update File</button>
+                    <button type="submit" class="btn btn-warning btnsimpan"><i class="fa fa-save"></i> Simpan</button>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                 </div>
                 <?= form_close() ?>
@@ -43,6 +72,16 @@
 </div>
 
 <script>
+    $('#tindakan').change(function () {
+        if ($(this).val() == "tampil") {
+            $('#tampil').show();
+            $('#unshow').prop('required', true);
+        } else {
+            $('#tampil').hide();
+            $('#unshow').prop('required', false);
+        }
+    });
+
     $(document).ready(function() {
         $('.js-example-basic-single').select2({
         });
@@ -52,13 +91,9 @@
                 type: "post",
                 url: $(this).attr('action'),
                 data: {
-                    nominal_bayar_cetak: $('input#nominal_bayar_cetak').val(),
-                    keterangan_cetak: $('input#keterangan_cetak').val(),
-
-                    sertifikat_level: $('input#sertifikat_level').val(),
-                    status_cetak: $('select#status_cetak').val(),
-                    nomor_sertifikat: $('input#nomor_sertifikat').val(),
-                    link_cetak: $('input#link_cetak').val(),
+                    tindakan: $('select#tindakan').val(),
+                    unshow: $('select#unshow').val(),
+                    sertifikat_id: $('input#sertifikat_id').val(),
                 },
                 dataType: "json",
                 beforeSend: function() {
@@ -71,26 +106,11 @@
                 },
                 success: function(response) {
                     if (response.error) {
-                        if (response.error.nominal_bayar_cetak) {
-                            $('#nominal_bayar_cetak').addClass('is-invalid');
-                            $('.error_nominal_bayar_cetak').html(response.error.nominal_bayar_cetak);
-                        } else {
-                            $('#nominal_bayar_cetak').removeClass('is-invalid');
-                            $('.error_nominal_bayar_cetak').html('');
-                        }
-
-                        if (response.error.sertifikat_level) {
-                            $('#sertifikat_level').addClass('is-invalid');
-                            $('.error_sertifikat_level').html(response.error.sertifikat_level);
-                        } else {
-                            $('#sertifikat_level').removeClass('is-invalid');
-                            $('.error_sertifikat_level').html('');
-                        }
 
                     } else {
                         Swal.fire({
                             title: "Berhasil!",
-                            text: "Berhasil Ubah Data Pendaftaran Sertifikat",
+                            text: "Tindakan Berhasil Diterapkan",
                             icon: "success",
                             showConfirmButton: false,
                             timer: 1500
@@ -102,8 +122,4 @@
             });
         })
     });
-
-    $(document).ready(function () {
-    $('#nominal_bayar_cetak').maskMoney({prefix:'Rp. ', thousands:'.', decimal:',', precision:0});
-  });
 </script>

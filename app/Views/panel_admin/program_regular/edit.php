@@ -83,6 +83,15 @@
                         <div class="invalid-feedback errorStatusprogram"></div>
                     </div>
                 </div>
+                <div class="form-group row">
+                    <label for="" class="col-sm-4 col-form-label">List Pengajuan Sertifikat <code>*</code></label>
+                    <div class="col-sm-8">
+                        <select class="form-control btn-square" id="sert_status" name="sert_status">
+                            <option value="1" <?php if ($program['sert_status'] == '1') echo "selected"; ?> >TAMPIL</option>
+                            <option value="0" <?php if ($program['sert_status'] != '1') echo "selected"; ?> >TIDAK</option>
+                        </select>
+                    </div>
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="submit" class="btn btn-primary btnsimpan"><i class="fa fa-share-square"></i> Simpan</button>

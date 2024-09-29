@@ -82,7 +82,7 @@ if (session()->getFlashdata('pesan_sukses')) {
                 <th>Kelas</th>
                 <th>Tgl Sertifikat</th>
                 <th>Status <br> Sertifikat</th>
-                <!-- <th>Biaya</th> -->
+                <th>Tampil Di Peserta</th>
                 <th>Transaksi ID</th>
                 <!-- <th>Keterangan</th> -->
                 <th></th>
@@ -117,11 +117,19 @@ if (session()->getFlashdata('pesan_sukses')) {
                             <button class="btn btn-success btn-sm" disabled>Terkonfirmasi</button> 
                         <?php } ?>
                     </td>
+                    <td width="5%">
+                        <?php if($data['unshow'] != 1) { ?>
+                            <button class="btn btn-success btn-sm" disabled>Tampil</button> 
+                        <?php } ?>
+                        <?php if($data['unshow'] == 1) { ?>
+                            <button class="btn btn-secondary btn-sm" disabled>Tidak</button> 
+                        <?php } ?>
+                    </td>
                     <td width="5%"><?= $data['bukti_bayar_cetak'] ?></td>
                     <td width="5%"> 
                             <?php if($data['status'] == 1) { ?>
                                 <button class="btn btn-info mt-2" onclick="modal('show','<?= $data['sertifikat_id'] ?>')"> <i class="mdi mdi-certificate"></i> e-Sertifikat</button> <br>
-                                <!-- <button class="btn btn-warning mt-2" onclick="modal('edit','<?= $data['sertifikat_id'] ?>')"> <i class="fa fa-edit"></i> Edit</button>  <br> -->
+                                <button class="btn btn-danger mt-2" onclick="modal('edit','<?= $data['sertifikat_id'] ?>')"> <i class="mdi mdi-window-close"></i> Unshow/Delete</button>  <br>
                             <?php } ?>
                     </td>
                 </tr>

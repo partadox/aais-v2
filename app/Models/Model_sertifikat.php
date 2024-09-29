@@ -8,12 +8,12 @@ class Model_sertifikat extends Model
 {
     protected $table      = 'sertifikat';
     protected $primaryKey = 'sertifikat_id';
-    protected $allowedFields = ['sertifikat_peserta_id', 'sertifikat_program','nomor_sertifikat', 'periode_cetak','jenis_sertifikat', 'nominal_bayar_cetak', 'status', 'bukti_bayar_cetak', 'dt_ajuan', 'dt_konfirmasi','keterangan_cetak', 'sertifikat_tgl', 'sertifikat_file', 'angkatan_sertifikat', 'sertifikat_kelas'];
+    protected $allowedFields = ['sertifikat_peserta_id', 'sertifikat_program','nomor_sertifikat', 'periode_cetak','jenis_sertifikat', 'nominal_bayar_cetak', 'status', 'bukti_bayar_cetak', 'dt_ajuan', 'dt_konfirmasi','keterangan_cetak', 'sertifikat_tgl', 'sertifikat_file', 'angkatan_sertifikat', 'sertifikat_kelas', 'unshow'];
 
     public function list($periode)
     {
         return $this->table('sertifikat')
-            ->select('sertifikat.sertifikat_id, sertifikat.nomor_sertifikat, peserta.nis, peserta.nama_peserta, peserta.jenkel, program.nama_program, sertifikat.sertifikat_tgl, sertifikat.status, sertifikat.nominal_bayar_cetak, sertifikat.bukti_bayar_cetak, sertifikat.keterangan_cetak, sertifikat.sertifikat_kelas, program_kelas.nama_kelas,sertifikat.sertifikat_file')
+            ->select('sertifikat.sertifikat_id, sertifikat.nomor_sertifikat, peserta.nis, peserta.nama_peserta, peserta.jenkel, program.nama_program, sertifikat.sertifikat_tgl, sertifikat.status, sertifikat.nominal_bayar_cetak, sertifikat.bukti_bayar_cetak, sertifikat.keterangan_cetak, sertifikat.sertifikat_kelas, program_kelas.nama_kelas,sertifikat.sertifikat_file, sertifikat.unshow')
             ->join('peserta', 'peserta.peserta_id = sertifikat.sertifikat_peserta_id')
             ->join('program', 'program.program_id = sertifikat.sertifikat_program')
             ->join('program_kelas', 'program_kelas.kelas_id = sertifikat.sertifikat_kelas')
@@ -25,7 +25,7 @@ class Model_sertifikat extends Model
     public function list_peserta($peserta_id)
     {
         return $this->table('sertifikat')
-            ->select('program_bayar.bayar_id, program_bayar.tgl_bayar, program_bayar.waktu_bayar, program_bayar.tgl_bayar_konfirmasi,  program_bayar.waktu_bayar_konfirmasi,  program_bayar.status_bayar, program_bayar.nominal_bayar, program_bayar.bukti_bayar, program_bayar.status_bayar_admin, program_bayar.keterangan_bayar, program_bayar.keterangan_bayar_admin, program_bayar.status_konfirmasi, program_bayar.awal_bayar_spp1, program_bayar.awal_bayar_infaq, program.nama_program, sertifikat.nomor_sertifikat, sertifikat.sertifikat_tgl, sertifikat.sertifikat_file, sertifikat.status as sertifikat_status, sertifikat.sertifikat_id, sertifikat.sertifikat_kelas, program_kelas.nama_kelas')
+            ->select('program_bayar.bayar_id, program_bayar.tgl_bayar, program_bayar.waktu_bayar, program_bayar.tgl_bayar_konfirmasi,  program_bayar.waktu_bayar_konfirmasi,  program_bayar.status_bayar, program_bayar.nominal_bayar, program_bayar.bukti_bayar, program_bayar.status_bayar_admin, program_bayar.keterangan_bayar, program_bayar.keterangan_bayar_admin, program_bayar.status_konfirmasi, program_bayar.awal_bayar_spp1, program_bayar.awal_bayar_infaq, program.nama_program, sertifikat.nomor_sertifikat, sertifikat.sertifikat_tgl, sertifikat.sertifikat_file, sertifikat.status as sertifikat_status, sertifikat.sertifikat_id, sertifikat.sertifikat_kelas, program_kelas.nama_kelas, sertifikat.unshow')
             //->join('peserta_kelas', 'peserta_kelas.data_peserta_id = sertifikat.sertifikat_peserta_id')
             //->join('peserta', 'peserta.peserta_id = sertifikat.sertifikat_peserta_id')
             ->join('program_kelas', 'program_kelas.kelas_id = sertifikat.sertifikat_kelas')

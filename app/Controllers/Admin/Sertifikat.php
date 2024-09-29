@@ -92,17 +92,18 @@ class Sertifikat extends BaseController
             $data_peserta    = $this->peserta->find($peserta_id); 
 
             if ($form == 'show') {
-                $title = "Detail Sertifikat";
+                $title = "e-Sertifikat";
             } elseif($form == 'edit') {
-                $title = "Form Ubah Sertifikat";
+                $title = "Unshow/Delete e-Sertifikat";
             }
             
 
             $data = [
-                'title'                 => 'Sertifikat',
+                'title'                 => $title,
                 'form'                  => $form,
                 'sertifikat_id'         => $sertifikat_id,
                 'data_sertifikat'       => $data_sertifikat,
+                'data_peserta'          => $data_peserta,
             ];
             $msg = [
                 'sukses' => view('panel_admin/sertifikat/edit', $data)
@@ -358,71 +359,53 @@ class Sertifikat extends BaseController
     public function update()
     {
         if ($this->request->isAJAX()) {
-            $validation = \Config\Services::validation();
-            $valid = $this->validate([
-                'nominal_bayar_cetak' => [
-                    'label' => 'nominal_bayar_cetak',
-                    'rules' => 'required',
-                    'errors' => [
-                        'required' => '{field} tidak boleh kosong',
-                    ]
-                ],
-                'sertifikat_level' => [
-                    'label' => 'sertifikat_level',
-                    'rules' => 'required',
-                    'errors' => [
-                        'required' => '{field} tidak boleh kosong',
-                    ]
-                ],
-            ]);
-            if (!$valid) {
-                $msg = [
-                    'error' => [
-                        'nominal_bayar_cetak'      => $validation->getError('nominal_bayar_cetak'),
-                        'sertifikat_level'      => $validation->getError('sertifikat_level'),
-                    ]
-                ];
-            } else {
+            $sertifikat_id  =  $this->request->getVar('sertifikat_id');
+            $tindakan       =  $this->request->getVar('tindakan');
+            $unshow         =  $this->request->getVar('unshow');
 
-                $dt = date("Y-m-d H:i:s");
+            $data_sertifikat = $this->sertifikat->find($sertifikat_id);
+            $peserta_id      = $data_sertifikat['sertifikat_peserta_id'];
+            $data_peserta    = $this->peserta->find($peserta_id);
 
-                $get_nominal_bayar_cetak        =  $this->request->getVar('nominal_bayar_cetak');
-                $keterangan_cetak               =  $this->request->getVar('keterangan_cetak');
-
-                $sertifikat_level               =  $this->request->getVar('sertifikat_level');
-                $status_cetak                   =  $this->request->getVar('status_cetak');
-                $nomor_sertifikat               =  $this->request->getVar('nomor_sertifikat');
-                $link_cetak                     =  $this->request->getVar('link_cetak');
-
-                $nominal_bayar_cetak            = str_replace(str_split('Rp. .'), '', $get_nominal_bayar_cetak);
-
-                $data = [
-                    'nominal_bayar_cetak'  => $nominal_bayar_cetak ,
-                    'sertifikat_level'     => $sertifikat_level,
-                    'status_cetak'         => $status_cetak,
-                    'nomor_sertifikat'     => $nomor_sertifikat,
-                    'link_cetak'           => $link_cetak,
-                    'keterangan_cetak'     => $keterangan_cetak,
-                    'dt_konfirmasi'        => $dt,
-                ];
-
-                $sertifikat_id = $this->request->getVar('sertifikat_id');
-
-                $this->sertifikat->update($sertifikat_id , $data);
-
-                $data_sertifikat = $this->sertifikat->find($sertifikat_id);
-                $peserta_id      = $data_sertifikat['sertifikat_peserta_id'];
-                $data_peserta    = $this->peserta->find($peserta_id);
-
-                $aktivitas = 'Ubah Data Pendaftaran Cetak Sertifikat ' .  $data_peserta[0]['nis'] . ' ' . $data_peserta[0]['nama_peserta'];
-                $this->logging('Admin', 'BERHASIL', $aktivitas);
-
-                $msg = [
-                    'sukses' => [
-                        'link' => '/sertifikat'
-                    ]
-                ];
+            if ($unshow == '0') {
+                $unshow = NULL;
             }
+
+            $data = [
+                'unshow'  => $unshow ,
+            ];
+
+            $this->db->transStart();
+
+            if ($tindakan == "hapus") {
+                $aktivitas_action = "Hapus e-Sertifikat";
+                $state[] = $this->sertifikat->delete($sertifikat_id );
+            } else {
+                $aktivitas_action = "Ubah Pengaturan Tampil e-Sertifikat di Sisi Peserta";
+                $state[] = $this->sertifikat->update($sertifikat_id , $data);
+            }
+
+            $aktivitas = $aktivitas_action . ' ' .  $data_peserta['nis'] . ' ' . $data_peserta['nama_peserta'];
+
+            if ($this->db->transStatus() === FALSE)
+            {
+                $this->db->transRollback();
+                /*--- Log ---*/
+                $this->logging('Admin', 'FAIL', $aktivitas);
+            }
+            else
+            {
+                $this->db->transComplete();
+                /*--- Log ---*/
+                $this->logging('Admin', 'BERHASIL', $aktivitas);
+            }
+
+            $msg = [
+                'sukses' => [
+                    'link' => '/sertifikat'
+                ]
+            ];
+        
             echo json_encode($msg);
         }
     }

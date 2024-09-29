@@ -28,6 +28,7 @@
                 <th>Status</th>
                 <th>Fitur Ujian</th>
                 <th>Tampil Nilai Ujian</th>
+                <th>Tampil List Sertifikat</th>
                 <th>Tindakan</th>
             </tr>
         </thead>
@@ -67,6 +68,14 @@
                             <button class="btn btn-success btn-sm" disabled>TAMPIL</button> 
                         <?php } ?>
                         <?php if($data['ujian_show'] != 1) { ?>
+                            <button class="btn btn-secondary btn-sm" disabled>TIDAK</button> 
+                        <?php } ?>
+                    </td>
+                    <td width="10%">
+                        <?php if($data['sert_status'] == 1) { ?>
+                            <button class="btn btn-success btn-sm" disabled>TAMPIL</button> 
+                        <?php } ?>
+                        <?php if($data['sert_status'] != 1) { ?>
                             <button class="btn btn-secondary btn-sm" disabled>TIDAK</button> 
                         <?php } ?>
                     </td>
