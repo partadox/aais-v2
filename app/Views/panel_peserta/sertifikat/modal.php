@@ -9,6 +9,9 @@
                 </button>
             </div>
             <div class="modal-body">
+                <div class="text-center">
+                    <a href="<?= base_url('public/sertifikat/'.$data_sertifikat['sertifikat_file']) ?>" target="_blank" type="button" class="btn btn-warning mx-auto mb-3">Download e-Sertifikat</a>
+                </div>
                 <div id="pdf-container">
                     <embed id="pdf-object" src="/public/sertifikat/<?= $data_sertifikat['sertifikat_file'] ?>" type="application/pdf" style="width: 100%; height: calc(100vh - 120px); justify-content: center;"/>
                 </div>
