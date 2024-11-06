@@ -280,6 +280,49 @@ abstract class BaseController extends Controller
         } else {
             $countryCode = substr($to, 0, 2);
         }
+
+        //-------WAG SENDIRI BARU-------
+        // API URL
+        $apiKey = getenv('WAG_KEY');
+        // Endpoint API
+        $url = "https://wag.jlbsd.my.id/client/sendMessage/aais-pusat";
+        
+        // Data yang akan dikirim
+        $data = json_encode([
+            "chatId" => $to . "@c.us",
+            "contentType"=>"string",
+            "content" =>strval($text)
+        ]);
+
+        // Menginisialisasi CURL
+        $ch = curl_init($url);
+
+        // Mengatur opsi cURL
+        curl_setopt_array($ch, array(
+            CURLOPT_URL => $url,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_CUSTOMREQUEST => 'POST',
+            CURLOPT_POSTFIELDS => $data, // Mengirim data JSON
+            CURLOPT_HTTPHEADER => array(
+                'accept: */*',
+                'x-api-key: ' . $apiKey, // Header x-api-key sesuai dengan perintah cURL di Swagger
+                'Content-Type: application/json'
+            ),
+        ));
+
+        // Mengeksekusi CURL dan mendapatkan respons
+        $response = curl_exec($ch);
+        if (curl_errno($ch)) {
+            $error_msg = curl_error($ch);
+        }
+        curl_close($ch);
+        $waInsert = [
+            "session" => $response
+        ];
+        // $this->wa->insert($waInsert);
+        return $response;
+
+        //-----WAG SENDIRI LAMA--------
         // // API URL
         // $apiUrl = 'https://wa-gateway.alhaqq.or.id/send-message?session='.$session.'&to='.$to.'&text='.urlencode($text);
 
@@ -298,34 +341,35 @@ abstract class BaseController extends Controller
 
         // return $response;
 
-        $dataWA = $this->wa->find(1);
+        //--------WAG FONNTE-----------
+        // $dataWA = $this->wa->find(1);
 
-        $curl = curl_init();
+        // $curl = curl_init();
 
-        curl_setopt_array($curl, array(
-            CURLOPT_URL => 'https://api.fonnte.com/send',
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING => '',
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 0,
-            CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => 'POST',
-            CURLOPT_POSTFIELDS => array(
-                'target' => $to,
-                'message' => $text, 
-                'countryCode' => $countryCode, //optional
-            ),
-            CURLOPT_HTTPHEADER => array(
-                'Authorization:'.$dataWA['wa_key'] //change TOKEN to your actual token
-            ),
-        ));
+        // curl_setopt_array($curl, array(
+        //     CURLOPT_URL => 'https://api.fonnte.com/send',
+        //     CURLOPT_RETURNTRANSFER => true,
+        //     CURLOPT_ENCODING => '',
+        //     CURLOPT_MAXREDIRS => 10,
+        //     CURLOPT_TIMEOUT => 0,
+        //     CURLOPT_FOLLOWLOCATION => true,
+        //     CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+        //     CURLOPT_CUSTOMREQUEST => 'POST',
+        //     CURLOPT_POSTFIELDS => array(
+        //         'target' => $to,
+        //         'message' => $text, 
+        //         'countryCode' => $countryCode, //optional
+        //     ),
+        //     CURLOPT_HTTPHEADER => array(
+        //         'Authorization:'.$dataWA['wa_key'] //change TOKEN to your actual token
+        //     ),
+        // ));
 
-        $response = curl_exec($curl);
-        if (curl_errno($curl)) {
-            $error_msg = curl_error($curl);
-        }
-        curl_close($curl);
-        return $response;
+        // $response = curl_exec($curl);
+        // if (curl_errno($curl)) {
+        //     $error_msg = curl_error($curl);
+        // }
+        // curl_close($curl);
+        // return $response;
     }
 }
