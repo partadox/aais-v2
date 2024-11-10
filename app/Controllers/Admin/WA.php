@@ -92,31 +92,68 @@ class WA extends BaseController
         if ($this->request->isAJAX()) {
             $idWA = $this->request->getVar('idWA');
             $dataWA= $this->wa->find($idWA);
-            $curl = curl_init();
 
-            curl_setopt_array($curl, array(
-            CURLOPT_URL => 'https://api.fonnte.com/device',
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING => '',
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 0,
-            CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => 'POST',
-            CURLOPT_HTTPHEADER => array(
-                'Authorization: '.$dataWA['wa_key']
-            ),
+             //-------WAG SENDIRI BARU-------
+            $apiKey = getenv('WAG_KEY');
+            if ($idWA == 1) {
+                $url = "https://wag.jlbsd.my.id/session/status/aais-pusat";
+            } else {
+                $url = "https://wag.jlbsd.my.id/session/status/aais-cabang";
+            }
+            // Menginisialisasi CURL
+            $ch = curl_init($url);
+
+            // Mengatur opsi cURL
+            curl_setopt_array($ch, array(
+                CURLOPT_URL => $url,
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_CUSTOMREQUEST => 'GET',
+                // CURLOPT_POSTFIELDS => $data, // Mengirim data JSON
+                CURLOPT_HTTPHEADER => array(
+                    'accept: */*',
+                    'x-api-key: ' . $apiKey, // Header x-api-key sesuai dengan perintah cURL di Swagger
+                    'Content-Type: application/json'
+                ),
             ));
 
-            $response = curl_exec($curl);
+            // Mengeksekusi CURL dan mendapatkan respons
+            $response = curl_exec($ch);
             $response = json_decode($response, true);
-            curl_close($curl);
-
-            if ($response["device_status"] === "connect") {
+            if ($response['state'] == "CONNECTED") {
                 $status = 1;
             } else {
                 $status = 0;
             }
+            curl_close($ch);
+
+            #------- WA gateway Fonnte ---------
+            // $curl = curl_init();
+
+            // curl_setopt_array($curl, array(
+            // CURLOPT_URL => 'https://api.fonnte.com/device',
+            // CURLOPT_RETURNTRANSFER => true,
+            // CURLOPT_ENCODING => '',
+            // CURLOPT_MAXREDIRS => 10,
+            // CURLOPT_TIMEOUT => 0,
+            // CURLOPT_FOLLOWLOCATION => true,
+            // CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            // CURLOPT_CUSTOMREQUEST => 'POST',
+            // CURLOPT_HTTPHEADER => array(
+            //     'Authorization: '.$dataWA['wa_key']
+            // ),
+            // ));
+
+            // $response = curl_exec($curl);
+            // $response = json_decode($response, true);
+            // curl_close($curl);
+
+            // if ($response["device_status"] === "connect") {
+            //     $status = 1;
+            // } else {
+            //     $status = 0;
+            // }
+            #------- END WA gateway Fonnte ---------
+
             $updatedata = [
                 'status'     => $status,
                 'datetime'   => date('Y-m-d H:i:s'),
@@ -145,41 +182,80 @@ class WA extends BaseController
             $idWA   = $this->request->getVar('idWA');
             $dataWA = $this->wa->find($idWA);
 
-            $countryCode ="62";
-            if (substr($to, 0, 2) == "62" || substr($to, 0, 2) == "08") {
-                $countryCode ="62";
+            #------- WA gateway Sendiri Baru ---------
+            $apiKey = getenv('WAG_KEY');
+            // Endpoint API
+            if ($idWA == 1) {
+                $url = "https://wag.jlbsd.my.id/client/sendMessage/aais-pusat";
             } else {
-                $countryCode = substr($to, 0, 2);
+                $url = "https://wag.jlbsd.my.id/client/sendMessage/aais-cabang";
             }
+            
+            // Data yang akan dikirim
+            $data = json_encode([
+                "chatId" => $to . "@c.us",
+                "contentType"=>"string",
+                "content" =>strval("Halo, ini dari WA Gateway pesan tes")
+            ]);
 
-            $curl = curl_init();
+            // Menginisialisasi CURL
+            $ch = curl_init($url);
 
-            curl_setopt_array($curl, array(
-                CURLOPT_URL => 'https://api.fonnte.com/send',
+            // Mengatur opsi cURL
+            curl_setopt_array($ch, array(
+                CURLOPT_URL => $url,
                 CURLOPT_RETURNTRANSFER => true,
-                CURLOPT_ENCODING => '',
-                CURLOPT_MAXREDIRS => 10,
-                CURLOPT_TIMEOUT => 0,
-                CURLOPT_FOLLOWLOCATION => true,
-                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
                 CURLOPT_CUSTOMREQUEST => 'POST',
-                CURLOPT_POSTFIELDS => array(
-                    'target' => $to,
-                    'message' => "Test Kirim Pesan dari WA Gateway", 
-                    'countryCode' => $countryCode, //optional
-                ),
+                CURLOPT_POSTFIELDS => $data, // Mengirim data JSON
                 CURLOPT_HTTPHEADER => array(
-                    'Authorization:'.$dataWA['wa_key'] //change TOKEN to your actual token
+                    'accept: */*',
+                    'x-api-key: ' . $apiKey, // Header x-api-key sesuai dengan perintah cURL di Swagger
+                    'Content-Type: application/json'
                 ),
             ));
-
-            $response = curl_exec($curl);
+            $response = curl_exec($ch);
             $response = json_decode($response, true);
-            if (curl_errno($curl)) {
-                $error_msg = curl_error($curl);
-            }
-            curl_close($curl);
-            if ($response["status"] == true) {
+            curl_close($ch);
+
+            #------- WA gateway Fonnte ---------
+            // $countryCode ="62";
+            // if (substr($to, 0, 2) == "62" || substr($to, 0, 2) == "08") {
+            //     $countryCode ="62";
+            // } else {
+            //     $countryCode = substr($to, 0, 2);
+            // }
+
+            // $curl = curl_init();
+
+            // curl_setopt_array($curl, array(
+            //     CURLOPT_URL => 'https://api.fonnte.com/send',
+            //     CURLOPT_RETURNTRANSFER => true,
+            //     CURLOPT_ENCODING => '',
+            //     CURLOPT_MAXREDIRS => 10,
+            //     CURLOPT_TIMEOUT => 0,
+            //     CURLOPT_FOLLOWLOCATION => true,
+            //     CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            //     CURLOPT_CUSTOMREQUEST => 'POST',
+            //     CURLOPT_POSTFIELDS => array(
+            //         'target' => $to,
+            //         'message' => "Test Kirim Pesan dari WA Gateway", 
+            //         'countryCode' => $countryCode, //optional
+            //     ),
+            //     CURLOPT_HTTPHEADER => array(
+            //         'Authorization:'.$dataWA['wa_key'] //change TOKEN to your actual token
+            //     ),
+            // ));
+
+            // $response = curl_exec($curl);
+            // $response = json_decode($response, true);
+            // if (curl_errno($curl)) {
+            //     $error_msg = curl_error($curl);
+            // }
+            // curl_close($curl);
+            #------- END WA gateway Fonnte ---------
+
+            // if ($response["status"] == true) {
+            if ($response["success"] == true) {
                 return $this->response
                 ->setStatusCode(200) // Use setStatusCode for HTTP status code
                 ->setJSON([

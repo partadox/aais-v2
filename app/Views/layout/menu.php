@@ -349,6 +349,15 @@
             <i class="mdi mdi-account-tie"></i><span> PIC Non-Reg</span>
         </a>
     </li> -->
+    <li>
+        <a href="javascript:void(0);" class="waves-effect">
+            <i class="mdi mdi-sync"></i>
+            <span> Transfer Peserta<span class="float-right menu-arrow"><i class="mdi mdi-chevron-right"></i></span></span>
+        </a>
+        <ul class="submenu">
+            <li><a href="<?= base_url('terima-peserta') ?>">Terima dari Cabang</a></li>
+        </ul>
+    </li>
 
     <li class="menu-title"> Pengaturan</li>
     <?php if ($user['level'] == 1) { ?>

@@ -95,6 +95,12 @@ $routes->post('pengajar/import', 'Admin\Pengajar::import', ["filter" => "authweb
 $routes->get('pengajar/export', 'Admin\Pengajar::export', ["filter" => "authweb:1-2-3-7"]);
 $routes->post('pengajar/edit-multiple', 'Admin\Pengajar::edit_multiple', ["filter" => "authweb:1-2-3-7"]);
 
+/*--- Peserta Transfer ---*/
+$routes->get('terima-peserta', 'Admin\TerimaPeserta::index', ["filter" => "authweb:1-2-3-7"]);
+$routes->post('terima-peserta/getdataAll', 'Admin\TerimaPeserta::getdataAll', ["filter" => "authweb:1-2-3-7"]);
+$routes->post('terima-peserta/modal', 'Admin\TerimaPeserta::modal', ["filter" => "authweb:1-2-3-7"]);
+$routes->post('terima-peserta/create', 'Admin\TerimaPeserta::create', ["filter" => "authweb:1-2-3-7"]);
+
 /*--- Akun ---*/
 $routes->get('akun', 'Admin\Akun::index', ["filter" => "authweb:1"]);
 $routes->post('akun/input', 'Admin\Akun::input', ["filter" => "authweb:1"]);
