@@ -25,7 +25,7 @@
 <h5 style="text-align:center;">Kelas <?= $detail_kelas[0]['nama_kelas'] ?></h5>
 <h6 style="text-align:center;"><?= $detail_kelas[0]['hari_kelas'] ?>, <?= $detail_kelas[0]['waktu_kelas'] ?> - <?= $detail_kelas[0]['metode_kelas'] ?></h6>
 <h6 style="text-align:center;"><?= $detail_kelas[0]['nama_pengajar'] ?></h6>
-<h6 style="text-align:center;">Jumlah Peserta = <?= $detail_kelas[0]['jumlah_peserta'] ?></h6>
+<h6 style="text-align:center;">Jumlah Peserta = <?= $jumlah_peserta ?></h6>
 
 <p class="mt-1">Catatan :<br> 
     <i class="mdi mdi-information"></i> Kolom 1-16 merupakan kolom Tatap Muka ke-1 (TM-1) sampai Tatap Muka ke-16 (TM-16). <br>
