@@ -16,7 +16,7 @@
 <div class="mb-3">
     <h5 style="text-align:center;">Kelas <?= $detail_kelas['nk_nama'] ?></h5>
     <h6 style="text-align:center;"><?= $detail_kelas['nk_hari'] ?>, <?= $detail_kelas['nk_waktu'] ?> <?= $detail_kelas['nk_timezone'] ?></h6>
-    <h6 style="text-align:center;">Pengajar = <?= $pengajar['nama_pengajar'] ?></h6> 
+    <!-- <h6 style="text-align:center;">Pengajar = $pengajar['nama_pengajar'] ?></h6>  -->
     <h6 style="text-align:center;">Jumlah Peserta = <?= $jumlah_peserta ?></h6> 
 </div>
 <hr>
@@ -67,11 +67,28 @@
     <div class="col-md-6">
         <div class="card card-body shadow-lg">
             <div class="card-title">
+                <h6>Pengajar</h6>
+                <hr>
+            </div>
+            <div class="card-text">
+                <button type="button" class="btn btn-primary mb-3" onclick="showModalLevel('<?= $detail_kelas['nk_id'] ?>', 'pengajar')"><i class="fa fa-plus"></i> Tambah Pengajar</button>
+                <table class="table table-bordered table-sm">
+                    <tbody>
+                        <?php foreach ($pengajar as $data) : ?>
+                            <tr>
+                                <td><?= $data['nama_pengajar'] ?></td>
+                                <td><button class="btn btn-danger btn-sm" onclick="hapusPengajar(event,'<?= $data['npj_id'] ?>')"><i class="fa fa-trash"></i></button></td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
+            <div class="card-title">
                 <h6>Level Peserta</h6>
                 <hr>
             </div>
             <div class="card-text">
-                <button type="button" class="btn btn-warning mb-3" onclick="showModalLevel('<?= $detail_kelas['nk_id'] ?>')"><i class="fa fa-edit"></i> Edit Level</button>
+                <button type="button" class="btn btn-warning mb-3" onclick="showModalLevel('<?= $detail_kelas['nk_id'] ?>', 'level')"><i class="fa fa-edit"></i> Edit Level</button>
                 <table class="table table-bordered table-sm">
                     <tbody>
                         <?php foreach ($level as $data) : ?>
@@ -348,12 +365,13 @@
         })
     }
 
-    function showModalLevel(nk_id) {
+    function showModalLevel(nk_id, modul) {
         $.ajax({
             type: "post",
             url: "<?= site_url('kelas-nonreg/edit-level') ?>",
             data: {
-                nk_id : nk_id
+                nk_id : nk_id,
+                modul: modul
             },
             dataType: "json",
             success: function(response) {
@@ -391,6 +409,45 @@
                             Swal.fire({
                                 title: "Berhasil!",
                                 text: "Anda berhasil menghapus level!",
+                                icon: "success",
+                                showConfirmButton: false,
+                                timer: 1500
+                            }).then(function() {
+                                window.location = response.sukses.link;
+                        });
+                        }
+                    }
+                });
+            }
+        })
+    }
+
+    function hapusPengajar(e,npj_id) {
+        e.preventDefault();
+        e.stopPropagation();
+        Swal.fire({
+            title: 'Yakin Menghapus Pengajar Ini?',
+            icon: 'warning',
+            allowOutsideClick: false,
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Ya',
+            cancelButtonText: 'Tidak'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: "<?= site_url('/kelas-nonreg/delete-pengajar') ?>",
+                    type: "post",
+                    dataType: "json",
+                    data: {
+                        npj_id : npj_id,
+                    },
+                    success: function(response) {
+                        if (response.sukses) {
+                            Swal.fire({
+                                title: "Berhasil!",
+                                text: "Anda berhasil menghapus pengajar!",
                                 icon: "success",
                                 showConfirmButton: false,
                                 timer: 1500

@@ -202,6 +202,7 @@ $routes->post('kelas-nonreg/add-kuota', 'Admin\KelasNonReg::add_kuota', ["filter
 $routes->post('kelas-nonreg/delete-peserta', 'Admin\KelasNonReg::delete_peserta', ["filter" => "authweb:1-2-3-7"]);
 $routes->post('kelas-nonreg/update-level', 'Admin\KelasNonReg::update_level', ["filter" => "authweb:1-2-3-7"]);
 $routes->post('kelas-nonreg/delete-level', 'Admin\KelasNonReg::delete_level', ["filter" => "authweb:1-2-3-7"]);
+$routes->post('kelas-nonreg/delete-pengajar', 'Admin\KelasNonReg::delete_pengajar', ["filter" => "authweb:1-2-3-7"]);
 
 /*--- Kelas Pembinaan---*/
 $routes->get('kelas-bina', 'Admin\KelasBina::index', ["filter" => "authweb:1-2-3-7"]);
@@ -293,6 +294,10 @@ $routes->get('absensi-regular/penguji-export', 'Admin\Absensi::regular_penguji_e
 
 $routes->get('absensi-bina/peserta', 'Admin\Absensi::bina_peserta', ["filter" => "authweb:1-2-3-7"]);
 $routes->get('absensi-bina/peserta-export', 'Admin\Absensi::bina_peserta_export', ["filter" => "authweb:1-2-3-7"]);
+
+//Absensi Non Regular
+$routes->get('absensi-nonreg/pengajar', 'Admin\Absensi::nonreg_pengajar', ["filter" => "authweb:1-2-3-7"]);
+$routes->get('absensi-nonreg/pengajar-export', 'Admin\Absensi::nonreg_pengajar_export', ["filter" => "authweb:1-2-3-7"]);
 
 //Ujian
 $routes->get('ujian', 'Admin\Ujian::index', ["filter" => "authweb:1-2-3-7"]);
@@ -423,6 +428,12 @@ $routes->post('pengajar/save-absensi', 'Pengajar\Kelas::save_absensi', ["filter"
 $routes->post('pengajar/update-atur-absensi', 'Pengajar\Kelas::update_atur_absensi', ["filter" => "authweb:5-6"]);
 $routes->post('pengajar/absensi-note', 'Pengajar\Kelas::absensi_note', ["filter" => "authweb:5-6"]);
 $routes->post('pengajar/update-absensi-note', 'Pengajar\Kelas::update_absensi_note', ["filter" => "authweb:5-6"]);
+
+/*--- Kelas Non Regular---*/
+$routes->get('pengajar/kelas-nonreg', 'Pengajar\KelasNonreg::index', ["filter" => "authweb:5-6"]);
+$routes->get('pengajar/absensi-nonreg', 'Pengajar\KelasNonreg::absensi', ["filter" => "authweb:5-6"]);
+$routes->post('pengajar/input-absensi-nonreg', 'Pengajar\KelasNonreg::input_absensi', ["filter" => "authweb:5-6"]);
+$routes->post('pengajar/save-absensi-nonreg', 'Pengajar\KelasNonreg::save_absensi', ["filter" => "authweb:5-6"]);
 
 $routes->get('penguji/kelas', 'Pengajar\KelasPenguji::index', ["filter" => "authweb:5-6"]);
 $routes->post('penguji/absen', 'Pengajar\KelasPenguji::form_absen', ["filter" => "authweb:5-6"]);

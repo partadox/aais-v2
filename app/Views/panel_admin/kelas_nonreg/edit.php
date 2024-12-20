@@ -56,17 +56,7 @@
                         </select>
                     </div>
                 </div>
-                <div class="form-group row">
-                    <label for="" class="col-sm-4 col-form-label">Pengajar <code>*</code></label>
-                    <div class="col-sm-8">
-                        <select name="nk_pengajar" id="nk_pengajar" class="select2SearchEdit" required>
-                                <option Disabled=true Selected=true> </option>
-                            <?php foreach ($pengajar as $key => $data) { ?>
-                                <option value="<?= $data['pengajar_id'] ?>" <?php if ($data['pengajar_id'] == $nonreg['nk_pengajar']) echo "selected"; ?> ><?= $data['nama_pengajar'] ?></option>
-                            <?php } ?>
-                        </select>
-                    </div>
-                </div>
+                
                 <div class="form-group row">
                     <label for="" class="col-sm-4 col-form-label">Hari <code>*</code></label>
                     <div class="col-sm-8">
@@ -113,13 +103,13 @@
                     </div>
                 </div>
                 <div class="form-group row">
-                    <label for="" class="col-sm-4 col-form-label">Maksimal Pertemuan <code>*</code></label>
+                    <label for="" class="col-sm-4 col-form-label">Maksimal Pertemuan <code>*(maksimal 50)</code></label>
                     <div class="col-sm-8">
                         <input type="number" class="form-control" id="nk_tm_total" name="nk_tm_total" placeholder="" min="1" max="50" value="<?= $nonreg['nk_tm_total'] ?>" required>
                     </div>
                 </div>
                 <div class="form-group row">
-                    <label for="" class="col-sm-4 col-form-label">Pertemuan Diambil<code>*</code></label>
+                    <label for="" class="col-sm-4 col-form-label">Pertemuan Diambil<code>*(maksimal 50)</code></label>
                     <div class="col-sm-8">
                         <input type="number" class="form-control" id="nk_tm_ambil" name="nk_tm_ambil" placeholder="" min="1" max="50" value="<?= $nonreg['nk_tm_ambil'] ?>" readonly>
                     </div>

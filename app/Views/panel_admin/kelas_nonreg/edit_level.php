@@ -15,15 +15,28 @@
                 <i class="mdi mdi-information"></i> Nama Kelas Harus Unik, Format Penamaan Angkatan-Level-Jenkel-Waktu. Contoh A01-TAJWIDI-1-AKHWAT-SENIN18 <br>
             </p> -->
                 <div class="form-group row">
-                    <label for="" class="col-sm-4 col-form-label">Level Peserta <code>*</code></label>
+                    <label for="" class="col-sm-4 col-form-label"><?= $modulText ?> <code>*</code></label>
                     <input type="hidden" name="nk_id" id="nk_id" value="<?= $nk_id ?>">
-                    <div class="col-sm-8">
-                        <select name="nk_level[]" id="nk_level"  multiple="multiple" class="select2SearchEdit" required>
-                            <?php foreach ($level as $key => $data) { ?>
-                                <option value="<?= $data['peserta_level_id'] ?>"><?= $data['nama_level'] ?></option>
-                            <?php } ?>
-                        </select>
-                    </div>
+                    <input type="hidden" name="modul" id="modul" value="<?= $modul ?>">
+                    <?php if ($modul == "level"){?>
+                        <div class="col-sm-8">
+                            <select name="nk_level[]" id="nk_level"  multiple="multiple" class="select2SearchEdit" required>
+                                <?php foreach ($level as $key => $data) { ?>
+                                    <option value="<?= $data['peserta_level_id'] ?>"><?= $data['nama_level'] ?></option>
+                                <?php } ?>
+                            </select>
+                        </div>
+                    <?php }?>
+                    <?php if ($modul == "pengajar"){?>
+                        <div class="col-sm-8">
+                            <select name="np_pengajar[]" id="np_pengajar"  multiple="multiple" class="select2SearchEdit" required>
+                                <?php foreach ($pengajar as $key => $data) { ?>
+                                    <option value="<?= $data['pengajar_id'] ?>"><?= $data['nama_pengajar'] ?></option>
+                                <?php } ?>
+                            </select>
+                        </div>
+                    <?php }?>
+                    
                 </div>
             </div>
             <div class="modal-footer">

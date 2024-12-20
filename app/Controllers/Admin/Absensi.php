@@ -222,6 +222,51 @@ class Absensi extends BaseController
         return view('panel_admin/absensi/bina/peserta', $data);
     }
 
+    public function nonreg_pengajar()
+	{
+		$user  		= $this->userauth();
+
+        $uri            = new \CodeIgniter\HTTP\URI(current_url(true));
+        $queryString    = $uri->getQuery();
+        $params         = [];
+        parse_str($queryString, $params);
+
+        if (count($params) == 1 && array_key_exists('angkatan', $params)) {
+            $angkatan       = $params['angkatan'];
+        } else {
+            $get_angkatan       = $this->konfigurasi->angkatan_kuliah();
+            $angkatan           = $get_angkatan->angkatan_kuliah;
+        }
+        $modul          = "list";
+        $title          = "Data Absensi Pengajar Non Reguler "." Angkatan ".$angkatan;
+        $list_kelas     = $this->nonreg_kelas->list($angkatan);
+        $highest_tm_ambil = max(array_column($list_kelas, 'nk_tm_ambil'));
+        $lists 		    = $this->nonreg_absen_pengajar->list_rekap($angkatan);
+        // Process each record in the lists array
+        $processed_lists = array_map(function($record) {
+            // Loop through each field in the record
+            foreach ($record as $key => $value) {
+                // Check if it's a napj field and not null
+                if (preg_match('/^napj\d+$/', $key) && !is_null($value)) {
+                    // Decode JSON string to array
+                    $record[$key] = json_decode($value, true);
+                }
+            }
+            return $record;
+        }, $lists);
+
+		$data = [
+			'title'			    => $title,
+			'user'			    => $user,	
+            'list_angkatan'     => $this->nonreg_kelas->list_unik_angkatan(),
+            'angkatan_pilih'    => $angkatan,
+            'modul'             => $modul,
+            'highest_tm_ambil'  => $highest_tm_ambil,
+            'processed_lists'   => $processed_lists,
+		];
+		return view('panel_admin/absensi/nonreg/pengajar', $data);
+	}
+
     //backend
     public function regular_peserta_export()
     {
@@ -1591,6 +1636,191 @@ class Absensi extends BaseController
 
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         header('Content-Disposition: attachment;filename=' . $filename . '.xlsx');
+        header('Cache-Control: max-age=0');
+
+        $writer->save('php://output');
+    }
+
+    public function nonreg_pengajar_export()
+    {
+        $user  		= $this->userauth();
+
+        $uri            = new \CodeIgniter\HTTP\URI(current_url(true));
+        $queryString    = $uri->getQuery();
+        $params         = [];
+        parse_str($queryString, $params);
+
+        if (count($params) == 1 && array_key_exists('angkatan', $params)) {
+            $angkatan       = $params['angkatan'];
+        } else {
+            $get_angkatan       = $this->konfigurasi->angkatan_kuliah();
+            $angkatan           = $get_angkatan->angkatan_kuliah;
+        }
+        $list_kelas     = $this->nonreg_kelas->list($angkatan);
+        $highest_tm_ambil = max(array_column($list_kelas, 'nk_tm_ambil'));
+        $lists 		    = $this->nonreg_absen_pengajar->list_rekap($angkatan);
+        // Process each record in the lists array
+        $lists = array_map(function($record) {
+            // Loop through each field in the record
+            foreach ($record as $key => $value) {
+                // Check if it's a napj field and not null
+                if (preg_match('/^napj\d+$/', $key) && !is_null($value)) {
+                    // Decode JSON string to array
+                    $record[$key] = json_decode($value, true);
+                }
+            }
+            return $record;
+        }, $lists);
+
+        $total_row  = count($lists) + 5;
+        $col_isi    = 0;
+    
+        $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+        $styleColumn = [
+            'font' => [
+                'bold' => true,
+                'size' => 14,
+            ],
+            'alignment' => [
+                'horizontal'    => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+                'vertical'      => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+            ]
+        ];
+
+        $style_up = [
+            'font' => [
+                'bold' => true,
+                'size' => 11,
+            ],
+            'alignment' => [
+                'horizontal'    => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+                'vertical'      => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+            ],
+            'fill' => [
+                'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+                'startColor' => [
+                    'argb' => 'D9D9D9',
+                ],
+                'endColor' => [
+                    'argb' => 'D9D9D9',
+                ],
+            ],        
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                ],
+            ],
+        ];
+
+        $isi_tengah = [
+            'alignment' => [
+                'horizontal'    => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+                'vertical'      => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+            ],
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                ],
+            ],
+        ];
+
+        $judul = "DATA REKAP ABSENSI PENGAJAR PROGRAM NON-REGULER";
+        $tgl   =  "ANGKATAN " .$angkatan. ' - ' . date("d-m-Y");
+
+        $sheet->setCellValue('A1', $judul);
+        $sheet->mergeCells('A1:G1');
+        $sheet->getStyle('A1')->applyFromArray($styleColumn);
+
+        $sheet->setCellValue('A2', $tgl);
+        $sheet->mergeCells('A2:Z2');
+        $sheet->getStyle('A2')->applyFromArray($styleColumn);
+
+
+        $spreadsheet->setActiveSheetIndex(0)
+            ->setCellValue('A4', 'NAMA')
+            ->setCellValue('B4', 'KELAS')
+            ->setCellValue('C4', 'ANGKATAN KELAS')
+            ->setCellValue('D4', 'TOTAL HADIR');
+
+            $lastW      = 'D';
+            $step       = 0;
+
+            for ($i=1; $i <= $highest_tm_ambil; $i++){
+                $step       = $step+1;
+                $newAsci    = $this->incrementAlphaSequence($lastW, $step);
+                $spreadsheet->getActiveSheet()->setCellValue($newAsci.'4', 'TM'.$i);
+
+                $spreadsheet->getActiveSheet()->getColumnDimension($newAsci)->setAutoSize(true);
+            }
+            $sheet->getStyle('A4:'.$newAsci.'4')->applyFromArray($style_up);
+            $sheet->getStyle('A5:'.$newAsci.$total_row)->applyFromArray($isi_tengah);
+            
+            $columns = range('A', 'D');
+            foreach ($columns as $column) {
+                $spreadsheet->getActiveSheet()->getColumnDimension($column)->setAutoSize(true);
+            }
+    
+            $row = 5;
+
+        foreach ($lists as $data) {
+
+            $totHadir = 0;
+            for ($i = 1; $i <= $highest_tm_ambil; $i++) {
+                if (isset($data['napj'.$i])) {
+                    if ($data['napj'.$i]['tm'] == '1') {
+                        $totHadir = $totHadir + 1;
+                    }
+                }
+            }
+
+            $spreadsheet->setActiveSheetIndex(0)
+                
+                ->setCellValue('A' . $row, $data['nama_pengajar'])
+                ->setCellValue('B' . $row, $data['nk_nama'])
+                ->setCellValue('C' . $row, $data['nk_angkatan'])
+                ->setCellValue('D' . $row, $totHadir);
+
+                $lastW      = 'D';
+                $step       = 0;
+
+                for ($i=1; $i <= $highest_tm_ambil; $i++){
+                    $step= $step+1;
+                    $var = 'napj'.$i;
+                    $col_letter = $this->incrementAlphaSequence($lastW, $step);
+
+                    if (isset($data[$var]['tm'])) {
+                        if ($data[$var]['tm'] == '1') {
+                            $cell = $col_letter.$row;
+                            $spreadsheet->getActiveSheet()
+                            ->setCellValue($cell, $data[$var]['dt_tm']);
+                        } elseif ($data[$var]['tm'] == '0') {
+                            $cell = $col_letter.$row;
+                            $spreadsheet->getActiveSheet()
+                            ->setCellValue($cell, '--');
+                        } else {
+                            $cell = $col_letter.$row;
+                            $spreadsheet->getActiveSheet()
+                            ->setCellValue($cell, '');
+                        }
+                    } else {
+                        $cell = $col_letter.$row;
+                            $spreadsheet->getActiveSheet()
+                            ->setCellValue($cell, '');
+                    };
+                }
+            
+            $row++;
+        }
+
+        $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xls($spreadsheet);
+        $filename =  'Data-Rekap-Absensi-Pengajar-NonReguler-Angkatan'.$angkatan.'-'. date('Y-m-d-His');
+
+        /*--- Log ---*/
+        $this->logging('Admin', 'BERHASIL', 'Donwload rekap absensi pengajar program Non-Reguler Angkatan '.$angkatan);
+
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment;filename=' . $filename . '.xls');
         header('Cache-Control: max-age=0');
 
         $writer->save('php://output');

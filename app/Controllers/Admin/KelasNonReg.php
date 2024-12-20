@@ -93,7 +93,7 @@ class KelasNonReg extends BaseController
                 'user'              => $user,
                 'peserta_onkelas'   => $peserta_onkelas,
                 'detail_kelas'      => $kelas,
-                'pengajar'          => $this->pengajar->find($kelas['nk_pengajar']),
+                'pengajar'          => $this->nonreg_pengajar->list($kelas['nk_id']),
                 'all_level'         => $this->level->list(),
                 'level'             => $this->nonreg_kelas_level->list($nk_id),
                 'jumlah_peserta'    => count($peserta_onkelas),
@@ -108,24 +108,54 @@ class KelasNonReg extends BaseController
     {
         if ($this->request->isAJAX()) {
 
+            $modul      = $this->request->getVar('modul');
+
             $nk_id      = $this->request->getVar('nk_id');
             $nk         = $this->nonreg_kelas->find($nk_id);
-            $nkl        = $this->nonreg_kelas_level->list($nk_id);
-            $level      = $this->level->list(); 
+
+            if ($modul == 'level') {
+                $nkl        = $this->nonreg_kelas_level->list($nk_id);
+                $level      = $this->level->list(); 
+                
+                $selectedIds = array_map(function ($selected) {
+                    return $selected['peserta_level_id'];
+                }, $nkl);
+
+                $filteredLevel = array_filter($level, function ($item) use ($selectedIds) {
+                    return !in_array($item['peserta_level_id'], $selectedIds);
+                });
+
+                $data = [
+                    'title'     => 'Ubah Data Level Kelas Non-Reguler '.$nk['nk_nama'],
+                    'nk_id'     => $nk_id,
+                    'level'     => $filteredLevel,
+                    'pengajar'  => null,
+                    'modul'     => $modul,
+                    'modulText' => "Daftar Level"
+                ];
+            } elseif ($modul == 'pengajar') {
+                $nkp        = $this->nonreg_pengajar->list($nk_id);
+                $pengajar   = $this->pengajar->list(); 
+                
+                $selectedIds = array_map(function ($selected) {
+                    return $selected['pengajar_id'];
+                }, $nkp);
+
+                $filteredPengajar = array_filter($pengajar, function ($item) use ($selectedIds) {
+                    return !in_array($item['pengajar_id'], $selectedIds);
+                });
+
+                $data = [
+                    'title'     => 'Tambah Pengajar Kelas Non-Reguler '.$nk['nk_nama'],
+                    'nk_id'     => $nk_id,
+                    'level'     => null,
+                    'pengajar'  => $filteredPengajar,
+                    'modul'     => $modul,
+                    'modulText' => "Daftar Pengajar"
+                ];
+            }
             
-            $selectedIds = array_map(function ($selected) {
-                return $selected['peserta_level_id'];
-            }, $nkl);
 
-            $filteredLevel = array_filter($level, function ($item) use ($selectedIds) {
-                return !in_array($item['peserta_level_id'], $selectedIds);
-            });
-
-            $data = [
-                'title'     => 'Ubah Data Level Kelas Non-Reguler '.$nk['nk_nama'],
-                'nk_id'     => $nk_id,
-                'level'     => $filteredLevel,
-            ];
             $msg = [
                 'sukses' => view('panel_admin/kelas_nonreg/edit_level', $data)
             ];
@@ -167,7 +197,6 @@ class KelasNonReg extends BaseController
                 $nk_nama        = strtoupper($this->request->getVar('nk_nama'));
                 $nk_angkatan    = $this->request->getVar('nk_angkatan');
                 $nk_usaha       = strtoupper($this->request->getVar('nk_usaha'));
-                $nk_pengajar    = $this->request->getVar('nk_pengajar');
                 $nk_hari        = strtoupper($this->request->getVar('nk_hari'));
                 $nk_waktu       = $this->request->getVar('nk_waktu');
                 $nk_timezone    = strtoupper($this->request->getVar('nk_timezone'));
@@ -216,7 +245,11 @@ class KelasNonReg extends BaseController
                 $this->db->transStart();
                 for ($i = 1; $i <= $nk_kuota; $i++) {
                     $pstData = ['np_kelas' => $nk_id];
-                    $this->nonreg_peserta->insert($pstData);
+                    $np_id = $this->nonreg_peserta->insert($pstData);
+                    $ApstData = [
+                        'naps_peserta' => $np_id,
+                    ];
+                    $this->nonreg_absen_peserta->insert($ApstData);
                 }
                 $newUser    = [
 					'username' 				=> strtoupper($nk_id),
@@ -234,7 +267,7 @@ class KelasNonReg extends BaseController
                     'nk_program'        => $nk_program,
                     'nk_tipe'           => $nk_tipe,
                     'nk_usaha'          => $nk_usaha,
-                    'nk_pengajar'       => $nk_pengajar,
+                    // 'nk_pengajar'       => $nk_pengajar,
                     'nk_hari'           => $nk_hari,
                     'nk_waktu'          => $nk_waktu,
                     'nk_timezone'       => $nk_timezone,
@@ -268,6 +301,18 @@ class KelasNonReg extends BaseController
                     'nk_level'  => $var_nk_level
                 ];
                 $this->nonreg_kelas->update($nk_id, $updateNKL);
+                $nk_pengajar    = $this->request->getPost('nk_pengajar');
+                foreach ($nk_pengajar as $item) {
+                    $nonreg_pengajar_NEW = [
+                        'npj_pengajar' => $item,
+                        'npj_kelas'    => $nk_id,
+                    ];
+                    $napj_pengajar = $this->nonreg_pengajar->insert($nonreg_pengajar_NEW);
+                    $nonreg_absen_pengajar_NEW = [
+                        'napj_pengajar' => $napj_pengajar,
+                    ];
+                    $this->nonreg_absen_pengajar->insert($nonreg_absen_pengajar_NEW);
+                }
                 $this->db->transComplete();
                 
                 $aktivitas = 'Buat Data Kelas Non-Reguler Nama : ' .  $this->request->getVar('nk_nama');
@@ -328,7 +373,7 @@ class KelasNonReg extends BaseController
                 $nk_nama        = strtoupper($this->request->getVar('nk_nama'));
                 $nk_angkatan    = $this->request->getVar('nk_angkatan');
                 $nk_usaha       = strtoupper($this->request->getVar('nk_usaha'));
-                $nk_pengajar    = $this->request->getVar('nk_pengajar');
+                // $nk_pengajar    = $this->request->getVar('nk_pengajar');
                 $nk_hari        = strtoupper($this->request->getVar('nk_hari'));
                 $nk_waktu       = $this->request->getVar('nk_waktu');
                 $nk_timezone    = strtoupper($this->request->getVar('nk_timezone'));
@@ -351,7 +396,7 @@ class KelasNonReg extends BaseController
                     'nk_program'        => $nk_program,
                     'nk_tipe'           => $nk_tipe,
                     'nk_usaha'          => $nk_usaha,
-                    'nk_pengajar'       => $nk_pengajar,
+                    // 'nk_pengajar'       => $nk_pengajar,
                     'nk_hari'           => $nk_hari,
                     'nk_waktu'          => $nk_waktu,
                     'nk_timezone'       => $nk_timezone,
@@ -388,28 +433,48 @@ class KelasNonReg extends BaseController
     {
         if ($this->request->isAJAX()) {
                 //Get Value
+                $modul          = $this->request->getVar('modul');
+
                 $nk_id          = $this->request->getVar('nk_id');
                 $nk             = $this->nonreg_kelas->find($nk_id);
-                $new_nkl_array  = [$nk['nk_level']];
-                $nk_level       = $this->request->getVar('nk_level');
 
-                foreach ($nk_level as $item) {
-                    $nk_kelas_level_NEW = [
-                        'nkl_nkid' => $nk_id,
-                        'nkl_level' => $item,
+                if ($modul == 'level') {    
+                    $new_nkl_array  = [$nk['nk_level']];
+                    $nk_level       = $this->request->getVar('nk_level');
+
+                    foreach ($nk_level as $item) {
+                        $nk_kelas_level_NEW = [
+                            'nkl_nkid' => $nk_id,
+                            'nkl_level' => $item,
+                        ];
+                        $this->nonreg_kelas_level->insert($nk_kelas_level_NEW);
+                        $new_nkl        = $this->nonreg_kelas_level->insertID();
+                        $new_nkl_array[]= $new_nkl;
+                    }
+                    $var_nk_level   = json_encode($new_nkl_array);
+                    $updateNKL = [
+                        'nk_level'  => $var_nk_level
                     ];
-                    $this->nonreg_kelas_level->insert($nk_kelas_level_NEW);
-                    $new_nkl        = $this->nonreg_kelas_level->insertID();
-                    $new_nkl_array[]= $new_nkl;
-                }
-                $var_nk_level   = json_encode($new_nkl_array);
-                $updateNKL = [
-                    'nk_level'  => $var_nk_level
-                ];
-                $this->nonreg_kelas->update($nk_id, $updateNKL);
+                    $this->nonreg_kelas->update($nk_id, $updateNKL);
 
+                } elseif ($modul == 'pengajar') {
+                    $np_pengajar       = $this->request->getVar('np_pengajar');
+
+                    foreach ($np_pengajar as $item) {
+                        $np_pengajar_NEW = [
+                            'npj_pengajar' => $item,
+                            'npj_kelas'    => $nk['nk_id'],
+                        ];
+                        $napj_pengajar = $this->nonreg_pengajar->insert($np_pengajar_NEW);
+                        $nonreg_absen_pengajar_NEW = [
+                            'napj_pengajar' => $napj_pengajar,
+                        ];
+                        $this->nonreg_absen_pengajar->insert($nonreg_absen_pengajar_NEW);
+                    }
+                }
+                
                 // Data Log END
-                $aktivitas = 'Ubah Data Level pada Kelas Non-Reguler Nama : ' ;
+                $aktivitas = 'Ubah Data '.$modul.' pada Kelas Non-Reguler : ' . $nk['nk_nama'] ;
                 $this->logging('Admin', 'BERHASIL', $aktivitas);
 
                 $msg = [
@@ -643,7 +708,11 @@ class KelasNonReg extends BaseController
             $this->nonreg_kelas->update($nk_id, $update);
             for ($i = 1; $i <= $nk_peserta_add; $i++) {
                 $pstData = ['np_kelas' => $nk_id];
-                $this->nonreg_peserta->insert($pstData);
+                $np_id = $this->nonreg_peserta->insert($pstData);
+                $ApstData = [
+                    'naps_peserta' => $np_id,
+                ];
+                $this->nonreg_absen_peserta->insert($ApstData);
             }
 
             $aktivitas = 'Tambah kuota ' . $nk_peserta_add . ' pada kelas non-reguler ' .  $nk_id;
@@ -737,4 +806,37 @@ class KelasNonReg extends BaseController
         }
     }
     
+    public function delete_pengajar()
+    {
+        if ($this->request->isAJAX()) {
+
+            $npj_id               = $this->request->getVar('npj_id');
+            $nonreg_pengajar      = $this->nonreg_pengajar->find($npj_id);
+            $nonreg_kelas         = $this->nonreg_kelas->find($nonreg_pengajar['npj_kelas']);
+            $pengajar             = $this->pengajar->find($nonreg_pengajar['npj_pengajar']);
+
+            $this->nonreg_absen_pengajar->where('napj_pengajar', $npj_id)->delete();
+            $this->nonreg_pengajar->delete($npj_id);
+
+            $aktivitas = 'Hapus pengajar ' . $pengajar['nama_pengajar'] . ' pada kelas non-reguler ' .  $nonreg_kelas['nk_nama'];
+
+            if ($this->db->transStatus() === FALSE)
+            {
+                /*--- Log ---*/
+                $this->logging('Admin', 'FAIL', $aktivitas);
+            }
+            else
+            {
+                /*--- Log ---*/
+                $this->logging('Admin', 'BERHASIL', $aktivitas);
+            }
+
+            $msg = [
+                'sukses' => [
+                    'link' => '/kelas-nonreg/detail?id='. $nonreg_kelas['nk_id']
+                ]
+            ];
+            echo json_encode($msg);
+        }
+    }
 }

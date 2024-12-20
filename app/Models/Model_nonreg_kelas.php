@@ -21,8 +21,8 @@ class Model_nonreg_kelas extends Model
         $subQuery = $builder->getCompiledSelect();
 
         $mainQuery = $db->table('nonreg_kelas')
-            ->select('nonreg_kelas.*, ('.$subQuery.') as peserta_nonreg_count, pengajar.nama_pengajar, program.nama_program')
-            ->join('pengajar', 'pengajar.pengajar_id = nonreg_kelas.nk_pengajar')
+            ->select('nonreg_kelas.*, ('.$subQuery.') as peserta_nonreg_count,program.nama_program')
+            // ->join('pengajar', 'pengajar.pengajar_id = nonreg_kelas.nk_pengajar')
             ->join('program', 'program.program_id = nonreg_kelas.nk_program')
             ->where('nk_angkatan', $angkatan)
             ->orderBy('nk_id', 'DESC');
@@ -44,7 +44,7 @@ class Model_nonreg_kelas extends Model
     public function list_not_daftar()
     {
         return $this->table('nonreg_kelas')
-            ->join('program', 'program.program_id = nonreg_kelas.nk_pengajar')
+            ->join('program', 'program.program_id = nonreg_kelas.nk_program')
             ->where('nk_status_daftar', 0)
             ->orderBy('nk_id', 'DESC')
             ->get()->getResultArray();
@@ -54,9 +54,17 @@ class Model_nonreg_kelas extends Model
     public function list_extend()
     {
         return $this->table('nonreg_kelas')
-            ->join('program', 'program.program_id = nonreg_kelas.nk_pengajar')
+            ->join('program', 'program.program_id = nonreg_kelas.nk_program')
             ->where('nk_status_daftar', 1)
             ->orderBy('nk_id', 'DESC')
             ->get()->getResultArray();
     }
+
+    // public function find_kelas_nonreg($nk_id)
+    // {
+    //     return $this->table('nonreg_kelas')
+    //         ->where('nk_id', $nk_id)
+    //         ->orderBy('nk_id', 'DESC')
+    //         ->get()->getRowArray();        
+    // }
 }

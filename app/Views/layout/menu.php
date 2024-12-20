@@ -307,6 +307,11 @@
                 </ul>
             </li>
             <li>
+                <a href="<?= base_url('absensi-nonreg/pengajar') ?>" class="waves-effect">
+                    <i class="mdi mdi-file-check"></i><span> Absensi Nonreg</span>
+                </a>
+            </li>
+            <li>
                 <a href="javascript:void(0);" class="waves-effect">
                     <i class="mdi mdi-book"></i>
                     <span> Ujian<span class="float-right menu-arrow"><i class="mdi mdi-chevron-right"></i></span></span>
@@ -410,7 +415,8 @@
             <span> Kelas<span class="float-right menu-arrow"><i class="mdi mdi-chevron-right"></i></span></span>
         </a>
         <ul class="submenu">
-            <li><a href="<?= base_url('pengajar/kelas') ?>"> Pengajar</a></li>
+            <li><a href="<?= base_url('pengajar/kelas') ?>"> Pengajar Reguler</a></li>
+            <li><a href="<?= base_url('pengajar/kelas-nonreg') ?>"> Pengajar Non-Reguler</a></li>
             <li><a href="<?= base_url('penguji/kelas') ?>"> Penguji</a></li>
         </ul>
     </li>

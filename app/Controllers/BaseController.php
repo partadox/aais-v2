@@ -35,8 +35,11 @@ use App\Models\Model_bina_absen_peserta;
 use App\Models\Model_bina_kelas;
 use App\Models\Model_bina_pengajar;
 use App\Models\Model_bina_peserta;
+use App\Models\Model_nonreg_absen_pengajar;
+use App\Models\Model_nonreg_absen_peserta;
 use App\Models\Model_nonreg_kelas;
 use App\Models\Model_nonreg_kelas_level;
+use App\Models\Model_nonreg_pengajar;
 use App\Models\Model_nonreg_peserta;
 use App\Models\Model_nonreg_tipe;
 use App\Models\Model_nonreg_usaha;
@@ -144,6 +147,9 @@ abstract class BaseController extends Controller
         $this->nonreg_kelas_level   = new Model_nonreg_kelas_level();
         $this->wa                   = new Model_wa();
         $this->wa_switch            = new Model_wa_switch();
+        $this->nonreg_pengajar      = new Model_nonreg_pengajar();
+        $this->nonreg_absen_pengajar= new Model_nonreg_absen_pengajar();
+        $this->nonreg_absen_peserta = new Model_nonreg_absen_peserta();
         $this->db 			        = \Config\Database::connect();
     }
 
@@ -371,5 +377,34 @@ abstract class BaseController extends Controller
         // }
         // curl_close($curl);
         // return $response;
+    }
+
+    function incrementAlphaSequence($seq, $inc) {
+        $result = '';
+        $length = strlen($seq);
+        $carry = $inc;
+    
+        // Reverse the sequence for easier calculation (work from last character backwards)
+        $reversedSeq = strrev($seq);
+    
+        for ($i = 0; $i < $length; $i++) {
+            $currentValue = ord($reversedSeq[$i]) - 64; // Convert letter to 1-26 range
+            $newValue = $currentValue + $carry;
+            $carry = intdiv($newValue - 1, 26); // Determine carry for next letter (if any)
+            $newValue = ($newValue - 1) % 26 + 1; // Adjust new value within 1-26 range
+    
+            $result = chr($newValue + 64) . $result; // Convert back to A-Z and prepend to result
+    
+            if ($i == $length - 1 && $carry > 0) {
+                // Handle carry for the most significant character
+                while ($carry > 0) {
+                    $newValue = ($carry - 1) % 26 + 1;
+                    $result = chr($newValue + 64) . $result;
+                    $carry = intdiv($carry - 1, 26);
+                }
+            }
+        }
+    
+        return $result;
     }
 }

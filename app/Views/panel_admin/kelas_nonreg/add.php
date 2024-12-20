@@ -52,8 +52,7 @@
                 <div class="form-group row">
                     <label for="" class="col-sm-4 col-form-label">Pengajar <code>*</code></label>
                     <div class="col-sm-8">
-                        <select name="nk_pengajar" id="nk_pengajar" class="select2Search" required>
-                                <option Disabled=true Selected=true> </option>
+                    <select name="nk_pengajar[]" multiple="multiple" id="nk_pengajar" class="select2Search">
                             <?php foreach ($pengajar as $key => $data) { ?>
                                 <option value="<?= $data['pengajar_id'] ?>"><?= $data['nama_pengajar'] ?></option>
                             <?php } ?>
@@ -109,7 +108,7 @@
                     </div>
                 </div>
                 <div class="form-group row">
-                    <label for="" class="col-sm-4 col-form-label">Maksimal Pertemuan <code>*</code></label>
+                    <label for="" class="col-sm-4 col-form-label">Maksimal Pertemuan <code>*(maksimal 50)</code></label>
                     <div class="col-sm-8">
                         <input type="number" class="form-control" id="nk_tm_total" name="nk_tm_total" placeholder="" min="1" max="50" value="20" required>
                     </div>

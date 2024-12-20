@@ -45,7 +45,7 @@
                 <th>Bidang <br> Usaha</th>
                 <th>Hari</th>
                 <th>Jam</th>
-                <th>Pengajar</th>
+                <!-- <th>Pengajar</th> -->
                 <!-- <th>Level</th> -->
                 <th>Jml. <br> Peserta</th>
                 <th>Jml. <br> Pertemuan</th>
@@ -68,7 +68,7 @@
                     <td width="10%"><?= $data['nk_usaha'] ?></td>
                     <td width="5%"><?= $data['nk_hari'] ?></td>
                     <td width="5%"><?= $data['nk_waktu'] ?> <?= $data['nk_timezone'] ?></td>
-                    <td width="10%"><?= $data['nama_pengajar'] ?></td>
+                    <!-- <td width="10%">$data['nama_pengajar']</td> -->
                     <!-- <td width="10%"><?= $data['nk_level'] ?></td> -->
                     <td width="10%"><?= $data['nk_kuota'] ?></td>
                     <td>
