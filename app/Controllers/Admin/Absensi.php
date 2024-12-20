@@ -241,7 +241,7 @@ class Absensi extends BaseController
         $title          = "Data Absensi Pengajar Non Reguler "." Angkatan ".$angkatan;
         $list_kelas     = $this->nonreg_kelas->list($angkatan);
         if (count($list_kelas) > 0) {
-            $highest_tm_ambil = max(array_column($list_kelas, 'tm_ambil'));
+            $highest_tm_ambil = max(array_column($list_kelas, 'nk_tm_ambil'));
         } else {
             $highest_tm_ambil = 0;
         }
@@ -1662,7 +1662,7 @@ class Absensi extends BaseController
         }
         $list_kelas     = $this->nonreg_kelas->list($angkatan);
         if (count($list_kelas) > 0) {
-            $highest_tm_ambil = max(array_column($list_kelas, 'tm_ambil'));
+            $highest_tm_ambil = max(array_column($list_kelas, 'nk_tm_ambil'));
         } else {
             $highest_tm_ambil = 0;
         }
