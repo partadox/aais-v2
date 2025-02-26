@@ -140,6 +140,7 @@
                         <select class="form-control btn-square" id="metode_kelas" name="metode_kelas">
                             <option value="ONLINE" <?php if ($kelas['metode_kelas'] == 'ONLINE') echo "selected"; ?>>ONLINE</option>
                             <option value="OFFLINE" <?php if ($kelas['metode_kelas'] == 'OFFLINE') echo "selected"; ?>>OFFLINE</option>
+                            <option value="HYBRID" <?php if ($kelas['metode_kelas'] == 'HYBRID') echo "selected"; ?>>HYBRID</option>
                         </select>
                         <div class="invalid-feedback errorMetodekelas"></div>
                     </div>

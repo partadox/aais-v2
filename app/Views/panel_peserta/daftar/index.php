@@ -79,6 +79,9 @@
                         <?php if($data['metode_kelas'] == 'ONLINE') { ?>
                             Metode Perkuliahan = <span class="badge badge-success">DARING / ONLINE</span>
                         <?php } ?>
+                        <?php if($kelas['metode_kelas'] == 'HYBRID') { ?>
+                            Metode Perkuliahan = <span class="badge badge-info">HYBRID</span>
+                        <?php } ?>
                     </a>
                     <hr>
                     <p> <i class="mdi mdi-cash-marker"></i> Biaya Pendaftaran = Rp <?= rupiah($data['biaya_daftar']) ?></p>

@@ -138,6 +138,7 @@ class Model_bayar extends Model
         ->join('program', 'program_kelas.program_id = program.program_id')
         ->join('pengajar', 'pengajar.pengajar_id = program_kelas.pengajar_id')
         ->where('status_konfirmasi', 'Proses')
+        ->where('bayar_tipe !=', 'sertifikat')
         ->where('metode', NULL)
         ->get()
         ->getResultArray();

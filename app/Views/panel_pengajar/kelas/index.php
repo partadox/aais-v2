@@ -45,6 +45,9 @@
                             <?php if($data['metode_kelas'] == 'OFFLINE') { ?>
                                 <span class="badge badge-info">OFFLINE</span>
                             <?php } ?><br>
+                            <?php if($data['metode_kelas'] == 'HYBRID') { ?>
+                                <span class="badge badge-info">HYBRID</span>
+                            <?php } ?><br>
                             <strong>Level:</strong> <?= $data['nama_level'] ?><br>
                             <strong>Jumlah Peserta:</strong> <?= $data['peserta_kelas_count'] ?><br>
                             <strong>Status Kelas:</strong>

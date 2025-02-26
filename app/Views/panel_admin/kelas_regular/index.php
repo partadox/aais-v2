@@ -78,6 +78,9 @@
                         <?php if($data['metode_kelas'] == 'OFFLINE') { ?>
                             <button class="btn btn-info btn-sm" disabled>OFFLINE</button> 
                         <?php } ?>
+                        <?php if($data['metode_kelas'] == 'HYBRID') { ?>
+                            <button class="btn btn-secondary btn-sm" disabled>HYBRID</button> 
+                        <?php } ?>
                     </td>
                     <td  width="7%"><?= $data['nama_level'] ?></td>
                     <td  width="7%"><?= $data['jenkel'] ?></td>

@@ -154,6 +154,7 @@
                             <option value="" disabled selected>--PILIH--</option>
                             <option value="ONLINE">ONLINE</option>
                             <option value="OFFLINE">OFFLINE</option>
+                            <option value="HYBRID">HYBRID</option>
                         </select>
                         <div class="invalid-feedback errorMetodekelas"></div>
                     </div>

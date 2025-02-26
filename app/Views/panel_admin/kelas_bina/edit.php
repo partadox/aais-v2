@@ -100,6 +100,7 @@
                         <select class="form-control btn-square" id="bk_tm_methode" name="bk_tm_methode">
                             <option value="ONLINE" <?php if ($bina['bk_tm_methode'] == 'ONLINE') echo "selected"; ?>>ONLINE</option>
                             <option value="OFFLINE" <?php if ($bina['bk_tm_methode'] == 'OFFLINE') echo "selected"; ?>>OFFLINE</option>
+                            <option value="HYBRID" <?php if ($bina['bk_tm_methode'] == 'HYBRID') echo "selected"; ?>>HYBRID</option>
                         </select>
                         <div class="invalid-feedback error_bk_tm_methode"></div>
                     </div>

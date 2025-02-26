@@ -307,9 +307,14 @@
                 </ul>
             </li>
             <li>
-                <a href="<?= base_url('absensi-nonreg/pengajar') ?>" class="waves-effect">
-                    <i class="mdi mdi-file-check"></i><span> Absensi Nonreg</span>
+                <a href="javascript:void(0);" class="waves-effect">
+                    <i class="mdi mdi-file-check"></i>
+                    <span> Absensi Nonreg<span class="float-right menu-arrow"><i class="mdi mdi-chevron-right"></i></span></span>
                 </a>
+                <ul class="submenu">
+                    <li><a href="<?= base_url('absensi-nonreg/peserta') ?>">Peserta</a></li>
+                    <li><a href="<?= base_url('absensi-nonreg/pengajar') ?>">Pengajar</a></li>
+                </ul>
             </li>
             <li>
                 <a href="javascript:void(0);" class="waves-effect">

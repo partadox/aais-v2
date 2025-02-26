@@ -45,6 +45,9 @@
                             <?php if($data['metode_kelas'] == 'OFFLINE') { ?>
                                 <span class="badge badge-info">OFFLINE</span>
                             <?php } ?><br>
+                            <?php if($data['metode_kelas'] == 'HYBRID') { ?>
+                                <span class="badge badge-secondary">HYBRID</span>
+                            <?php } ?><br>
                             <?php if($data['status_peserta_kelas'] == "LULUS") { ?>
                                 <strong>Status Kelulusan: </strong> <button class="btn btn-success btn-sm mb-2" disabled>LULUS</button> <br>
                             <?php } ?>

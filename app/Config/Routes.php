@@ -296,6 +296,8 @@ $routes->get('absensi-bina/peserta', 'Admin\Absensi::bina_peserta', ["filter" =>
 $routes->get('absensi-bina/peserta-export', 'Admin\Absensi::bina_peserta_export', ["filter" => "authweb:1-2-3-7"]);
 
 //Absensi Non Regular
+$routes->get('absensi-nonreg/peserta', 'Admin\Absensi::nonreg_peserta', ["filter" => "authweb:1-2-3-7"]);
+$routes->get('absensi-nonreg/peserta-export', 'Admin\Absensi::nonreg_peserta_export', ["filter" => "authweb:1-2-3-7"]);
 $routes->get('absensi-nonreg/pengajar', 'Admin\Absensi::nonreg_pengajar', ["filter" => "authweb:1-2-3-7"]);
 $routes->get('absensi-nonreg/pengajar-export', 'Admin\Absensi::nonreg_pengajar_export', ["filter" => "authweb:1-2-3-7"]);
 
