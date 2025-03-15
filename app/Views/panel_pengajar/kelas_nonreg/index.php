@@ -14,7 +14,7 @@
         <label for="angkatan_kelas">Pilih Angkatan Perkuliahan</label>
         <select onchange="javascript:location.href = this.value;" class="form-control js-example-basic-single" name="angkatan_kelas" id="angkatan_kelas" class="js-example-basic-single mb-2">
             <?php foreach ($list_angkatan as $key => $data) { ?>
-            <option value="/pengajar/kelas?angkatan=<?= $data['nk_angkatan'] ?>" <?php if ($angkatan_pilih == $data['nk_angkatan']) echo "selected"; ?> > <?= $data['nk_angkatan'] ?> </option>
+            <option value="/pengajar/kelas-nonreg?angkatan=<?= $data['nk_angkatan'] ?>" <?php if ($angkatan_pilih == $data['nk_angkatan']) echo "selected"; ?> > <?= $data['nk_angkatan'] ?> </option>
             <?php } ?>
         </select>
     </div>

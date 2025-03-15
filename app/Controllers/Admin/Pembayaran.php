@@ -1247,7 +1247,7 @@ class Pembayaran extends BaseController
                 $onWA = $this->wa_switch->find("admin-konfirmasi-sertifikat");
                 if ($onWA['status'] == 1) {
                     $dataWA = $this->wa->find(1);
-                    $msgWA  = "Konfirmasi Pembayaran Sertifikat "."\n\n ".$peserta['nama_peserta'].", NIS = ".$peserta['nis']."\n\nPembayaran sertifikat Anda sebesar Rp ".rupiah($nominal_bayar)." ".$padaWA." telah dikonfirmasi oleh Admin pada ".date("d-m-Y H:i")." WITA"."\n\nSertifikat dapat dilihat dan didownload di laman AAIS pada fitur Sertifikat.\nBerikut link unuk mengakses laman AAIS: https://aais.alhaqq.com"."\n\nKami ucapkan terimakasih atas pembayaran yang telah Anda lakukan."."\n\nAdmin\n+628998049000\nLTTQ Al Haqq Balikpapan (Pusat)".$dataWA['footer'];
+                    $msgWA  = "Konfirmasi Pembayaran Sertifikat "."\n\n ".$peserta['nama_peserta'].", NIS = ".$peserta['nis']."\n\nPembayaran sertifikat Anda sebesar Rp ".rupiah($nominal_bayar)." ".$padaWA." telah dikonfirmasi oleh Admin pada ".date("d-m-Y H:i")." WITA"."\n\nSertifikat dapat dilihat dan didownload di laman AAIS pada fitur Sertifikat.\nBerikut link untuk mengakses laman AAIS: https://aais.alhaqq.com"."\n\nKami ucapkan terimakasih atas pembayaran yang telah Anda lakukan."."\n\nAdmin\n+628998049000\nLTTQ Al Haqq Balikpapan (Pusat)".$dataWA['footer'];
                     $this->sendWA("aaispusat", $peserta['hp'],$msgWA);
                 }
             }
