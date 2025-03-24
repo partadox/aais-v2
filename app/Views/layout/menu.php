@@ -235,7 +235,8 @@
             <span> Rekap Bayar<span class="float-right menu-arrow"><i class="mdi mdi-chevron-right"></i></span></span>
         </a>
         <ul class="submenu">
-            <li><a href="<?= base_url('pembayaran/rekap-spp') ?>">SPP</a></li>
+            <li><a href="<?= base_url('pembayaran/rekap-spp') ?>">Reguler SPP</a></li>
+            <li><a href="<?= base_url('pembayaran/rekap-nonreg') ?>">Non-Reguler</a></li>
             <li><a href="<?= base_url('pembayaran/rekap-infaq') ?>">Infaq</a></li>
             <li><a href="<?= base_url('pembayaran/rekap-lain') ?>">Lain</a></li>
             <!-- <li><a href="<?= base_url('pembayaran/rekap-beasiswa') ?>">Beasiswa</a></li> -->

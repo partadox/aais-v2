@@ -36,7 +36,8 @@ class KelasNonreg extends BaseController
             return $item['npj_kelas'];
         }, $nonreg_pengajar);
 
-        $list               = $this->nonreg_kelas->whereIn('nk_id', $npj_kelas_array)->where('nk_angkatan', $angkatan)->where('nk_status', 1)->where('nk_status_daftar', 1)->findAll();
+        // $list               = $this->nonreg_kelas->whereIn('nk_id', $npj_kelas_array)->where('nk_angkatan', $angkatan)->where('nk_status', 1)->where('nk_status_daftar', 1)->findAll();
+        $list               = $this->nonreg_kelas->whereIn('nk_id', $npj_kelas_array)->where('nk_angkatan', $angkatan)->where('nk_status', 1)->findAll();
 
 
         $data = [

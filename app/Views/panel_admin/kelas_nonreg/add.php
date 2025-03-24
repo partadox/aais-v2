@@ -113,10 +113,10 @@
                         <input type="number" class="form-control" id="nk_tm_total" name="nk_tm_total" placeholder="" min="1" max="50" value="20" required>
                     </div>
                 </div>
-                <div class="form-group row" style="display:none">
-                    <label for="" class="col-sm-4 col-form-label">Pertemuan Diambil </label>
+                <div class="form-group row">
+                    <label for="" class="col-sm-4 col-form-label">Pertemuan Diambil <code>*</code> </label>
                     <div class="col-sm-8">
-                        <input type="number" class="form-control" id="nk_tm_ambil" name="nk_tm_ambil" placeholder="" min="1" value="0" readonly>
+                        <input type="number" class="form-control" id="nk_tm_ambil" name="nk_tm_ambil" placeholder="" min="0" value="0" max="50" required>
                     </div>
                 </div>
                 <div class="form-group row">

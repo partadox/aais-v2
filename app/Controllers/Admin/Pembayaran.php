@@ -2325,8 +2325,14 @@ class Pembayaran extends BaseController
             $state[]= $filefoto->move('public/img/transfer/', $namafoto_new);
             $bayar_id = $this->bayar->insertID();
 
+            $lastPay = $this->request->getVar('lastPay');
+            if ($lastPay == 'on') {
+                $nk_tm_ambil = $kelas['nk_tm_ambil'];
+            } else {
+                $nk_tm_ambil =  $kelas['nk_tm_ambil']+$this->request->getVar('spp1');
+            }
             $updateNK = [
-                'nk_tm_ambil'       => $kelas['nk_tm_ambil']+$this->request->getVar('spp1'),
+                'nk_tm_ambil'       => $nk_tm_ambil,
                 'nk_status_daftar'  => 1,
                 'nk_status_bayar'   => $extend,
             ];

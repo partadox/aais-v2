@@ -111,7 +111,7 @@
                 <div class="form-group row">
                     <label for="" class="col-sm-4 col-form-label">Pertemuan Diambil<code>*(maksimal 50)</code></label>
                     <div class="col-sm-8">
-                        <input type="number" class="form-control" id="nk_tm_ambil" name="nk_tm_ambil" placeholder="" min="1" max="50" value="<?= $nonreg['nk_tm_ambil'] ?>" readonly>
+                        <input type="number" class="form-control" id="nk_tm_ambil" name="nk_tm_ambil" placeholder="" min="1" max="50" value="<?= $nonreg['nk_tm_ambil'] ?>">
                     </div>
                 </div>
                 <div class="form-group row">

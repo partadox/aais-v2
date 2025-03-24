@@ -125,21 +125,30 @@
         </div>
       <?php } ?>
       <div class="form-group row">
-        <div class="col-5">
+        <div class="col-3">
           <div class="mb-3">
             <label class="form-label">SPP Pertemuan</label>
             <input type="hidden" id="spp" name="spp" value="<?= $nk_prog['biaya_bulanan'] ?>">
             <input class="form-control" type="text" value="Rp. <?= rupiah($nk_prog['biaya_bulanan']) ?>" readonly >
           </div>
         </div>
-        <div class="col-7">
+        <div class="col-6">
           <div class="mb-3">
             <label class="form-label"> <b>X</b> Pertemuan Yang Akan Diambil <code>*</code></label>
             <select class="form-control" id="spp1" name="spp1" style="width:100%!important;">
-              <?php for ($i = 1; $i <= ($nk['nk_tm_total']-$nk['nk_tm_ambil']); $i++) { ?>
+              <?php for ($i = 1; $i <= ($nk['nk_tm_total']); $i++) { ?>
                 <option value="<?= $i ?>"> <?= $i ?> </option>
               <?php } ?>
             </select>
+          </div>
+        </div>
+        <div class="col-3">
+          <div class="mb-3">
+            <label class="form-label">Pembayaran diakhir?</label>
+            <div class="form-group form-check">
+              <input type="checkbox" class="form-check-input" id="lastPay" name="lastPay">
+              <label class="form-check-label" for="lastPay">Ya</label>
+            </div>
           </div>
         </div>
       </div>
