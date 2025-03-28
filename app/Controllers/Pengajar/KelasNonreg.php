@@ -14,20 +14,18 @@ class KelasNonreg extends BaseController
         $params         = [];
         parse_str($queryString, $params);
 
-        if (count($params) == 1 && array_key_exists('angkatan', $params)) {
-            $angkatan           = $params['angkatan'];
-            if (ctype_digit($angkatan)) {
-                $angkatan           = $params['angkatan'];
+        if (count($params) == 1 && array_key_exists('tahun', $params)) {
+            $tahun           = $params['tahun'];
+            if (ctype_digit($tahun)) {
+                $tahun           = $params['tahun'];
             }else {
-                $get_angkatan       = $this->konfigurasi->angkatan_kuliah();
-                $angkatan           = $get_angkatan->angkatan_kuliah;
+                $tahun           = date('Y');
             }
         } else {
-            $get_angkatan       = $this->konfigurasi->angkatan_kuliah();
-            $angkatan           = $get_angkatan->angkatan_kuliah;
+            $tahun           = date('Y');
         }
         
-        $list_angkatan      = $this->nonreg_kelas->list_unik_angkatan();
+        $list_tahun      = $this->nonreg_kelas->list_unik_tahun();
         $get_pengajar_id    = $this->pengajar->get_pengajar_id($user['user_id']);
         $pengajar_id        = $get_pengajar_id->pengajar_id;
 
@@ -37,14 +35,19 @@ class KelasNonreg extends BaseController
         }, $nonreg_pengajar);
 
         // $list               = $this->nonreg_kelas->whereIn('nk_id', $npj_kelas_array)->where('nk_angkatan', $angkatan)->where('nk_status', 1)->where('nk_status_daftar', 1)->findAll();
-        $list               = $this->nonreg_kelas->whereIn('nk_id', $npj_kelas_array)->where('nk_angkatan', $angkatan)->where('nk_status', 1)->findAll();
+        if ($npj_kelas_array != null) {
+            $list               = $this->nonreg_kelas->whereIn('nk_id', $npj_kelas_array)->where('nk_tahun', $tahun)->where('nk_status', 1)->findAll();
+        } else{
+            $list = null;
+        }
+        
 
 
         $data = [
-            'title'                 => 'Daftar Kelas Non-Reguler Anda pada Angkatan '.$angkatan.' Sebagai Pengajar',
+            'title'                 => 'Daftar Kelas Non-Reguler Anda pada Tahun '.$tahun.' Sebagai Pengajar',
             'user'                  => $user,
-            'list_angkatan'         => $list_angkatan,
-            'angkatan_pilih'        => $angkatan,
+            'list_tahun'            => $list_tahun,
+            'tahun_pilih'           => $tahun,
             'list'                  => $list,
         ];
 

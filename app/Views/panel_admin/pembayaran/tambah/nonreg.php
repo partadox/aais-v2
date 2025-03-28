@@ -51,10 +51,10 @@
     <?= csrf_field() ?>
     <?php if ($form == "pilih") { ?>
       <p class="mt-1">Catatan :<br>
-        <i class="mdi mdi-information"></i> Pilih jenis pembayaran program non-reguler.<br>
+        <!-- <i class="mdi mdi-information"></i> Pilih jenis pembayaran program non-reguler.<br> -->
         <i class="mdi mdi-information"></i> Pilih kelas non-reguler yang akan dibayar.<br>
       </p>
-      <div class="form-group">
+      <!-- <div class="form-group">
         <div class="mb-3">
           <label class="form-label">Jenis Pembayaran <code>*</code></label>
           <select class="form-control no-search"  id="jenis_nonreg" name="jenis_nonreg" style="width:100%!important;" onchange="showDiv(this)">
@@ -82,6 +82,17 @@
                   <option value="" disabled selected>-- PILIH --</option>
               <?php foreach ($kelas_extend as $key => $data) { ?>
                 <option value="/pembayaran/add-nonreg?id=<?= $data['nk_id'] ?>"  <?php if ($data['nk_tm_ambil'] == $data['nk_tm_total']) {echo "disabled";} ?>> <?= $data['nk_id'] ?> | <?= $data['nk_nama'] ?> | <?= $data['nk_pic_name'] ?> | Pertemuan Terambil = <?= $data['nk_tm_ambil'] ?> / Maks TM = <?= $data['nk_tm_total'] ?> </option>
+              <?php } ?>
+            </select>
+        </div>
+      </div> -->
+      <div class="form-group">
+        <div class="mb-3">
+          <label class="form-label">Pembayaran Kelas<code>*</code></label>
+          <select onchange="javascript:location.href = this.value;" class="form-control js-example-basic-single" name="kelas_extend" id="kelas_extend" class="js-example-basic-single" style="width:100%!important;">
+                  <option value="" disabled selected>-- PILIH --</option>
+              <?php foreach ($kelas_all as $key => $data) { ?>
+                <option value="/pembayaran/add-nonreg?id=<?= $data['nk_id'] ?>"  <?php if ($data['nk_tm_ambil'] == $data['nk_tm_total']) {echo "disabled";} ?>> <?= $data['nk_id'] ?> | <?= $data['nk_nama'] ?> | <?= $data['nk_pic_name'] ?> | <?= $data['nk_tahun'] ?> | Pertemuan Terambil = <?= $data['nk_tm_ambil'] ?> / Maks TM = <?= $data['nk_tm_total'] ?> </option>
               <?php } ?>
             </select>
         </div>
@@ -116,11 +127,22 @@
         </table>
       </div>
       <?php if ($form == "daftar") { ?>
-        <div class="form-group">
-          <div class="mb-3">
-            <label class="form-label">Pendaftaran <code>*</code></label>
-            <input type="hidden" id="daftar" name="daftar" value="<?= $nk_prog['biaya_daftar'] ?>">
-            <input type="text" class="form-control" value="Rp. <?= rupiah($nk_prog['biaya_daftar']) ?>" readonly>
+        <div class="form-group row">
+          <div class="col-5">
+            <div class="mb-3">
+              <label class="form-label">Pendaftaran <code>*</code></label>
+              <!-- <input type="hidden" id="daftar" name="daftar" value="<?= $nk_prog['biaya_daftar'] ?>"> -->
+              <input type="text" class="form-control" value="Rp. <?= rupiah($nk_prog['biaya_daftar']) ?>" readonly>
+            </div>
+          </div>
+          <div class="col-7">
+            <div class="mb-3">
+              <label class="form-label">Dengan Biaya Pendaftaran <code>*</code></label>
+              <select class="form-control" id="daftar" name="daftar" style="width:100%!important;">
+                <option value="<?= $nk_prog['biaya_daftar'] ?>" selected>Termasuk</option>
+                <option value="0">Tidak Termasuk</option>
+              </select>
+            </div>
           </div>
         </div>
       <?php } ?>
@@ -163,8 +185,8 @@
           <div class="mb-3">
             <label class="form-label">Dengan Modul <code>*</code></label>
             <select class="form-control" id="modul" name="modul" style="width:100%!important;">
-              <option value="<?= $nk_prog['biaya_modul'] ?>" <?php if ($form == "daftar") {echo "selected";} ?> >Termasuk</option>
-              <option value="0" <?php if ($form != "daftar") {echo "selected";} ?>>Tidak Termasuk</option>
+              <option value="0" selected>Tidak Termasuk</option>
+              <option value="<?= $nk_prog['biaya_modul'] ?>">Termasuk</option>
             </select>
           </div>
         </div>
@@ -182,7 +204,7 @@
           <input class="form-control number-separator" type="text" id="lain" name="lain" value="0">
         </div>
       </div>
-      <div class="form-group" style="display: none;">
+      <div class="form-group">
         <div class="mb-3">
           <label class="form-label">Status Pembayaran<code>*</code></label>
           <select class="form-control btn-square" id="status_bayar_admin" name="status_bayar_admin">
@@ -244,6 +266,9 @@
         // Initialize Select2 for modulSelect
         $('#modul').select2({minimumResultsForSearch: Infinity});
 
+        // Initialize Select2 for modulSelect
+        $('#daftar').select2({minimumResultsForSearch: Infinity});
+
         // Initialize Select2 for spp1
         $('#spp1').select2({minimumResultsForSearch: Infinity});
     });
@@ -281,7 +306,7 @@
       var sppValue = parseFloat(document.getElementById('spp').value.replace('Rp. ', '').replace('.', '').replace(',', '.'));
       var selectedValue = parseFloat(document.getElementById('spp1').value);
       <?php if ($form == "daftar") { ?>
-        var daftar = parseFloat(document.getElementById('daftar').value.replace('Rp. ', '').replace('.', '').replace(',', '.'));
+        var daftar = parseFloat(document.getElementById('daftar').value);
       <?php } ?>
       <?php if ($form == "extend") { ?>
         var daftar = 0;
@@ -302,9 +327,11 @@
     //console.log('Attaching event listener...');
     $('#spp1').on('change', updateTotal);
     $('#modul').on('change', updateTotal);
+    $('#daftar').on('change', updateTotal);
     // Attach event listener to the select element using the change event
     document.getElementById('spp1').addEventListener('change', updateTotal);
     document.getElementById('modul').addEventListener('change', updateTotal);
+    document.getElementById('daftar').addEventListener('change', updateTotal);
     // Initial calculation on page load
     updateTotal();
 

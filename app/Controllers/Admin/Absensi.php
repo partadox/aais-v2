@@ -231,21 +231,20 @@ class Absensi extends BaseController
         $params         = [];
         parse_str($queryString, $params);
 
-        if (count($params) == 1 && array_key_exists('angkatan', $params)) {
-            $angkatan       = $params['angkatan'];
+        if (count($params) == 1 && array_key_exists('tahun', $params)) {
+            $tahun       = $params['tahun'];
         } else {
-            $get_angkatan       = $this->konfigurasi->angkatan_kuliah();
-            $angkatan           = $get_angkatan->angkatan_kuliah;
+            $tahun       = date('Y');
         }
         $modul          = "list";
-        $title          = "Data Absensi Peserta Non Reguler "." Angkatan ".$angkatan;
-        $list_kelas     = $this->nonreg_kelas->list($angkatan);
+        $title          = "Data Absensi Peserta Non Reguler "." Tahun ".$tahun;
+        $list_kelas     = $this->nonreg_kelas->list($tahun);
         if (count($list_kelas) > 0) {
             $highest_tm_ambil = max(array_column($list_kelas, 'nk_tm_ambil'));
         } else {
             $highest_tm_ambil = 0;
         }
-        $lists 		    = $this->nonreg_absen_peserta->list_rekap($angkatan);
+        $lists 		    = $this->nonreg_absen_peserta->list_rekap($tahun);
         // Process each record in the lists array
         $processed_lists = array_map(function($record) {
             // Loop through each field in the record
@@ -262,8 +261,8 @@ class Absensi extends BaseController
 		$data = [
 			'title'			    => $title,
 			'user'			    => $user,	
-            'list_angkatan'     => $this->nonreg_kelas->list_unik_angkatan(),
-            'angkatan_pilih'    => $angkatan,
+            'list_tahun'        => $this->nonreg_kelas->list_unik_tahun(),
+            'tahun_pilih'       => $tahun,
             'modul'             => $modul,
             'highest_tm_ambil'  => $highest_tm_ambil,
             'processed_lists'   => $processed_lists,
@@ -279,21 +278,20 @@ class Absensi extends BaseController
         $params         = [];
         parse_str($queryString, $params);
 
-        if (count($params) == 1 && array_key_exists('angkatan', $params)) {
-            $angkatan       = $params['angkatan'];
+        if (count($params) == 1 && array_key_exists('tahun', $params)) {
+            $tahun       = $params['tahun'];
         } else {
-            $get_angkatan       = $this->konfigurasi->angkatan_kuliah();
-            $angkatan           = $get_angkatan->angkatan_kuliah;
+            $tahun       = date('Y');
         }
         $modul          = "list";
-        $title          = "Data Absensi Pengajar Non Reguler "." Angkatan ".$angkatan;
-        $list_kelas     = $this->nonreg_kelas->list($angkatan);
+        $title          = "Data Absensi Pengajar Non Reguler "." Tahun ".$tahun;
+        $list_kelas     = $this->nonreg_kelas->list($tahun);
         if (count($list_kelas) > 0) {
             $highest_tm_ambil = max(array_column($list_kelas, 'nk_tm_ambil'));
         } else {
             $highest_tm_ambil = 0;
         }
-        $lists 		    = $this->nonreg_absen_pengajar->list_rekap($angkatan);
+        $lists 		    = $this->nonreg_absen_pengajar->list_rekap($tahun);
         // Process each record in the lists array
         $processed_lists = array_map(function($record) {
             // Loop through each field in the record
@@ -310,8 +308,8 @@ class Absensi extends BaseController
 		$data = [
 			'title'			    => $title,
 			'user'			    => $user,	
-            'list_angkatan'     => $this->nonreg_kelas->list_unik_angkatan(),
-            'angkatan_pilih'    => $angkatan,
+            'list_tahun'        => $this->nonreg_kelas->list_unik_tahun(),
+            'tahun_pilih'       => $tahun,
             'modul'             => $modul,
             'highest_tm_ambil'  => $highest_tm_ambil,
             'processed_lists'   => $processed_lists,

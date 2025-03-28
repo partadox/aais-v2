@@ -15,7 +15,7 @@
     </div>
     
     <div class="col-sm-auto">
-        <a href="<?= base_url('kelas-nonreg/export?angkatan='.$angkatan_pilih ) ?>"> 
+        <a href="<?= base_url('kelas-nonreg/export?tahun='.$tahun_pilih ) ?>"> 
             <button type="button" class="btn btn-secondary mb-3"><i class=" fa fa-file-download"></i> Export Excel (Download)</button>
         </a>
     </div>
@@ -23,10 +23,10 @@
 </div>
 <div class="row">
     <div class="col-sm-auto ml-4 mb-2">
-        <label for="angkatan_kelas">Pilih Angkatan Perkuliahan</label>
-        <select onchange="javascript:location.href = this.value;" class="form-control js-example-basic-single" name="angkatan_kelas_filter" id="angkatan_kelas_filter" class="js-example-basic-single mb-2">
-            <?php foreach ($list_angkatan as $key => $data) { ?>
-            <option value="kelas-nonreg?angkatan=<?= $data['nk_angkatan'] ?>" <?php if ($angkatan_pilih == $data['nk_angkatan']) echo "selected"; ?> > <?= $data['nk_angkatan'] ?> </option>
+        <label for="tahun_kelas">Pilih Tahun</label>
+        <select onchange="javascript:location.href = this.value;" class="form-control js-example-basic-single" name="tahun_kelas_filter" id="tahun_kelas_filter" class="js-example-basic-single mb-2">
+            <?php foreach ($list_tahun as $key => $data) { ?>
+            <option value="kelas-nonreg?tahun=<?= $data['nk_tahun'] ?>" <?php if ($tahun_pilih == $data['nk_tahun']) echo "selected"; ?> > <?= $data['nk_tahun'] ?> </option>
             <?php } ?>
         </select>
     </div>
@@ -39,7 +39,7 @@
                 <th>No.</th>
                 <th>NIK</th>
                 <th>Nama Kelas</th>
-                <th>Angkatan <br> Perkuliahan</th>
+                <th>Tahun <br> Perkuliahan</th>
                 <th>Program</th>
                 <th>Tipe Kelas</th>
                 <th>Bidang <br> Usaha</th>
@@ -62,7 +62,7 @@
                     <td width="3%"><?= $nomor ?></td>
                     <td width="7%"><?= $data['nk_id'] ?></td>
                     <td width="15%"><?= $data['nk_nama'] ?></td>
-                    <td width="5%"><?= $data['nk_angkatan'] ?></td>
+                    <td width="5%"><?= $data['nk_tahun'] ?></td>
                     <td width="10%"><?= $data['nama_program'] ?></td>
                     <td width="10%"><?= $data['nk_tipe'] ?></td>
                     <td width="10%"><?= $data['nk_usaha'] ?></td>
@@ -92,13 +92,14 @@
                             <button class="btn btn-secondary btn-sm" disabled><i class="fa fa-hourglass-half"></i></button> 
                         <?php } ?>
                         <br> <br>
-                        Extend: 
+                        <!-- Extend: 
                         <?php if($data['nk_status_bayar'] == "1") { ?>
                             <button class="btn btn-success btn-sm" disabled><i class="fa fa-check"></i></button> 
                         <?php } ?>
                         <?php if($data['nk_status_bayar'] == "0") { ?>
                             <button class="btn btn-secondary btn-sm" disabled><i class="fa fa-hourglass-half"></i></button> 
-                        <?php } ?>
+                        <?php } ?> -->
+                        TM Terbayar: <br> <?= $data['nk_tm_bayar'] ?>
                     </td>
                     <td width="10%">
                         <button type="button" class="btn btn-warning" onclick="edit('<?= $data['nk_id'] ?>')" >
@@ -124,7 +125,7 @@
 
 <script>
 
-    $('#angkatan_kelas_filter').bind('change', function () { // bind change event to select
+    $('#tahun_kelas_filter').bind('change', function () { // bind change event to select
         var url = $(this).val(); // get selected value
         if (url != '') { // require a URL
             window.location = url; // redirect

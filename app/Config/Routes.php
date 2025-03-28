@@ -240,6 +240,7 @@ $routes->post('pembayaran/delete', 'Admin\Pembayaran::delete', ["filter" => "aut
 $routes->post('pembayaran/export', 'Admin\Pembayaran::export', ["filter" => "authweb:1-2-3-7"]);
 
 $routes->get('pembayaran-sertifikat', 'Admin\Pembayaran::index_pembayaran_sertifikat', ["filter" => "authweb:1-2-3-7"]);
+$routes->get('pembayaran-nonreg', 'Admin\Pembayaran::index_pembayaran_nonreg', ["filter" => "authweb:1-2-3-7"]);
 
 //Konfirmasi Bayar
 $routes->get('pembayaran/konfirmasi', 'Admin\Pembayaran::index_konfirmasi', ["filter" => "authweb:1-2-3-7"]);
@@ -283,6 +284,7 @@ $routes->post('pembayaran/rekap-lain-delete', 'Admin\Pembayaran::rekap_lain_dele
 $routes->post('pembayaran/rekap-spp-cek', 'Admin\Pembayaran::rekap_spp_cek', ["filter" => "authweb:1"]);
 
 $routes->get('pembayaran/rekap-nonreg', 'Admin\Pembayaran::rekap_nonreg', ["filter" => "authweb:1-2-3-7"]);
+$routes->get('pembayaran/rekap-nonreg-export', 'Admin\Pembayaran::rekap_nonreg_export', ["filter" => "authweb:1-2-3-7"]);
 
 //Absensi
 $routes->get('absensi-regular/peserta', 'Admin\Absensi::regular_peserta', ["filter" => "authweb:1-2-3-7"]);

@@ -24,11 +24,11 @@ class Model_nonreg_absen_peserta extends Model
             ->get()->getResultArray();
     }
 
-    public function list_rekap($angkatan)
+    public function list_rekap($tahun)
     {
         return $this->table('nonreg_absen_peserta')
-            ->select('nonreg_absen_peserta.*, nonreg_peserta.np_nama, nonreg_kelas.nk_nama, nonreg_kelas.nk_angkatan, nonreg_kelas.nk_pic_name')
-            ->where('nk_angkatan', $angkatan)
+            ->select('nonreg_absen_peserta.*, nonreg_peserta.np_nama, nonreg_kelas.nk_nama, nonreg_kelas.nk_angkatan, nonreg_kelas.nk_pic_name, nonreg_kelas.nk_tahun')
+            ->where('nk_tahun', $tahun)
             ->join('nonreg_peserta', 'nonreg_peserta.np_id = nonreg_absen_peserta.naps_peserta')
             ->join('nonreg_kelas', 'nonreg_kelas.nk_id = nonreg_peserta.np_kelas')
             ->get()->getResultArray();

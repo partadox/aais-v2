@@ -9,9 +9,9 @@ class Model_nonreg_kelas extends Model
     protected $table            = 'nonreg_kelas';
     protected $primaryKey       = 'nk_id';
     protected $useAutoIncrement = false;
-    protected $allowedFields    = ['nk_id', 'nk_nama', 'nk_angkatan', 'nk_program', 'nk_tipe', 'nk_usaha', 'nk_level', 'nk_kuota', 'nk_tm_total', 'nk_tm_ambil', 'nk_hari', 'nk_waktu', 'nk_timezone', 'nk_pengajar', 'nk_pic_name', 'nk_pic_hp', 'nk_pic_otoritas', 'nk_lokasi', 'nk_absen_metode', 'nk_status', 'nk_status_daftar', 'nk_status_bayar', 'nk_keterangan','nk_created'];
+    protected $allowedFields    = ['nk_id', 'nk_nama', 'nk_angkatan', 'nk_program', 'nk_tipe', 'nk_usaha', 'nk_level', 'nk_kuota', 'nk_tm_total', 'nk_tm_ambil', 'nk_hari', 'nk_waktu', 'nk_timezone', 'nk_pengajar', 'nk_pic_name', 'nk_pic_hp', 'nk_pic_otoritas', 'nk_lokasi', 'nk_absen_metode', 'nk_status', 'nk_status_daftar', 'nk_status_bayar', 'nk_keterangan','nk_created', 'nk_tahun', 'nk_tm_bayar'];
 
-    public function list($angkatan)
+    public function list($tahun)
     {
         $db      = \Config\Database::connect();
         $builder = $db->table('nonreg_peserta');
@@ -24,7 +24,7 @@ class Model_nonreg_kelas extends Model
             ->select('nonreg_kelas.*, ('.$subQuery.') as peserta_nonreg_count,program.nama_program')
             // ->join('pengajar', 'pengajar.pengajar_id = nonreg_kelas.nk_pengajar')
             ->join('program', 'program.program_id = nonreg_kelas.nk_program')
-            ->where('nk_angkatan', $angkatan)
+            ->where('nk_tahun', $tahun)
             ->orderBy('nk_id', 'DESC');
 
         return $mainQuery->get()->getResultArray();
@@ -36,6 +36,16 @@ class Model_nonreg_kelas extends Model
         return $this->table('nonreg_kelas')
             ->select('nk_angkatan')
             ->orderBy('nk_angkatan', 'DESC')
+            ->distinct()
+            ->get()->getResultArray();
+    }
+
+    //Seluruh tahun angkatan (unik value / Distinct)
+    public function list_unik_tahun()
+    {
+        return $this->table('nonreg_kelas')
+            ->select('nk_tahun')
+            ->orderBy('nk_tahun', 'DESC')
             ->distinct()
             ->get()->getResultArray();
     }
@@ -56,6 +66,15 @@ class Model_nonreg_kelas extends Model
         return $this->table('nonreg_kelas')
             ->join('program', 'program.program_id = nonreg_kelas.nk_program')
             ->where('nk_status_daftar', 1)
+            ->orderBy('nk_id', 'DESC')
+            ->get()->getResultArray();
+    }
+
+    public function list_all_active()
+    {
+        return $this->table('nonreg_kelas')
+            ->join('program', 'program.program_id = nonreg_kelas.nk_program')
+            ->where('nk_status', 1)
             ->orderBy('nk_id', 'DESC')
             ->get()->getResultArray();
     }

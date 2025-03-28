@@ -14,16 +14,16 @@
         <label for="absen_pilih">Export Excel (Download)</label>
         <select onchange="javascript:location.href = this.value;" class="form-control js-example-basic-single" name="absen_pilih" id="absen_pilih" class="js-example-basic-single mb-2">
             <option value="" disabled selected>Download...</option>
-            <?php foreach ($list_angkatan as $key => $data) { ?>
-            <option value="/absensi-nonreg/pengajar-export?angkatan=<?= $data['nk_angkatan'] ?>"> Angkatan Kuliah <?= $data['nk_angkatan'] ?> </option>
+            <?php foreach ($list_tahun as $key => $data) { ?>
+            <option value="/absensi-nonreg/pengajar-export?tahun=<?= $data['nk_tahun'] ?>"> Tahun <?= $data['nk_tahun'] ?> </option>
             <?php } ?>
         </select>
     </div>
     <div class="col-sm-auto mb-2">
-        <label for="angkatan_kelas">Pilih Angkatan Perkuliahan</label>
-        <select onchange="javascript:location.href = this.value;" class="form-control js-example-basic-single" name="angkatan_kelas" id="angkatan_kelas" class="js-example-basic-single mb-2">
-            <?php foreach ($list_angkatan as $key => $data) { ?>
-            <option value="/absensi-nonreg/pengajar?angkatan=<?= $data['nk_angkatan'] ?>" <?php if ($angkatan_pilih == $data['nk_angkatan']) echo "selected"; ?>> <?= $data['nk_angkatan'] ?> </option>
+        <label for="tahun_kelas">Pilih Tahun</label>
+        <select onchange="javascript:location.href = this.value;" class="form-control js-example-basic-single" name="tahun_kelas" id="tahun_kelas" class="js-example-basic-single mb-2">
+            <?php foreach ($list_tahun as $key => $data) { ?>
+            <option value="/absensi-nonreg/pengajar?tahun=<?= $data['nk_tahun'] ?>" <?php if ($tahun_pilih == $data['nk_tahun']) echo "selected"; ?>> <?= $data['nk_tahun'] ?> </option>
             <?php } ?>
         </select>
     </div>
@@ -36,7 +36,7 @@
                 <th>No.</th>
                 <th>Pengajar</th>
                 <th>Kelas</th>
-                <th>Angkatan Kelas</th>
+                <th>Tahun</th>
                 <th>Total Hadir</th>
                 <?php for ($i = 1; $i <= $highest_tm_ambil; $i++): ?>
                     <th><?= $i ?></th>
@@ -52,7 +52,7 @@
                     <td width="1%"><?= $nomor ?></td>
                     <td width="5%"><?= $data['nama_pengajar'] ?></td>
                     <td width="10%"><?= $data['nk_nama'] ?></td>
-                    <td width="10%"><?= $data['nk_angkatan'] ?></td>
+                    <td width="10%"><?= $data['nk_tahun'] ?></td>
                     <td width="10%">
                         <?php $totHadir = 0; for ($i = 1; $i <= $highest_tm_ambil; $i++): ?>
                             <?php if (isset($data['napj'.$i])) { ?> 
@@ -85,7 +85,7 @@
 </div>
 
 <script>
-    $('#angkatan_kelas').bind('change', function () { // bind change event to select
+    $('#tahun_kelas').bind('change', function () { // bind change event to select
         var url = $(this).val(); // get selected value
         if (url != '') { // require a URL
             window.location = url; // redirect

@@ -14,20 +14,19 @@ class KelasNonReg extends BaseController
         $params         = [];
         parse_str($queryString, $params);
 
-        if (count($params) == 1 && array_key_exists('angkatan', $params)) {
-            $angkatan           = $params['angkatan'];
+        if (count($params) == 1 && array_key_exists('tahun', $params)) {
+            $tahun           = $params['tahun'];
         } else {
-            $get_angkatan       = $this->konfigurasi->angkatan_kuliah();
-            $angkatan           = $get_angkatan->angkatan_kuliah;
+            $tahun           = date('Y');
         }
         
-        $list_angkatan      = $this->nonreg_kelas->list_unik_angkatan();
-        $list_kelas         = $this->nonreg_kelas->list($angkatan);
+        $list_tahun      = $this->nonreg_kelas->list_unik_tahun();
+        $list_kelas         = $this->nonreg_kelas->list($tahun);
         $data = [
-            'title'             => 'Manajamen Kelas Non-Reguler Angkatan ' . $angkatan,
+            'title'             => 'Manajamen Kelas Non-Reguler Tahun ' . $tahun,
             'list'              => $list_kelas,
-            'list_angkatan'     => $list_angkatan,
-            'angkatan_pilih'    => $angkatan,
+            'list_tahun'        => $list_tahun,
+            'tahun_pilih'       => $tahun,
             'user'              => $user,
         ];
         return view('panel_admin/kelas_nonreg/index', $data);
@@ -211,6 +210,7 @@ class KelasNonReg extends BaseController
                 $nk_pic_name    = strtoupper($this->request->getVar('nk_pic_name'));
                 $nk_pic_hp      = $this->request->getVar('nk_pic_hp');
                 $nk_lokasi      = str_replace(array("\r", "\n"), ' ',strtoupper($this->request->getVar('nk_lokasi'))) ;
+                $nk_tahun       = $this->request->getVar('nk_tahun');
 
                 //Create NIK
                 if (date('m') >= 1 && date('m') <= 3) {
@@ -264,6 +264,7 @@ class KelasNonReg extends BaseController
                     'nk_id'             => $nk_id,
                     'nk_nama'           => $nk_nama,
                     'nk_angkatan'       => $nk_angkatan,
+                    'nk_tahun'          => $nk_tahun,
                     'nk_program'        => $nk_program,
                     'nk_tipe'           => $nk_tipe,
                     'nk_usaha'          => $nk_usaha,
@@ -389,10 +390,13 @@ class KelasNonReg extends BaseController
                 $nk_pic_otoritas= $this->request->getVar('nk_pic_otoritas');
                 $nk_keterangan  = str_replace(array("\r", "\n"), ' ',$this->request->getVar('nk_keterangan')) ;
                 $nk_lokasi      = str_replace(array("\r", "\n"), ' ',strtoupper($this->request->getVar('nk_lokasi'))) ;
+                $nk_tm_bayar    = $this->request->getVar('nk_tm_bayar');
+                $nk_tahun       = $this->request->getVar('nk_tahun');
 
                 $updatedata = [
                     'nk_nama'           => $nk_nama,
                     'nk_angkatan'       => $nk_angkatan,
+                    'nk_tahun'          => $nk_tahun,
                     'nk_program'        => $nk_program,
                     'nk_tipe'           => $nk_tipe,
                     'nk_usaha'          => $nk_usaha,
@@ -411,6 +415,7 @@ class KelasNonReg extends BaseController
                     'nk_pic_otoritas'   => $nk_pic_otoritas,
                     'nk_keterangan'     => $nk_keterangan,
                     'nk_lokasi'         => $nk_lokasi,
+                    'nk_tm_bayar'       => $nk_tm_bayar,
                 ];
 
                 $this->nonreg_kelas->update($nk_id, $updatedata);
@@ -494,14 +499,13 @@ class KelasNonReg extends BaseController
         $params         = [];
         parse_str($queryString, $params);
 
-        if (count($params) == 1 && array_key_exists('angkatan', $params)) {
-            $angkatan           = $params['angkatan'];
+        if (count($params) == 1 && array_key_exists('tahun', $params)) {
+            $tahun           = $params['tahun'];
         } else {
-            $get_angkatan       = $this->konfigurasi->angkatan_kuliah();
-            $angkatan           = $get_angkatan->angkatan_kuliah;
+            $tahun           = date('Y');
         }
 
-        $kelas      =  $this->nonreg_kelas->list($angkatan);
+        $kelas      =  $this->nonreg_kelas->list($tahun);
         $total_row  = count($kelas)+5;
 
         $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
@@ -556,7 +560,7 @@ class KelasNonReg extends BaseController
             ],
         ];
 
-        $judul = "DATA KELAS NON-REGULER ALHAQQ ANGAKATAN ".$angkatan." - ALHAQQ ACADEMIC INFORMATION SYSTEM";
+        $judul = "DATA KELAS NON-REGULER ALHAQQ TAHUN ".$tahun." - ALHAQQ ACADEMIC INFORMATION SYSTEM";
         $tgl   = date("d-m-Y");
 
         $sheet->setCellValue('A1', $judul);
@@ -573,7 +577,7 @@ class KelasNonReg extends BaseController
 
         $spreadsheet->setActiveSheetIndex(0)
             ->setCellValue('A4', 'NAMA KELAS')
-            ->setCellValue('B4', 'ANGKATAN PERKULIAHAN')
+            ->setCellValue('B4', 'TAHUN PERKULIAHAN')
             ->setCellValue('C4', 'PROGRAM')
             ->setCellValue('D4', 'TIPE')
             ->setCellValue('E4', 'BIDANG USAHA')
@@ -607,7 +611,7 @@ class KelasNonReg extends BaseController
 
             $spreadsheet->setActiveSheetIndex(0)
                 ->setCellValue('A' . $row, $data['nk_nama'])
-                ->setCellValue('B' . $row, $data['nk_angkatan'])
+                ->setCellValue('B' . $row, $data['nk_tahun'])
                 ->setCellValue('C' . $row, $data['nk_program'])
                 ->setCellValue('D' . $row, $data['nk_tipe'])
                 ->setCellValue('E' . $row, $data['nk_usaha'])

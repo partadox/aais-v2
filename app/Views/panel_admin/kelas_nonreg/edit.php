@@ -39,10 +39,16 @@
                         <div class="invalid-feedback errorNamakelas"></div>
                     </div>
                 </div>
-                <div class="form-group row">
+                <div class="form-group row" style="display: none;">
                     <label for="" class="col-sm-4 col-form-label">Angkatan Perkuliahan <code>*</code></label>
                     <div class="col-sm-8">
                         <input type="number" class="form-control" id="nk_angkatan" name="nk_angkatan" value="<?= $nonreg['nk_angkatan'] ?>" required>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="" class="col-sm-4 col-form-label">Tahun Perkuliahan <code>*</code></label>
+                    <div class="col-sm-8">
+                        <input type="number" min="1900" class="form-control" id="nk_tahun" name="nk_tahun" value="<?= $nonreg['nk_tahun'] ?>" required>
                     </div>
                 </div>
                 <div class="form-group row">
@@ -112,6 +118,12 @@
                     <label for="" class="col-sm-4 col-form-label">Pertemuan Diambil<code>*(maksimal 50)</code></label>
                     <div class="col-sm-8">
                         <input type="number" class="form-control" id="nk_tm_ambil" name="nk_tm_ambil" placeholder="" min="1" max="50" value="<?= $nonreg['nk_tm_ambil'] ?>">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="" class="col-sm-4 col-form-label">Pertemuan Terbayar</label>
+                    <div class="col-sm-8">
+                        <input type="number" class="form-control" id="nk_tm_bayar" name="nk_tm_bayar" min="0" max="50" value="<?= $nonreg['nk_tm_bayar'] ?>">
                     </div>
                 </div>
                 <div class="form-group row">

@@ -32,10 +32,16 @@
                         <div class="invalid-feedback errorNamakelas"></div>
                     </div>
                 </div>
-                <div class="form-group row">
+                <div class="form-group row" style="display: none;">
                     <label for="" class="col-sm-4 col-form-label">Angkatan Perkuliahan <code>*</code></label>
                     <div class="col-sm-8">
                         <input type="number" class="form-control" id="nk_angkatan" name="nk_angkatan" value="<?= $angkatan ?>" required>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="" class="col-sm-4 col-form-label">Tahun Perkuliahan <code>*</code></label>
+                    <div class="col-sm-8">
+                        <input type="number" min="1900" class="form-control" id="nk_tahun" name="nk_tahun" value="<?= date('Y') ?>" required>
                     </div>
                 </div>
                 <div class="form-group row">
@@ -212,6 +218,7 @@
                     program_id: $('select#program_id').val(),
                     nk_nama: $('input#nk_nama').val(),
                     nk_angkatan: $('input#nk_angkatan').val(),
+                    nk_tahun: $('input#nk_tahun').val(),
                     nk_usaha: $('select#nk_usaha').val(),
                     nk_pengajar: $('select#nk_pengajar').val(),
                     nk_hari: $('select#nk_hari').val(),

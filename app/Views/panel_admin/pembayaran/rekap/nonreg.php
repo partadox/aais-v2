@@ -15,7 +15,7 @@
         <select onchange="javascript:location.href = this.value;" class="form-control js-example-basic-single" name="absen_pilih" id="absen_pilih" class="js-example-basic-single mb-2">
             <option value="" disabled selected>Download...</option>
             <?php foreach ($list_tahun as $key => $data) { ?>
-            <option value="/absensi-nonreg/peserta-export?tahun=<?= $data['nk_tahun'] ?>"> tahun Kuliah <?= $data['nk_tahun'] ?> </option>
+            <option value="/pembayaran/rekap-nonreg-export?tahun=<?= $data['nk_tahun'] ?>"> Tahun <?= $data['nk_tahun'] ?> </option>
             <?php } ?>
         </select>
     </div>
@@ -23,7 +23,7 @@
         <label for="tahun_kelas">Pilih Tahun</label>
         <select onchange="javascript:location.href = this.value;" class="form-control js-example-basic-single" name="tahun_kelas" id="tahun_kelas" class="js-example-basic-single mb-2">
             <?php foreach ($list_tahun as $key => $data) { ?>
-            <option value="/absensi-nonreg/peserta?tahun=<?= $data['nk_tahun'] ?>" <?php if ($tahun_pilih == $data['nk_tahun']) echo "selected"; ?>> <?= $data['nk_tahun'] ?> </option>
+            <option value="/pembayaran/rekap-nonreg?tahun=<?= $data['nk_tahun'] ?>" <?php if ($tahun_pilih == $data['nk_tahun']) echo "selected"; ?>> <?= $data['nk_tahun'] ?> </option>
             <?php } ?>
         </select>
     </div>
@@ -34,13 +34,20 @@
         <thead>
             <tr>
                 <th>No.</th>
-                <th>Peserta</th>
+                <th>ID Kelas</th>
                 <th>Kelas</th>
+                <th>Pengajar</th>
+                <th>PIC</th>
                 <th>Tahun</th>
-                <th>Total Hadir</th>
+                <th>Biaya SPP</th>
+                <th>Pertemuan <br> Diambil</th>
+                <th>Jml Absensi</th>
+                <th>Pertemuan <br> Terbayar</th>
+                <th>Pertemuan Belum <br> Terbayar <span class="badge badge-secondary" data-toggle="tooltip" data-placement="top" title="Pertemuan belum terbayar = jml absensi - pertemuan terbayar"> <i class="mdi mdi-information"></i> </span></th>
+                <!-- <th>Total Hadir</th>
                 <?php for ($i = 1; $i <= $highest_tm_ambil; $i++): ?>
                     <th><?= $i ?></th>
-                <?php endfor; ?>
+                <?php endfor; ?> -->
             </tr>
         </thead>
 
@@ -50,30 +57,36 @@
                 $nomor++; ?>
                 <tr>
                     <td width="1%"><?= $nomor ?></td>
-                    <td width="5%"><?= $data['np_nama'] ?></td>
-                    <td width="10%"><?= $data['nk_nama'] ?></td>
-                    <td width="10%"><?= $data['nk_tahun'] ?></td>
+                    <td width="3%"><?= $data['nk_id'] ?></td>
+                    <td width="8%"><?= $data['nk_nama'] ?></td>
+                    <td width="5%"><?= $data['nama_pengajar'] ?></td>
+                    <td width="5%"><?= $data['nk_pic_name'] ?></td>
+                    <td width="3%"><?= $data['nk_tahun'] ?></td>
+                    <td width="3%"><?= rupiah($data['biaya_bulanan']) ?></td>
+                    <td width="4%"><?= $data['nk_tm_ambil'] ?></td>
                     <td width="10%">
                         <?php $totHadir = 0; for ($i = 1; $i <= $highest_tm_ambil; $i++): ?>
-                            <?php if (isset($data['naps'.$i])) { ?> 
-                                <?php if ($data['naps'.$i]['tm'] == '1') { $totHadir = $totHadir+1; ?> 
+                            <?php if (isset($data['napj'.$i])) { ?> 
+                                <?php if ($data['napj'.$i]['tm'] == '1') { $totHadir = $totHadir+1; ?> 
                                 <?php } ?>
                             <?php } ?>
                         <?php endfor; ?>
                         <?= $totHadir?>
                     </td>
-                    <?php for ($i = 1; $i <= $highest_tm_ambil; $i++): ?>
+                    <td width="4%"><?= $data['nk_tm_bayar'] ?></td>
+                    <td width="4%"><?= $totHadir - $data['nk_tm_bayar'] ?></td>
+                    <!-- <?php for ($i = 1; $i <= $highest_tm_ambil; $i++): ?>
                         <td>
-                            <?php if (isset($data['naps'.$i])) { ?> 
-                                <?php if ($data['naps'.$i]['tm'] == '1') { ?> 
+                            <?php if (isset($data['napj'.$i])) { ?> 
+                                <?php if ($data['napj'.$i]['tm'] == '1') { ?> 
                                     <i style="color: green;" class="mdi mdi-check-bold"></i>
                                 <?php } ?>
-                                <?php if ($data['naps'.$i]['tm'] == '0') { ?> 
+                                <?php if ($data['napj'.$i]['tm'] == '0') { ?> 
                                     <i style="color: red;" class="mdi mdi-minus"></i>
                                 <?php } ?>
                             <?php } ?>
                         </td>
-                    <?php endfor; ?>
+                    <?php endfor; ?> -->
                 </tr>
 
             <?php endforeach; ?>

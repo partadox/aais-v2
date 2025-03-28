@@ -241,6 +241,33 @@ class Pembayaran extends BaseController
         return view('panel_admin/pembayaran/index_sertifikat', $data);
 	}
 
+    public function index_pembayaran_nonreg()
+	{
+		$user           = $this->userauth(); // Return Array
+
+        $uri            = new \CodeIgniter\HTTP\URI(current_url(true));
+        $queryString    = $uri->getQuery();
+        $params         = [];
+        parse_str($queryString, $params);
+
+        if (count($params) == 1 && array_key_exists('tahun', $params)) {
+            $tahun           = $params['tahun'];
+        } else {
+            $tahun           = date('Y');
+        }
+
+        $program_bayar  = $this->bayar->list_nonreg($tahun);
+        $list_tahun     = $this->nonreg_kelas->list_unik_tahun();
+        $data = [
+            'title'    => 'Pembayaran Nonreg',
+            'list'     => $program_bayar,
+            'list_tahun'        => $list_tahun,
+            'tahun_pilih'       => $tahun,
+            'user'     => $user,
+        ];
+        return view('panel_admin/pembayaran/index_nonreg', $data);
+	}
+
     //Backend
 
     public function update()
@@ -1363,6 +1390,7 @@ class Pembayaran extends BaseController
                 'form'          => 'pilih',
                 'kelas_daftar'  => $this->nonreg_kelas->list_not_daftar(),
                 'kelas_extend'  => $this->nonreg_kelas->list_extend(),
+                'kelas_all'     => $this->nonreg_kelas->list_all_active(),
             ];
         }
         return view('panel_admin/pembayaran/tambah/nonreg', $data);
@@ -2306,18 +2334,22 @@ class Pembayaran extends BaseController
                 'awal_bayar'                => $total,
                 'awal_bayar_daftar'         => $daftar,
                 'awal_bayar_infaq'          => $bayar_infaq,
-                'awal_bayar_spp1'           => $spp,
+                'awal_bayar_spp1'           => $this->request->getVar('spp1'),
                 'awal_bayar_lainnya'        => $bayar_lain,
                 'awal_bayar_modul'          => $modul,
                 'bukti_bayar'               => $namafoto_new,
                 'tgl_bayar'                 => $tgl,
                 'waktu_bayar'               => $waktu,
-                'keterangan_bayar'          => "Bayar Program Non-Reguler#".$jenis_bayar."#".$kelas['nk_id']."#".$program['nama_program']."#"."PIC (".$kelas['nk_pic_name'].")"."Ambil TM = ".$this->request->getVar('spp1'),
+                // 'keterangan_bayar'          => "Bayar Program Non-Reguler#".$jenis_bayar."#".$kelas['nk_id']."#".$program['nama_program']."#"."PIC (".$kelas['nk_pic_name'].")"."Ambil TM = ".$this->request->getVar('spp1'),
                 'keterangan_bayar_admin'    => $keterangan_admin,
                 'tgl_bayar_konfirmasi'      => $tgl,
                 'waktu_bayar_konfirmasi'    => $waktu,
                 'nominal_bayar'             => $total,
                 'validator'                 => $validator,
+                'nonreg_kelas'              => $kelas['nk_id'],
+                'nonreg_keterangan'         => json_encode([
+                    'tm_ambil'      => $this->request->getVar('spp1'),
+                ])
             ];
 
             $this->db->transStart();
@@ -2331,10 +2363,21 @@ class Pembayaran extends BaseController
             } else {
                 $nk_tm_ambil =  $kelas['nk_tm_ambil']+$this->request->getVar('spp1');
             }
+
+            $daftar = $this->request->getVar('daftar');
+            if ($daftar == "0" && $kelas['nk_status_daftar'] != '1') {
+                $pendaftaran = '0';
+            } else {
+                $pendaftaran = '1';
+            }
+
+            $tm_bayar    = $this->request->getVar('spp1');
+            $nk_tm_bayar = $kelas['nk_tm_bayar']+$tm_bayar;
             $updateNK = [
                 'nk_tm_ambil'       => $nk_tm_ambil,
-                'nk_status_daftar'  => 1,
+                'nk_status_daftar'  => $pendaftaran,
                 'nk_status_bayar'   => $extend,
+                'nk_tm_bayar'       => $nk_tm_bayar,
             ];
 
             $state[]= $this->nonreg_kelas->update($nk_id,$updateNK);
@@ -2666,6 +2709,56 @@ class Pembayaran extends BaseController
             echo json_encode($msg);
         }
     }
+
+    public function rekap_nonreg()
+	{
+		$user  		= $this->userauth();
+
+        $uri            = new \CodeIgniter\HTTP\URI(current_url(true));
+        $queryString    = $uri->getQuery();
+        $params         = [];
+        parse_str($queryString, $params);
+
+        if (count($params) == 1 && array_key_exists('tahun', $params)) {
+            $tahun       = $params['tahun'];
+        } else {
+            $tahun       = date('Y');
+        }
+        $modul          = "list";
+        $title          = "Data Rekap Pembayaran Non Reguler "." Tahun ".$tahun;
+        $list_kelas     = $this->nonreg_kelas->list($tahun);
+        if (count($list_kelas) > 0) {
+            $highest_tm_ambil = max(array_column($list_kelas, 'nk_tm_ambil'));
+        } else {
+            $highest_tm_ambil = 0;
+        }
+        $lists 		    = $this->nonreg_absen_pengajar->list_rekap($tahun);
+        
+        //Process each record in the lists array
+        $processed_lists = array_map(function($record) {
+            // Loop through each field in the record
+            foreach ($record as $key => $value) {
+                // Check if it's a napj field and not null
+                if (preg_match('/^napj\d+$/', $key) && !is_null($value)) {
+                    // Decode JSON string to array
+                    $record[$key] = json_decode($value, true);
+                }
+            }
+            return $record;
+        }, $lists);
+        // var_dump($lists);
+
+		$data = [
+			'title'			    => $title,
+			'user'			    => $user,	
+            'list_tahun'        => $this->nonreg_kelas->list_unik_tahun(),
+            'tahun_pilih'       => $tahun,
+            'modul'             => $modul,
+            'highest_tm_ambil'  => $highest_tm_ambil,
+            'processed_lists'   => $processed_lists,
+		];
+		return view('panel_admin/pembayaran/rekap/nonreg', $data);
+	}
 
     //backend
     public function rekap_spp_update()
@@ -3064,6 +3157,209 @@ class Pembayaran extends BaseController
         /*--- Log ---*/
         $this->logging('Admin', 'BERHASIL', $aktivitas);
         return redirect()->to('/log-admin');
+    }
+
+    public function rekap_nonreg_export()
+    {
+        $user  		= $this->userauth();
+
+        $uri            = new \CodeIgniter\HTTP\URI(current_url(true));
+        $queryString    = $uri->getQuery();
+        $params         = [];
+        parse_str($queryString, $params);
+
+        if (count($params) == 1 && array_key_exists('tahun', $params)) {
+            $tahun       = $params['tahun'];
+        } else {
+            $tahun       = date('Y');
+        }
+        $list_kelas     = $this->nonreg_kelas->list($tahun);
+        if (count($list_kelas) > 0) {
+            $highest_tm_ambil = max(array_column($list_kelas, 'nk_tm_ambil'));
+        } else {
+            $highest_tm_ambil = 0;
+        }
+        $lists 		    = $this->nonreg_absen_pengajar->list_rekap($tahun);
+        // Process each record in the lists array
+        $lists = array_map(function($record) {
+            // Loop through each field in the record
+            foreach ($record as $key => $value) {
+                // Check if it's a napj field and not null
+                if (preg_match('/^napj\d+$/', $key) && !is_null($value)) {
+                    // Decode JSON string to array
+                    $record[$key] = json_decode($value, true);
+                }
+            }
+            return $record;
+        }, $lists);
+
+        $total_row  = count($lists) + 5;
+        $col_isi    = 0;
+    
+        $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+        $styleColumn = [
+            'font' => [
+                'bold' => true,
+                'size' => 14,
+            ],
+            'alignment' => [
+                'horizontal'    => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+                'vertical'      => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+            ]
+        ];
+
+        $style_up = [
+            'font' => [
+                'bold' => true,
+                'size' => 11,
+            ],
+            'alignment' => [
+                'horizontal'    => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+                'vertical'      => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+            ],
+            'fill' => [
+                'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+                'startColor' => [
+                    'argb' => 'D9D9D9',
+                ],
+                'endColor' => [
+                    'argb' => 'D9D9D9',
+                ],
+            ],        
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                ],
+            ],
+        ];
+
+        $isi_tengah = [
+            'alignment' => [
+                'horizontal'    => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+                'vertical'      => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+            ],
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                ],
+            ],
+        ];
+
+        $judul = "DATA REKAP PEMBAYARAN PROGRAM NON-REGULER";
+        $tgl   =  "TAHUN " .$tahun. ' - ' . date("d-m-Y");
+
+        $sheet->setCellValue('A1', $judul);
+        $sheet->mergeCells('A1:J1');
+        $sheet->getStyle('A1')->applyFromArray($styleColumn);
+
+        $sheet->setCellValue('A2', $tgl);
+        $sheet->mergeCells('A2:J2');
+        $sheet->getStyle('A2')->applyFromArray($styleColumn);
+
+
+        $spreadsheet->setActiveSheetIndex(0)
+            ->setCellValue('A4', 'ID KELAS')
+            ->setCellValue('B4', 'NAMA KELAS')
+            ->setCellValue('C4', 'PENGAJAR')
+            ->setCellValue('D4', 'PIC')
+            ->setCellValue('E4', 'TAHUN')
+            ->setCellValue('F4', 'BIAYA SPP')
+            ->setCellValue('G4', 'PERTEMUAN DIAMBIL')
+            ->setCellValue('H4', 'JML ABSENSI')
+            ->setCellValue('I4', 'PERTEMUAN TERBAYAR')
+            ->setCellValue('J4', 'PERTEMUAN BELUM TERBAYAR');
+
+            // $lastW      = 'D';
+            // $step       = 0;
+
+            // for ($i=1; $i <= $highest_tm_ambil; $i++){
+            //     $step       = $step+1;
+            //     $newAsci    = $this->incrementAlphaSequence($lastW, $step);
+            //     $spreadsheet->getActiveSheet()->setCellValue($newAsci.'4', 'TM'.$i);
+
+            //     $spreadsheet->getActiveSheet()->getColumnDimension($newAsci)->setAutoSize(true);
+            // }
+            // $sheet->getStyle('A4:'.$newAsci.'4')->applyFromArray($style_up);
+            // $sheet->getStyle('A5:'.$newAsci.$total_row)->applyFromArray($isi_tengah);
+
+            $sheet->getStyle('A4:'.'J4')->applyFromArray($style_up);
+            $sheet->getStyle('A5:'.'J'.$total_row)->applyFromArray($isi_tengah);
+            
+            $columns = range('A', 'K');
+            foreach ($columns as $column) {
+                $spreadsheet->getActiveSheet()->getColumnDimension($column)->setAutoSize(true);
+            }
+    
+            $row = 5;
+
+        foreach ($lists as $data) {
+
+            $totHadir = 0;
+            for ($i = 1; $i <= $highest_tm_ambil; $i++) {
+                if (isset($data['napj'.$i])) {
+                    if ($data['napj'.$i]['tm'] == '1') {
+                        $totHadir = $totHadir + 1;
+                    }
+                }
+            }
+
+            $spreadsheet->setActiveSheetIndex(0)
+                
+                ->setCellValue('A' . $row, $data['nk_id'])
+                ->setCellValue('B' . $row, $data['nk_nama'])
+                ->setCellValue('C' . $row, $data['nama_pengajar'])
+                ->setCellValue('D' . $row, $data['nk_pic_name'])
+                ->setCellValue('E' . $row, $data['nk_tahun'])
+                ->setCellValue('F' . $row, $data['biaya_bulanan'])
+                ->setCellValue('E' . $row, $data['nk_tm_ambil'])
+                ->setCellValue('H' . $row, $totHadir)
+                ->setCellValue('I' . $row, $data['nk_tm_bayar'])
+                ->setCellValue('J' . $row, $totHadir - $data['nk_tm_bayar']);
+
+                // $lastW      = 'D';
+                // $step       = 0;
+
+                // for ($i=1; $i <= $highest_tm_ambil; $i++){
+                //     $step= $step+1;
+                //     $var = 'napj'.$i;
+                //     $col_letter = $this->incrementAlphaSequence($lastW, $step);
+
+                //     if (isset($data[$var]['tm'])) {
+                //         if ($data[$var]['tm'] == '1') {
+                //             $cell = $col_letter.$row;
+                //             $spreadsheet->getActiveSheet()
+                //             ->setCellValue($cell, $data[$var]['dt_tm']);
+                //         } elseif ($data[$var]['tm'] == '0') {
+                //             $cell = $col_letter.$row;
+                //             $spreadsheet->getActiveSheet()
+                //             ->setCellValue($cell, '--');
+                //         } else {
+                //             $cell = $col_letter.$row;
+                //             $spreadsheet->getActiveSheet()
+                //             ->setCellValue($cell, '');
+                //         }
+                //     } else {
+                //         $cell = $col_letter.$row;
+                //             $spreadsheet->getActiveSheet()
+                //             ->setCellValue($cell, '');
+                //     };
+                // }
+            
+            $row++;
+        }
+
+        $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xls($spreadsheet);
+        $filename =  'Data-Rekap-Pembayaran-NonReguler-Tahun'.$tahun.'-'. date('Y-m-d-His');
+
+        /*--- Log ---*/
+        $this->logging('Admin', 'BERHASIL', 'Donwload rekap pembayaran program Non-Reguler Tahun '.$tahun);
+
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment;filename=' . $filename . '.xls');
+        header('Cache-Control: max-age=0');
+
+        $writer->save('php://output');
     }
 
     /*--- REKAP BAYAR INFAQ ---*/

@@ -15,14 +15,15 @@ class Model_nonreg_absen_pengajar extends Model
     'napj31', 'napj32', 'napj33', 'napj34', 'napj35', 'napj36', 'napj37', 'napj38', 'napj39', 'napj40',
     'napj41', 'napj42', 'napj43', 'napj44', 'napj45', 'napj46', 'napj47', 'napj48', 'napj49', 'napj50'];
 
-    public function list_rekap($angkatan)
+    public function list_rekap($tahun)
     {
         return $this->table('nonreg_absen_pengajar')
-            ->select('nonreg_absen_pengajar.*, pengajar.nama_pengajar, nonreg_kelas.nk_nama, nonreg_kelas.nk_angkatan, nonreg_kelas.nk_pic_name')
-            ->where('nk_angkatan', $angkatan)
+            ->select('nonreg_absen_pengajar.*, pengajar.nama_pengajar, nonreg_kelas.*, program.biaya_bulanan')
+            ->where('nk_tahun', $tahun)
             ->join('nonreg_pengajar', 'nonreg_pengajar.npj_id = nonreg_absen_pengajar.napj_pengajar')
             ->join('nonreg_kelas', 'nonreg_kelas.nk_id = nonreg_pengajar.npj_kelas')
             ->join('pengajar', 'pengajar.pengajar_id = nonreg_pengajar.npj_pengajar')
+            ->join('program', 'program.program_id = nonreg_kelas.nk_program')
             ->get()->getResultArray();
     }
 }
