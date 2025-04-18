@@ -1987,6 +1987,7 @@ class Absensi extends BaseController
 
             $lastW      = 'D';
             $step       = 0;
+            $newAsci = 'D0';
 
             for ($i=1; $i <= $highest_tm_ambil; $i++){
                 $step       = $step+1;
