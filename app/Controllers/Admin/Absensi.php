@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Controllers\Admin;
 
 use App\Controllers\BaseController;
@@ -11,7 +12,7 @@ class Absensi extends BaseController
     {
         $user  = $this->userauth();
         //Angkatan
-		$uri            = new \CodeIgniter\HTTP\URI(current_url(true));
+        $uri            = new \CodeIgniter\HTTP\URI(current_url(true));
         $queryString    = $uri->getQuery();
         $params         = [];
         parse_str($queryString, $params);
@@ -20,7 +21,7 @@ class Absensi extends BaseController
             $angkatan           = $params['angkatan'];
             if (ctype_digit($angkatan)) {
                 $angkatan           = $params['angkatan'];
-            }else {
+            } else {
                 $get_angkatan       = $this->konfigurasi->angkatan_kuliah();
                 $angkatan           = $get_angkatan->angkatan_kuliah;
             }
@@ -28,7 +29,7 @@ class Absensi extends BaseController
             $get_angkatan       = $this->konfigurasi->angkatan_kuliah();
             $angkatan           = $get_angkatan->angkatan_kuliah;
         }
-        
+
         $list_angkatan      = $this->kelas->list_unik_angkatan();
         $list_absensi       = $this->peserta_kelas->admin_rekap_absen_peserta($angkatan);
 
@@ -37,7 +38,7 @@ class Absensi extends BaseController
             'user'          => $user,
             'list'          => $list_absensi,
             'list_angkatan' => $list_angkatan,
-            'angkatan_pilih'=> $angkatan,
+            'angkatan_pilih' => $angkatan,
         ];
         return view('panel_admin/absensi/regular/peserta', $data);
     }
@@ -46,7 +47,7 @@ class Absensi extends BaseController
     {
         $user  = $this->userauth();
         //Angkatan
-		$uri            = new \CodeIgniter\HTTP\URI(current_url(true));
+        $uri            = new \CodeIgniter\HTTP\URI(current_url(true));
         $queryString    = $uri->getQuery();
         $params         = [];
         parse_str($queryString, $params);
@@ -55,7 +56,7 @@ class Absensi extends BaseController
             $angkatan           = $params['angkatan'];
             if (ctype_digit($angkatan)) {
                 $angkatan           = $params['angkatan'];
-            }else {
+            } else {
                 $get_angkatan       = $this->konfigurasi->angkatan_kuliah();
                 $angkatan           = $get_angkatan->angkatan_kuliah;
             }
@@ -65,13 +66,13 @@ class Absensi extends BaseController
         }
         $list_angkatan      = $this->kelas->list_unik_angkatan();
         $list_absensi       = $this->kelas->admin_rekap_absen_pengajar($angkatan);
-        
+
         $data = [
             'title'         => 'Data Absensi Pengajar pada Angkatan Perkuliahan ' . $angkatan,
             'user'          => $user,
             'list'          => $list_absensi,
             'list_angkatan' => $list_angkatan,
-            'angkatan_pilih'=> $angkatan,
+            'angkatan_pilih' => $angkatan,
         ];
         return view('panel_admin/absensi/regular/pengajar', $data);
     }
@@ -87,62 +88,62 @@ class Absensi extends BaseController
             $data_pengajar      = $this->pengajar->find($pengajar_id);
             $nama_pengajar      = $data_pengajar['nama_pengajar'];
             $nama_kelas         = $data_kelas['nama_kelas'];
-             // Get data absen pengajar
+            // Get data absen pengajar
             $absen_pengajar         = $this->absen_pengajar->find($absen_pengajar_id);
 
             $data = [
-                'title'                  => 'Catatan Absen Pengajar Kelas ' . $nama_kelas ,
+                'title'                  => 'Catatan Absen Pengajar Kelas ' . $nama_kelas,
                 'pengajar'               => $nama_pengajar,
-                'note_tm1'               => $absen_pengajar ['note_tm1'],
-                'note_tm2'               => $absen_pengajar ['note_tm2'],
-                'note_tm3'               => $absen_pengajar ['note_tm3'],
-                'note_tm4'               => $absen_pengajar ['note_tm4'],
-                'note_tm5'               => $absen_pengajar ['note_tm5'],
-                'note_tm6'               => $absen_pengajar ['note_tm6'],
-                'note_tm7'               => $absen_pengajar ['note_tm7'],
-                'note_tm8'               => $absen_pengajar ['note_tm8'],
-                'note_tm9'               => $absen_pengajar ['note_tm9'],
-                'note_tm10'              => $absen_pengajar ['note_tm10'],
-                'note_tm11'              => $absen_pengajar ['note_tm11'],
-                'note_tm12'              => $absen_pengajar ['note_tm12'],
-                'note_tm13'              => $absen_pengajar ['note_tm13'],
-                'note_tm14'              => $absen_pengajar ['note_tm14'],
-                'note_tm15'              => $absen_pengajar ['note_tm15'],
-                'note_tm16'              => $absen_pengajar ['note_tm16'],
+                'note_tm1'               => $absen_pengajar['note_tm1'],
+                'note_tm2'               => $absen_pengajar['note_tm2'],
+                'note_tm3'               => $absen_pengajar['note_tm3'],
+                'note_tm4'               => $absen_pengajar['note_tm4'],
+                'note_tm5'               => $absen_pengajar['note_tm5'],
+                'note_tm6'               => $absen_pengajar['note_tm6'],
+                'note_tm7'               => $absen_pengajar['note_tm7'],
+                'note_tm8'               => $absen_pengajar['note_tm8'],
+                'note_tm9'               => $absen_pengajar['note_tm9'],
+                'note_tm10'              => $absen_pengajar['note_tm10'],
+                'note_tm11'              => $absen_pengajar['note_tm11'],
+                'note_tm12'              => $absen_pengajar['note_tm12'],
+                'note_tm13'              => $absen_pengajar['note_tm13'],
+                'note_tm14'              => $absen_pengajar['note_tm14'],
+                'note_tm15'              => $absen_pengajar['note_tm15'],
+                'note_tm16'              => $absen_pengajar['note_tm16'],
 
-                'tgl_tm1'               => $absen_pengajar ['tgl_tm1'],
-                'tgl_tm2'               => $absen_pengajar ['tgl_tm2'],
-                'tgl_tm3'               => $absen_pengajar ['tgl_tm3'],
-                'tgl_tm4'               => $absen_pengajar ['tgl_tm4'],
-                'tgl_tm5'               => $absen_pengajar ['tgl_tm5'],
-                'tgl_tm6'               => $absen_pengajar ['tgl_tm6'],
-                'tgl_tm7'               => $absen_pengajar ['tgl_tm7'],
-                'tgl_tm8'               => $absen_pengajar ['tgl_tm8'],
-                'tgl_tm9'               => $absen_pengajar ['tgl_tm9'],
-                'tgl_tm10'              => $absen_pengajar ['tgl_tm10'],
-                'tgl_tm11'              => $absen_pengajar ['tgl_tm11'],
-                'tgl_tm12'              => $absen_pengajar ['tgl_tm12'],
-                'tgl_tm13'              => $absen_pengajar ['tgl_tm13'],
-                'tgl_tm14'              => $absen_pengajar ['tgl_tm14'],
-                'tgl_tm15'              => $absen_pengajar ['tgl_tm15'],
-                'tgl_tm16'              => $absen_pengajar ['tgl_tm16'],
+                'tgl_tm1'               => $absen_pengajar['tgl_tm1'],
+                'tgl_tm2'               => $absen_pengajar['tgl_tm2'],
+                'tgl_tm3'               => $absen_pengajar['tgl_tm3'],
+                'tgl_tm4'               => $absen_pengajar['tgl_tm4'],
+                'tgl_tm5'               => $absen_pengajar['tgl_tm5'],
+                'tgl_tm6'               => $absen_pengajar['tgl_tm6'],
+                'tgl_tm7'               => $absen_pengajar['tgl_tm7'],
+                'tgl_tm8'               => $absen_pengajar['tgl_tm8'],
+                'tgl_tm9'               => $absen_pengajar['tgl_tm9'],
+                'tgl_tm10'              => $absen_pengajar['tgl_tm10'],
+                'tgl_tm11'              => $absen_pengajar['tgl_tm11'],
+                'tgl_tm12'              => $absen_pengajar['tgl_tm12'],
+                'tgl_tm13'              => $absen_pengajar['tgl_tm13'],
+                'tgl_tm14'              => $absen_pengajar['tgl_tm14'],
+                'tgl_tm15'              => $absen_pengajar['tgl_tm15'],
+                'tgl_tm16'              => $absen_pengajar['tgl_tm16'],
 
-                'ts1'                   => $absen_pengajar ['ts1'],
-                'ts2'                   => $absen_pengajar ['ts2'],
-                'ts3'                   => $absen_pengajar ['ts3'],
-                'ts4'                   => $absen_pengajar ['ts4'],
-                'ts5'                   => $absen_pengajar ['ts5'],
-                'ts6'                   => $absen_pengajar ['ts6'],
-                'ts7'                   => $absen_pengajar ['ts7'],
-                'ts8'                   => $absen_pengajar ['ts8'],
-                'ts9'                   => $absen_pengajar ['ts9'],
-                'ts10'                  => $absen_pengajar ['ts10'],
-                'ts11'                  => $absen_pengajar ['ts11'],
-                'ts12'                  => $absen_pengajar ['ts12'],
-                'ts13'                  => $absen_pengajar ['ts13'],
-                'ts14'                  => $absen_pengajar ['ts14'],
-                'ts15'                  => $absen_pengajar ['ts15'],
-                'ts16'                  => $absen_pengajar ['ts16'],
+                'ts1'                   => $absen_pengajar['ts1'],
+                'ts2'                   => $absen_pengajar['ts2'],
+                'ts3'                   => $absen_pengajar['ts3'],
+                'ts4'                   => $absen_pengajar['ts4'],
+                'ts5'                   => $absen_pengajar['ts5'],
+                'ts6'                   => $absen_pengajar['ts6'],
+                'ts7'                   => $absen_pengajar['ts7'],
+                'ts8'                   => $absen_pengajar['ts8'],
+                'ts9'                   => $absen_pengajar['ts9'],
+                'ts10'                  => $absen_pengajar['ts10'],
+                'ts11'                  => $absen_pengajar['ts11'],
+                'ts12'                  => $absen_pengajar['ts12'],
+                'ts13'                  => $absen_pengajar['ts13'],
+                'ts14'                  => $absen_pengajar['ts14'],
+                'ts15'                  => $absen_pengajar['ts15'],
+                'ts16'                  => $absen_pengajar['ts16'],
 
             ];
             $msg = [
@@ -156,7 +157,7 @@ class Absensi extends BaseController
     {
         $user  = $this->userauth();
         //Angkatan
-		$uri            = new \CodeIgniter\HTTP\URI(current_url(true));
+        $uri            = new \CodeIgniter\HTTP\URI(current_url(true));
         $queryString    = $uri->getQuery();
         $params         = [];
         parse_str($queryString, $params);
@@ -165,7 +166,7 @@ class Absensi extends BaseController
             $angkatan           = $params['angkatan'];
             if (ctype_digit($angkatan)) {
                 $angkatan           = $params['angkatan'];
-            }else {
+            } else {
                 $get_angkatan       = $this->konfigurasi->angkatan_kuliah();
                 $angkatan           = $get_angkatan->angkatan_kuliah;
             }
@@ -175,13 +176,13 @@ class Absensi extends BaseController
         }
         $list_angkatan      = $this->kelas->list_unik_angkatan();
         $list_absensi       = $this->kelas->admin_rekap_absen_penguji($angkatan);
-        
+
         $data = [
             'title'         => 'Data Absensi Penguji pada Angkatan Perkuliahan ' . $angkatan,
             'user'          => $user,
             'list'          => $list_absensi,
             'list_angkatan' => $list_angkatan,
-            'angkatan_pilih'=> $angkatan,
+            'angkatan_pilih' => $angkatan,
         ];
         return view('panel_admin/absensi/regular/penguji', $data);
     }
@@ -190,7 +191,7 @@ class Absensi extends BaseController
     {
         $user  = $this->userauth();
         //Angkatan
-		$uri            = new \CodeIgniter\HTTP\URI(current_url(true));
+        $uri            = new \CodeIgniter\HTTP\URI(current_url(true));
         $queryString    = $uri->getQuery();
         $params         = [];
         parse_str($queryString, $params);
@@ -199,7 +200,7 @@ class Absensi extends BaseController
             $angkatan           = $params['angkatan'];
             if (ctype_digit($angkatan)) {
                 $angkatan           = $params['angkatan'];
-            }else {
+            } else {
                 $get_angkatan       = $this->konfigurasi->angkatan_kuliah();
                 $angkatan           = $get_angkatan->angkatan_kuliah;
             }
@@ -207,7 +208,7 @@ class Absensi extends BaseController
             $get_angkatan       = $this->konfigurasi->angkatan_kuliah();
             $angkatan           = $get_angkatan->angkatan_kuliah;
         }
-        
+
         $list_angkatan      = $this->kelas->list_unik_angkatan();
         $list_absensi       = $this->bina_peserta->rekap_bina_absen($angkatan);
         // var_dump($list_absensi);
@@ -217,14 +218,14 @@ class Absensi extends BaseController
             'user'          => $user,
             'list'          => $list_absensi,
             'list_angkatan' => $list_angkatan,
-            'angkatan_pilih'=> $angkatan,
+            'angkatan_pilih' => $angkatan,
         ];
         return view('panel_admin/absensi/bina/peserta', $data);
     }
 
     public function nonreg_peserta()
-	{
-		$user  		= $this->userauth();
+    {
+        $user          = $this->userauth();
 
         $uri            = new \CodeIgniter\HTTP\URI(current_url(true));
         $queryString    = $uri->getQuery();
@@ -237,16 +238,16 @@ class Absensi extends BaseController
             $tahun       = date('Y');
         }
         $modul          = "list";
-        $title          = "Data Absensi Peserta Non Reguler "." Tahun ".$tahun;
+        $title          = "Data Absensi Peserta Non Reguler " . " Tahun " . $tahun;
         $list_kelas     = $this->nonreg_kelas->list($tahun);
         if (count($list_kelas) > 0) {
             $highest_tm_ambil = max(array_column($list_kelas, 'nk_tm_ambil'));
         } else {
             $highest_tm_ambil = 0;
         }
-        $lists 		    = $this->nonreg_absen_peserta->list_rekap($tahun);
+        $lists             = $this->nonreg_absen_peserta->list_rekap($tahun);
         // Process each record in the lists array
-        $processed_lists = array_map(function($record) {
+        $processed_lists = array_map(function ($record) {
             // Loop through each field in the record
             foreach ($record as $key => $value) {
                 // Check if it's a napj field and not null
@@ -258,20 +259,20 @@ class Absensi extends BaseController
             return $record;
         }, $lists);
 
-		$data = [
-			'title'			    => $title,
-			'user'			    => $user,	
+        $data = [
+            'title'                => $title,
+            'user'                => $user,
             'list_tahun'        => $this->nonreg_kelas->list_unik_tahun(),
             'tahun_pilih'       => $tahun,
             'modul'             => $modul,
             'highest_tm_ambil'  => $highest_tm_ambil,
             'processed_lists'   => $processed_lists,
-		];
-		return view('panel_admin/absensi/nonreg/peserta', $data);
-	}
+        ];
+        return view('panel_admin/absensi/nonreg/peserta', $data);
+    }
     public function nonreg_pengajar()
-	{
-		$user  		= $this->userauth();
+    {
+        $user          = $this->userauth();
 
         $uri            = new \CodeIgniter\HTTP\URI(current_url(true));
         $queryString    = $uri->getQuery();
@@ -284,16 +285,16 @@ class Absensi extends BaseController
             $tahun       = date('Y');
         }
         $modul          = "list";
-        $title          = "Data Absensi Pengajar Non Reguler "." Tahun ".$tahun;
+        $title          = "Data Absensi Pengajar Non Reguler " . " Tahun " . $tahun;
         $list_kelas     = $this->nonreg_kelas->list($tahun);
         if (count($list_kelas) > 0) {
             $highest_tm_ambil = max(array_column($list_kelas, 'nk_tm_ambil'));
         } else {
             $highest_tm_ambil = 0;
         }
-        $lists 		    = $this->nonreg_absen_pengajar->list_rekap($tahun);
+        $lists             = $this->nonreg_absen_pengajar->list_rekap($tahun);
         // Process each record in the lists array
-        $processed_lists = array_map(function($record) {
+        $processed_lists = array_map(function ($record) {
             // Loop through each field in the record
             foreach ($record as $key => $value) {
                 // Check if it's a napj field and not null
@@ -305,23 +306,23 @@ class Absensi extends BaseController
             return $record;
         }, $lists);
 
-		$data = [
-			'title'			    => $title,
-			'user'			    => $user,	
+        $data = [
+            'title'                => $title,
+            'user'                => $user,
             'list_tahun'        => $this->nonreg_kelas->list_unik_tahun(),
             'tahun_pilih'       => $tahun,
             'modul'             => $modul,
             'highest_tm_ambil'  => $highest_tm_ambil,
             'processed_lists'   => $processed_lists,
-		];
-		return view('panel_admin/absensi/nonreg/pengajar', $data);
-	}
+        ];
+        return view('panel_admin/absensi/nonreg/pengajar', $data);
+    }
 
     //backend
     public function regular_peserta_export()
     {
         //Angkatan
-		$uri            = new \CodeIgniter\HTTP\URI(current_url(true));
+        $uri            = new \CodeIgniter\HTTP\URI(current_url(true));
         $queryString    = $uri->getQuery();
         $params         = [];
         parse_str($queryString, $params);
@@ -330,7 +331,7 @@ class Absensi extends BaseController
             $angkatan           = $params['angkatan'];
             if (ctype_digit($angkatan)) {
                 $angkatan           = $params['angkatan'];
-            }else {
+            } else {
                 $get_angkatan       = $this->konfigurasi->angkatan_kuliah();
                 $angkatan           = $get_angkatan->angkatan_kuliah;
             }
@@ -373,7 +374,7 @@ class Absensi extends BaseController
                 'endColor' => [
                     'argb' => 'D9D9D9',
                 ],
-            ],        
+            ],
             'borders' => [
                 'allBorders' => [
                     'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
@@ -406,7 +407,7 @@ class Absensi extends BaseController
 
         $sheet->getStyle('A4:AD4')->applyFromArray($style_up);
 
-        $sheet->getStyle('A5:AD'.$total_row)->applyFromArray($isi_tengah);
+        $sheet->getStyle('A5:AD' . $total_row)->applyFromArray($isi_tengah);
 
         $spreadsheet->setActiveSheetIndex(0)
             ->setCellValue('A4', 'NIS')
@@ -440,38 +441,38 @@ class Absensi extends BaseController
             ->setCellValue('AC4', 'TM16')
             ->setCellValue('AD4', 'TOTAL HADIR');
 
-            // ->setCellValue('AE4', 'TGL TM1')
-            // ->setCellValue('AF4', 'TGL TM2')
-            // ->setCellValue('AG4', 'TGL TM3')
-            // ->setCellValue('AH4', 'TGL TM4')
-            // ->setCellValue('AI4', 'TGL TM5')
-            // ->setCellValue('AJ4', 'TGL TM6')
-            // ->setCellValue('AK4', 'TGL TM7')
-            // ->setCellValue('AL4', 'TGL TM8')
+        // ->setCellValue('AE4', 'TGL TM1')
+        // ->setCellValue('AF4', 'TGL TM2')
+        // ->setCellValue('AG4', 'TGL TM3')
+        // ->setCellValue('AH4', 'TGL TM4')
+        // ->setCellValue('AI4', 'TGL TM5')
+        // ->setCellValue('AJ4', 'TGL TM6')
+        // ->setCellValue('AK4', 'TGL TM7')
+        // ->setCellValue('AL4', 'TGL TM8')
 
-            // ->setCellValue('AM4', 'TGL TM9')
-            // ->setCellValue('AN4', 'TGL TM10')
-            // ->setCellValue('AO4', 'TGL TM11')
-            // ->setCellValue('AP4', 'TGL TM12')
-            // ->setCellValue('AQ4', 'TGL TM13')
-            // ->setCellValue('AR4', 'TGL TM14')
-            // ->setCellValue('AS4', 'TGL TM15')
-            // ->setCellValue('AT4', 'TGL TM16');
-        
-            $columns = range('A', 'Z');
-            foreach ($columns as $column) {
-                $spreadsheet->getActiveSheet()->getColumnDimension($column)->setAutoSize(true);
-            }
-            $spreadsheet->getActiveSheet()->getColumnDimension('AA')->setAutoSize(true);
-            $spreadsheet->getActiveSheet()->getColumnDimension('AB')->setAutoSize(true);
-            $spreadsheet->getActiveSheet()->getColumnDimension('AC')->setAutoSize(true);
-            $spreadsheet->getActiveSheet()->getColumnDimension('AD')->setAutoSize(true);
+        // ->setCellValue('AM4', 'TGL TM9')
+        // ->setCellValue('AN4', 'TGL TM10')
+        // ->setCellValue('AO4', 'TGL TM11')
+        // ->setCellValue('AP4', 'TGL TM12')
+        // ->setCellValue('AQ4', 'TGL TM13')
+        // ->setCellValue('AR4', 'TGL TM14')
+        // ->setCellValue('AS4', 'TGL TM15')
+        // ->setCellValue('AT4', 'TGL TM16');
+
+        $columns = range('A', 'Z');
+        foreach ($columns as $column) {
+            $spreadsheet->getActiveSheet()->getColumnDimension($column)->setAutoSize(true);
+        }
+        $spreadsheet->getActiveSheet()->getColumnDimension('AA')->setAutoSize(true);
+        $spreadsheet->getActiveSheet()->getColumnDimension('AB')->setAutoSize(true);
+        $spreadsheet->getActiveSheet()->getColumnDimension('AC')->setAutoSize(true);
+        $spreadsheet->getActiveSheet()->getColumnDimension('AD')->setAutoSize(true);
 
         $row = 5;
 
         foreach ($absen_peserta as $absen) {
             $total = $absen['tm1'] + $absen['tm2'] + $absen['tm3'] + $absen['tm4'] + $absen['tm5'] + $absen['tm6'] + $absen['tm7'] + $absen['tm8'] + $absen['tm9'] + $absen['tm10'] + $absen['tm11'] + $absen['tm12'] + $absen['tm13'] + $absen['tm14'] + $absen['tm15'] + $absen['tm16'];
-            
+
             if ($absen['tgl_tm1'] == '2022-01-01') {
                 $tgl_tm1 = '';
             } else {
@@ -479,215 +480,215 @@ class Absensi extends BaseController
             };
             if ($absen['tgl_tm2'] == '2022-01-01') {
                 $tgl_tm2 = '';
-            }else {
+            } else {
                 $tgl_tm2 = $absen['tgl_tm2'];
             };
             if ($absen['tgl_tm3'] == '2022-01-01') {
                 $tgl_tm3 = '';
-            }else {
+            } else {
                 $tgl_tm3 = $absen['tgl_tm3'];
             };
             if ($absen['tgl_tm4'] == '2022-01-01') {
                 $tgl_tm4 = '';
-            }else {
+            } else {
                 $tgl_tm4 = $absen['tgl_tm4'];
             };
             if ($absen['tgl_tm5'] == '2022-01-01') {
                 $tgl_tm5 = '';
-            }else {
+            } else {
                 $tgl_tm5 = $absen['tgl_tm5'];
             };
             if ($absen['tgl_tm6'] == '2022-01-01') {
                 $tgl_tm6 = '';
-            }else {
+            } else {
                 $tgl_tm6 = $absen['tgl_tm6'];
             };
             if ($absen['tgl_tm7'] == '2022-01-01') {
                 $tgl_tm7 = '';
-            }else {
+            } else {
                 $tgl_tm7 = $absen['tgl_tm7'];
             };
             if ($absen['tgl_tm8'] == '2022-01-01') {
                 $tgl_tm8 = '';
-            }else {
+            } else {
                 $tgl_tm8 = $absen['tgl_tm8'];
             };
             if ($absen['tgl_tm9'] == '2022-01-01') {
                 $tgl_tm9 = '';
-            }else {
+            } else {
                 $tgl_tm9 = $absen['tgl_tm9'];
             };
             if ($absen['tgl_tm10'] == '2022-01-01') {
                 $tgl_tm10 = '';
-            }else {
+            } else {
                 $tgl_tm10 = $absen['tgl_tm10'];
             };
             if ($absen['tgl_tm11'] == '2022-01-01') {
                 $tgl_tm11 = '';
-            }else {
+            } else {
                 $tgl_tm11 = $absen['tgl_tm11'];
             };
             if ($absen['tgl_tm12'] == '2022-01-01') {
                 $tgl_tm12 = '';
-            }else {
+            } else {
                 $tgl_tm12 = $absen['tgl_tm12'];
             };
             if ($absen['tgl_tm13'] == '2022-01-01') {
                 $tgl_tm13 = '';
-            }else {
+            } else {
                 $tgl_tm13 = $absen['tgl_tm13'];
             };
             if ($absen['tgl_tm14'] == '2022-01-01') {
                 $tgl_tm14 = '';
-            }else {
+            } else {
                 $tgl_tm14 = $absen['tgl_tm14'];
             };
             if ($absen['tgl_tm15'] == '2022-01-01') {
                 $tgl_tm15 = '';
-            }else {
+            } else {
                 $tgl_tm15 = $absen['tgl_tm15'];
             };
             if ($absen['tgl_tm16'] == '2022-01-01') {
                 $tgl_tm16 = '';
-            }else {
+            } else {
                 $tgl_tm16 = $absen['tgl_tm16'];
             };
             //-----------------------------
             if ($absen['tm1'] == '1') {
                 $absen_tm1 = $tgl_tm1;
-            } elseif($absen['tm1'] == '0') {
+            } elseif ($absen['tm1'] == '0') {
                 $absen_tm1 = '--';
-            } else{
+            } else {
                 $absen_tm1 = '';
             };
 
             if ($absen['tm2'] == '1') {
                 $absen_tm2 = $tgl_tm2;
-            } elseif($absen['tm2'] == '0') {
+            } elseif ($absen['tm2'] == '0') {
                 $absen_tm2 = '--';
-            } else{
+            } else {
                 $absen_tm2 = '';
             };
-            
+
             if ($absen['tm3'] == '1') {
                 $absen_tm3 = $tgl_tm3;
-            } elseif($absen['tm3'] == '0') {
+            } elseif ($absen['tm3'] == '0') {
                 $absen_tm3 = '--';
-            } else{
+            } else {
                 $absen_tm3 = '';
             };
 
             if ($absen['tm4'] == '1') {
                 $absen_tm4 = $tgl_tm4;
-            } elseif($absen['tm4'] == '0') {
+            } elseif ($absen['tm4'] == '0') {
                 $absen_tm4 = '--';
-            } else{
+            } else {
                 $absen_tm4 = '';
             };
 
             if ($absen['tm5'] == '1') {
                 $absen_tm5 = $tgl_tm5;
-            } elseif($absen['tm5'] == '0') {
+            } elseif ($absen['tm5'] == '0') {
                 $absen_tm5 = '--';
-            } else{
+            } else {
                 $absen_tm5 = '';
             };
 
             if ($absen['tm6'] == '1') {
                 $absen_tm6 = $tgl_tm6;
-            } elseif($absen['tm6'] == '0') {
+            } elseif ($absen['tm6'] == '0') {
                 $absen_tm6 = '--';
-            } else{
+            } else {
                 $absen_tm6 = '';
             };
 
             if ($absen['tm7'] == '1') {
                 $absen_tm7 = $tgl_tm7;
-            } elseif($absen['tm7'] == '0') {
+            } elseif ($absen['tm7'] == '0') {
                 $absen_tm7 = '--';
-            } else{
+            } else {
                 $absen_tm7 = '';
             };
 
             if ($absen['tm8'] == '1') {
                 $absen_tm8 = $tgl_tm8;
-            } elseif($absen['tm8'] == '0') {
+            } elseif ($absen['tm8'] == '0') {
                 $absen_tm8 = '--';
-            } else{
+            } else {
                 $absen_tm8 = '';
             };
 
             if ($absen['tm9'] == '1') {
                 $absen_tm9 = $tgl_tm9;
-            } elseif($absen['tm9'] == '0') {
+            } elseif ($absen['tm9'] == '0') {
                 $absen_tm9 = '--';
-            } else{
+            } else {
                 $absen_tm9 = '';
             };
 
             if ($absen['tm10'] == '1') {
                 $absen_tm10 = $tgl_tm10;
-            } elseif($absen['tm10'] == '0') {
+            } elseif ($absen['tm10'] == '0') {
                 $absen_tm10 = '--';
-            } else{
+            } else {
                 $absen_tm10 = '';
             };
 
             if ($absen['tm11'] == '1') {
                 $absen_tm11 = $tgl_tm11;
-            } elseif($absen['tm11'] == '0') {
+            } elseif ($absen['tm11'] == '0') {
                 $absen_tm11 = '--';
-            } else{
+            } else {
                 $absen_tm11 = '';
             };
 
             if ($absen['tm12'] == '1') {
                 $absen_tm12 = $tgl_tm12;
-            } elseif($absen['tm12'] == '0') {
+            } elseif ($absen['tm12'] == '0') {
                 $absen_tm12 = '--';
-            } else{
+            } else {
                 $absen_tm12 = '';
             };
 
             if ($absen['tm13'] == '1') {
                 $absen_tm13 = $tgl_tm13;
-            } elseif($absen['tm13'] == '0') {
+            } elseif ($absen['tm13'] == '0') {
                 $absen_tm13 = '--';
-            } else{
+            } else {
                 $absen_tm13 = '';
             };
 
             if ($absen['tm14'] == '1') {
                 $absen_tm14 = $tgl_tm14;
-            } elseif($absen['tm14'] == '0') {
+            } elseif ($absen['tm14'] == '0') {
                 $absen_tm14 = '--';
-            } else{
+            } else {
                 $absen_tm14 = '';
             };
 
             if ($absen['tm15'] == '1') {
                 $absen_tm15 = $tgl_tm15;
-            } elseif($absen['tm15'] == '0') {
+            } elseif ($absen['tm15'] == '0') {
                 $absen_tm15 = '--';
-            } else{
+            } else {
                 $absen_tm15 = '';
             };
 
             if ($absen['tm16'] == '1') {
                 $absen_tm16 = $tgl_tm16;
-            } elseif($absen['tm16'] == '0') {
+            } elseif ($absen['tm16'] == '0') {
                 $absen_tm16 = '--';
-            } else{
+            } else {
                 $absen_tm16 = '';
             };
 
-            if($absen['status_aktif_peserta'] == NULL) {
+            if ($absen['status_aktif_peserta'] == NULL) {
                 $status_aktif_peserta = 'AKTIF';
-            }else {
+            } else {
                 $status_aktif_peserta = $absen['status_aktif_peserta'];
             }
-            
-            
+
+
             $spreadsheet->setActiveSheetIndex(0)
                 ->setCellValue('A' . $row, $absen['nis'])
                 ->setCellValue('B' . $row, $absen['nama_peserta'])
@@ -722,30 +723,30 @@ class Absensi extends BaseController
                 ->setCellValue('AC' . $row, $absen_tm16)
                 ->setCellValue('AD' . $row, $total);
 
-                // ->setCellValue('AE' . $row, $tgl_tm1)
-                // ->setCellValue('AF' . $row, $tgl_tm2)
-                // ->setCellValue('AG' . $row, $tgl_tm3)
-                // ->setCellValue('AH' . $row, $tgl_tm4)
-                // ->setCellValue('AI' . $row, $tgl_tm5)
-                // ->setCellValue('AJ' . $row, $tgl_tm6)
-                // ->setCellValue('AK' . $row, $tgl_tm7)
-                // ->setCellValue('AL' . $row, $tgl_tm8)
+            // ->setCellValue('AE' . $row, $tgl_tm1)
+            // ->setCellValue('AF' . $row, $tgl_tm2)
+            // ->setCellValue('AG' . $row, $tgl_tm3)
+            // ->setCellValue('AH' . $row, $tgl_tm4)
+            // ->setCellValue('AI' . $row, $tgl_tm5)
+            // ->setCellValue('AJ' . $row, $tgl_tm6)
+            // ->setCellValue('AK' . $row, $tgl_tm7)
+            // ->setCellValue('AL' . $row, $tgl_tm8)
 
-                // ->setCellValue('AM' . $row, $tgl_tm9)
-                // ->setCellValue('AN' . $row, $tgl_tm10)
-                // ->setCellValue('AO' . $row, $tgl_tm11)
-                // ->setCellValue('AP' . $row, $tgl_tm12)
-                // ->setCellValue('AQ' . $row, $tgl_tm13)
-                // ->setCellValue('AR' . $row, $tgl_tm14)
-                // ->setCellValue('AS' . $row, $tgl_tm15)
-                // ->setCellValue('AT' . $row, $tgl_tm16);
+            // ->setCellValue('AM' . $row, $tgl_tm9)
+            // ->setCellValue('AN' . $row, $tgl_tm10)
+            // ->setCellValue('AO' . $row, $tgl_tm11)
+            // ->setCellValue('AP' . $row, $tgl_tm12)
+            // ->setCellValue('AQ' . $row, $tgl_tm13)
+            // ->setCellValue('AR' . $row, $tgl_tm14)
+            // ->setCellValue('AS' . $row, $tgl_tm15)
+            // ->setCellValue('AT' . $row, $tgl_tm16);
             $row++;
         }
 
         $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
-        $filename =  'Data-Rekap-Absen-Peserta-Angkatan'.$angkatan.'-'. date('Y-m-d-His');
+        $filename =  'Data-Rekap-Absen-Peserta-Angkatan' . $angkatan . '-' . date('Y-m-d-His');
 
-        $aktivitas = 'Download Data Rekap Absen Peserta via Export Excel, Waktu : ' .  date('Y-m-d-H:i:s') ;
+        $aktivitas = 'Download Data Rekap Absen Peserta via Export Excel, Waktu : ' .  date('Y-m-d-H:i:s');
 
         /*--- Log ---*/
         $this->logging('Admin', 'BERHASIL', $aktivitas);
@@ -759,8 +760,8 @@ class Absensi extends BaseController
 
     public function regular_pengajar_export()
     {
-          //Angkatan
-		$uri            = new \CodeIgniter\HTTP\URI(current_url(true));
+        //Angkatan
+        $uri            = new \CodeIgniter\HTTP\URI(current_url(true));
         $queryString    = $uri->getQuery();
         $params         = [];
         parse_str($queryString, $params);
@@ -769,7 +770,7 @@ class Absensi extends BaseController
             $angkatan           = $params['angkatan'];
             if (ctype_digit($angkatan)) {
                 $angkatan           = $params['angkatan'];
-            }else {
+            } else {
                 $get_angkatan       = $this->konfigurasi->angkatan_kuliah();
                 $angkatan           = $get_angkatan->angkatan_kuliah;
             }
@@ -872,7 +873,7 @@ class Absensi extends BaseController
             ->setCellValue('AA4', 'TS TM4')
             ->setCellValue('AB4', 'TS TM5')
             ->setCellValue('AC4', 'TS TM6')
-            ->setCellValue('AD4', 'TS TM7')           
+            ->setCellValue('AD4', 'TS TM7')
             ->setCellValue('AE4', 'TS TM8')
             ->setCellValue('AF4', 'TS TM9')
             ->setCellValue('AG4', 'TS TM10')
@@ -882,7 +883,7 @@ class Absensi extends BaseController
             ->setCellValue('AK4', 'TS TM14')
             ->setCellValue('AL4', 'TS TM15')
             ->setCellValue('AM4', 'TS TM16')
-            
+
             ->setCellValue('AO4', 'NOTE TM1')
             ->setCellValue('AP4', 'NOTE TM2')
             ->setCellValue('AQ4', 'NOTE TM3')
@@ -899,7 +900,7 @@ class Absensi extends BaseController
             ->setCellValue('BB4', 'NOTE TM14')
             ->setCellValue('BC4', 'NOTE TM15')
             ->setCellValue('BD4', 'NOTE TM16');
-        
+
         $sheet->getStyle('A4:V4')->applyFromArray($borderall);
         $sheet->getStyle('X4:AM4')->applyFromArray($borderall);
         $sheet->getStyle('AO4:BD4')->applyFromArray($borderall);
@@ -911,7 +912,7 @@ class Absensi extends BaseController
 
         $sheet->getStyle('BF5:BU500')->getAlignment()->setWrapText(true);
         $sheet->getStyle('E4')->getAlignment()->setWrapText(true);
-        
+
         $spreadsheet->getActiveSheet()->getColumnDimension('A')->setAutoSize(true);
         $spreadsheet->getActiveSheet()->getColumnDimension('B')->setAutoSize(true);
         $spreadsheet->getActiveSheet()->getColumnDimension('C')->setWidth(34);
@@ -941,7 +942,7 @@ class Absensi extends BaseController
         $spreadsheet->getActiveSheet()->getColumnDimension('AA')->setAutoSize(true);
         $spreadsheet->getActiveSheet()->getColumnDimension('AB')->setAutoSize(true);
         $spreadsheet->getActiveSheet()->getColumnDimension('AC')->setAutoSize(true);
-        $spreadsheet->getActiveSheet()->getColumnDimension('AD')->setAutoSize(true);           
+        $spreadsheet->getActiveSheet()->getColumnDimension('AD')->setAutoSize(true);
         $spreadsheet->getActiveSheet()->getColumnDimension('AE')->setAutoSize(true);
         $spreadsheet->getActiveSheet()->getColumnDimension('AF')->setAutoSize(true);
         $spreadsheet->getActiveSheet()->getColumnDimension('AG')->setAutoSize(true);
@@ -958,7 +959,7 @@ class Absensi extends BaseController
         $spreadsheet->getActiveSheet()->getColumnDimension('AR')->setAutoSize(true);
         $spreadsheet->getActiveSheet()->getColumnDimension('AS')->setAutoSize(true);
         $spreadsheet->getActiveSheet()->getColumnDimension('AT')->setAutoSize(true);
-        $spreadsheet->getActiveSheet()->getColumnDimension('AU')->setAutoSize(true);           
+        $spreadsheet->getActiveSheet()->getColumnDimension('AU')->setAutoSize(true);
         $spreadsheet->getActiveSheet()->getColumnDimension('AV')->setAutoSize(true);
         $spreadsheet->getActiveSheet()->getColumnDimension('AW')->setAutoSize(true);
         $spreadsheet->getActiveSheet()->getColumnDimension('AX')->setAutoSize(true);
@@ -968,7 +969,7 @@ class Absensi extends BaseController
         $spreadsheet->getActiveSheet()->getColumnDimension('BB')->setAutoSize(true);
         $spreadsheet->getActiveSheet()->getColumnDimension('BC')->setAutoSize(true);
         $spreadsheet->getActiveSheet()->getColumnDimension('BD')->setAutoSize(true);
-            
+
         // $spreadsheet->getActiveSheet()->getColumnDimension('BF')->setWidth(20);
         // $spreadsheet->getActiveSheet()->getColumnDimension('BG')->setWidth(20);
         // $spreadsheet->getActiveSheet()->getColumnDimension('BH')->setWidth(20);
@@ -985,7 +986,7 @@ class Absensi extends BaseController
         // $spreadsheet->getActiveSheet()->getColumnDimension('BS')->setWidth(20);
         // $spreadsheet->getActiveSheet()->getColumnDimension('BT')->setWidth(20);
         // $spreadsheet->getActiveSheet()->getColumnDimension('BU')->setWidth(20);
-        
+
 
         $row = 5;
 
@@ -999,206 +1000,206 @@ class Absensi extends BaseController
             };
             if ($absen['tgl_tm2'] == '2022-01-01') {
                 $tgl_tm2 = '';
-            }else {
+            } else {
                 $tgl_tm2 = $absen['tgl_tm2'];
             };
             if ($absen['tgl_tm3'] == '2022-01-01') {
                 $tgl_tm3 = '';
-            }else {
+            } else {
                 $tgl_tm3 = $absen['tgl_tm3'];
             };
             if ($absen['tgl_tm4'] == '2022-01-01') {
                 $tgl_tm4 = '';
-            }else {
+            } else {
                 $tgl_tm4 = $absen['tgl_tm4'];
             };
             if ($absen['tgl_tm5'] == '2022-01-01') {
                 $tgl_tm5 = '';
-            }else {
+            } else {
                 $tgl_tm5 = $absen['tgl_tm5'];
             };
             if ($absen['tgl_tm6'] == '2022-01-01') {
                 $tgl_tm6 = '';
-            }else {
+            } else {
                 $tgl_tm6 = $absen['tgl_tm6'];
             };
             if ($absen['tgl_tm7'] == '2022-01-01') {
                 $tgl_tm7 = '';
-            }else {
+            } else {
                 $tgl_tm7 = $absen['tgl_tm7'];
             };
             if ($absen['tgl_tm8'] == '2022-01-01') {
                 $tgl_tm8 = '';
-            }else {
+            } else {
                 $tgl_tm8 = $absen['tgl_tm8'];
             };
             if ($absen['tgl_tm9'] == '2022-01-01') {
                 $tgl_tm9 = '';
-            }else {
+            } else {
                 $tgl_tm9 = $absen['tgl_tm9'];
             };
             if ($absen['tgl_tm10'] == '2022-01-01') {
                 $tgl_tm10 = '';
-            }else {
+            } else {
                 $tgl_tm10 = $absen['tgl_tm10'];
             };
             if ($absen['tgl_tm11'] == '2022-01-01') {
                 $tgl_tm11 = '';
-            }else {
+            } else {
                 $tgl_tm11 = $absen['tgl_tm11'];
             };
             if ($absen['tgl_tm12'] == '2022-01-01') {
                 $tgl_tm12 = '';
-            }else {
+            } else {
                 $tgl_tm12 = $absen['tgl_tm12'];
             };
             if ($absen['tgl_tm13'] == '2022-01-01') {
                 $tgl_tm13 = '';
-            }else {
+            } else {
                 $tgl_tm13 = $absen['tgl_tm13'];
             };
             if ($absen['tgl_tm14'] == '2022-01-01') {
                 $tgl_tm14 = '';
-            }else {
+            } else {
                 $tgl_tm14 = $absen['tgl_tm14'];
             };
             if ($absen['tgl_tm15'] == '2022-01-01') {
                 $tgl_tm15 = '';
-            }else {
+            } else {
                 $tgl_tm15 = $absen['tgl_tm15'];
             };
             if ($absen['tgl_tm16'] == '2022-01-01') {
                 $tgl_tm16 = '';
-            }else {
+            } else {
                 $tgl_tm16 = $absen['tgl_tm16'];
             };
 
             //-----------------------------
             if ($absen['tm1_pengajar'] == '1') {
                 $absen_tm1 = $tgl_tm1;
-            } elseif($absen['tm1_pengajar'] == '0') {
+            } elseif ($absen['tm1_pengajar'] == '0') {
                 $absen_tm1 = '--';
-            } else{
+            } else {
                 $absen_tm1 = '';
             };
 
             if ($absen['tm2_pengajar'] == '1') {
                 $absen_tm2 = $tgl_tm2;
-            } elseif($absen['tm2_pengajar'] == '0') {
+            } elseif ($absen['tm2_pengajar'] == '0') {
                 $absen_tm2 = '--';
-            } else{
+            } else {
                 $absen_tm2 = '';
             };
-            
+
             if ($absen['tm3_pengajar'] == '1') {
                 $absen_tm3 = $tgl_tm3;
-            } elseif($absen['tm3_pengajar'] == '0') {
+            } elseif ($absen['tm3_pengajar'] == '0') {
                 $absen_tm3 = '--';
-            } else{
+            } else {
                 $absen_tm3 = '';
             };
 
             if ($absen['tm4_pengajar'] == '1') {
                 $absen_tm4 = $tgl_tm4;
-            } elseif($absen['tm4_pengajar'] == '0') {
+            } elseif ($absen['tm4_pengajar'] == '0') {
                 $absen_tm4 = '--';
-            } else{
+            } else {
                 $absen_tm4 = '';
             };
 
             if ($absen['tm5_pengajar'] == '1') {
                 $absen_tm5 = $tgl_tm5;
-            } elseif($absen['tm5_pengajar'] == '0') {
+            } elseif ($absen['tm5_pengajar'] == '0') {
                 $absen_tm5 = '--';
-            } else{
+            } else {
                 $absen_tm5 = '';
             };
 
             if ($absen['tm6_pengajar'] == '1') {
                 $absen_tm6 = $tgl_tm6;
-            } elseif($absen['tm6_pengajar'] == '0') {
+            } elseif ($absen['tm6_pengajar'] == '0') {
                 $absen_tm6 = '--';
-            } else{
+            } else {
                 $absen_tm6 = '';
             };
 
             if ($absen['tm7_pengajar'] == '1') {
                 $absen_tm7 = $tgl_tm7;
-            } elseif($absen['tm7_pengajar'] == '0') {
+            } elseif ($absen['tm7_pengajar'] == '0') {
                 $absen_tm7 = '--';
-            } else{
+            } else {
                 $absen_tm7 = '';
             };
 
             if ($absen['tm8_pengajar'] == '1') {
                 $absen_tm8 = $tgl_tm8;
-            } elseif($absen['tm8_pengajar'] == '0') {
+            } elseif ($absen['tm8_pengajar'] == '0') {
                 $absen_tm8 = '--';
-            } else{
+            } else {
                 $absen_tm8 = '';
             };
 
             if ($absen['tm9_pengajar'] == '1') {
                 $absen_tm9 = $tgl_tm9;
-            } elseif($absen['tm9_pengajar'] == '0') {
+            } elseif ($absen['tm9_pengajar'] == '0') {
                 $absen_tm9 = '--';
-            } else{
+            } else {
                 $absen_tm9 = '';
             };
 
             if ($absen['tm10_pengajar'] == '1') {
                 $absen_tm10 = $tgl_tm10;
-            } elseif($absen['tm10_pengajar'] == '0') {
+            } elseif ($absen['tm10_pengajar'] == '0') {
                 $absen_tm10 = '--';
-            } else{
+            } else {
                 $absen_tm10 = '';
             };
 
             if ($absen['tm11_pengajar'] == '1') {
                 $absen_tm11 = $tgl_tm11;
-            } elseif($absen['tm11_pengajar'] == '0') {
+            } elseif ($absen['tm11_pengajar'] == '0') {
                 $absen_tm11 = '--';
-            } else{
+            } else {
                 $absen_tm11 = '';
             };
 
             if ($absen['tm12_pengajar'] == '1') {
                 $absen_tm12 = $tgl_tm12;
-            } elseif($absen['tm12_pengajar'] == '0') {
+            } elseif ($absen['tm12_pengajar'] == '0') {
                 $absen_tm12 = '--';
-            } else{
+            } else {
                 $absen_tm12 = '';
             };
 
             if ($absen['tm13_pengajar'] == '1') {
                 $absen_tm13 = $tgl_tm13;
-            } elseif($absen['tm13_pengajar'] == '0') {
+            } elseif ($absen['tm13_pengajar'] == '0') {
                 $absen_tm13 = '--';
-            } else{
+            } else {
                 $absen_tm13 = '';
             };
 
             if ($absen['tm14_pengajar'] == '1') {
                 $absen_tm14 = $tgl_tm14;
-            } elseif($absen['tm14_pengajar'] == '0') {
+            } elseif ($absen['tm14_pengajar'] == '0') {
                 $absen_tm14 = '--';
-            } else{
+            } else {
                 $absen_tm14 = '';
             };
 
             if ($absen['tm15_pengajar'] == '1') {
                 $absen_tm15 = $tgl_tm15;
-            } elseif($absen['tm15_pengajar'] == '0') {
+            } elseif ($absen['tm15_pengajar'] == '0') {
                 $absen_tm15 = '--';
-            } else{
+            } else {
                 $absen_tm15 = '';
             };
 
             if ($absen['tm16_pengajar'] == '1') {
                 $absen_tm16 = $tgl_tm16;
-            } elseif($absen['tm16_pengajar'] == '0') {
+            } elseif ($absen['tm16_pengajar'] == '0') {
                 $absen_tm16 = '--';
-            } else{
+            } else {
                 $absen_tm16 = '';
             };
 
@@ -1243,9 +1244,9 @@ class Absensi extends BaseController
                 // ->setCellValue('AL' . $row, $tgl_tm15)
                 // ->setCellValue('AM' . $row, $tgl_tm16)
 
-                ->setCellValue('X' . $row,  $absen['ts1'])  
-                ->setCellValue('Y' . $row,  $absen['ts2'])    
-                ->setCellValue('Z' . $row, $absen['ts3']) 
+                ->setCellValue('X' . $row,  $absen['ts1'])
+                ->setCellValue('Y' . $row,  $absen['ts2'])
+                ->setCellValue('Z' . $row, $absen['ts3'])
                 ->setCellValue('AA' . $row, $absen['ts4'])
                 ->setCellValue('AB' . $row, $absen['ts5'])
                 ->setCellValue('AC' . $row, $absen['ts6'])
@@ -1277,63 +1278,63 @@ class Absensi extends BaseController
                 ->setCellValue('BC' . $row, $absen['note_tm15'])
                 ->setCellValue('BD' . $row, $absen['note_tm16']);
 
-            $sheet->getStyle('A'. $row)->applyFromArray($border);
-            $sheet->getStyle('B'. $row)->applyFromArray($border);
-            $sheet->getStyle('C'. $row)->applyFromArray($border);
-            $sheet->getStyle('D'. $row)->applyFromArray($border);
-            $sheet->getStyle('E'. $row)->applyFromArray($border);
-            $sheet->getStyle('F'. $row)->applyFromArray($border);
-            $sheet->getStyle('G'. $row)->applyFromArray($border);
-            $sheet->getStyle('H'. $row)->applyFromArray($border);
-            $sheet->getStyle('I'. $row)->applyFromArray($border);
-            $sheet->getStyle('J'. $row)->applyFromArray($border);
-            $sheet->getStyle('K'. $row)->applyFromArray($border);
-            $sheet->getStyle('L'. $row)->applyFromArray($border);
-            $sheet->getStyle('M'. $row)->applyFromArray($border);
-            $sheet->getStyle('N'. $row)->applyFromArray($border);
-            $sheet->getStyle('O'. $row)->applyFromArray($border);
-            $sheet->getStyle('P'. $row)->applyFromArray($border);
-            $sheet->getStyle('Q'. $row)->applyFromArray($border);
-            $sheet->getStyle('R'. $row)->applyFromArray($border);
-            $sheet->getStyle('S'. $row)->applyFromArray($border);
-            $sheet->getStyle('T'. $row)->applyFromArray($border);
-            $sheet->getStyle('U'. $row)->applyFromArray($border);
-            $sheet->getStyle('V'. $row)->applyFromArray($border);
+            $sheet->getStyle('A' . $row)->applyFromArray($border);
+            $sheet->getStyle('B' . $row)->applyFromArray($border);
+            $sheet->getStyle('C' . $row)->applyFromArray($border);
+            $sheet->getStyle('D' . $row)->applyFromArray($border);
+            $sheet->getStyle('E' . $row)->applyFromArray($border);
+            $sheet->getStyle('F' . $row)->applyFromArray($border);
+            $sheet->getStyle('G' . $row)->applyFromArray($border);
+            $sheet->getStyle('H' . $row)->applyFromArray($border);
+            $sheet->getStyle('I' . $row)->applyFromArray($border);
+            $sheet->getStyle('J' . $row)->applyFromArray($border);
+            $sheet->getStyle('K' . $row)->applyFromArray($border);
+            $sheet->getStyle('L' . $row)->applyFromArray($border);
+            $sheet->getStyle('M' . $row)->applyFromArray($border);
+            $sheet->getStyle('N' . $row)->applyFromArray($border);
+            $sheet->getStyle('O' . $row)->applyFromArray($border);
+            $sheet->getStyle('P' . $row)->applyFromArray($border);
+            $sheet->getStyle('Q' . $row)->applyFromArray($border);
+            $sheet->getStyle('R' . $row)->applyFromArray($border);
+            $sheet->getStyle('S' . $row)->applyFromArray($border);
+            $sheet->getStyle('T' . $row)->applyFromArray($border);
+            $sheet->getStyle('U' . $row)->applyFromArray($border);
+            $sheet->getStyle('V' . $row)->applyFromArray($border);
 
-            $sheet->getStyle('X'. $row)->applyFromArray($border);
-            $sheet->getStyle('Y'. $row)->applyFromArray($border);
-            $sheet->getStyle('Z'. $row)->applyFromArray($border);
-            $sheet->getStyle('AA'. $row)->applyFromArray($border);
-            $sheet->getStyle('AB'. $row)->applyFromArray($border);
-            $sheet->getStyle('AC'. $row)->applyFromArray($border);
-            $sheet->getStyle('AD'. $row)->applyFromArray($border);           
-            $sheet->getStyle('AE'. $row)->applyFromArray($border);
-            $sheet->getStyle('AF'. $row)->applyFromArray($border);
-            $sheet->getStyle('AG'. $row)->applyFromArray($border);
-            $sheet->getStyle('AH'. $row)->applyFromArray($border);
-            $sheet->getStyle('AI'. $row)->applyFromArray($border);
-            $sheet->getStyle('AJ'. $row)->applyFromArray($border);
-            $sheet->getStyle('AK'. $row)->applyFromArray($border);
-            $sheet->getStyle('AL'. $row)->applyFromArray($border);
-            $sheet->getStyle('AM'. $row)->applyFromArray($border);
+            $sheet->getStyle('X' . $row)->applyFromArray($border);
+            $sheet->getStyle('Y' . $row)->applyFromArray($border);
+            $sheet->getStyle('Z' . $row)->applyFromArray($border);
+            $sheet->getStyle('AA' . $row)->applyFromArray($border);
+            $sheet->getStyle('AB' . $row)->applyFromArray($border);
+            $sheet->getStyle('AC' . $row)->applyFromArray($border);
+            $sheet->getStyle('AD' . $row)->applyFromArray($border);
+            $sheet->getStyle('AE' . $row)->applyFromArray($border);
+            $sheet->getStyle('AF' . $row)->applyFromArray($border);
+            $sheet->getStyle('AG' . $row)->applyFromArray($border);
+            $sheet->getStyle('AH' . $row)->applyFromArray($border);
+            $sheet->getStyle('AI' . $row)->applyFromArray($border);
+            $sheet->getStyle('AJ' . $row)->applyFromArray($border);
+            $sheet->getStyle('AK' . $row)->applyFromArray($border);
+            $sheet->getStyle('AL' . $row)->applyFromArray($border);
+            $sheet->getStyle('AM' . $row)->applyFromArray($border);
 
-            $sheet->getStyle('AO'. $row)->applyFromArray($border);
-            $sheet->getStyle('AP'. $row)->applyFromArray($border);
-            $sheet->getStyle('AQ'. $row)->applyFromArray($border);
-            $sheet->getStyle('AR'. $row)->applyFromArray($border);
-            $sheet->getStyle('AS'. $row)->applyFromArray($border);
-            $sheet->getStyle('AT'. $row)->applyFromArray($border);
-            $sheet->getStyle('AU'. $row)->applyFromArray($border);           
-            $sheet->getStyle('AV'. $row)->applyFromArray($border);
-            $sheet->getStyle('AW'. $row)->applyFromArray($border);
-            $sheet->getStyle('AX'. $row)->applyFromArray($border);
-            $sheet->getStyle('AY'. $row)->applyFromArray($border);
-            $sheet->getStyle('AZ'. $row)->applyFromArray($border);
-            $sheet->getStyle('BA'. $row)->applyFromArray($border);
-            $sheet->getStyle('BB'. $row)->applyFromArray($border);
-            $sheet->getStyle('BC'. $row)->applyFromArray($border);
-            $sheet->getStyle('BD'. $row)->applyFromArray($border);
-            
+            $sheet->getStyle('AO' . $row)->applyFromArray($border);
+            $sheet->getStyle('AP' . $row)->applyFromArray($border);
+            $sheet->getStyle('AQ' . $row)->applyFromArray($border);
+            $sheet->getStyle('AR' . $row)->applyFromArray($border);
+            $sheet->getStyle('AS' . $row)->applyFromArray($border);
+            $sheet->getStyle('AT' . $row)->applyFromArray($border);
+            $sheet->getStyle('AU' . $row)->applyFromArray($border);
+            $sheet->getStyle('AV' . $row)->applyFromArray($border);
+            $sheet->getStyle('AW' . $row)->applyFromArray($border);
+            $sheet->getStyle('AX' . $row)->applyFromArray($border);
+            $sheet->getStyle('AY' . $row)->applyFromArray($border);
+            $sheet->getStyle('AZ' . $row)->applyFromArray($border);
+            $sheet->getStyle('BA' . $row)->applyFromArray($border);
+            $sheet->getStyle('BB' . $row)->applyFromArray($border);
+            $sheet->getStyle('BC' . $row)->applyFromArray($border);
+            $sheet->getStyle('BD' . $row)->applyFromArray($border);
+
             // $sheet->getStyle('BF'. $row)->applyFromArray($border);
             // $sheet->getStyle('BG'. $row)->applyFromArray($border);
             // $sheet->getStyle('BH'. $row)->applyFromArray($border);
@@ -1355,7 +1356,7 @@ class Absensi extends BaseController
         }
 
         $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
-        $filename =  'Data-Rekap-Absen-Pengajar-'. date('Y-m-d-His');
+        $filename =  'Data-Rekap-Absen-Pengajar-' . date('Y-m-d-His');
 
         $aktivitas = 'Download Data Rekap Absen Pengajar via Export Excel, Waktu : ' .  date('Y-m-d-H:i:s');
 
@@ -1371,8 +1372,8 @@ class Absensi extends BaseController
 
     public function regular_penguji_export()
     {
-          //Angkatan
-		$uri            = new \CodeIgniter\HTTP\URI(current_url(true));
+        //Angkatan
+        $uri            = new \CodeIgniter\HTTP\URI(current_url(true));
         $queryString    = $uri->getQuery();
         $params         = [];
         parse_str($queryString, $params);
@@ -1381,7 +1382,7 @@ class Absensi extends BaseController
             $angkatan           = $params['angkatan'];
             if (ctype_digit($angkatan)) {
                 $angkatan           = $params['angkatan'];
-            }else {
+            } else {
                 $get_angkatan       = $this->konfigurasi->angkatan_kuliah();
                 $angkatan           = $get_angkatan->angkatan_kuliah;
             }
@@ -1438,16 +1439,16 @@ class Absensi extends BaseController
             ->setCellValue('D4', 'KELAS')
             ->setCellValue('E4', 'ANGKATAN PERKULIAHAN')
             ->setCellValue('F4', 'WAKTU ABSEN');
-        
+
         $sheet->getStyle('A4:F4')->applyFromArray($borderall);
-        
+
         $spreadsheet->getActiveSheet()->getColumnDimension('A')->setAutoSize(true);
         $spreadsheet->getActiveSheet()->getColumnDimension('B')->setAutoSize(true);
         $spreadsheet->getActiveSheet()->getColumnDimension('C')->setWidth(34);
         $spreadsheet->getActiveSheet()->getColumnDimension('D')->setWidth(37);
         $spreadsheet->getActiveSheet()->getColumnDimension('E')->setWidth(12.5);
         $spreadsheet->getActiveSheet()->getColumnDimension('F')->setAutoSize(true);
-        
+
 
         $row = 5;
 
@@ -1467,18 +1468,18 @@ class Absensi extends BaseController
                 ->setCellValue('E' . $row, $absen['angkatan_kelas'])
                 ->setCellValue('F' . $row, $waktu_absen);
 
-            $sheet->getStyle('A'. $row)->applyFromArray($border);
-            $sheet->getStyle('B'. $row)->applyFromArray($border);
-            $sheet->getStyle('C'. $row)->applyFromArray($border);
-            $sheet->getStyle('D'. $row)->applyFromArray($border);
-            $sheet->getStyle('E'. $row)->applyFromArray($border);
-            $sheet->getStyle('F'. $row)->applyFromArray($border);
+            $sheet->getStyle('A' . $row)->applyFromArray($border);
+            $sheet->getStyle('B' . $row)->applyFromArray($border);
+            $sheet->getStyle('C' . $row)->applyFromArray($border);
+            $sheet->getStyle('D' . $row)->applyFromArray($border);
+            $sheet->getStyle('E' . $row)->applyFromArray($border);
+            $sheet->getStyle('F' . $row)->applyFromArray($border);
 
             $row++;
         }
 
         $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
-        $filename =  'Data-Rekap-Absen-Penguji-'. date('Y-m-d-His');
+        $filename =  'Data-Rekap-Absen-Penguji-' . date('Y-m-d-His');
 
         $aktivitas = 'Download Data Rekap Absen Penguji via Export Excel, Waktu : ' .  date('Y-m-d-H:i:s');
 
@@ -1495,7 +1496,7 @@ class Absensi extends BaseController
     public function bina_peserta_export()
     {
         //Angkatan
-		$uri            = new \CodeIgniter\HTTP\URI(current_url(true));
+        $uri            = new \CodeIgniter\HTTP\URI(current_url(true));
         $queryString    = $uri->getQuery();
         $params         = [];
         parse_str($queryString, $params);
@@ -1504,7 +1505,7 @@ class Absensi extends BaseController
             $angkatan           = $params['angkatan'];
             if (ctype_digit($angkatan)) {
                 $angkatan           = $params['angkatan'];
-            }else {
+            } else {
                 $get_angkatan       = $this->konfigurasi->angkatan_kuliah();
                 $angkatan           = $get_angkatan->angkatan_kuliah;
             }
@@ -1547,7 +1548,7 @@ class Absensi extends BaseController
                 'endColor' => [
                     'argb' => 'D9D9D9',
                 ],
-            ],        
+            ],
             'borders' => [
                 'allBorders' => [
                     'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
@@ -1580,7 +1581,7 @@ class Absensi extends BaseController
 
         $sheet->getStyle('A4:X4')->applyFromArray($style_up);
 
-        $sheet->getStyle('A5:X'.$total_row)->applyFromArray($isi_tengah);
+        $sheet->getStyle('A5:X' . $total_row)->applyFromArray($isi_tengah);
 
         $spreadsheet->setActiveSheetIndex(0)
             ->setCellValue('A4', 'NIS')
@@ -1607,22 +1608,22 @@ class Absensi extends BaseController
             ->setCellValue('V4', 'TM14')
             ->setCellValue('W4', 'TM15')
             ->setCellValue('X4', 'TOTAL HADIR');
-        
-            $columns = range('A', 'X');
-            foreach ($columns as $column) {
-                $spreadsheet->getActiveSheet()->getColumnDimension($column)->setAutoSize(true);
-            }
-            // $spreadsheet->getActiveSheet()->getColumnDimension('AA')->setAutoSize(true);
+
+        $columns = range('A', 'X');
+        foreach ($columns as $column) {
+            $spreadsheet->getActiveSheet()->getColumnDimension($column)->setAutoSize(true);
+        }
+        // $spreadsheet->getActiveSheet()->getColumnDimension('AA')->setAutoSize(true);
 
         $row = 5;
 
         foreach ($absen_peserta as $absen) {
-            
+
             //-----------------------------
             for ($i = 1; $i <= 15; $i++) {
                 $tmKey = 'tm' . $i;
                 $tmDtKey = $tmKey . '_dt';
-            
+
                 if ($absen[$tmKey] == '1') {
                     ${'absen_' . $tmKey} = substr($absen[$tmDtKey], 0, 10);
                     ${'count_' . $tmKey} = 1;
@@ -1645,15 +1646,15 @@ class Absensi extends BaseController
             // }else {
             //     $status_aktif_peserta = $absen['status_aktif_peserta'];
             // }
-            
-            
+
+
             $spreadsheet->setActiveSheetIndex(0)
                 ->setCellValue('A' . $row, $absen['nis'])
                 ->setCellValue('B' . $row, $absen['nama_peserta'])
                 ->setCellValue('C' . $row, $absen['jenkel'])
                 ->setCellValue('D' . $row, $absen['bk_name'])
                 ->setCellValue('E' . $row, $absen['bk_hari'])
-                ->setCellValue('F' . $row, $absen['bk_waktu']. ' ' . $absen['bk_timezone'])
+                ->setCellValue('F' . $row, $absen['bk_waktu'] . ' ' . $absen['bk_timezone'])
                 ->setCellValue('G' . $row, $absen['bk_tm_methode'])
                 ->setCellValue('H' . $row, $absen['bk_angkatan'])
 
@@ -1677,9 +1678,9 @@ class Absensi extends BaseController
         }
 
         $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
-        $filename =  'Data-Rekap-Absen-Peserta-Pembinaan-Angkatan'.$angkatan.'-'. date('Y-m-d-His');
+        $filename =  'Data-Rekap-Absen-Peserta-Pembinaan-Angkatan' . $angkatan . '-' . date('Y-m-d-His');
 
-        $aktivitas = 'Download Data Rekap Absen Peserta Kelas Pembinaan via Export Excel, Waktu : ' .  date('Y-m-d-H:i:s') ;
+        $aktivitas = 'Download Data Rekap Absen Peserta Kelas Pembinaan via Export Excel, Waktu : ' .  date('Y-m-d-H:i:s');
 
         /*--- Log ---*/
         $this->logging('Admin', 'BERHASIL', $aktivitas);
@@ -1693,7 +1694,7 @@ class Absensi extends BaseController
 
     public function nonreg_peserta_export()
     {
-        $user  		= $this->userauth();
+        $user          = $this->userauth();
 
         $uri            = new \CodeIgniter\HTTP\URI(current_url(true));
         $queryString    = $uri->getQuery();
@@ -1712,9 +1713,9 @@ class Absensi extends BaseController
         } else {
             $highest_tm_ambil = 0;
         }
-        $lists 		    = $this->nonreg_absen_peserta->list_rekap($angkatan);
+        $lists             = $this->nonreg_absen_peserta->list_rekap($angkatan);
         // Process each record in the lists array
-        $lists = array_map(function($record) {
+        $lists = array_map(function ($record) {
             // Loop through each field in the record
             foreach ($record as $key => $value) {
                 // Check if it's a napj field and not null
@@ -1728,7 +1729,7 @@ class Absensi extends BaseController
 
         $total_row  = count($lists) + 5;
         $col_isi    = 0;
-    
+
         $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
         $styleColumn = [
@@ -1759,7 +1760,7 @@ class Absensi extends BaseController
                 'endColor' => [
                     'argb' => 'D9D9D9',
                 ],
-            ],        
+            ],
             'borders' => [
                 'allBorders' => [
                     'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
@@ -1780,7 +1781,7 @@ class Absensi extends BaseController
         ];
 
         $judul = "DATA REKAP ABSENSI PESERTA PROGRAM NON-REGULER";
-        $tgl   =  "ANGKATAN " .$angkatan. ' - ' . date("d-m-Y");
+        $tgl   =  "ANGKATAN " . $angkatan . ' - ' . date("d-m-Y");
 
         $sheet->setCellValue('A1', $judul);
         $sheet->mergeCells('A1:G1');
@@ -1797,81 +1798,81 @@ class Absensi extends BaseController
             ->setCellValue('C4', 'ANGKATAN KELAS')
             ->setCellValue('D4', 'TOTAL HADIR');
 
-            $lastW      = 'D';
-            $step       = 0;
+        $lastW      = 'D';
+        $step       = 0;
 
-            for ($i=1; $i <= $highest_tm_ambil; $i++){
-                $step       = $step+1;
-                $newAsci    = $this->incrementAlphaSequence($lastW, $step);
-                $spreadsheet->getActiveSheet()->setCellValue($newAsci.'4', 'TM'.$i);
+        for ($i = 1; $i <= $highest_tm_ambil; $i++) {
+            $step       = $step + 1;
+            $newAsci    = $this->incrementAlphaSequence($lastW, $step);
+            $spreadsheet->getActiveSheet()->setCellValue($newAsci . '4', 'TM' . $i);
 
-                $spreadsheet->getActiveSheet()->getColumnDimension($newAsci)->setAutoSize(true);
-            }
-            $sheet->getStyle('A4:'.$newAsci.'4')->applyFromArray($style_up);
-            $sheet->getStyle('A5:'.$newAsci.$total_row)->applyFromArray($isi_tengah);
-            
-            $columns = range('A', 'D');
-            foreach ($columns as $column) {
-                $spreadsheet->getActiveSheet()->getColumnDimension($column)->setAutoSize(true);
-            }
-    
-            $row = 5;
+            $spreadsheet->getActiveSheet()->getColumnDimension($newAsci)->setAutoSize(true);
+        }
+        $sheet->getStyle('A4:' . $newAsci . '4')->applyFromArray($style_up);
+        $sheet->getStyle('A5:' . $newAsci . $total_row)->applyFromArray($isi_tengah);
+
+        $columns = range('A', 'D');
+        foreach ($columns as $column) {
+            $spreadsheet->getActiveSheet()->getColumnDimension($column)->setAutoSize(true);
+        }
+
+        $row = 5;
 
         foreach ($lists as $data) {
 
             $totHadir = 0;
             for ($i = 1; $i <= $highest_tm_ambil; $i++) {
-                if (isset($data['naps'.$i])) {
-                    if ($data['naps'.$i]['tm'] == '1') {
+                if (isset($data['naps' . $i])) {
+                    if ($data['naps' . $i]['tm'] == '1') {
                         $totHadir = $totHadir + 1;
                     }
                 }
             }
 
             $spreadsheet->setActiveSheetIndex(0)
-                
+
                 ->setCellValue('A' . $row, $data['np_nama'])
                 ->setCellValue('B' . $row, $data['nk_nama'])
                 ->setCellValue('C' . $row, $data['nk_angkatan'])
                 ->setCellValue('D' . $row, $totHadir);
 
-                $lastW      = 'D';
-                $step       = 0;
+            $lastW      = 'D';
+            $step       = 0;
 
-                for ($i=1; $i <= $highest_tm_ambil; $i++){
-                    $step= $step+1;
-                    $var = 'naps'.$i;
-                    $col_letter = $this->incrementAlphaSequence($lastW, $step);
+            for ($i = 1; $i <= $highest_tm_ambil; $i++) {
+                $step = $step + 1;
+                $var = 'naps' . $i;
+                $col_letter = $this->incrementAlphaSequence($lastW, $step);
 
-                    if (isset($data[$var]['tm'])) {
-                        if ($data[$var]['tm'] == '1') {
-                            $cell = $col_letter.$row;
-                            $spreadsheet->getActiveSheet()
+                if (isset($data[$var]['tm'])) {
+                    if ($data[$var]['tm'] == '1') {
+                        $cell = $col_letter . $row;
+                        $spreadsheet->getActiveSheet()
                             ->setCellValue($cell, $data[$var]['dt_tm']);
-                        } elseif ($data[$var]['tm'] == '0') {
-                            $cell = $col_letter.$row;
-                            $spreadsheet->getActiveSheet()
+                    } elseif ($data[$var]['tm'] == '0') {
+                        $cell = $col_letter . $row;
+                        $spreadsheet->getActiveSheet()
                             ->setCellValue($cell, '--');
-                        } else {
-                            $cell = $col_letter.$row;
-                            $spreadsheet->getActiveSheet()
-                            ->setCellValue($cell, '');
-                        }
                     } else {
-                        $cell = $col_letter.$row;
-                            $spreadsheet->getActiveSheet()
+                        $cell = $col_letter . $row;
+                        $spreadsheet->getActiveSheet()
                             ->setCellValue($cell, '');
-                    };
-                }
-            
+                    }
+                } else {
+                    $cell = $col_letter . $row;
+                    $spreadsheet->getActiveSheet()
+                        ->setCellValue($cell, '');
+                };
+            }
+
             $row++;
         }
 
         $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xls($spreadsheet);
-        $filename =  'Data-Rekap-Absensi-Peserta-NonReguler-Angkatan'.$angkatan.'-'. date('Y-m-d-His');
+        $filename =  'Data-Rekap-Absensi-Peserta-NonReguler-Angkatan' . $angkatan . '-' . date('Y-m-d-His');
 
         /*--- Log ---*/
-        $this->logging('Admin', 'BERHASIL', 'Donwload rekap absensi peserta program Non-Reguler Angkatan '.$angkatan);
+        $this->logging('Admin', 'BERHASIL', 'Donwload rekap absensi peserta program Non-Reguler Angkatan ' . $angkatan);
 
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         header('Content-Disposition: attachment;filename=' . $filename . '.xls');
@@ -1881,28 +1882,27 @@ class Absensi extends BaseController
     }
     public function nonreg_pengajar_export()
     {
-        $user  		= $this->userauth();
+        $user          = $this->userauth();
 
         $uri            = new \CodeIgniter\HTTP\URI(current_url(true));
         $queryString    = $uri->getQuery();
         $params         = [];
         parse_str($queryString, $params);
 
-        if (count($params) == 1 && array_key_exists('angkatan', $params)) {
-            $angkatan       = $params['angkatan'];
+        if (count($params) == 1 && array_key_exists('tahun', $params)) {
+            $tahun       = $params['tahun'];
         } else {
-            $get_angkatan       = $this->konfigurasi->angkatan_kuliah();
-            $angkatan           = $get_angkatan->angkatan_kuliah;
+            $tahun      = date('Y');
         }
-        $list_kelas     = $this->nonreg_kelas->list($angkatan);
+        $list_kelas     = $this->nonreg_kelas->list($tahun);
         if (count($list_kelas) > 0) {
             $highest_tm_ambil = max(array_column($list_kelas, 'nk_tm_ambil'));
         } else {
             $highest_tm_ambil = 0;
         }
-        $lists 		    = $this->nonreg_absen_pengajar->list_rekap($angkatan);
+        $lists             = $this->nonreg_absen_pengajar->list_rekap($tahun);
         // Process each record in the lists array
-        $lists = array_map(function($record) {
+        $lists = array_map(function ($record) {
             // Loop through each field in the record
             foreach ($record as $key => $value) {
                 // Check if it's a napj field and not null
@@ -1916,7 +1916,7 @@ class Absensi extends BaseController
 
         $total_row  = count($lists) + 5;
         $col_isi    = 0;
-    
+
         $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
         $styleColumn = [
@@ -1947,7 +1947,7 @@ class Absensi extends BaseController
                 'endColor' => [
                     'argb' => 'D9D9D9',
                 ],
-            ],        
+            ],
             'borders' => [
                 'allBorders' => [
                     'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
@@ -1968,7 +1968,7 @@ class Absensi extends BaseController
         ];
 
         $judul = "DATA REKAP ABSENSI PENGAJAR PROGRAM NON-REGULER";
-        $tgl   =  "ANGKATAN " .$angkatan. ' - ' . date("d-m-Y");
+        $tgl   =  "TAHUN " . $tahun . ' - ' . date("d-m-Y");
 
         $sheet->setCellValue('A1', $judul);
         $sheet->mergeCells('A1:G1');
@@ -1985,82 +1985,82 @@ class Absensi extends BaseController
             ->setCellValue('C4', 'ANGKATAN KELAS')
             ->setCellValue('D4', 'TOTAL HADIR');
 
-            $lastW      = 'D';
-            $step       = 0;
-            $newAsci = 'D0';
+        $lastW      = 'D';
+        $step       = 0;
+        // $newAsci = 'D0';
 
-            for ($i=1; $i <= $highest_tm_ambil; $i++){
-                $step       = $step+1;
-                $newAsci    = $this->incrementAlphaSequence($lastW, $step);
-                $spreadsheet->getActiveSheet()->setCellValue($newAsci.'4', 'TM'.$i);
+        for ($i = 1; $i <= $highest_tm_ambil; $i++) {
+            $step       = $step + 1;
+            $newAsci    = $this->incrementAlphaSequence($lastW, $step);
+            $spreadsheet->getActiveSheet()->setCellValue($newAsci . '4', 'TM' . $i);
 
-                $spreadsheet->getActiveSheet()->getColumnDimension($newAsci)->setAutoSize(true);
-            }
-            $sheet->getStyle('A4:'.$newAsci.'4')->applyFromArray($style_up);
-            $sheet->getStyle('A5:'.$newAsci.$total_row)->applyFromArray($isi_tengah);
-            
-            $columns = range('A', 'D');
-            foreach ($columns as $column) {
-                $spreadsheet->getActiveSheet()->getColumnDimension($column)->setAutoSize(true);
-            }
-    
-            $row = 5;
+            $spreadsheet->getActiveSheet()->getColumnDimension($newAsci)->setAutoSize(true);
+        }
+        $sheet->getStyle('A4:' . $newAsci . '4')->applyFromArray($style_up);
+        $sheet->getStyle('A5:' . $newAsci . $total_row)->applyFromArray($isi_tengah);
+
+        $columns = range('A', 'D');
+        foreach ($columns as $column) {
+            $spreadsheet->getActiveSheet()->getColumnDimension($column)->setAutoSize(true);
+        }
+
+        $row = 5;
 
         foreach ($lists as $data) {
 
             $totHadir = 0;
             for ($i = 1; $i <= $highest_tm_ambil; $i++) {
-                if (isset($data['napj'.$i])) {
-                    if ($data['napj'.$i]['tm'] == '1') {
+                if (isset($data['napj' . $i])) {
+                    if ($data['napj' . $i]['tm'] == '1') {
                         $totHadir = $totHadir + 1;
                     }
                 }
             }
 
             $spreadsheet->setActiveSheetIndex(0)
-                
+
                 ->setCellValue('A' . $row, $data['nama_pengajar'])
                 ->setCellValue('B' . $row, $data['nk_nama'])
                 ->setCellValue('C' . $row, $data['nk_angkatan'])
                 ->setCellValue('D' . $row, $totHadir);
 
-                $lastW      = 'D';
-                $step       = 0;
+            $lastW      = 'D';
+            $step       = 0;
 
-                for ($i=1; $i <= $highest_tm_ambil; $i++){
-                    $step= $step+1;
-                    $var = 'napj'.$i;
-                    $col_letter = $this->incrementAlphaSequence($lastW, $step);
+            for ($i = 1; $i <= $highest_tm_ambil; $i++) {
+                $step = $step + 1;
+                $var = 'napj' . $i;
+                $col_letter = $this->incrementAlphaSequence($lastW, $step);
 
-                    if (isset($data[$var]['tm'])) {
-                        if ($data[$var]['tm'] == '1') {
-                            $cell = $col_letter.$row;
-                            $spreadsheet->getActiveSheet()
+                if (isset($data[$var]['tm'])) {
+                    if ($data[$var]['tm'] == '1') {
+                        $cell = $col_letter . $row;
+                        $spreadsheet->getActiveSheet()
                             ->setCellValue($cell, $data[$var]['dt_tm']);
-                        } elseif ($data[$var]['tm'] == '0') {
-                            $cell = $col_letter.$row;
-                            $spreadsheet->getActiveSheet()
+                    } elseif ($data[$var]['tm'] == '0') {
+                        $cell = $col_letter . $row;
+                        $spreadsheet->getActiveSheet()
                             ->setCellValue($cell, '--');
-                        } else {
-                            $cell = $col_letter.$row;
-                            $spreadsheet->getActiveSheet()
-                            ->setCellValue($cell, '');
-                        }
                     } else {
-                        $cell = $col_letter.$row;
-                            $spreadsheet->getActiveSheet()
+                        $cell = $col_letter . $row;
+                        $spreadsheet->getActiveSheet()
                             ->setCellValue($cell, '');
-                    };
-                }
-            
+                    }
+                } else {
+                    $cell = $col_letter . $row;
+                    $spreadsheet->getActiveSheet()
+                        ->setCellValue($cell, '');
+                };
+            }
+
             $row++;
         }
 
         $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xls($spreadsheet);
-        $filename =  'Data-Rekap-Absensi-Pengajar-NonReguler-Angkatan'.$angkatan.'-'. date('Y-m-d-His');
+        $filename =  'Data-Rekap-Absensi-Pengajar-NonReguler-' . $tahun . '-' . date('Y-m-d-His');
 
         /*--- Log ---*/
-        $this->logging('Admin', 'BERHASIL', 'Donwload rekap absensi pengajar program Non-Reguler Angkatan '.$angkatan);
+        $this->logging('Admin', 'BERHASIL', 'Donwload rekap absensi pengajar program Non-Reguler ' . $tahun);
 
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         header('Content-Disposition: attachment;filename=' . $filename . '.xls');

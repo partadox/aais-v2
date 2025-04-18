@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Controllers\Pengajar;
 
 use App\Controllers\BaseController;
@@ -9,7 +10,7 @@ class KelasNonreg extends BaseController
     {
         $user           = $this->userauth(); // Return Array
         //Angkatan
-		$uri            = new \CodeIgniter\HTTP\URI(current_url(true));
+        $uri            = new \CodeIgniter\HTTP\URI(current_url(true));
         $queryString    = $uri->getQuery();
         $params         = [];
         parse_str($queryString, $params);
@@ -18,40 +19,40 @@ class KelasNonreg extends BaseController
             $tahun           = $params['tahun'];
             if (ctype_digit($tahun)) {
                 $tahun           = $params['tahun'];
-            }else {
+            } else {
                 $tahun           = date('Y');
             }
         } else {
             $tahun           = date('Y');
         }
-        
+
         $list_tahun      = $this->nonreg_kelas->list_unik_tahun();
         $get_pengajar_id    = $this->pengajar->get_pengajar_id($user['user_id']);
         $pengajar_id        = $get_pengajar_id->pengajar_id;
 
         $nonreg_pengajar    = $this->nonreg_pengajar->list_pengajar($pengajar_id);
-        $npj_kelas_array = array_map(function($item) {
+        $npj_kelas_array = array_map(function ($item) {
             return $item['npj_kelas'];
         }, $nonreg_pengajar);
 
         // $list               = $this->nonreg_kelas->whereIn('nk_id', $npj_kelas_array)->where('nk_angkatan', $angkatan)->where('nk_status', 1)->where('nk_status_daftar', 1)->findAll();
         if ($npj_kelas_array != null) {
             $list               = $this->nonreg_kelas->whereIn('nk_id', $npj_kelas_array)->where('nk_tahun', $tahun)->where('nk_status', 1)->findAll();
-        } else{
+        } else {
             $list = null;
         }
-        
+
 
 
         $data = [
-            'title'                 => 'Daftar Kelas Non-Reguler Anda pada Tahun '.$tahun.' Sebagai Pengajar',
+            'title'                 => 'Daftar Kelas Non-Reguler Anda pada Tahun ' . $tahun . ' Sebagai Pengajar',
             'user'                  => $user,
             'list_tahun'            => $list_tahun,
             'tahun_pilih'           => $tahun,
             'list'                  => $list,
         ];
 
-        return view('panel_pengajar/kelas_nonreg/index', $data); 
+        return view('panel_pengajar/kelas_nonreg/index', $data);
     }
 
     public function absensi()
@@ -78,11 +79,11 @@ class KelasNonreg extends BaseController
         $pengajar_id        = $get_pengajar_id->pengajar_id;
 
         $absenTm = $this->nonreg_absen_pengajar
-        ->join('nonreg_pengajar', 'nonreg_pengajar.npj_id = nonreg_absen_pengajar.napj_pengajar')
-        ->where('npj_kelas', $kelas_id)
-        ->where('npj_pengajar', $pengajar_id)
-        
-        ->first();
+            ->join('nonreg_pengajar', 'nonreg_pengajar.npj_id = nonreg_absen_pengajar.napj_pengajar')
+            ->where('npj_kelas', $kelas_id)
+            ->where('npj_pengajar', $pengajar_id)
+
+            ->first();
 
         if ($absenTm) {
             // Iterate through each key in the array
@@ -96,10 +97,10 @@ class KelasNonreg extends BaseController
         }
 
         $getAbsensi = $this->nonreg_absen_peserta
-        ->join('nonreg_peserta', 'nonreg_peserta.np_id = nonreg_absen_peserta.naps_peserta')
-        ->where('np_kelas', $kelas_id)
-        ->orderBy('np_id', 'ASC')
-        ->findAll();
+            ->join('nonreg_peserta', 'nonreg_peserta.np_id = nonreg_absen_peserta.naps_peserta')
+            ->where('np_kelas', $kelas_id)
+            ->orderBy('np_id', 'ASC')
+            ->findAll();
 
         $kelas           = $this->nonreg_kelas->find($kelas_id);
 
@@ -110,23 +111,23 @@ class KelasNonreg extends BaseController
                 $findLevel = $this->level->find($record['np_level']);
                 $levelPeserta = $findLevel['nama_level'];
             }
-            
+
             $entry = [
                 'naps_id' => $record['naps_id'],
                 'nama' => $record['np_nama'],
                 'level' => $levelPeserta
             ];
-            
+
             // Dynamically add tm1 to tm30
             for ($i = 1; $i <= $kelas['nk_tm_ambil']; $i++) {
                 $tmKey = 'naps' . $i;
                 if (isset($record[$tmKey])) {
-                    $entry[$tmKey] = json_decode($record[$tmKey],true);
+                    $entry[$tmKey] = json_decode($record[$tmKey], true);
                 } else {
                     $entry[$tmKey] = null; // or any default value if tmKey doesn't exist
                 }
             }
-        
+
             $peserta_onkelas[] = $entry;
         }
 
@@ -149,15 +150,13 @@ class KelasNonreg extends BaseController
         // }
 
         $data = [
-			'title'			=> 'Absensi Kelas Non-Reguler '.$kelas['nk_nama'],
-			'user'			=> $user,
+            'title'            => 'Absensi Kelas Non-Reguler ' . $kelas['nk_nama'],
+            'user'            => $user,
             'kelas'         => $kelas,
             'absenTm'       => $absenTm,
-            'peserta_onkelas'=> $peserta_onkelas
-		];
-
+            'peserta_onkelas' => $peserta_onkelas
+        ];
         return view('panel_pengajar/kelas_nonreg/absensi', $data);
-        
     }
 
     public function input_absensi()
@@ -173,24 +172,24 @@ class KelasNonreg extends BaseController
             $pengajar_id        = $get_pengajar_id->pengajar_id;
 
             $absenKelas = $this->nonreg_absen_pengajar
-            ->join('nonreg_pengajar', 'nonreg_pengajar.npj_id = nonreg_absen_pengajar.napj_pengajar')
-            ->where('npj_kelas', $nk_id)
-            ->where('npj_pengajar', $pengajar_id)
-            ->first();
+                ->join('nonreg_pengajar', 'nonreg_pengajar.npj_id = nonreg_absen_pengajar.napj_pengajar')
+                ->where('npj_kelas', $nk_id)
+                ->where('npj_pengajar', $pengajar_id)
+                ->first();
 
-            $absenTm    = json_decode($absenKelas['napj'.$tm],true);
+            $absenTm    = json_decode($absenKelas['napj' . $tm], true);
 
-            $title      = 'FORM ISI ABSENSI TM-'.$tm;
+            $title      = 'FORM ISI ABSENSI TM-' . $tm;
             $kelas      = $this->nonreg_kelas->find($nk_id);
             $pengajar   = $this->pengajar->find($pengajar_id);
 
             $getAbsensi = $this->nonreg_absen_peserta
-            ->join('nonreg_peserta', 'nonreg_peserta.np_id = nonreg_absen_peserta.naps_peserta')
-            ->where('np_kelas', $nk_id)
-            ->orderBy('np_id', 'ASC')
-            ->findAll();
+                ->join('nonreg_peserta', 'nonreg_peserta.np_id = nonreg_absen_peserta.naps_peserta')
+                ->where('np_kelas', $nk_id)
+                ->orderBy('np_id', 'ASC')
+                ->findAll();
 
-            $listAbsensi= [];
+            $listAbsensi = [];
 
             foreach ($getAbsensi as $index => $record) {
                 if ($record['np_level'] == null || $record['np_level'] == "0" || $record['np_level'] == "") {
@@ -204,9 +203,30 @@ class KelasNonreg extends BaseController
                     'np_id' => $record['np_id'],
                     'nama' => $record['np_nama'],
                     'level' => $levelPeserta,
-                    'naps'.$tm => json_decode($record['naps'.$tm],true)
+                    'naps' . $tm => json_decode($record['naps' . $tm], true)
                 ];
             }
+
+            // Extract all existing dt_tm values from the dataset
+            $existing_dates = [];
+
+            foreach ($listAbsensi as $peserta) {
+                // Determine how many naps entries exist by finding keys that match the pattern
+                $naps_keys = array_filter(array_keys($peserta), function ($key) {
+                    return preg_match('/^naps\d+$/', $key);
+                });
+
+                // Loop through each naps entry that actually exists
+                foreach ($naps_keys as $naps_key) {
+                    // Make sure the naps entry exists and has a dt_tm value
+                    if (!empty($peserta[$naps_key]) && !empty($peserta[$naps_key]['dt_tm'])) {
+                        $existing_dates[] = $peserta[$naps_key]['dt_tm'];
+                    }
+                }
+            }
+
+            // Remove duplicates to get unique dates
+            $unique_dates = array_unique($existing_dates);
 
             $data = [
                 'title'         => $title,
@@ -215,7 +235,8 @@ class KelasNonreg extends BaseController
                 'tm'            => $tm,
                 'absenTm'       => $absenTm,
                 'absenKelas'    => $absenKelas,
-                'listAbsensi'   => $listAbsensi
+                'listAbsensi'   => $listAbsensi,
+                'existing_dates'   => $unique_dates
             ];
 
             // $absen_tm   = $this->peserta_kelas->peserta_onkelas_absen_tm($tm, $kelas_id);
@@ -246,11 +267,11 @@ class KelasNonreg extends BaseController
             //     'absen_pengajar'=> $absen_pengajar,
             //     'absen_pengajar_id' => $absen_pengajar_id,
             // ];
-
-            $msg = [
-                'sukses' => view('panel_pengajar/kelas_nonreg/input_absensi', $data)
-            ];
-            echo json_encode($msg);
+            var_dump($existing_dates);
+            // $msg = [
+            //     'sukses' => view('panel_pengajar/kelas_nonreg/input_absensi', $data)
+            // ];
+            // echo json_encode($msg);
         }
     }
 
@@ -288,7 +309,7 @@ class KelasNonreg extends BaseController
         $napjId  = $this->request->getVar('napjId');
 
         $dt_tm   = $this->request->getVar('dt_tm');
-        $note    = str_replace(array("\r", "\n", "\r\n"), ' ',$this->request->getVar('note'));
+        $note    = str_replace(array("\r", "\n", "\r\n"), ' ', $this->request->getVar('note'));
 
         $arNp    = $this->request->getVar('arNp');
         $arNaps  = $this->request->getVar('arNaps');
@@ -296,18 +317,18 @@ class KelasNonreg extends BaseController
         $kelas = $this->nonreg_kelas->find($kelasId);
 
         foreach ($arNaps as $naps) {
-            $cek = $this->request->getVar('cek'.$naps);
+            $cek = $this->request->getVar('cek' . $naps);
             $ab  = json_encode([
                 'tm'    => $cek,
                 'dt_tm' => $dt_tm,
-                'dt_isi'=> date('Y-m-d H:i:s'),
+                'dt_isi' => date('Y-m-d H:i:s'),
                 'note'  => '',
                 'by'    => $user['nama']
             ]);
             $abData = [
-                'naps'.$tm => $ab,
+                'naps' . $tm => $ab,
             ];
-            $this->nonreg_absen_peserta->update($naps,$abData);
+            $this->nonreg_absen_peserta->update($naps, $abData);
         }
 
         $abpj  = json_encode([
@@ -318,21 +339,22 @@ class KelasNonreg extends BaseController
             'by'      => $user['nama']
         ]);
         $abpjData = [
-            'napj'.$tm => $abpj,
+            'napj' . $tm => $abpj,
         ];
-        $this->nonreg_absen_pengajar->update($napjId,$abpjData);
+        $this->nonreg_absen_pengajar->update($napjId, $abpjData);
 
         return $this->response->setJSON(
-        [
-            'success' => true,
-            'code'    => '200',
-            'data'    => [
-                'title' => 'Berhasil',
-                'link'  => '/pengajar/absensi-nonreg?kelas=' . $kelasId,
-                'icon'  => 'success',
-            ],
-            'message' => 'Pengisian Form Berhasil.' ,
-        ]);
+            [
+                'success' => true,
+                'code'    => '200',
+                'data'    => [
+                    'title' => 'Berhasil',
+                    'link'  => '/pengajar/absensi-nonreg?kelas=' . $kelasId,
+                    'icon'  => 'success',
+                ],
+                'message' => 'Pengisian Form Berhasil.',
+            ]
+        );
     }
 
     // public function update_atur_absensi()
@@ -367,25 +389,25 @@ class KelasNonreg extends BaseController
     //                     'tm_absen'      => $tm_absen,
     //                     'expired_absen' => $expired_absen,
     //                 ];
-    
+
     //                 $this->kelas->update($kelas_id, $updatedata);
-    
+
     //                 $aktivitas = 'Pengajar Mengubah Metode Absen Menjadi Mandiri di Kelas' . $kelas['nama_kelas'] . ' sampai ' . $expired_absen ;
-    
+
     //                 $this->logging('Admin', 'BERHASIL', $aktivitas);
-    
+
     //                 $msg = [
     //                     'sukses' => [
     //                         'link' => '/pengajar/absensi?kelas='.$kelas_id
     //                     ]
     //                 ];
     //             }
-                
+
     //         }
     //     }
 
     //     echo json_encode($msg);
-        
+
     // }
 
     // public function absensi_note()
