@@ -1701,19 +1701,18 @@ class Absensi extends BaseController
         $params         = [];
         parse_str($queryString, $params);
 
-        if (count($params) == 1 && array_key_exists('angkatan', $params)) {
-            $angkatan       = $params['angkatan'];
+        if (count($params) == 1 && array_key_exists('tahun', $params)) {
+            $tahun       = $params['tahun'];
         } else {
-            $get_angkatan       = $this->konfigurasi->angkatan_kuliah();
-            $angkatan           = $get_angkatan->angkatan_kuliah;
+            $tahun      = date('Y');
         }
-        $list_kelas     = $this->nonreg_kelas->list($angkatan);
+        $list_kelas     = $this->nonreg_kelas->list($tahun);
         if (count($list_kelas) > 0) {
             $highest_tm_ambil = max(array_column($list_kelas, 'nk_tm_ambil'));
         } else {
             $highest_tm_ambil = 0;
         }
-        $lists             = $this->nonreg_absen_peserta->list_rekap($angkatan);
+        $lists             = $this->nonreg_absen_peserta->list_rekap($tahun);
         // Process each record in the lists array
         $lists = array_map(function ($record) {
             // Loop through each field in the record
@@ -1781,7 +1780,7 @@ class Absensi extends BaseController
         ];
 
         $judul = "DATA REKAP ABSENSI PESERTA PROGRAM NON-REGULER";
-        $tgl   =  "ANGKATAN " . $angkatan . ' - ' . date("d-m-Y");
+        $tgl   =  "Tahun " . $tahun . ' - ' . date("d-m-Y");
 
         $sheet->setCellValue('A1', $judul);
         $sheet->mergeCells('A1:G1');
@@ -1869,10 +1868,10 @@ class Absensi extends BaseController
         }
 
         $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xls($spreadsheet);
-        $filename =  'Data-Rekap-Absensi-Peserta-NonReguler-Angkatan' . $angkatan . '-' . date('Y-m-d-His');
+        $filename =  'Data-Rekap-Absensi-Peserta-NonReguler-Tahun' . $tahun . '-' . date('Y-m-d-His');
 
         /*--- Log ---*/
-        $this->logging('Admin', 'BERHASIL', 'Donwload rekap absensi peserta program Non-Reguler Angkatan ' . $angkatan);
+        $this->logging('Admin', 'BERHASIL', 'Donwload rekap absensi peserta program Non-Reguler Tahun ' . $tahun);
 
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         header('Content-Disposition: attachment;filename=' . $filename . '.xls');
