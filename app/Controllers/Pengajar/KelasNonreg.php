@@ -242,14 +242,14 @@ class KelasNonreg extends BaseController
             // $absen_tm   = $this->peserta_kelas->peserta_onkelas_absen_tm($tm, $kelas_id);
             // $data_absen_pengajar   = $this->request->getVar('data_absen_pengajar');
 
-            //Data Kelas
+            // //Data Kelas
             // $data_kelas         = $this->kelas->list_detail_kelas($kelas_id);
             // $nama_pengajar      = $data_kelas[0]['nama_pengajar'];
             // $absen_pengajar_id  = $data_kelas[0]['data_absen_pengajar'];
 
-            //Data absen pengajar
+            // //Data absen pengajar
             // $absen_pengajar  = $this->absen_pengajar->find($data_absen_pengajar);
-            // $tgl_tm          = "tgl_".$tm;
+            // $tgl_tm          = "tgl_" . $tm;
             // $tgl_absen       = $absen_pengajar["$tgl_tm"];
 
             // if ($tgl_absen == NULL || $tgl_absen == "2022-01-01") {
@@ -261,17 +261,17 @@ class KelasNonreg extends BaseController
             //     'tm'            => $tm,
             //     'kelas_id'      => $kelas_id,
             //     'tm_upper'      => $tm_upper,
-            //     'nama_pengajar' => $nama_pengajar, 
+            //     'nama_pengajar' => $nama_pengajar,
             //     'absen_tm'      => $absen_tm,
             //     'tgl_absen'     => $tgl_absen,
-            //     'absen_pengajar'=> $absen_pengajar,
+            //     'absen_pengajar' => $absen_pengajar,
             //     'absen_pengajar_id' => $absen_pengajar_id,
             // ];
-            var_dump($existing_dates);
-            // $msg = [
-            //     'sukses' => view('panel_pengajar/kelas_nonreg/input_absensi', $data)
-            // ];
-            // echo json_encode($msg);
+            //var_dump($existing_dates);
+            $msg = [
+                'sukses' => view('panel_pengajar/kelas_nonreg/input_absensi', $data)
+            ];
+            echo json_encode($msg);
         }
     }
 
