@@ -10,33 +10,33 @@
 <?= $this->section('isi') ?>
 
 <?php if ($user['level'] == 1) { ?>
-    <a> 
-        <button type="button" class="btn btn-primary mb-3" onclick="tambah('')" ><i class=" fa fa-plus-circle"></i> Tambah Pengajar</button>
+    <a>
+        <button type="button" class="btn btn-primary mb-3" onclick="tambah('')"><i class=" fa fa-plus-circle"></i> Tambah Pengajar</button>
     </a>
 
-    <a> 
-        <button type="button" class="btn btn-success mb-3" data-toggle="modal" data-target="#importexcel" ><i class=" fa fa-file-excel"></i> Import File Excel</button>
+    <a>
+        <button type="button" class="btn btn-success mb-3" data-toggle="modal" data-target="#importexcel"><i class=" fa fa-file-excel"></i> Import File Excel</button>
     </a>
 <?php } ?>
 
-<a href="<?= base_url('pengajar/export') ?>"> 
+<a href="<?= base_url('pengajar/export') ?>">
     <button type="button" class="btn btn-secondary mb-3"><i class=" fa fa-file-download"></i> Export Excel (Download)</button>
 </a>
 
 <?php if ($user['level'] == 1) { ?>
-    <a> 
-        <button type="button" class="btn btn-warning mb-3" data-toggle="modal" data-target="#editbatch" ><i class=" fa fa-edit"></i> Multiple Edit</button>
+    <a>
+        <button type="button" class="btn btn-warning mb-3" data-toggle="modal" data-target="#editbatch"><i class=" fa fa-edit"></i> Multiple Edit</button>
     </a>
 <?php } ?>
 
 <div class="dropdown d-inline float-right">
-  <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class=" fa fa-file-alt mr-1"></i>
-    Template
-  </button>
-  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-    <a class="dropdown-item" href="<?= base_url('public/assets/template/Template_Pengajar_v2.xlsx') ?>"> <i class=" fa fa-file-excel"></i> Import File Excel</a>
-    <a class="dropdown-item" href="<?= base_url('public/assets/template/Template_Multiple_Edit_Pengajar_V2.xlsx') ?>"> <i class=" fa fa-edit"></i> Multiple Edit</a>
-  </div>
+    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class=" fa fa-file-alt mr-1"></i>
+        Template
+    </button>
+    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+        <a class="dropdown-item" href="<?= base_url('public/assets/template/Template_Pengajar_v2.xlsx') ?>"> <i class=" fa fa-file-excel"></i> Import File Excel</a>
+        <a class="dropdown-item" href="<?= base_url('public/assets/template/Template_Multiple_Edit_Pengajar_V2.xlsx') ?>"> <i class=" fa fa-edit"></i> Multiple Edit</a>
+    </div>
 </div>
 
 <?php
@@ -81,7 +81,8 @@ if (session()->getFlashdata('pesan_sukses')) {
                 <th>ID</th>
                 <th>Nama</th>
                 <th>Kantor</th>
-                <th>Tipe</th> 
+                <th>Role</th>
+                <th>Tipe</th>
                 <th>Jenis <br>Kelamin</th>
                 <th>NIK</th>
                 <th>Usia</th>
@@ -96,45 +97,46 @@ if (session()->getFlashdata('pesan_sukses')) {
             foreach ($list as $data) :
                 $nomor++; ?>
                 <tr>
-                    <td  width="1%">
+                    <td width="1%">
                         <input type="checkbox" name="pengajar_id[]" class="centangPengajarid" value="<?= $data['pengajar_id'] ?>"><?= $nomor ?>
                     </td>
                     <td width="1%"><?= $data['pengajar_id'] ?></td>
                     <td width="14%"><?= $data['nama_pengajar'] ?></td>
                     <td width="8%"><?= $data['nama_kantor'] ?></td>
                     <td width="8%">
-                        <?php if($data['tipe_pengajar'] == 'PENGAJAR') { ?>
-                            <button class="btn btn-success btn-sm" disabled>PENGAJAR</button> 
+                        <?php if ($data['tipe_pengajar'] == 'PENGAJAR') { ?>
+                            <button class="btn btn-success btn-sm" disabled>PENGAJAR</button>
                         <?php } ?>
-                        <?php if($data['tipe_pengajar'] == 'PENGUJI') { ?>
-                            <button class="btn btn-info btn-sm" disabled>PENGUJI</button> 
+                        <?php if ($data['tipe_pengajar'] == 'PENGUJI') { ?>
+                            <button class="btn btn-info btn-sm" disabled>PENGUJI</button>
                         <?php } ?>
-                        <?php if($data['tipe_pengajar'] == 'PENGAJAR & PENGUJI') { ?>
-                            <button class="btn btn-secondary btn-sm" disabled>PENGAJAR & PENGUJI</button> 
+                        <?php if ($data['tipe_pengajar'] == 'PENGAJAR & PENGUJI') { ?>
+                            <button class="btn btn-secondary btn-sm" disabled>PENGAJAR & PENGUJI</button>
                         <?php } ?>
                     </td>
+                    <td width="8%"><?= $data['kategori_pengajar'] ?></td>
                     <td width="8%"><?= $data['jenkel_pengajar'] ?></td>
                     <td width="8%"><?= $data['nik_pengajar'] ?></td>
                     <td width="5%"><?= umur($data['tgl_lahir_pengajar']) ?> Tahun</td>
-                    <td width="8%">ID:<?= $data['user_id'] ?> - <b><?= $data['username'] ?> - 
-                        <?php if($data['active'] == 0) { ?>
-                            <span class="badge badge-secondary">Disable</span>
-                        <?php } ?>
-                        <?php if($data['active'] == 1) { ?>
-                            <span class="badge badge-success">Aktif</span>
-                        <?php } ?>
-                    </b></td>
+                    <td width="8%">ID:<?= $data['user_id'] ?> - <b><?= $data['username'] ?> -
+                            <?php if ($data['active'] == 0) { ?>
+                                <span class="badge badge-secondary">Disable</span>
+                            <?php } ?>
+                            <?php if ($data['active'] == 1) { ?>
+                                <span class="badge badge-success">Aktif</span>
+                            <?php } ?>
+                        </b></td>
                     <td width="8%"><?= $data['hp_pengajar'] ?></td>
                     <td width="10%">
-                        <button type="button" class="btn btn-sm btn-secondary" onclick="datadiri('<?= $data['pengajar_id'] ?>')" >
-                        <i class=" fa fa-info"></i></button>
+                        <button type="button" class="btn btn-sm btn-secondary" onclick="datadiri('<?= $data['pengajar_id'] ?>')">
+                            <i class=" fa fa-info"></i></button>
                         <?php if ($user['level'] == 1) { ?>
-                            <button type="button" class="btn btn-sm btn-warning" onclick="edit('<?= $data['pengajar_id'] ?>')" >
-                            <i class=" fa fa-edit"></i></button>
-                            <button type="button" class="btn btn-sm btn-info" onclick="edit_akun('<?= $data['user_id'] ?>')" >
-                            <i class=" fa fa-user"></i></button>
-                            <button type="button" class="btn btn-sm btn-danger" onclick="hapus('<?= $data['pengajar_id'] ?>', '<?= $data['nama_pengajar'] ?>')" >
-                            <i class=" fa fa-trash"></i></button>
+                            <button type="button" class="btn btn-sm btn-warning" onclick="edit('<?= $data['pengajar_id'] ?>')">
+                                <i class=" fa fa-edit"></i></button>
+                            <button type="button" class="btn btn-sm btn-info" onclick="edit_akun('<?= $data['user_id'] ?>')">
+                                <i class=" fa fa-user"></i></button>
+                            <button type="button" class="btn btn-sm btn-danger" onclick="hapus('<?= $data['pengajar_id'] ?>', '<?= $data['nama_pengajar'] ?>')">
+                                <i class=" fa fa-trash"></i></button>
                         <?php } ?>
                     </td>
                 </tr>
@@ -172,14 +174,14 @@ if (session()->getFlashdata('pesan_sukses')) {
             <?= csrf_field() ?>
             <input type="hidden" class="form-control" id="pst_or_pgj" value="peserta" name="pst_or_pgj" readonly>
             <div class="modal-body">
-                <p class="mt-1">Catatan :<br> 
+                <p class="mt-1">Catatan :<br>
                     <i class="mdi mdi-information"></i> Data import Excel maximal berisi 300 Data/Baris. Jika lebih maka data selebihnya akan gagal ter-import ke dalam sistem.<br>
                 </p>
-                    <div class="form-group">
-                        <label>Pilih File Excel</label>
-                        <input type="file" class="form-control" name="file_excel" accept=".xls, .xlsx">
-                    </div>
-            </div>    
+                <div class="form-group">
+                    <label>Pilih File Excel</label>
+                    <input type="file" class="form-control" name="file_excel" accept=".xls, .xlsx">
+                </div>
+            </div>
             <div class="modal-footer">
                 <button type="submit" class="btn btn-success btnsimpan"><i class="fa fa-file-upload"></i> Import</button>
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -205,16 +207,16 @@ if (session()->getFlashdata('pesan_sukses')) {
             ?>
             <?= csrf_field() ?>
             <div class="modal-body">
-                <p class="mt-1">Catatan :<br> 
+                <p class="mt-1">Catatan :<br>
                     <i class="mdi mdi-information"></i> Download file template yang disediakan untuk multiple edit data pengajar dari file excel.<br>
                     <i class="mdi mdi-information"></i> Download / Export Excel terlebih dahulu untuk mendapatkan <b>PENGAJAR ID</b>.<br>
                     <i class="mdi mdi-information"></i> Data multiple edit via Excel maximal berisi 300 Data/Baris. Jika lebih maka data selebihnya akan gagal ter-import ke dalam sistem.<br>
                 </p>
-                    <div class="form-group">
-                        <label>Pilih File Excel</label>
-                        <input type="file" class="form-control" name="file_excel" accept=".xls, .xlsx">
-                    </div>
-            </div>    
+                <div class="form-group">
+                    <label>Pilih File Excel</label>
+                    <input type="file" class="form-control" name="file_excel" accept=".xls, .xlsx">
+                </div>
+            </div>
             <div class="modal-footer">
                 <button type="submit" class="btn btn-warning btnsimpan"><i class="fa fa-edit"></i> Edit</button>
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -227,74 +229,72 @@ if (session()->getFlashdata('pesan_sukses')) {
 <!-- End Modal Multiple Edit -->
 
 <script>
-
     $(document).ready(function() {
 
-    $('#datatable').DataTable({
-        "scrollY": "500px",
-        "scrollX":  true,
-        "scrollCollapse": true,
-    });
+        $('#datatable').DataTable({
+            "scrollY": "500px",
+            "scrollX": true,
+            "scrollCollapse": true,
+        });
 
-    $('#centangSemua').click(function(e) {
-        if ($(this).is(':checked')) {
-            $('.centangPengajarid').prop('checked', true);
-        } else {
-            $('.centangPengajarid').prop('checked', false);
-        }
-    });
+        $('#centangSemua').click(function(e) {
+            if ($(this).is(':checked')) {
+                $('.centangPengajarid').prop('checked', true);
+            } else {
+                $('.centangPengajarid').prop('checked', false);
+            }
+        });
 
-    $('.formhapus').submit(function(e) {
-        e.preventDefault();
-        let jmldata = $('.centangPengajarid:checked');
-        if (jmldata.length === 0) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Ooops!',
-                text: 'Silahkan pilih data!',
-                showConfirmButton: false,
-                timer: 1500
-            })
-        } else {
-            Swal.fire({
-                title: 'Hapus data',
-                text: `Apakah anda yakin ingin menghapus sebanyak ${jmldata.length} data?`,
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Ya, Hapus!'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    $.ajax({
-                        type: "post",
-                        url: $(this).attr('action'),
-                        data: $(this).serialize(),
-                        dataType: "json",
-                        success: function(response) {
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'Berhasil',
-                                text: 'Data berhasil dihapus!',
-                                showConfirmButton: false,
-                                timer: 1500
-                            }).then(function() {
-                            window.location = response.sukses.link;
-                    });
-                        }
-                    });
-                }
-            })
-        }
-    });
+        $('.formhapus').submit(function(e) {
+            e.preventDefault();
+            let jmldata = $('.centangPengajarid:checked');
+            if (jmldata.length === 0) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Ooops!',
+                    text: 'Silahkan pilih data!',
+                    showConfirmButton: false,
+                    timer: 1500
+                })
+            } else {
+                Swal.fire({
+                    title: 'Hapus data',
+                    text: `Apakah anda yakin ingin menghapus sebanyak ${jmldata.length} data?`,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Ya, Hapus!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            type: "post",
+                            url: $(this).attr('action'),
+                            data: $(this).serialize(),
+                            dataType: "json",
+                            success: function(response) {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Berhasil',
+                                    text: 'Data berhasil dihapus!',
+                                    showConfirmButton: false,
+                                    timer: 1500
+                                }).then(function() {
+                                    window.location = response.sukses.link;
+                                });
+                            }
+                        });
+                    }
+                })
+            }
+        });
     });
 
     function tambah() {
         $.ajax({
             type: "post",
             url: "<?= site_url('pengajar/input') ?>",
-            data: {
-            },
+            data: {},
             dataType: "json",
             success: function(response) {
                 if (response.sukses) {
@@ -310,7 +310,7 @@ if (session()->getFlashdata('pesan_sukses')) {
             type: "post",
             url: "<?= site_url('pengajar/detail') ?>",
             data: {
-                pengajar_id : pengajar_id
+                pengajar_id: pengajar_id
             },
             dataType: "json",
             success: function(response) {
@@ -373,7 +373,7 @@ if (session()->getFlashdata('pesan_sukses')) {
                     type: "post",
                     dataType: "json",
                     data: {
-                        pengajar_id : pengajar_id
+                        pengajar_id: pengajar_id
                     },
                     success: function(response) {
                         if (response.sukses) {
@@ -385,7 +385,7 @@ if (session()->getFlashdata('pesan_sukses')) {
                                 timer: 1500
                             }).then(function() {
                                 window.location = response.sukses.link;
-                        });
+                            });
                         }
                     }
                 });

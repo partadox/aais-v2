@@ -29,13 +29,28 @@
                     </div>
                 </div>
                 <div class="form-group row">
-                    <label for="" class="col-sm-4 col-form-label">Tipe Pengajar<code>*</code></label>
+                    <label for="" class="col-sm-4 col-form-label">Role Pengajar<code>*</code></label>
                     <div class="col-sm-8">
                         <select name="tipe_pengajar" id="tipe_pengajar" class="js-example-basic-single-edit">
-                            <option value="PENGAJAR" <?php if ($pengajar['tipe_pengajar'] == 'PENGAJAR') echo "selected"; ?> >PENGAJAR</option>
-                            <option value="PENGUJI"  <?php if ($pengajar['tipe_pengajar'] == 'PENGUJI') echo "selected"; ?> >PENGUJI</option>
+                            <option value="PENGAJAR" <?php if ($pengajar['tipe_pengajar'] == 'PENGAJAR') echo "selected"; ?>>PENGAJAR</option>
+                            <option value="PENGUJI" <?php if ($pengajar['tipe_pengajar'] == 'PENGUJI') echo "selected"; ?>>PENGUJI</option>
                         </select>
                         <div class="invalid-feedback errorTipe_pengajar"></div>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="" class="col-sm-4 col-form-label">Tipe Pengajar<code>*</code></label>
+                    <div class="col-sm-8">
+                        <select name="kategori_pengajar" id="kategori_pengajar" class="js-example-basic-single-edit">
+                            <?php if ($pengajar['kategori_pengajar'] == NULL) { ?>
+                                <option value="" disabled selected <?php if ($pengajar['kategori_pengajar'] == NULL) echo "selected"; ?>>--PILIH--</option>
+                            <?php } ?>
+                            <option value="PUSAT">PUSAT</option>
+                            <option value="CABANG">CABANG</option>
+                            <option value="SUB-CABANG">SUB-CABANG</option>
+                            <option value="HONORER/LEPAS">HONORER/LEPAS</option>
+                        </select>
+                        <div class="invalid-feedback errorkategori_pengajar"></div>
                     </div>
                 </div>
                 <div class="form-group row">
@@ -43,7 +58,7 @@
                     <div class="col-sm-8">
                         <select name="kantor_cabang" id="kantor_cabang" class="js-example-basic-single-edit">
                             <?php foreach ($kantor as $key => $data) { ?>
-                                <option value="<?= $data['kantor_id'] ?>" <?php if ($data['kantor_id'] == $pengajar['asal_kantor']) echo "selected"; ?> ><?= $data['nama_kantor'] ?></option>
+                                <option value="<?= $data['kantor_id'] ?>" <?php if ($data['kantor_id'] == $pengajar['asal_kantor']) echo "selected"; ?>><?= $data['nama_kantor'] ?></option>
                             <?php } ?>
                         </select>
                         <div class="invalid-feedback errorKantor_cabang"></div>
@@ -53,8 +68,8 @@
                     <label for="" class="col-sm-4 col-form-label">Jenis Kelamin <code>*</code></label>
                     <div class="col-sm-8">
                         <select class="form-control btn-square" id="jenkel_pengajar" name="jenkel_pengajar">
-                            <option value="IKHWAN" <?php if ($pengajar['jenkel_pengajar'] == 'IKHWAN') echo "selected"; ?> >IKHWAN</option>
-                            <option value="AKHWAT" <?php if ($pengajar['jenkel_pengajar'] == 'AKHWAT') echo "selected"; ?> >AKHWAT</option>
+                            <option value="IKHWAN" <?php if ($pengajar['jenkel_pengajar'] == 'IKHWAN') echo "selected"; ?>>IKHWAN</option>
+                            <option value="AKHWAT" <?php if ($pengajar['jenkel_pengajar'] == 'AKHWAT') echo "selected"; ?>>AKHWAT</option>
                         </select>
                         <div class="invalid-feedback errorJenkel_pengajar"></div>
                     </div>
@@ -84,9 +99,9 @@
                     <label for="" class="col-sm-4 col-form-label">Status Nikah<code>*</code></label>
                     <div class="col-sm-8">
                         <select class="form-control btn-square" id="status_nikah" name="status_nikah">
-                            <option value="MENIKAH"  <?php if ($pengajar['status_nikah'] == 'MENIKAH') echo "selected"; ?> >MENIKAH</option>
-                            <option value="LAJANG" <?php if ($pengajar['status_nikah'] == 'LAJANG') echo "selected"; ?> >LAJANG</option>
-                            <option value="SINGLE PARENT" <?php if ($pengajar['status_nikah'] == 'SINGLE PARENT') echo "selected"; ?> >SINGLE PARENT</option>
+                            <option value="MENIKAH" <?php if ($pengajar['status_nikah'] == 'MENIKAH') echo "selected"; ?>>MENIKAH</option>
+                            <option value="LAJANG" <?php if ($pengajar['status_nikah'] == 'LAJANG') echo "selected"; ?>>LAJANG</option>
+                            <option value="SINGLE PARENT" <?php if ($pengajar['status_nikah'] == 'SINGLE PARENT') echo "selected"; ?>>SINGLE PARENT</option>
                         </select>
                         <div class="invalid-feedback errorStatus_nikah"></div>
                     </div>
@@ -102,13 +117,13 @@
                     <label class="col-sm-4 col-form-label">Pendidikan<code>*</code></label>
                     <div class="col-sm-8">
                         <select class="form-control btn-square" id="pendidikan_pengajar" name="pendidikan_pengajar">
-                            <option value="SD" <?php if ($pengajar['pendidikan_pengajar'] == 'SD') echo "selected"; ?> >SD</option>
-                            <option value="SLTP" <?php if ($pengajar['pendidikan_pengajar'] == 'SLPT') echo "selected"; ?> >SLTP</option>
-                            <option value="SLTA" <?php if ($pengajar['pendidikan_pengajar'] == 'SLTA') echo "selected"; ?> >SLTA</option>
-                            <option value="DIPLOMA" <?php if ($pengajar['pendidikan_pengajar'] == 'DIPLOMA') echo "selected"; ?> >DIPLOMA</option>
-                            <option value="SARJANA (S1)" <?php if ($pengajar['pendidikan_pengajar'] == 'SARJANA (S1)') echo "selected"; ?> >SARJANA (S1)</option>
-                            <option value="MAGISTER (S2)" <?php if ($pengajar['pendidikan_pengajar'] == 'MAGISTER (S2)') echo "selected"; ?> >MAGISTER (S2)</option>
-                            <option value="DOKTOR (S3)" <?php if ($pengajar['pendidikan_pengajar'] == 'DOKTOR (S3)') echo "selected"; ?> >DOKTOR (S3)</option>
+                            <option value="SD" <?php if ($pengajar['pendidikan_pengajar'] == 'SD') echo "selected"; ?>>SD</option>
+                            <option value="SLTP" <?php if ($pengajar['pendidikan_pengajar'] == 'SLPT') echo "selected"; ?>>SLTP</option>
+                            <option value="SLTA" <?php if ($pengajar['pendidikan_pengajar'] == 'SLTA') echo "selected"; ?>>SLTA</option>
+                            <option value="DIPLOMA" <?php if ($pengajar['pendidikan_pengajar'] == 'DIPLOMA') echo "selected"; ?>>DIPLOMA</option>
+                            <option value="SARJANA (S1)" <?php if ($pengajar['pendidikan_pengajar'] == 'SARJANA (S1)') echo "selected"; ?>>SARJANA (S1)</option>
+                            <option value="MAGISTER (S2)" <?php if ($pengajar['pendidikan_pengajar'] == 'MAGISTER (S2)') echo "selected"; ?>>MAGISTER (S2)</option>
+                            <option value="DOKTOR (S3)" <?php if ($pengajar['pendidikan_pengajar'] == 'DOKTOR (S3)') echo "selected"; ?>>DOKTOR (S3)</option>
                         </select>
                         <div class="invalid-feedback errorPendidikan_pengajar"></div>
                     </div>
@@ -141,7 +156,7 @@
                         <div class="invalid-feedback errorAlamat_pengajar"></div>
                     </div>
                 </div>
-                
+
                 <div class="form-group row">
                     <label class="col-sm-4 col-form-label">Tanggal Gabung<code>*</code></label>
                     <div class="col-sm-8">
@@ -152,7 +167,7 @@
                 <div class="form-group row">
                     <label class="col-sm-4 col-form-label">Username<code>*</code></label>
                     <div class="col-sm-8">
-                        <input class="form-control" type="text" id="username" name="username" value="<?= $user_pengajar['username'] ?>" >
+                        <input class="form-control" type="text" id="username" name="username" value="<?= $user_pengajar['username'] ?>">
                         <div class="invalid-feedback errorUsername"></div>
                     </div>
                 </div>
@@ -169,7 +184,7 @@
 <script>
     $(document).ready(function() {
         $('.js-example-basic-single-edit').select2({
-            
+
         });
         $('.formedit').submit(function(e) {
             e.preventDefault();
@@ -210,6 +225,14 @@
                         } else {
                             $('#tipe_pengajar').removeClass('is-invalid');
                             $('.errorTipe_pengajar').html('');
+                        }
+
+                        if (response.error.kategori_pengajar) {
+                            $('#kategori_pengajar').addClass('is-invalid');
+                            $('.errorkategori_pengajar').html(response.error.kategori_pengajar);
+                        } else {
+                            $('#kategori_pengajar').removeClass('is-invalid');
+                            $('.errorkategori_pengajar').html('');
                         }
 
                         if (response.error.kantor_cabang) {
@@ -331,7 +354,7 @@
                             showConfirmButton: false,
                             timer: 1500
                         }).then(function() {
-                                window.location = response.sukses.link;
+                            window.location = response.sukses.link;
                         });
                     }
                 }

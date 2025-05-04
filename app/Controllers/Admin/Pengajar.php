@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Controllers\Admin;
 
 use App\Controllers\BaseController;
@@ -115,6 +116,13 @@ class Pengajar extends BaseController
                         'required' => '{field} tidak boleh kosong',
                     ]
                 ],
+                'kategori_pengajar' => [
+                    'label' => 'kategori_pengajar',
+                    'rules' => 'required',
+                    'errors' => [
+                        'required' => '{field} tidak boleh kosong',
+                    ]
+                ],
                 'kantor_cabang' => [
                     'label' => 'kantor_cabang',
                     'rules' => 'required',
@@ -221,6 +229,7 @@ class Pengajar extends BaseController
                         'nama_pengajar'           => $validation->getError('nama_pengajar'),
                         'nik_pengajar'            => $validation->getError('nik_pengajar'),
                         'tipe_pengajar'           => $validation->getError('tipe_pengajar'),
+                        'kategori_pengajar'       => $validation->getError('kategori_pengajar'),
                         'kantor_cabang'           => $validation->getError('kantor_cabang'),
                         'jenkel_pengajar'         => $validation->getError('jenkel_pengajar'),
                         'tmp_lahir_pengajar'      => $validation->getError('tmp_lahir_pengajar'),
@@ -244,21 +253,22 @@ class Pengajar extends BaseController
                 } else {
                     $level = 6;
                 }
-                
+
                 $newUser    = [
-					'username' 				=> $this->request->getVar('username'),
-					'nama'					=> strtoupper($this->request->getVar('nama_pengajar')),
-					'password'				=> (password_hash(getenv('password_default'), PASSWORD_BCRYPT)),
-					'foto'					=> 'default.png',
-					'level'					=> $level,
-					'active'				=> 1,
-				];
+                    'username'                 => $this->request->getVar('username'),
+                    'nama'                    => strtoupper($this->request->getVar('nama_pengajar')),
+                    'password'                => (password_hash(getenv('password_default'), PASSWORD_BCRYPT)),
+                    'foto'                    => 'default.png',
+                    'level'                    => $level,
+                    'active'                => 1,
+                ];
                 $this->db->transStart();
                 $this->user->insert($newUser);
                 $newPengajar = [
                     'nama_pengajar'           => strtoupper($this->request->getVar('nama_pengajar')),
                     'nik_pengajar'            => $this->request->getVar('nik_pengajar'),
                     'tipe_pengajar'           => $this->request->getVar('tipe_pengajar'),
+                    'kategori_pengajar'       => $this->request->getVar('kategori_pengajar'),
                     'asal_kantor'             => $this->request->getVar('kantor_cabang'),
                     'jenkel_pengajar'         => $this->request->getVar('jenkel_pengajar'),
                     'tmp_lahir_pengajar'      => strtoupper($this->request->getVar('tmp_lahir_pengajar')),
@@ -278,18 +288,15 @@ class Pengajar extends BaseController
 
                 $this->pengajar->insert($newPengajar);
                 $this->db->transComplete();
-                
+
                 $aktivitas = 'Buat Data Pengajar Nama : ' .  $this->request->getVar('nama_pengajar');
 
-                if ($this->db->transStatus() === FALSE)
-                {
+                if ($this->db->transStatus() === FALSE) {
                     /*--- Log ---*/
-				    $this->logging('Admin', 'FAIL', $aktivitas);
-                }
-                else
-                {
+                    $this->logging('Admin', 'FAIL', $aktivitas);
+                } else {
                     /*--- Log ---*/
-				    $this->logging('Admin', 'BERHASIL', $aktivitas);
+                    $this->logging('Admin', 'BERHASIL', $aktivitas);
                 }
 
 
@@ -325,6 +332,13 @@ class Pengajar extends BaseController
                 ],
                 'tipe_pengajar' => [
                     'label' => 'tipe_pengajar',
+                    'rules' => 'required',
+                    'errors' => [
+                        'required' => '{field} tidak boleh kosong',
+                    ]
+                ],
+                'kategori_pengajar' => [
+                    'label' => 'kategori_pengajar',
                     'rules' => 'required',
                     'errors' => [
                         'required' => '{field} tidak boleh kosong',
@@ -416,7 +430,7 @@ class Pengajar extends BaseController
                 ],
                 'username' => [
                     'label' => 'username',
-                    'rules' => 'required|is_unique_except[user.username.user_id.'.$user_id.']',
+                    'rules' => 'required|is_unique_except[user.username.user_id.' . $user_id . ']',
                     'errors' => [
                         'required' => '{field} tidak boleh kosong',
                         'is_unique_except' => '{field} harus unik, sudah ada yang menggunakan {field} ini',
@@ -436,6 +450,7 @@ class Pengajar extends BaseController
                         'nama_pengajar'           => $validation->getError('nama_pengajar'),
                         'nik_pengajar'            => $validation->getError('nik_pengajar'),
                         'tipe_pengajar'           => $validation->getError('tipe_pengajar'),
+                        'kategori_pengajar'       => $validation->getError('kategori_pengajar'),
                         'kantor_cabang'           => $validation->getError('kantor_cabang'),
                         'jenkel_pengajar'         => $validation->getError('jenkel_pengajar'),
                         'tmp_lahir_pengajar'      => $validation->getError('tmp_lahir_pengajar'),
@@ -457,6 +472,7 @@ class Pengajar extends BaseController
                     'nama_pengajar'           => strtoupper($this->request->getVar('nama_pengajar')),
                     'nik_pengajar'            => $this->request->getVar('nik_pengajar'),
                     'tipe_pengajar'           => $this->request->getVar('tipe_pengajar'),
+                    'kategori_pengajar'       => $this->request->getVar('kategori_pengajar'),
                     'asal_kantor'             => $this->request->getVar('kantor_cabang'),
                     'jenkel_pengajar'         => $this->request->getVar('jenkel_pengajar'),
                     'tmp_lahir_pengajar'      => strtoupper($this->request->getVar('tmp_lahir_pengajar')),
@@ -482,23 +498,20 @@ class Pengajar extends BaseController
 
                 if ($username != $username_old) {
                     $updateUser = [
-                        'username' => $username, 
+                        'username' => $username,
                     ];
                     $this->user->update($user_id, $updateUser);
                 }
                 $this->db->transComplete();
-                
+
 
                 $aktivitas = 'Edit Data Pengajar Nama : ' .  $this->request->getVar('nama_pengajar');
-                if ($this->db->transStatus() === FALSE)
-                {
+                if ($this->db->transStatus() === FALSE) {
                     /*--- Log ---*/
-				    $this->logging('Admin', 'FAIL', $aktivitas);
-                }
-                else
-                {
+                    $this->logging('Admin', 'FAIL', $aktivitas);
+                } else {
                     /*--- Log ---*/
-				    $this->logging('Admin', 'BERHASIL', $aktivitas);
+                    $this->logging('Admin', 'BERHASIL', $aktivitas);
                 }
 
                 $msg = [
@@ -521,7 +534,7 @@ class Pengajar extends BaseController
                 $valid = $this->validate([
                     'username' => [
                         'label' => 'username',
-                        'rules' => 'required|is_unique_except[user.username.user_id.'.$user_id.']',
+                        'rules' => 'required|is_unique_except[user.username.user_id.' . $user_id . ']',
                         'errors' => [
                             'required' => '{field} tidak boleh kosong',
                             'is_unique_except' => '{field} harus unik, sudah ada yang menggunakan {field} ini',
@@ -539,40 +552,35 @@ class Pengajar extends BaseController
                         'username' => $this->request->getVar('username'),
                         'active'   => $this->request->getVar('active'),
                     ];
-    
+
                     $user_id = $this->request->getVar('user_id');
                     $this->db->transStart();
                     $this->user->update($user_id, $updatedata);
-    
+
                     $aktivitas = 'Edit Data Akun Pengajar ' . $this->request->getVar('username');
-    
-                    if ($this->db->transStatus() === FALSE)
-                    {
+
+                    if ($this->db->transStatus() === FALSE) {
                         $this->db->transRollback();
                         /*--- Log ---*/
                         $this->logging('Admin', 'FAIL', $aktivitas);
-                    }
-                    else
-                    {
+                    } else {
                         $this->db->transComplete();
                         /*--- Log ---*/
                         $this->logging('Admin', 'BERHASIL', $aktivitas);
                     }
-    
+
                     $msg = [
                         'sukses' => [
                             'link' => 'pengajar'
                         ]
                     ];
                 }
-                
-               
             } else {
                 $validation = \Config\Services::validation();
                 $valid = $this->validate([
                     'username' => [
                         'label' => 'username',
-                        'rules' => 'required|is_unique_except[user.username.user_id.'.$user_id.']',
+                        'rules' => 'required|is_unique_except[user.username.user_id.' . $user_id . ']',
                         'errors' => [
                             'required' => '{field} tidak boleh kosong',
                             'is_unique_except' => '{field} harus unik, sudah ada yang menggunakan {field} ini',
@@ -595,31 +603,28 @@ class Pengajar extends BaseController
                         ]
                     ];
                 } else {
-    
+
                     $updatedata = [
                         'username'   => $this->request->getVar('username'),
                         'active'   => $this->request->getVar('active'),
                         'password' => (password_hash($this->request->getVar('password'), PASSWORD_BCRYPT)),
                     ];
-    
+
                     $this->db->transStart();
                     $this->user->update($user_id, $updatedata);
-    
+
                     $aktivitas = 'Edit Data Akun Pengajar (Password) ' . $this->request->getVar('username');
-    
-                    if ($this->db->transStatus() === FALSE)
-                    {
+
+                    if ($this->db->transStatus() === FALSE) {
                         $this->db->transRollback();
                         /*--- Log ---*/
                         $this->logging('Admin', 'FAIL', $aktivitas);
-                    }
-                    else
-                    {
+                    } else {
                         $this->db->transComplete();
                         /*--- Log ---*/
                         $this->logging('Admin', 'BERHASIL', $aktivitas);
                     }
-    
+
                     $msg = [
                         'sukses' => [
                             'link' => 'pengajar'
@@ -645,15 +650,12 @@ class Pengajar extends BaseController
             $this->user->delete($pengajar['user_id']);
             $this->db->transComplete();
 
-            if ($this->db->transStatus() === FALSE)
-            {
+            if ($this->db->transStatus() === FALSE) {
                 /*--- Log ---*/
                 $this->logging('Admin', 'FAIL', $aktivitas);
-            }
-            else
-            {
+            } else {
                 /*--- Log ---*/
-				$this->logging('Admin', 'BERHASIL', $aktivitas);
+                $this->logging('Admin', 'BERHASIL', $aktivitas);
             }
 
             $msg = [
@@ -678,13 +680,10 @@ class Pengajar extends BaseController
                     $this->user->delete($pengajar['user_id']);
                     $this->db->transComplete();
 
-                    if ($this->db->transStatus() === FALSE)
-                    {
+                    if ($this->db->transStatus() === FALSE) {
                         /*--- Log ---*/
                         $this->logging('Admin', 'FAIL', $aktivitas);
-                    }
-                    else
-                    {
+                    } else {
                         /*--- Log ---*/
                         $this->logging('Admin', 'BERHASIL', $aktivitas);
                     }
@@ -722,7 +721,7 @@ class Pengajar extends BaseController
 
             if ($ext == 'xls') {
                 $render     = new \PhpOffice\PhpSpreadsheet\Reader\Xls();
-            } else{
+            } else {
                 $render     = new \PhpOffice\PhpSpreadsheet\Reader\Xlsx();
             }
 
@@ -756,32 +755,31 @@ class Pengajar extends BaseController
 
                     if ($nik != 0) {
                         $gagal1 =  ' Karena NIK Duplikat';
-                    } else{
+                    } else {
                         $gagal1 = '';
                     }
-                    
-                    
+
+
                     $aktivitas1 = 'Buat Data Pengajar via Import Excel, Nama Pengajar : ' .  $excel['5'] . $gagal1;
                     /*--- Log ---*/
                     $this->logging('Admin', 'GAGAL', $aktivitas1);
+                } elseif ($nik == 0) {
 
-                } elseif($nik == 0) {
-
-                    if($excel['3'] == 'PENGUJI'){
+                    if ($excel['3'] == 'PENGUJI') {
                         $level = 6;
-                    }else{
+                    } else {
                         $level = 5;
                     }
 
                     $newUser    = [
-                        'username' 				=> strtolower(str_replace(' ', '', $excel['1'])),
-                        'nama'					=> strtoupper($excel['4']),
-                        'password'				=> (password_hash(getenv('password_default'), PASSWORD_BCRYPT)),
-                        'foto'					=> 'default.png',
-                        'level'					=> $level,
-                        'active'				=> 1,
+                        'username'                 => strtolower(str_replace(' ', '', $excel['1'])),
+                        'nama'                    => strtoupper($excel['4']),
+                        'password'                => (password_hash(getenv('password_default'), PASSWORD_BCRYPT)),
+                        'foto'                    => 'default.png',
+                        'level'                    => $level,
+                        'active'                => 1,
                     ];
-    
+
                     $this->db->transStart();
                     $this->user->insert($newUser);
 
@@ -811,24 +809,19 @@ class Pengajar extends BaseController
 
                     $aktivitas = 'Buat Data Pengajar via Import Excel, Nama Pengajar : ' .  $excel['4'];
 
-                    if ($this->db->transStatus() === FALSE)
-                    {
+                    if ($this->db->transStatus() === FALSE) {
                         /*--- Log ---*/
                         $this->logging('Admin', 'FAIL', $aktivitas);
-                    }
-                    else
-                    {
+                    } else {
                         $jumlahsukses++;
                         /*--- Log ---*/
                         $this->logging('Admin', 'BERHASIL', $aktivitas);
                     }
-                                
                 }
             }
 
             $this->session->setFlashdata('pesan_sukses', "Data Excel Berhasil Import = $jumlahsukses <br> Data Gagal Import = $jumlaherror");
             return redirect()->to('pengajar');
-
         }
     }
 
@@ -869,7 +862,7 @@ class Pengajar extends BaseController
                 'endColor' => [
                     'argb' => 'D9D9D9',
                 ],
-            ],        
+            ],
             'borders' => [
                 'allBorders' => [
                     'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
@@ -893,38 +886,39 @@ class Pengajar extends BaseController
         $tgl = date("d-m-Y");
 
         $sheet->setCellValue('A1', $judul);
-        $sheet->mergeCells('A1:R1');
+        $sheet->mergeCells('A1:S1');
         $sheet->getStyle('A1')->applyFromArray($styleColumn);
 
         $sheet->setCellValue('A2', $tgl);
-        $sheet->mergeCells('A2:R2');
+        $sheet->mergeCells('A2:S2');
         $sheet->getStyle('A2')->applyFromArray($styleColumn);
 
-        $sheet->getStyle('A4:R4')->applyFromArray($style_up);
+        $sheet->getStyle('A4:S4')->applyFromArray($style_up);
 
-        $sheet->getStyle('A5:R'.$total_row)->applyFromArray($isi_tengah);
+        $sheet->getStyle('A5:S' . $total_row)->applyFromArray($isi_tengah);
 
         $spreadsheet->setActiveSheetIndex(0)
             ->setCellValue('A4', 'PENGAJAR ID')
             ->setCellValue('B4', 'USERNAME')
             ->setCellValue('C4', 'ASAL CABANG')
-            ->setCellValue('D4', 'TIPE PENGAJAR/PENGUJI')
-            ->setCellValue('E4', 'NAMA')
-            ->setCellValue('F4', 'NIK')
-            ->setCellValue('G4', 'JENKEL')
-            ->setCellValue('H4', 'TMP. LAHIR')
-            ->setCellValue('I4', 'TGL. LAHIR')
-            ->setCellValue('J4', 'SUKU BANGSA')
-            ->setCellValue('K4', 'STATUS NIKAH')
-            ->setCellValue('L4', 'JUMLAH ANAK')
-            ->setCellValue('M4', 'PENDIDIKAN')
-            ->setCellValue('N4', 'JURUSAN')
-            ->setCellValue('O4', 'TGL. GABUNG')
-            ->setCellValue('P4', 'NO. HP')
-            ->setCellValue('Q4', 'EMAIL')
-            ->setCellValue('R4', 'ALAMAT');
+            ->setCellValue('D4', 'ROLE')
+            ->setCellValue('E4', 'TIPE')
+            ->setCellValue('F4', 'NAMA')
+            ->setCellValue('G4', 'NIK')
+            ->setCellValue('H4', 'JENKEL')
+            ->setCellValue('I4', 'TMP. LAHIR')
+            ->setCellValue('J4', 'TGL. LAHIR')
+            ->setCellValue('K4', 'SUKU BANGSA')
+            ->setCellValue('L4', 'STATUS NIKAH')
+            ->setCellValue('M4', 'JUMLAH ANAK')
+            ->setCellValue('N4', 'PENDIDIKAN')
+            ->setCellValue('O4', 'JURUSAN')
+            ->setCellValue('P4', 'TGL. GABUNG')
+            ->setCellValue('Q4', 'NO. HP')
+            ->setCellValue('R4', 'EMAIL')
+            ->setCellValue('S4', 'ALAMAT');
 
-        $columns = range('A', 'R');
+        $columns = range('A', 'S');
         foreach ($columns as $column) {
             $spreadsheet->getActiveSheet()->getColumnDimension($column)->setAutoSize(true);
         }
@@ -937,29 +931,30 @@ class Pengajar extends BaseController
                 ->setCellValue('B' . $row, $pgjdata['username'])
                 ->setCellValue('C' . $row, $pgjdata['asal_kantor'])
                 ->setCellValue('D' . $row, $pgjdata['tipe_pengajar'])
-                ->setCellValue('E' . $row, $pgjdata['nama_pengajar'])
-                ->setCellValue('F' . $row, $pgjdata['nik_pengajar'])
-                ->setCellValue('G' . $row, $pgjdata['jenkel_pengajar'])
-                ->setCellValue('H' . $row, $pgjdata['tmp_lahir_pengajar'])
-                ->setCellValue('I' . $row, $pgjdata['tgl_lahir_pengajar'])
-                ->setCellValue('J' . $row, $pgjdata['suku_bangsa'])
-                ->setCellValue('K' . $row, $pgjdata['status_nikah'])
-                ->setCellValue('L' . $row, $pgjdata['jumlah_anak'])
-                ->setCellValue('M' . $row, $pgjdata['pendidikan_pengajar'])
-                ->setCellValue('N' . $row, $pgjdata['jurusan_pengajar'])
-                ->setCellValue('O' . $row, $pgjdata['tgl_gabung_pengajar'])
-                ->setCellValue('P' . $row, $pgjdata['hp_pengajar'])
-                ->setCellValue('Q' . $row, $pgjdata['email_pengajar'])
-                ->setCellValue('R' . $row, $pgjdata['alamat_pengajar']);
+                ->setCellValue('E' . $row, $pgjdata['kategori_pengajar'])
+                ->setCellValue('F' . $row, $pgjdata['nama_pengajar'])
+                ->setCellValue('G' . $row, $pgjdata['nik_pengajar'])
+                ->setCellValue('H' . $row, $pgjdata['jenkel_pengajar'])
+                ->setCellValue('I' . $row, $pgjdata['tmp_lahir_pengajar'])
+                ->setCellValue('J' . $row, $pgjdata['tgl_lahir_pengajar'])
+                ->setCellValue('K' . $row, $pgjdata['suku_bangsa'])
+                ->setCellValue('L' . $row, $pgjdata['status_nikah'])
+                ->setCellValue('M' . $row, $pgjdata['jumlah_anak'])
+                ->setCellValue('N' . $row, $pgjdata['pendidikan_pengajar'])
+                ->setCellValue('O' . $row, $pgjdata['jurusan_pengajar'])
+                ->setCellValue('P' . $row, $pgjdata['tgl_gabung_pengajar'])
+                ->setCellValue('Q' . $row, $pgjdata['hp_pengajar'])
+                ->setCellValue('R' . $row, $pgjdata['email_pengajar'])
+                ->setCellValue('S' . $row, $pgjdata['alamat_pengajar']);
 
-            $sheet->getStyle('F' . $row)->getNumberFormat()
-            ->setFormatCode(\PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_NUMBER);
+            $sheet->getStyle('G' . $row)->getNumberFormat()
+                ->setFormatCode(\PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_NUMBER);
 
             $row++;
         }
 
         $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
-        $filename =  'Data-Pengajar_Penguji-'. date('Y-m-d-His');
+        $filename =  'Data-Pengajar_Penguji-' . date('Y-m-d-His');
 
         $aktivitas = 'Download Data Pengajar / Penguji via Export Excel, Waktu : ' .  date('Y-m-d-H:i:s');
 
@@ -996,7 +991,7 @@ class Pengajar extends BaseController
 
             if ($ext == 'xls') {
                 $render     = new \PhpOffice\PhpSpreadsheet\Reader\Xls();
-            } else{
+            } else {
                 $render     = new \PhpOffice\PhpSpreadsheet\Reader\Xlsx();
             }
 
@@ -1030,7 +1025,7 @@ class Pengajar extends BaseController
 
                     if ($pengajar_id == 0) {
                         $gagal1 =  ' Karena Pengajar ID Tidak Ditemukan';
-                    } else{
+                    } else {
                         $gagal1 = '';
                     }
 
@@ -1038,8 +1033,7 @@ class Pengajar extends BaseController
 
                     /*--- Log ---*/
                     $this->logging('Admin', 'GAGAL', $aktivitas1);
-                    
-                } elseif($pengajar_id == 1) {
+                } elseif ($pengajar_id == 1) {
 
                     $jumlahsukses++;
 
@@ -1072,6 +1066,5 @@ class Pengajar extends BaseController
             $this->session->setFlashdata('pesan_sukses', "Data Excel Berhasil Import = $jumlahsukses <br> Data Gagal Import = $jumlaherror");
             return redirect()->to('pengajar');
         }
-        
     }
 }

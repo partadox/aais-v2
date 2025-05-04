@@ -35,6 +35,22 @@
                 </div>
 
                 <div class="form-group mb-3">
+                    <label for="" class="form-label">METODE TTM <code>*</code></label>
+                    <select class="form-control btn-square" id="metode_ttm" name="metode_ttm">
+                        <option value="OFFLINE" <?php if (isset($absenTm) & isset($absenTM['metode_ttm']) && $absenTM['metode_ttm'] == 'OFFLINE') { ?> selected <?php } ?>>OFFLINE</option>
+                        <option value="ONLINE" <?php if (isset($absenTm) & isset($absenTM['metode_ttm']) && $absenTM['metode_ttm'] == 'ONLINE') { ?> selected <?php } ?>>ONLINE</option>
+                    </select>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label for="" class="form-label">AKTIVITAS <code>*</code></label>
+                    <select class="form-control btn-square" id="aktivitas" name="aktivitas">
+                        <option value="MENGAJAR NON-REGULER" <?php if (isset($absenTm) & isset($absenTM['aktivitas']) && $absenTM['aktivitas'] == 'MENGAJAR NON-REGULER') { ?> selected <?php } ?>>MENGAJAR NON-REGULER</option>
+                        <option value="MENGAJAR REGULER" <?php if (isset($absenTm) & isset($absenTM['aktivitas']) && $absenTM['aktivitas'] == 'MENGAJAR REGULER') { ?> selected <?php } ?> disabled>MENGAJAR REGULER</option>
+                    </select>
+                </div>
+
+                <div class="form-group mb-3">
                     <label class="form-label">CATATAN</label>
                     <textarea class="form-control" id="note" name="note" rows="4"><?php if (isset($absenTm)) { ?><?= $absenTm['note'] ?> <?php } ?></textarea>
                 </div>

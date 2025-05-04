@@ -26,7 +26,7 @@
                     </div>
                 </div>
                 <div class="form-group row">
-                    <label for="" class="col-sm-4 col-form-label">Tipe Pengajar<code>*</code></label>
+                    <label for="" class="col-sm-4 col-form-label">Role Pengajar<code>*</code></label>
                     <div class="col-sm-8">
                         <select name="tipe_pengajar" id="tipe_pengajar" class="js-example-basic-single">
                             <option value="" disabled selected>--PILIH--</option>
@@ -37,10 +37,23 @@
                     </div>
                 </div>
                 <div class="form-group row">
+                    <label for="" class="col-sm-4 col-form-label">Tipe Pengajar<code>*</code></label>
+                    <div class="col-sm-8">
+                        <select name="kategori_pengajar" id="kategori_pengajar" class="js-example-basic-single">
+                            <option value="" disabled selected>--PILIH--</option>
+                            <option value="PUSAT">PUSAT</option>
+                            <option value="CABANG">CABANG</option>
+                            <option value="SUB-CABANG">SUB-CABANG</option>
+                            <option value="HONORER/LEPAS">HONORER/LEPAS</option>
+                        </select>
+                        <div class="invalid-feedback errorkategori_pengajar"></div>
+                    </div>
+                </div>
+                <div class="form-group row">
                     <label for="" class="col-sm-4 col-form-label">Asal Cabang<code>*</code></label>
                     <div class="col-sm-8">
                         <select name="kantor_cabang" id="kantor_cabang" class="js-example-basic-single">
-                                <option value="" disabled selected>--PILIH--</option>
+                            <option value="" disabled selected>--PILIH--</option>
                             <?php foreach ($kantor as $key => $data) { ?>
                                 <option value="<?= $data['kantor_id'] ?>"><?= $data['nama_kantor'] ?></option>
                             <?php } ?>
@@ -125,25 +138,25 @@
                 <div class="form-group row">
                     <label class="col-sm-4 col-form-label">No. HP<code>*</code></label>
                     <div class="col-sm-8">
-                        <input class="form-control" type="text" id="hp_pengajar" name="hp_pengajar" >
+                        <input class="form-control" type="text" id="hp_pengajar" name="hp_pengajar">
                         <div class="invalid-feedback errorHp_pengajar"></div>
                     </div>
                 </div>
                 <div class="form-group row">
                     <label class="col-sm-4 col-form-label">Email<code>*</code></label>
                     <div class="col-sm-8">
-                        <input class="form-control text-lowercase" type="text" id="email_pengajar" name="email_pengajar" >
+                        <input class="form-control text-lowercase" type="text" id="email_pengajar" name="email_pengajar">
                         <div class="invalid-feedback errorEmail_pengajar"></div>
                     </div>
                 </div>
                 <div class="form-group row">
                     <label class="col-sm-4 col-form-label">Alamat<code>*</code></label>
                     <div class="col-sm-8">
-                        <input class="form-control text-uppercase" type="text" id="alamat_pengajar" name="alamat_pengajar" >
+                        <input class="form-control text-uppercase" type="text" id="alamat_pengajar" name="alamat_pengajar">
                         <div class="invalid-feedback errorAlamat_pengajar"></div>
                     </div>
                 </div>
-                
+
                 <div class="form-group row">
                     <label class="col-sm-4 col-form-label">Tanggal Bergabung<code>*</code></label>
                     <div class="col-sm-8">
@@ -154,7 +167,7 @@
                 <div class="form-group row">
                     <label class="col-sm-4 col-form-label">Username<code>*</code></label>
                     <div class="col-sm-8">
-                        <input class="form-control" type="text" id="username" name="username" >
+                        <input class="form-control" type="text" id="username" name="username">
                         <div class="invalid-feedback errorUsername"></div>
                     </div>
                 </div>
@@ -171,7 +184,7 @@
 <script>
     $(document).ready(function() {
         $('.js-example-basic-single').select2({
-            
+
         });
         $('.formtambah').submit(function(e) {
             e.preventDefault();
@@ -182,6 +195,7 @@
                     nama_pengajar: $('input#nama_pengajar').val(),
                     nik_pengajar: $('input#nik_pengajar').val(),
                     tipe_pengajar: $('select#tipe_pengajar').val(),
+                    kategori_pengajar: $('select#kategori_pengajar').val(),
                     kantor_cabang: $('select#kantor_cabang').val(),
                     jenkel_pengajar: $('select#jenkel_pengajar').val(),
                     tmp_lahir_pengajar: $('input#tmp_lahir_pengajar').val(),
@@ -231,6 +245,14 @@
                         } else {
                             $('#tipe_pengajar').removeClass('is-invalid');
                             $('.errorTipe_pengajar').html('');
+                        }
+
+                        if (response.error.kategori_pengajar) {
+                            $('#kategori_pengajar').addClass('is-invalid');
+                            $('.errorkategori_pengajar').html(response.error.kategori_pengajar);
+                        } else {
+                            $('#kategori_pengajar').removeClass('is-invalid');
+                            $('.errorkategori_pengajar').html('');
                         }
 
                         if (response.error.kantor_cabang) {
@@ -353,7 +375,7 @@
                             showConfirmButton: false,
                             timer: 1500
                         }).then(function() {
-                                window.location = response.sukses.link;
+                            window.location = response.sukses.link;
                         });
                     }
                 }

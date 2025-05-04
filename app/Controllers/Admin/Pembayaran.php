@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Controllers\Admin;
 
 use App\Controllers\BaseController;
@@ -7,12 +8,12 @@ class Pembayaran extends BaseController
 {
     /*--- TRANSAKSI BAYAR ---*/
     //frontend
-	public function index()
-	{
-		$user  = $this->userauth(); // Return Array
+    public function index()
+    {
+        $user  = $this->userauth(); // Return Array
 
         //Angkatan
-		$uri            = new \CodeIgniter\HTTP\URI(current_url(true));
+        $uri            = new \CodeIgniter\HTTP\URI(current_url(true));
         $queryString    = $uri->getQuery();
         $params         = [];
         parse_str($queryString, $params);
@@ -21,14 +22,14 @@ class Pembayaran extends BaseController
             $angkatan           = $params['angkatan'];
             if (ctype_digit($angkatan)) {
                 $angkatan           = $params['angkatan'];
-            }else {
+            } else {
                 $get_angkatan       = $this->konfigurasi->angkatan_kuliah();
                 $angkatan           = $get_angkatan->angkatan_kuliah;
             }
             $payment_filter     = $params['payment'];
             if ($payment_filter == 'all' || $payment_filter == 'tf' || $payment_filter == 'flip' || $payment_filter == 'beasiswa') {
                 $payment_filter = $params['payment'];
-            }else {
+            } else {
                 $payment_filter = 'all';
             }
         } else {
@@ -36,31 +37,31 @@ class Pembayaran extends BaseController
             $angkatan           = $get_angkatan->angkatan_kuliah;
             $payment_filter     = "all";
         }
-		$list_angkatan      = $this->kelas->list_unik_angkatan();
+        $list_angkatan      = $this->kelas->list_unik_angkatan();
 
-		$data = [
-			'title' 				=> 'Semua Pembayaran',
-			'user'  				=> $user,
+        $data = [
+            'title'                 => 'Semua Pembayaran',
+            'user'                  => $user,
             'angkatan'              => $angkatan,
             'list_angkatan'         => $list_angkatan,
             'payment_filter'        => $payment_filter
-		];
-		return view('panel_admin/pembayaran/index', $data);
-	}
+        ];
+        return view('panel_admin/pembayaran/index', $data);
+    }
 
     public function pembayaran_filter()
     {
-        $angkatan_filter = $this->request->getVar('angkatan_filter'); 
-        $payment_filter = $this->request->getVar('payment_filter'); 
+        $angkatan_filter = $this->request->getVar('angkatan_filter');
+        $payment_filter = $this->request->getVar('payment_filter');
 
-        $queryParam = 'angkatan=' . $angkatan_filter. '&payment=' . $payment_filter ;
+        $queryParam = 'angkatan=' . $angkatan_filter . '&payment=' . $payment_filter;
 
-        $newUrl = 'pembayaran?' . $queryParam; 
+        $newUrl = 'pembayaran?' . $queryParam;
 
         return redirect()->to($newUrl);
     }
 
-	public function list()
+    public function list()
     {
         if ($this->request->isAJAX()) {
             $angkatan       = $this->request->getPost('angkatan');
@@ -68,7 +69,7 @@ class Pembayaran extends BaseController
             $data = [
                 'title'         => 'Pembayaran',
                 'angkatan'      => $angkatan,
-                'payment_filter'=> $payment_filter,
+                'payment_filter' => $payment_filter,
             ];
             $msg = [
                 'data' => view('panel_admin/pembayaran/list', $data)
@@ -77,18 +78,18 @@ class Pembayaran extends BaseController
         }
     }
 
-	public function getdata()
+    public function getdata()
     {
-		
-		if ($this->request->isAJAX()) {
-			$user  		= $this->userauth(); // Return Array
+
+        if ($this->request->isAJAX()) {
+            $user          = $this->userauth(); // Return Array
 
             $angkatan       = $this->request->getPost('angkatan');
             $payment_filter = $this->request->getPost('payment_filter');
-            
-			$lists 		= $this->bayar->get_datatables($angkatan, $payment_filter);
-            $data 		= [];
-            $no 		= $this->request->getPost('start');
+
+            $lists         = $this->bayar->get_datatables($angkatan, $payment_filter);
+            $data         = [];
+            $no         = $this->request->getPost('start');
             foreach ($lists as $list) {
                 $no++;
 
@@ -108,7 +109,7 @@ class Pembayaran extends BaseController
 
                 $row2 = "<h6>Nama: $list->nama_peserta</h6><p>NIS:$list->nis </p><p>Kelas: $list->nama_kelas</p>";
 
-                if($list->metode == NULL){
+                if ($list->metode == NULL) {
                     $row3 = "<button type=\"button\" class=\"btn btn-success btn-sm\" disabled>TF Manual</button>";
                     $row7 = "<img class=\"zoom\"  src=\"public/img/transfer/$list->bukti_bayar\" alt=\"\" width=\"150\" align=\"right\" border=\"1\" hspace=\"\" vspace=\"\" style=\"transition: transform .2s;\" onmouseover=\"this.style.transform='scale(2.5)'\" onmouseout=\"this.style.transform='scale(1)'\"/>";
                     $btn_edit = "<button type=\"button\" class=\"btn btn-warning mb-2\" onclick=\"edit('$list->bayar_id')\" ><i class=\"fa fa-edit mr-1\"></i>Edit</button>";
@@ -117,61 +118,63 @@ class Pembayaran extends BaseController
                     if ($list->status_konfirmasi != "Proses") {
                         $btn_hapus = "<button type=\"button\" class=\"btn btn-danger mb-2\" onclick=\"hapus('$list->bayar_id')\" ><i class=\" fa fa-trash mr-1\"></i>Hapus</button>";
                     }
-
-                }
-                elseif($list->metode == 'flip'){
-                    $row3 = "<button type=\"button\" class=\"btn btn-primary btn-sm\" disabled>Flip</button>";}
-                elseif($list->metode == 'beasiswa'){
-                    $row3 = "<button type=\"button\" class=\"btn btn-info btn-sm\" disabled>Beasiswa</button>";};
+                } elseif ($list->metode == 'flip') {
+                    $row3 = "<button type=\"button\" class=\"btn btn-primary btn-sm\" disabled>Flip</button>";
+                } elseif ($list->metode == 'beasiswa') {
+                    $row3 = "<button type=\"button\" class=\"btn btn-info btn-sm\" disabled>Beasiswa</button>";
+                };
 
                 $row4 = "<p>Tgl:  $list->tgl_bayar</p><p>Jam: $list->waktu_bayar</p>";
-                $row5 = "<a>Total: Rp ". rupiah($list->nominal_bayar) ."</a> <br>
-                <a>Daftar: Rp ". rupiah($list->awal_bayar_daftar) ." </a> <br>
-                <a>SPP1: Rp ".rupiah($list->awal_bayar_spp1)."</a> <br>
-                <a>SPP2: Rp ".rupiah($list->awal_bayar_spp2)."</a> <br>
-                <a>SPP3: Rp ".rupiah($list->awal_bayar_spp3)."</a> <br>
-                <a>SPP4: Rp ".rupiah($list->awal_bayar_spp4)."</a><br>
-                <a>Modul: Rp ".rupiah($list->awal_bayar_modul)."</a> <br>
-                <a>Infaq: Rp ".rupiah($list->awal_bayar_infaq)."</a> <br>
-                <a>Lain: Rp ".rupiah($list->awal_bayar_lainnya)."</a> <br>
-                <a>Ket: ".$list->keterangan_bayar ."</a> ";
+                $row5 = "<a>Total: Rp " . rupiah($list->nominal_bayar) . "</a> <br>
+                <a>Daftar: Rp " . rupiah($list->awal_bayar_daftar) . " </a> <br>
+                <a>SPP1: Rp " . rupiah($list->awal_bayar_spp1) . "</a> <br>
+                <a>SPP2: Rp " . rupiah($list->awal_bayar_spp2) . "</a> <br>
+                <a>SPP3: Rp " . rupiah($list->awal_bayar_spp3) . "</a> <br>
+                <a>SPP4: Rp " . rupiah($list->awal_bayar_spp4) . "</a><br>
+                <a>Modul: Rp " . rupiah($list->awal_bayar_modul) . "</a> <br>
+                <a>Infaq: Rp " . rupiah($list->awal_bayar_infaq) . "</a> <br>
+                <a>Lain: Rp " . rupiah($list->awal_bayar_lainnya) . "</a> <br>
+                <a>Ket: " . $list->keterangan_bayar . "</a> ";
 
-                if($list->status_bayar_admin == 'SESUAI BAYAR'){
-                    $row6 = "<button type=\"button\" class=\"btn btn-success btn-sm\" disabled>SESUAI BAYAR</button>"."<p>Ket Adm: <br> $list->keterangan_bayar_admin</p>";}
-                elseif($list->status_bayar_admin == 'KURANG BAYAR'){
-                    $row6 = "<button type=\"button\" class=\"btn btn-warning btn-sm\" disabled>KURANG BAYAR</button>"."<p>Ket Adm: <br> $list->keterangan_bayar_admin</p>";}
-                elseif($list->status_bayar_admin == 'LEBIH BAYAR'){
-                    $row6 = "<button type=\"button\" class=\"btn btn-secondary btn-sm\" disabled>LEBIH BAYAR</button>"."<p>Ket Adm: <br> $list->keterangan_bayar_admin</p>";}
-                elseif($list->status_bayar_admin == 'BELUM BAYAR'){
-                    $row6 = "<button type=\"button\" class=\"btn btn-danger btn-sm\" disabled>BELUM BAYAR</button>"."<p>Ket Adm: <br> $list->keterangan_bayar_admin</p>";}
-                elseif($list->status_bayar_admin == 'BEBAS BIAYA'){
-                    $row6 = "<button type=\"button\" class=\"btn btn-info btn-sm\" disabled>BEBAS BIAYA</button>"."<p>Ket Adm: <br> $list->keterangan_bayar_admin</p>";}
-                elseif($list->status_bayar_admin == 'GAGAL BAYAR'){
-                    $row6 = "<button type=\"button\" class=\"btn btn-danger btn-sm\" disabled>GAGAL BAYAR</button>"."<p>Ket Adm: <br> $list->keterangan_bayar_admin</p>";};
+                if ($list->status_bayar_admin == 'SESUAI BAYAR') {
+                    $row6 = "<button type=\"button\" class=\"btn btn-success btn-sm\" disabled>SESUAI BAYAR</button>" . "<p>Ket Adm: <br> $list->keterangan_bayar_admin</p>";
+                } elseif ($list->status_bayar_admin == 'KURANG BAYAR') {
+                    $row6 = "<button type=\"button\" class=\"btn btn-warning btn-sm\" disabled>KURANG BAYAR</button>" . "<p>Ket Adm: <br> $list->keterangan_bayar_admin</p>";
+                } elseif ($list->status_bayar_admin == 'LEBIH BAYAR') {
+                    $row6 = "<button type=\"button\" class=\"btn btn-secondary btn-sm\" disabled>LEBIH BAYAR</button>" . "<p>Ket Adm: <br> $list->keterangan_bayar_admin</p>";
+                } elseif ($list->status_bayar_admin == 'BELUM BAYAR') {
+                    $row6 = "<button type=\"button\" class=\"btn btn-danger btn-sm\" disabled>BELUM BAYAR</button>" . "<p>Ket Adm: <br> $list->keterangan_bayar_admin</p>";
+                } elseif ($list->status_bayar_admin == 'BEBAS BIAYA') {
+                    $row6 = "<button type=\"button\" class=\"btn btn-info btn-sm\" disabled>BEBAS BIAYA</button>" . "<p>Ket Adm: <br> $list->keterangan_bayar_admin</p>";
+                } elseif ($list->status_bayar_admin == 'GAGAL BAYAR') {
+                    $row6 = "<button type=\"button\" class=\"btn btn-danger btn-sm\" disabled>GAGAL BAYAR</button>" . "<p>Ket Adm: <br> $list->keterangan_bayar_admin</p>";
+                };
 
-                if($list->status_konfirmasi == 'Proses'){
-                    $row8a = "<button type=\"button\" class=\"btn btn-secondary btn-sm\" disabled>Proses</button>";}
-                elseif($list->status_konfirmasi == 'Terkonfirmasi'){
-                    $row8a = "<button type=\"button\" class=\"btn btn-success btn-sm\" disabled>Terkonfirmasi</button>"."<p>Validator: $list->validator</p> ";}
-                elseif($list->status_konfirmasi == 'Tolak'){
-                    $row8a = "<button type=\"button\" class=\"btn btn-danger btn-sm\" disabled>Tolak</button>"."<p>Validator: $list->validator</p>";}
-                elseif($list->status_konfirmasi == 'Gagal'){
-                    $row8a = "<button type=\"button\" class=\"btn btn-danger btn-sm\" disabled>Gagal</button>"."<p>Validator: $list->validator</p>";};
+                if ($list->status_konfirmasi == 'Proses') {
+                    $row8a = "<button type=\"button\" class=\"btn btn-secondary btn-sm\" disabled>Proses</button>";
+                } elseif ($list->status_konfirmasi == 'Terkonfirmasi') {
+                    $row8a = "<button type=\"button\" class=\"btn btn-success btn-sm\" disabled>Terkonfirmasi</button>" . "<p>Validator: $list->validator</p> ";
+                } elseif ($list->status_konfirmasi == 'Tolak') {
+                    $row8a = "<button type=\"button\" class=\"btn btn-danger btn-sm\" disabled>Tolak</button>" . "<p>Validator: $list->validator</p>";
+                } elseif ($list->status_konfirmasi == 'Gagal') {
+                    $row8a = "<button type=\"button\" class=\"btn btn-danger btn-sm\" disabled>Gagal</button>" . "<p>Validator: $list->validator</p>";
+                };
 
-                if($list->tgl_bayar_konfirmasi == '1000-01-01' || $list->tgl_bayar_konfirmasi == NULL){
-                    $row8b = "<p>-</p> ";}
-                else{
-                    $row8b = "<p>Tgl: ".shortdate_indo($list->tgl_bayar_konfirmasi)."</p><p>Jam: $list->waktu_bayar_konfirmasi</p>";};
+                if ($list->tgl_bayar_konfirmasi == '1000-01-01' || $list->tgl_bayar_konfirmasi == NULL) {
+                    $row8b = "<p>-</p> ";
+                } else {
+                    $row8b = "<p>Tgl: " . shortdate_indo($list->tgl_bayar_konfirmasi) . "</p><p>Jam: $list->waktu_bayar_konfirmasi</p>";
+                };
 
-                $row[] = $no.'('.$list->bayar_id .')';
-				$row[] = $row2;
+                $row[] = $no . '(' . $list->bayar_id . ')';
+                $row[] = $row2;
                 $row[] = $row3;
-				$row[] = $row4;
+                $row[] = $row4;
                 $row[] = $row5;
                 $row[] = $row6;
                 $row[] = $row7;
-                $row[] = $row8a."<br>".$row8b;
-                $row[] = $btn_edit."<br>".$btn_hapus."<br>".$btn_bukti."<br>".$btn_bill;
+                $row[] = $row8a . "<br>" . $row8b;
+                $row[] = $btn_edit . "<br>" . $btn_hapus . "<br>" . $btn_bukti . "<br>" . $btn_bill;
 
                 $data[] = $row;
             }
@@ -181,9 +184,7 @@ class Pembayaran extends BaseController
                 "data"            => $data,
             ];
             echo json_encode($output);
-			
-		}
-        
+        }
     }
 
     public function edit()
@@ -205,7 +206,7 @@ class Pembayaran extends BaseController
                 'keterangan_bayar'      => $pembayaran['keterangan_bayar'],
                 'keterangan_bayar'      => $pembayaran['keterangan_bayar'],
                 'status_bayar_admin'    => $pembayaran['status_bayar_admin'],
-                'keterangan_bayar_admin'=> $pembayaran['keterangan_bayar_admin'],
+                'keterangan_bayar_admin' => $pembayaran['keterangan_bayar_admin'],
             ];
             $msg = [
                 'sukses' => view('panel_admin/pembayaran/edit', $data)
@@ -230,8 +231,8 @@ class Pembayaran extends BaseController
     }
 
     public function index_pembayaran_sertifikat()
-	{
-		$user           = $this->userauth(); // Return Array
+    {
+        $user           = $this->userauth(); // Return Array
         $program_bayar  = $this->sertifikat->bayar_sertifikat();
         $data = [
             'title'    => 'Pembayaran Sertifikat',
@@ -239,11 +240,11 @@ class Pembayaran extends BaseController
             'user'     => $user,
         ];
         return view('panel_admin/pembayaran/index_sertifikat', $data);
-	}
+    }
 
     public function index_pembayaran_nonreg()
-	{
-		$user           = $this->userauth(); // Return Array
+    {
+        $user           = $this->userauth(); // Return Array
 
         $uri            = new \CodeIgniter\HTTP\URI(current_url(true));
         $queryString    = $uri->getQuery();
@@ -266,7 +267,7 @@ class Pembayaran extends BaseController
             'user'     => $user,
         ];
         return view('panel_admin/pembayaran/index_nonreg', $data);
-	}
+    }
 
     //Backend
 
@@ -342,7 +343,7 @@ class Pembayaran extends BaseController
                         'awal_bayar_spp2'   => $validation->getError('awal_bayar_spp2'),
                         'awal_bayar_spp3'   => $validation->getError('awal_bayar_spp3'),
                         'awal_bayar_spp4'   => $validation->getError('awal_bayar_spp4'),
-                        'status_bayar_admin'=> $validation->getError('status_bayar_admin'),
+                        'status_bayar_admin' => $validation->getError('status_bayar_admin'),
                     ]
                 ];
             } else {
@@ -378,8 +379,8 @@ class Pembayaran extends BaseController
                 $awal_bayar_spp4         = $awal_bayar_spp4_int;
 
                 $update_data = [
-                    'awal_bayar'            => $awal_bayar ,
-                    'awal_bayar_infaq'      => $awal_bayar_infaq ,
+                    'awal_bayar'            => $awal_bayar,
+                    'awal_bayar_infaq'      => $awal_bayar_infaq,
                     'awal_bayar_daftar'     => $awal_bayar_daftar,
                     'awal_bayar_spp1'       => $awal_bayar_spp1,
                     'awal_bayar_spp2'       => $awal_bayar_spp2,
@@ -388,7 +389,7 @@ class Pembayaran extends BaseController
                     'keterangan_bayar'      => $keterangan_bayar,
                     'status_bayar_admin'    => $status_bayar_admin,
                     'nominal_bayar'         => $awal_bayar,
-                    'keterangan_bayar_admin'=> $keterangan_bayar_admin,
+                    'keterangan_bayar_admin' => $keterangan_bayar_admin,
                 ];
 
                 $bayar_id = $this->request->getVar('bayar_id');
@@ -406,7 +407,7 @@ class Pembayaran extends BaseController
                 $aktivitas = 'Edit Data Pembayaran ID : ' .  $this->request->getVar('bayar_id') . ' : ' . $peserta_nis . ' - ' . $peserta_nama . ' pada kelas ' . $kelas_nama;
 
                 /*--- Log ---*/
-				$this->logging('Admin', 'BERHASIL', $aktivitas);
+                $this->logging('Admin', 'BERHASIL', $aktivitas);
 
                 $msg = [
                     'sukses' => [
@@ -450,12 +451,12 @@ class Pembayaran extends BaseController
             // $namafoto = $filefoto->getName();
             // nama foto baru
             $ext = $filefoto->guessExtension();
-            $namafoto_new = $databayar['bayar_peserta_id'].'-'.date('Ymd-His').'.'.$ext;
+            $namafoto_new = $databayar['bayar_peserta_id'] . '-' . date('Ymd-His') . '.' . $ext;
 
             $data_bayar = [
                 'bukti_bayar'  => $namafoto_new,
             ];
-            
+
             // insert status konfirmasi
             $this->db->transStart();
             $this->bayar->update($bayar_id, $data_bayar);
@@ -463,19 +464,16 @@ class Pembayaran extends BaseController
             unlink('public/img/transfer/' . $bukti_bayar_lama);
             $this->db->transComplete();
 
-            $aktivitas = 'Ubah Bukti Transfer, ID Pembayaran : ' . $bayar_id . ' Atas Nama ' .  $nis_peserta .  ' - '. $nama_peserta;
+            $aktivitas = 'Ubah Bukti Transfer, ID Pembayaran : ' . $bayar_id . ' Atas Nama ' .  $nis_peserta .  ' - ' . $nama_peserta;
 
-            if ($this->db->transStatus() === FALSE)
-            {
+            if ($this->db->transStatus() === FALSE) {
                 /*--- Log ---*/
                 $this->logging('Admin', 'FAIL', $aktivitas);
-            }
-            else
-            {
+            } else {
                 /*--- Log ---*/
                 $this->logging('Admin', 'BERHASIL', $aktivitas);
             }
-            
+
             $this->session->setFlashdata('pesan_sukses', 'Bukti Pembayaran Berhasil Diubah!');
             return redirect()->to('/pembayaran');
         }
@@ -500,7 +498,7 @@ class Pembayaran extends BaseController
             $this->bayar->delete($bayar_id);
 
             /*--- Log ---*/
-			$this->logging('Admin', 'BERHASIL', $aktivitas);
+            $this->logging('Admin', 'BERHASIL', $aktivitas);
 
             $msg = [
                 'sukses' => [
@@ -513,18 +511,18 @@ class Pembayaran extends BaseController
 
     public function export()
     {
-        $angkatan           = $this->request->getVar('angkatan_filter'); 
-        $payment_filter     = $this->request->getVar('payment_filter'); 
+        $angkatan           = $this->request->getVar('angkatan_filter');
+        $payment_filter     = $this->request->getVar('payment_filter');
         $bayar              = $this->bayar->get_datatables($angkatan, $payment_filter);
         $total_row          = count($bayar) + 5;
 
         if ($payment_filter == 'all') {
             $payment = "Semua";
-        }elseif ($payment_filter == 'tf') {
+        } elseif ($payment_filter == 'tf') {
             $payment = "Tranfer Manual";
-        }elseif ($payment_filter == 'flip') {
+        } elseif ($payment_filter == 'flip') {
             $payment = "Payment Gateway Flip";
-        }elseif ($payment_filter == 'beasiswa') {
+        } elseif ($payment_filter == 'beasiswa') {
             $payment = "Beasiswa";
         }
 
@@ -558,7 +556,7 @@ class Pembayaran extends BaseController
                 'endColor' => [
                     'argb' => 'D9D9D9',
                 ],
-            ],        
+            ],
             'borders' => [
                 'allBorders' => [
                     'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
@@ -579,7 +577,7 @@ class Pembayaran extends BaseController
         ];
 
         $judul = "DATA TRANSAKSI PEMBAYARAN ALHAQQ - ALHAQQ ACADEMIC INFORMATION SYSTEM";
-        $tgl   = "ANGKATAN: ".$angkatan." METODE BAYAR: ". $payment . " DIUNDUH PADA " .date("d-m-Y");
+        $tgl   = "ANGKATAN: " . $angkatan . " METODE BAYAR: " . $payment . " DIUNDUH PADA " . date("d-m-Y");
 
         $sheet->setCellValue('A1', $judul);
         $sheet->mergeCells('A1:AC1');
@@ -591,7 +589,7 @@ class Pembayaran extends BaseController
 
         $sheet->getStyle('A4:AC4')->applyFromArray($style_up);
 
-        $sheet->getStyle('A5:AC'.$total_row)->applyFromArray($isi_tengah);
+        $sheet->getStyle('A5:AC' . $total_row)->applyFromArray($isi_tengah);
 
         $spreadsheet->setActiveSheetIndex(0)
             ->setCellValue('A4', 'TRANSAKSI ID')
@@ -641,7 +639,7 @@ class Pembayaran extends BaseController
             } elseif ($data->metode == 'flip') {
                 $bill = $this->bill->find($data->flip_bill_id);
                 $metode = 'Flip';
-                $bill = " (".$bill['bill_bank'].'-'.$bill['bill_va'].")";
+                $bill = " (" . $bill['bill_bank'] . '-' . $bill['bill_va'] . ")";
             } elseif ($data->metode == 'beasiswa') {
                 $metode = 'Beasiswa';
                 $bill = "";
@@ -677,13 +675,13 @@ class Pembayaran extends BaseController
                 ->setCellValue('AA' . $row, $data->awal_bayar_modul)
                 ->setCellValue('AB' . $row, $data->awal_bayar_infaq)
                 ->setCellValue('AC' . $row, $data->awal_bayar_lainnya);
-            
+
 
             $row++;
         }
 
         $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
-        $filename =  'Data-Pembayaran-Angkatan'.$angkatan.'-Metode_'.$payment.'-'. date('Y-m-d-His');
+        $filename =  'Data-Pembayaran-Angkatan' . $angkatan . '-Metode_' . $payment . '-' . date('Y-m-d-His');
 
         $aktivitas =  'Download Data Pembayaran via Export Excel, Waktu : ' .  date('Y-m-d-H:i:s');
 
@@ -700,8 +698,8 @@ class Pembayaran extends BaseController
     /*--- KONFIRMASI BAYAR ---*/
     //frontend
     public function index_konfirmasi()
-	{
-		$user           = $this->userauth(); // Return Array
+    {
+        $user           = $this->userauth(); // Return Array
         $program_bayar  = $this->bayar->bayar_konfirmasi();
         $data = [
             'title'    => 'Konfirmasi Pembayaran',
@@ -709,7 +707,7 @@ class Pembayaran extends BaseController
             'user'     => $user,
         ];
         return view('panel_admin/pembayaran/konfirmasi/index', $data);
-	}
+    }
 
     public function input_konfirmasi()
     {
@@ -746,8 +744,8 @@ class Pembayaran extends BaseController
     }
 
     public function index_konfirmasi_sertifikat()
-	{
-		$user           = $this->userauth(); // Return Array
+    {
+        $user           = $this->userauth(); // Return Array
         $program_bayar  = $this->sertifikat->bayar_konfirmasi_sertifikat();
         $data = [
             'title'    => 'Konfirmasi Pembayaran Sertifikat',
@@ -755,7 +753,7 @@ class Pembayaran extends BaseController
             'user'     => $user,
         ];
         return view('panel_admin/pembayaran/konfirmasi/index_sertifikat', $data);
-	}
+    }
 
     public function input_konfirmasi_sertifikat()
     {
@@ -778,7 +776,7 @@ class Pembayaran extends BaseController
                 $pengajar             = $this->pengajar->find($kelas['pengajar_id']);
 
                 if ($program['ujian_custom_status'] == '1') {
-                    $ucc              = $this->ujian_custom_config->find($program['ujian_custom_id']); 
+                    $ucc              = $this->ujian_custom_config->find($program['ujian_custom_id']);
                     $dataujian        = $this->ujian_custom_value->find_with_ujianid($peserta_kelas['data_ujian']);
                     $ujian            = $dataujian[0];
                 } else {
@@ -817,7 +815,7 @@ class Pembayaran extends BaseController
                 ];
             }
 
-            
+
             $msg = [
                 'sukses' => view('panel_admin/pembayaran/konfirmasi/modal_sertifikat', $data)
             ];
@@ -929,7 +927,7 @@ class Pembayaran extends BaseController
 
                 //Get peserta_kelas_id
                 //$get_peserta_kelas_id   = $this->peserta_kelas->get_peserta_kelas_id($peserta_id, $kelas_id);
-                $program_bayar_data     = $this->bayar->find($bayar_id); 
+                $program_bayar_data     = $this->bayar->find($bayar_id);
                 $peserta_kelas_id       = $program_bayar_data['bayar_peserta_kelas_id'];
 
                 //Data Peserta
@@ -996,7 +994,7 @@ class Pembayaran extends BaseController
                     ];
                     $this->absen_peserta->insert($dataabsen);
                     $absenID = $this->absen_peserta->insertID();
-        
+
                     $dataujian = [
                         'bckp_ujian_peserta'     => $peserta_id,
                         'bckp_ujian_kelas'       => $kelas_id,
@@ -1030,7 +1028,7 @@ class Pembayaran extends BaseController
                     ];
                     $this->peserta_kelas->update($peserta_kelas_id, $PKspp1);
                 }
-    
+
                 if ($bayar_spp2 != '0') {
                     $PKspp2 = [
                         'byr_spp2'            => $bayar_spp2,
@@ -1038,7 +1036,7 @@ class Pembayaran extends BaseController
                     ];
                     $this->peserta_kelas->update($peserta_kelas_id, $PKspp2);
                 }
-    
+
                 if ($bayar_spp3 != '0') {
                     $PKspp3 = [
                         'byr_spp3'            => $bayar_spp3,
@@ -1046,7 +1044,7 @@ class Pembayaran extends BaseController
                     ];
                     $this->peserta_kelas->update($peserta_kelas_id, $PKspp3);
                 }
-    
+
                 if ($bayar_spp4 != '0') {
                     $PKspp4 = [
                         'byr_spp4'            => $bayar_spp4,
@@ -1067,7 +1065,7 @@ class Pembayaran extends BaseController
                     ];
                     $this->bayar_modul->insert($data_modul);
                 }
-    
+
                 if ($bayar_lain != '0') {
                     $data_lain = [
                         'lainnya_bayar_id'        => $bayar_id,
@@ -1077,7 +1075,7 @@ class Pembayaran extends BaseController
                     ];
                     $this->bayar_lain->insert($data_lain);
                 }
-    
+
                 if ($bayar_infaq != '0') {
                     $data_infaq = [
                         'infaq_bayar_id'        => $bayar_id,
@@ -1101,7 +1099,7 @@ class Pembayaran extends BaseController
                 $beasiswa_spp2      = $peserta_kelas['beasiswa_spp2'];
                 $beasiswa_spp3      = $peserta_kelas['beasiswa_spp3'];
                 $beasiswa_spp4      = $peserta_kelas['beasiswa_spp4'];
-    
+
                 $payments = [
                     [$byr_daftar, $beasiswa_daftar],
                     [$byr_spp1, $beasiswa_spp1],
@@ -1109,9 +1107,9 @@ class Pembayaran extends BaseController
                     [$byr_spp3, $beasiswa_spp3],
                     [$byr_spp4, $beasiswa_spp4]
                 ];
-                
+
                 $spp_status = 'LUNAS';
-                
+
                 foreach ($payments as $payment) {
                     if (($payment[0] == '0' && $payment[1] != 1) || ($payment[0] == NULL && $payment[1] != 1)) {
                         $spp_status = 'BELUM LUNAS';
@@ -1123,18 +1121,15 @@ class Pembayaran extends BaseController
                     'spp_status'  => $spp_status,
                 ];
                 $this->peserta_kelas->update($peserta_kelas_id, $PKstatus);
-                
+
 
                 $aktivitas = 'Konfirmasi Transaksi ID ' . $bayar_id . ' - ' . $log_nis_peserta . ' ' . $log_nama_peserta;
 
-                if ($this->db->transStatus() === FALSE)
-                {
+                if ($this->db->transStatus() === FALSE) {
                     $this->db->transRollback();
                     /*--- Log ---*/
                     $this->logging('Admin', 'FAIL', $aktivitas);
-                }
-                else
-                {
+                } else {
                     $this->db->transComplete();
                     /*--- Log ---*/
                     $this->logging('Admin', 'BERHASIL', $aktivitas);
@@ -1143,24 +1138,23 @@ class Pembayaran extends BaseController
                         $onWA = $this->wa_switch->find("admin-konfirmasi-daftar");
                         if ($onWA['status'] == 1) {
                             if ($data_kelas['wag'] != null) {
-                                $wag = "Silahkan bergabung dengan WA Group kelas pada link berikut ".$data_kelas['wag'];
-                            }else {
+                                $wag = "Silahkan bergabung dengan WA Group kelas pada link berikut " . $data_kelas['wag'];
+                            } else {
                                 $wag = "Jika dalam waktu 5 hari kedepan Anda belum di masukkan kedalam Grup WA harap segera menghubungi Admin AAIS di +628998049000";
                             }
-                            $msgWA  = "Konfirmasi Pembayaran Kelas "."\n\nSelamat ".$data_peserta['nama_peserta'].", NIS = ".$data_peserta['nis']."\n\nPembayaran Anda sebesar Rp ".rupiah($nominal_bayar)." atas kelas: ".$data_kelas['nama_kelas']." telah dikonfirmasi oleh Admin pada ".date("d-m-Y H:i")." WITA\n\n$wag"."\n\nKami ucapkan selamat bergabung kedalam keluarga besar LTTQ Al Haqq Balikpapan (Pusat). Semoga Allah SWT memberikan Anda kekuatan, kesabaran dan keistiqomahan untuk mengikuti program di LTTQ Al Haqq Balikpapan (Pusat)"."\n\nAdmin\n+628998049000\nLTTQ Al Haqq Balikpapan (Pusat)".$dataWA['footer'];
-                            $this->sendWA("aaispusat", $data_peserta['hp'],$msgWA);
+                            $msgWA  = "Konfirmasi Pembayaran Kelas " . "\n\nSelamat " . $data_peserta['nama_peserta'] . ", NIS = " . $data_peserta['nis'] . "\n\nPembayaran Anda sebesar Rp " . rupiah($nominal_bayar) . " atas kelas: " . $data_kelas['nama_kelas'] . " telah dikonfirmasi oleh Admin pada " . date("d-m-Y H:i") . " WITA\n\n$wag" . "\n\nKami ucapkan selamat bergabung kedalam keluarga besar LTTQ Al Haqq Balikpapan (Pusat). Semoga Allah SWT memberikan Anda kekuatan, kesabaran dan keistiqomahan untuk mengikuti program di LTTQ Al Haqq Balikpapan (Pusat)" . "\n\nAdmin\n+628998049000\nLTTQ Al Haqq Balikpapan (Pusat)" . $dataWA['footer'];
+                            $this->sendWA("aaispusat", $data_peserta['hp'], $msgWA);
                         }
-                    } elseif($waJenis == "spp"){
+                    } elseif ($waJenis == "spp") {
                         $onWA = $this->wa_switch->find("admin-konfirmasi-spp");
                         if ($onWA['status'] == 1) {
-                            $msgWA  = "Konfirmasi Pembayaran Kelas "."\n\nSelamat ".$data_peserta['nama_peserta'].", NIS = ".$data_peserta['nis']."\n\nPembayaran Anda sebesar Rp ".rupiah($nominal_bayar)." atas kelas: ".$data_kelas['nama_kelas']." telah dikonfirmasi oleh Admin pada ".date("d-m-Y H:i")." WITA"."\n\nKami ucapkan terimakasih atas pembayaran yang telah Anda lakukan."."\n\nAdmin\n+628998049000\nLTTQ Al Haqq Balikpapan (Pusat)".$dataWA['footer'];
-                            $this->sendWA("aaispusat", $data_peserta['hp'],$msgWA);
+                            $msgWA  = "Konfirmasi Pembayaran Kelas " . "\n\nSelamat " . $data_peserta['nama_peserta'] . ", NIS = " . $data_peserta['nis'] . "\n\nPembayaran Anda sebesar Rp " . rupiah($nominal_bayar) . " atas kelas: " . $data_kelas['nama_kelas'] . " telah dikonfirmasi oleh Admin pada " . date("d-m-Y H:i") . " WITA" . "\n\nKami ucapkan terimakasih atas pembayaran yang telah Anda lakukan." . "\n\nAdmin\n+628998049000\nLTTQ Al Haqq Balikpapan (Pusat)" . $dataWA['footer'];
+                            $this->sendWA("aaispusat", $data_peserta['hp'], $msgWA);
                         }
                     }
-                    
                 }
-                
-    
+
+
                 $msg = [
                     'sukses' => [
                         'link' => '/pembayaran/konfirmasi'
@@ -1202,12 +1196,12 @@ class Pembayaran extends BaseController
 
             //Get inputan peserta, kelas, status bayar dan keterangan admin
             $status_bayar_admin     = $this->request->getVar('status_bayar_admin');
-            $keterangan_admin       = str_replace(array("\r", "\n"), ' ',strtoupper($this->request->getVar('keterangan_admin')));
+            $keterangan_admin       = str_replace(array("\r", "\n"), ' ', strtoupper($this->request->getVar('keterangan_admin')));
 
             if ($sertifikat['sertifikat_kelas'] == '1') {
-                $padaWA = " untuk kelulusan Program ".$program['nama_program'];
+                $padaWA = " untuk kelulusan Program " . $program['nama_program'];
             } else {
-                $padaWA = " untuk kelulusan Program ".$program['nama_program']." kelas ".$kelas['nama_kelas'];
+                $padaWA = " untuk kelulusan Program " . $program['nama_program'] . " kelas " . $kelas['nama_kelas'];
             }
 
             $get_nominal_bayar = $this->request->getVar('nominal_bayar');
@@ -1224,11 +1218,11 @@ class Pembayaran extends BaseController
                 'status'                => 1,
                 'keterangan_cetak'      => $keterangan_admin,
                 'sertifikat_tgl'        => date('Y-m-d'),
-                'sertifikat_file'       => $peserta['nis']."-".$program['kode_program']."-". date('YmdHis') . '.pdf',
+                'sertifikat_file'       => $peserta['nis'] . "-" . $program['kode_program'] . "-" . date('YmdHis') . '.pdf',
             ];
 
             $state[]        = $this->sertifikat->update($sertifikat_id, $dataSertifikat);
-            $state[]        = $this->generate_sertifikat($sertifikat_id);  
+            $state[]        = $this->generate_sertifikat($sertifikat_id);
 
             $data_bayar = [
                 'status_bayar'              => 'Lunas',
@@ -1253,29 +1247,26 @@ class Pembayaran extends BaseController
                     'bayar_infaq'           => $bayar_infaq,
                     'data_peserta_id_infaq' => '1'
                 ];
-                $state[]= $this->infaq->insert($data_infaq);
+                $state[] = $this->infaq->insert($data_infaq);
             }
 
-            $aktivitas = 'Konfirmasi Pembayaran Sertifikat '.', Peserta : ' . $peserta['nis'] . ' - ' . $peserta['nama_peserta'] . ' - Program ' . $program['nama_program'];
+            $aktivitas = 'Konfirmasi Pembayaran Sertifikat ' . ', Peserta : ' . $peserta['nis'] . ' - ' . $peserta['nama_peserta'] . ' - Program ' . $program['nama_program'];
 
             $state = json_encode($state);
 
-            if ($this->db->transStatus() === FALSE)
-            {
+            if ($this->db->transStatus() === FALSE) {
                 $this->db->transRollback();
                 /*--- Log ---*/
                 $this->logging('Admin', 'FAIL', $aktivitas);
-            }
-            else
-            {
+            } else {
                 $this->db->transComplete();
                 /*--- Log ---*/
                 $this->logging('Admin', 'BERHASIL', $aktivitas);
                 $onWA = $this->wa_switch->find("admin-konfirmasi-sertifikat");
                 if ($onWA['status'] == 1) {
                     $dataWA = $this->wa->find(1);
-                    $msgWA  = "Konfirmasi Pembayaran Sertifikat "."\n\n ".$peserta['nama_peserta'].", NIS = ".$peserta['nis']."\n\nPembayaran sertifikat Anda sebesar Rp ".rupiah($nominal_bayar)." ".$padaWA." telah dikonfirmasi oleh Admin pada ".date("d-m-Y H:i")." WITA"."\n\nSertifikat dapat dilihat dan didownload di laman AAIS pada fitur Sertifikat.\nBerikut link untuk mengakses laman AAIS: https://aais.alhaqq.com"."\n\nKami ucapkan terimakasih atas pembayaran yang telah Anda lakukan."."\n\nAdmin\n+628998049000\nLTTQ Al Haqq Balikpapan (Pusat)".$dataWA['footer'];
-                    $this->sendWA("aaispusat", $peserta['hp'],$msgWA);
+                    $msgWA  = "Konfirmasi Pembayaran Sertifikat " . "\n\n " . $peserta['nama_peserta'] . ", NIS = " . $peserta['nis'] . "\n\nPembayaran sertifikat Anda sebesar Rp " . rupiah($nominal_bayar) . " " . $padaWA . " telah dikonfirmasi oleh Admin pada " . date("d-m-Y H:i") . " WITA" . "\n\nSertifikat dapat dilihat dan didownload di laman AAIS pada fitur Sertifikat.\nBerikut link untuk mengakses laman AAIS: https://aais.alhaqq.or.id" . "\n\nKami ucapkan terimakasih atas pembayaran yang telah Anda lakukan." . "\n\nAdmin\n+628998049000\nLTTQ Al Haqq Balikpapan (Pusat)" . $dataWA['footer'];
+                    $this->sendWA("aaispusat", $peserta['hp'], $msgWA);
                 }
             }
             $msg = [
@@ -1283,7 +1274,7 @@ class Pembayaran extends BaseController
                     'link' => '/pembayaran/konfirmasi-sertifikat'
                 ]
             ];
-        
+
             echo json_encode($msg);
         }
     }
@@ -1312,7 +1303,7 @@ class Pembayaran extends BaseController
     {
         $user           = $this->userauth(); // Return Array
         //Angkatan
-		$uri            = new \CodeIgniter\HTTP\URI(current_url(true));
+        $uri            = new \CodeIgniter\HTTP\URI(current_url(true));
         $queryString    = $uri->getQuery();
         $params         = [];
         parse_str($queryString, $params);
@@ -1321,7 +1312,7 @@ class Pembayaran extends BaseController
             $angkatan           = $params['angkatan'];
             if (ctype_digit($angkatan)) {
                 $angkatan           = $params['angkatan'];
-            }else {
+            } else {
                 $get_angkatan       = $this->konfigurasi->angkatan_kuliah();
                 $angkatan           = $get_angkatan->angkatan_kuliah;
             }
@@ -1329,7 +1320,7 @@ class Pembayaran extends BaseController
             $get_angkatan       = $this->konfigurasi->angkatan_kuliah();
             $angkatan           = $get_angkatan->angkatan_kuliah;
         }
-        
+
         $peserta_kelas      = $this->peserta_kelas->list_kelas_peserta($angkatan);
         $list_angkatan      = $this->kelas->list_unik_angkatan();
 
@@ -1338,7 +1329,7 @@ class Pembayaran extends BaseController
             'user'          => $user,
             'list_angkatan' => $list_angkatan,
             'peserta_kelas' => $peserta_kelas,
-            'angkatan_pilih'=> $angkatan,
+            'angkatan_pilih' => $angkatan,
         ];
         return view('panel_admin/pembayaran/tambah/spp', $data);
     }
@@ -1367,13 +1358,13 @@ class Pembayaran extends BaseController
         if (count($params) == 1 && array_key_exists('id', $params)) {
             $nk_id  = $params['id'];
             $nk     = $this->nonreg_kelas->find($nk_id);
-            $nk_prog= $this->program->find($nk['nk_program']);
+            $nk_prog = $this->program->find($nk['nk_program']);
             if ($nk['nk_status_daftar'] == 0) {
                 $form = "daftar";
             } elseif ($nk['nk_status_daftar'] == 1) {
                 $form = "extend";
             }
-            
+
             $data = [
                 'title'         => 'Form Pembayaran Program Non Reguler',
                 'user'          => $user,
@@ -1383,7 +1374,7 @@ class Pembayaran extends BaseController
                 'nk'            => $nk,
                 'nk_prog'       => $nk_prog,
             ];
-        }else{
+        } else {
             $data = [
                 'title'         => 'Tambah Pembayaran Program Non Reguler',
                 'user'          => $user,
@@ -1420,11 +1411,11 @@ class Pembayaran extends BaseController
                     'program'           => $this->program->list_program_sertifikat(),
                     'biaya_sertifikat'  => $biaya_sertifikat,
                 ];
-            } elseif($type == 'aais') {
+            } elseif ($type == 'aais') {
                 $pk     = $this->peserta_kelas->find($id);
-                $peserta= $this->peserta->find($pk['data_peserta_id']);
+                $peserta = $this->peserta->find($pk['data_peserta_id']);
                 $kelas  = $this->kelas->find($pk['data_kelas_id']);
-                $program= $this->program->find($kelas['program_id']);
+                $program = $this->program->find($kelas['program_id']);
                 $data = [
                     'title'             => 'Form Pembayaran Sertifikat',
                     'user'              => $user,
@@ -1436,8 +1427,7 @@ class Pembayaran extends BaseController
                     'biaya_sertifikat'  => $biaya_sertifikat,
                 ];
             }
-            
-        }else{
+        } else {
             $data = [
                 'title'         => 'Tambah Pembayaran Sertifikat',
                 'user'          => $user,
@@ -1574,8 +1564,8 @@ class Pembayaran extends BaseController
             //$namafoto = $filefoto->getName();
             // nama foto baru
             $ext = $filefoto->guessExtension();
-            $namafoto_new = $peserta_id.'-'.date('Ymd-His').'.'.$ext;
-            
+            $namafoto_new = $peserta_id . '-' . date('Ymd-His') . '.' . $ext;
+
             //Get nominal (on rupiah curenncy format) input from view
             $get_awal_bayar    = $this->request->getVar('awal_bayar');
             $get_bayar_daftar  = $this->request->getVar('daftar');
@@ -1598,7 +1588,7 @@ class Pembayaran extends BaseController
             $bayar_infaq        = str_replace(str_split('Rp. .'), '', $get_bayar_infaq);
             $bayar_lain         = str_replace(str_split('Rp. .'), '', $get_bayar_lain);
 
-            
+
 
 
             $data_bayar = [
@@ -1667,7 +1657,7 @@ class Pembayaran extends BaseController
             $peserta_kelas_id = $this->peserta_kelas->insertID();
 
             $payments = ['daftar', 'spp1', 'spp2', 'spp3', 'spp4'];
-            foreach($payments as $payment) {
+            foreach ($payments as $payment) {
                 $get_bayar = 'get_bayar_' . $payment;
                 $beasiswa = 'beasiswa_' . $payment;
                 $byr = 'byr_' . $payment;
@@ -1686,7 +1676,7 @@ class Pembayaran extends BaseController
             ///
             $payments = ['daftar', 'spp1', 'spp2', 'spp3', 'spp4'];
 
-            foreach($payments as $payment) {
+            foreach ($payments as $payment) {
                 $get_bayar = 'get_bayar_' . $payment;
                 $beasiswa = 'beasiswa_' . $payment;
                 $awal_bayar = 'awal_bayar_' . $payment;
@@ -1709,7 +1699,7 @@ class Pembayaran extends BaseController
             }
             ///
 
-            $PKbayar= [
+            $PKbayar = [
                 'bayar_peserta_kelas_id' => $peserta_kelas_id,
             ];
             $this->bayar->update($bayar_id, $PKbayar);
@@ -1772,9 +1762,9 @@ class Pembayaran extends BaseController
                 [$byr_spp3, $beasiswa_spp3],
                 [$byr_spp4, $beasiswa_spp4]
             ];
-            
+
             $spp_status = 'LUNAS';
-            
+
             foreach ($payments as $payment) {
                 if (($payment[0] == '0' && $payment[1] != 1) || ($payment[0] == NULL && $payment[1] != 1)) {
                     $spp_status = 'BELUM LUNAS';
@@ -1786,31 +1776,28 @@ class Pembayaran extends BaseController
                 'spp_status'  => $spp_status,
             ];
             $this->peserta_kelas->update($peserta_kelas_id, $PKstatus);
-            
+
             $aktivitas = 'Buat Data Pembayaran Pendaftaran Atas Nama Peserta : ' . $peserta['nis'] . ' - ' . $peserta['nama_peserta'] . ' Pada Kelas ' . $kelas['nama_kelas'];
 
-            if ($this->db->transStatus() === FALSE)
-            {
+            if ($this->db->transStatus() === FALSE) {
                 $this->db->transRollback();
                 /*--- Log ---*/
                 $this->logging('Admin', 'FAIL', $aktivitas);
-            }
-            else
-            {
+            } else {
                 $this->db->transComplete();
                 /*--- Log ---*/
                 $this->logging('Admin', 'BERHASIL', $aktivitas);
                 $onWA = $this->wa_switch->find("admin-input-daftar");
-                    if ($onWA['status'] == 1) {
-                    
+                if ($onWA['status'] == 1) {
+
                     $dataWA = $this->wa->find(1);
                     if ($kelas['wag'] != null) {
-                        $wag = "Silahkan bergabung dengan WA Group kelas pada link berikut ".$kelas['wag'];
-                    }else {
+                        $wag = "Silahkan bergabung dengan WA Group kelas pada link berikut " . $kelas['wag'];
+                    } else {
                         $wag = "Jika dalam waktu 5 hari kedepan Anda belum di masukkan kedalam Grup WA harap segera menghubungi Admin AAIS di +628998049000";
                     }
-                    $msgWA  = "Konfirmasi Pembayaran Kelas "."\n\nSelamat ".$peserta['nama_peserta'].", NIS = ".$peserta['nis']."\n\nPembayaran Anda sebesar Rp ".rupiah($nominal_bayar)." atas kelas: ".$kelas['nama_kelas']." telah diinputkan dan dikonfirmasi oleh Admin pada ".date("d-m-Y H:i")." WITA\n\n$wag"."\n\nKami ucapkan selamat bergabung kedalam keluarga besar LTTQ Al Haqq Balikpapan (Pusat)".". Semoga Allah SWT memberikan Anda kekuatan, kesabaran dan keistiqomahan untuk mengikuti program di LTTQ Al Haqq Balikpapan (Pusat)"."\n\nAdmin\n+628998049000\nLTTQ Al Haqq Balikpapan (Pusat)".$dataWA['footer'];
-                    $this->sendWA("aaispusat", $peserta['hp'],$msgWA);
+                    $msgWA  = "Konfirmasi Pembayaran Kelas " . "\n\nSelamat " . $peserta['nama_peserta'] . ", NIS = " . $peserta['nis'] . "\n\nPembayaran Anda sebesar Rp " . rupiah($nominal_bayar) . " atas kelas: " . $kelas['nama_kelas'] . " telah diinputkan dan dikonfirmasi oleh Admin pada " . date("d-m-Y H:i") . " WITA\n\n$wag" . "\n\nKami ucapkan selamat bergabung kedalam keluarga besar LTTQ Al Haqq Balikpapan (Pusat)" . ". Semoga Allah SWT memberikan Anda kekuatan, kesabaran dan keistiqomahan untuk mengikuti program di LTTQ Al Haqq Balikpapan (Pusat)" . "\n\nAdmin\n+628998049000\nLTTQ Al Haqq Balikpapan (Pusat)" . $dataWA['footer'];
+                    $this->sendWA("aaispusat", $peserta['hp'], $msgWA);
                 }
             }
 
@@ -1924,14 +1911,14 @@ class Pembayaran extends BaseController
             $get_data_kelas         = $this->kelas->find($kelas_id);
             $nama_kelas             = $get_data_kelas['nama_kelas'];
             $peserta                = $this->peserta->find($peserta_id);
-            
+
             // get file foto from input
             $filefoto = $this->request->getFile('foto');
             // ambil nama file
             //$namafoto = $filefoto->getName();
             // nama foto baru
             $ext = $filefoto->guessExtension();
-            $namafoto_new = $peserta_id.'-'.date('Ymd-His').'.'.$ext;
+            $namafoto_new = $peserta_id . '-' . date('Ymd-His') . '.' . $ext;
 
             //Get nominal (on rupiah curenncy format) input from view
             $get_awal_bayar    = $this->request->getVar('awal_bayar');
@@ -2063,9 +2050,9 @@ class Pembayaran extends BaseController
                 [$byr_spp3, $beasiswa_spp3],
                 [$byr_spp4, $beasiswa_spp4]
             ];
-            
+
             $spp_status = 'LUNAS';
-            
+
             foreach ($payments as $payment) {
                 if (($payment[0] == '0' && $payment[1] != 1) || ($payment[0] == NULL && $payment[1] != 1)) {
                     $spp_status = 'BELUM LUNAS';
@@ -2080,22 +2067,19 @@ class Pembayaran extends BaseController
 
             $aktivitas = 'Buat Data Pembayaran SPP Atas Nama Peserta : ' . $nis . ' - ' . $nama_peserta . ' Pada Kelas ' . $nama_kelas;
 
-            if ($this->db->transStatus() === FALSE)
-            {
+            if ($this->db->transStatus() === FALSE) {
                 $this->db->transRollback();
                 /*--- Log ---*/
                 $this->logging('Admin', 'FAIL', $aktivitas);
-            }
-            else
-            {
+            } else {
                 $this->db->transComplete();
                 /*--- Log ---*/
                 $this->logging('Admin', 'BERHASIL', $aktivitas);
                 $onWA = $this->wa_switch->find("admin-input-spp");
                 if ($onWA['status'] == 1) {
                     $dataWA = $this->wa->find(1);
-                    $msgWA  = "Konfirmasi Pembayaran Kelas "."\n\nSelamat ".$peserta['nama_peserta'].", NIS = ".$peserta['nis']."\n\nPembayaran Anda sebesar Rp ".rupiah($nominal_bayar)." atas kelas: ".$kelas['nama_kelas']." telah diinputkan dan dikonfirmasi oleh Admin pada ".date("d-m-Y H:i")."\n\nKami ucapkan terimakasih atas pembayaran yang telah Anda lakukan."."\n\nAdmin\n+628998049000\nLTTQ Al Haqq Balikpapan (Pusat)".$dataWA['footer'];
-                    $this->sendWA("aaispusat", $peserta['hp'],$msgWA);
+                    $msgWA  = "Konfirmasi Pembayaran Kelas " . "\n\nSelamat " . $peserta['nama_peserta'] . ", NIS = " . $peserta['nis'] . "\n\nPembayaran Anda sebesar Rp " . rupiah($nominal_bayar) . " atas kelas: " . $kelas['nama_kelas'] . " telah diinputkan dan dikonfirmasi oleh Admin pada " . date("d-m-Y H:i") . "\n\nKami ucapkan terimakasih atas pembayaran yang telah Anda lakukan." . "\n\nAdmin\n+628998049000\nLTTQ Al Haqq Balikpapan (Pusat)" . $dataWA['footer'];
+                    $this->sendWA("aaispusat", $peserta['hp'], $msgWA);
                 }
             }
 
@@ -2107,154 +2091,151 @@ class Pembayaran extends BaseController
 
     public function save_lain()
     {
-            $validation = \Config\Services::validation();
-            //Get Tgl Today
-            $tgl = date("Y-m-d");
-            $waktu = date("H:i:s");
-            $strwaktu = date("H-i-s");
+        $validation = \Config\Services::validation();
+        //Get Tgl Today
+        $tgl = date("Y-m-d");
+        $waktu = date("H:i:s");
+        $strwaktu = date("H-i-s");
 
-            $valid = $this->validate([
-                'peserta_id' => [
-                    'label' => 'peserta_id',
-                    'rules' => 'required',
-                    'errors' => [
-                        'required' => '{field} tidak boleh kosong',
-                    ]
-                ],
-                'awal_bayar' => [
-                    'label' => 'awal_bayar',
-                    'rules' => 'required',
-                    'errors' => [
-                        'required' => '{field} tidak boleh kosong',
-                    ]
-                ],
-                'infaq' => [
-                    'label' => 'infaq',
-                    'rules' => 'required',
-                    'errors' => [
-                        'required' => '{field} tidak boleh kosong',
-                    ]
-                ],
-                'lain' => [
-                    'label' => 'lain',
-                    'rules' => 'required',
-                    'errors' => [
-                        'required' => '{field} tidak boleh kosong',
-                    ]
-                ],
-                'status_bayar_admin' => [
-                    'label' => 'status_bayar_admin',
-                    'rules' => 'required',
-                    'errors' => [
-                        'required' => '{field} tidak boleh kosong',
-                    ]
-                ],
-                'foto' => [
-                    'rules' => 'uploaded[foto]|mime_in[foto,image/png,image/jpg,image/jpeg]|is_image[foto]',
-                    'errors' => [
-                        'mime_in' => 'Harus gambar!'
-                    ]
+        $valid = $this->validate([
+            'peserta_id' => [
+                'label' => 'peserta_id',
+                'rules' => 'required',
+                'errors' => [
+                    'required' => '{field} tidak boleh kosong',
                 ]
-            ]);
+            ],
+            'awal_bayar' => [
+                'label' => 'awal_bayar',
+                'rules' => 'required',
+                'errors' => [
+                    'required' => '{field} tidak boleh kosong',
+                ]
+            ],
+            'infaq' => [
+                'label' => 'infaq',
+                'rules' => 'required',
+                'errors' => [
+                    'required' => '{field} tidak boleh kosong',
+                ]
+            ],
+            'lain' => [
+                'label' => 'lain',
+                'rules' => 'required',
+                'errors' => [
+                    'required' => '{field} tidak boleh kosong',
+                ]
+            ],
+            'status_bayar_admin' => [
+                'label' => 'status_bayar_admin',
+                'rules' => 'required',
+                'errors' => [
+                    'required' => '{field} tidak boleh kosong',
+                ]
+            ],
+            'foto' => [
+                'rules' => 'uploaded[foto]|mime_in[foto,image/png,image/jpg,image/jpeg]|is_image[foto]',
+                'errors' => [
+                    'mime_in' => 'Harus gambar!'
+                ]
+            ]
+        ]);
 
-            if (!$valid) {
-                $this->session->setFlashdata('pesan_eror', 'ERROR! Seluruh Form Input Bertanda * Wajib Diisi dan Harap Upload Bukti Bayar!');
-                return redirect()->to('/pembayaran/add-lain');
-            } else {
+        if (!$valid) {
+            $this->session->setFlashdata('pesan_eror', 'ERROR! Seluruh Form Input Bertanda * Wajib Diisi dan Harap Upload Bukti Bayar!');
+            return redirect()->to('/pembayaran/add-lain');
+        } else {
 
-                //Admin input
-                $validator          = session()->get('username');
+            //Admin input
+            $validator          = session()->get('username');
 
-                //Get inputan peserta, kelas, status bayar dan keterangan admin
-                $peserta_id         = $this->request->getVar('peserta_id');
-                $status_bayar_admin = $this->request->getVar('status_bayar_admin');
-                $keterangan_admin   = strtoupper($this->request->getVar('keterangan_admin'));
+            //Get inputan peserta, kelas, status bayar dan keterangan admin
+            $peserta_id         = $this->request->getVar('peserta_id');
+            $status_bayar_admin = $this->request->getVar('status_bayar_admin');
+            $keterangan_admin   = strtoupper($this->request->getVar('keterangan_admin'));
 
-                $get_data_peserta       = $this->peserta->find($peserta_id);
-                $nama_peserta           = $get_data_peserta['nama_peserta'];
-                $nis                    = $get_data_peserta['nis'];
-                
-                // get file foto from input
-                $filefoto = $this->request->getFile('foto');
-                $ext = $filefoto->guessExtension();
-                // nama foto baru
-                $namafoto_new = $peserta_id . '-'. date('Ymd-His') .'.'. $ext;
-                
-                //Get nominal (on rupiah curenncy format) input from view
-                 $get_awal_bayar    = $this->request->getVar('awal_bayar');
-                 $get_bayar_infaq   = $this->request->getVar('infaq');
-                 $get_bayar_lain    = $this->request->getVar('lain');
+            $get_data_peserta       = $this->peserta->find($peserta_id);
+            $nama_peserta           = $get_data_peserta['nama_peserta'];
+            $nis                    = $get_data_peserta['nis'];
 
-                 //Get Data from Input view
-                 $awal_bayar         = str_replace(str_split('Rp. .'), '', $get_awal_bayar);
-                 $bayar_infaq        = str_replace(str_split('Rp. .'), '', $get_bayar_infaq);
-                 $bayar_lain         = str_replace(str_split('Rp. .'), '', $get_bayar_lain);
+            // get file foto from input
+            $filefoto = $this->request->getFile('foto');
+            $ext = $filefoto->guessExtension();
+            // nama foto baru
+            $namafoto_new = $peserta_id . '-' . date('Ymd-His') . '.' . $ext;
 
-                $data_bayar = [
-                    'bayar_peserta_id'          => $peserta_id,
-                    'status_bayar'              => 'Lunas',
-                    'status_bayar_admin'        => $status_bayar_admin,
-                    'status_konfirmasi'         => 'Terkonfirmasi',
-                    'awal_bayar'                => $awal_bayar,
-                    'awal_bayar_daftar'         => '0',
-                    'awal_bayar_infaq'          => $bayar_infaq,
-                    'awal_bayar_spp1'           => '0',
-                    'awal_bayar_spp2'           => '0',
-                    'awal_bayar_spp3'           => '0',
-                    'awal_bayar_spp4'           => '0',
-                    'awal_bayar_modul'          => '0',
-                    'awal_bayar_lainnya'        => $bayar_lain,
-                    'bukti_bayar'               => $namafoto_new,
-                    'tgl_bayar'                 => date('Y-m-d'),
-                    'waktu_bayar'               => date('H:i:s'),
-                    'keterangan_bayar_admin'    => $keterangan_admin,
-                    'tgl_bayar_konfirmasi'      => date('Y-m-d'),
-                    'waktu_bayar_konfirmasi'    => date('H:i:s'),
-                    'nominal_bayar'             => $awal_bayar,
-                    'validator'                 => $validator,
+            //Get nominal (on rupiah curenncy format) input from view
+            $get_awal_bayar    = $this->request->getVar('awal_bayar');
+            $get_bayar_infaq   = $this->request->getVar('infaq');
+            $get_bayar_lain    = $this->request->getVar('lain');
+
+            //Get Data from Input view
+            $awal_bayar         = str_replace(str_split('Rp. .'), '', $get_awal_bayar);
+            $bayar_infaq        = str_replace(str_split('Rp. .'), '', $get_bayar_infaq);
+            $bayar_lain         = str_replace(str_split('Rp. .'), '', $get_bayar_lain);
+
+            $data_bayar = [
+                'bayar_peserta_id'          => $peserta_id,
+                'status_bayar'              => 'Lunas',
+                'status_bayar_admin'        => $status_bayar_admin,
+                'status_konfirmasi'         => 'Terkonfirmasi',
+                'awal_bayar'                => $awal_bayar,
+                'awal_bayar_daftar'         => '0',
+                'awal_bayar_infaq'          => $bayar_infaq,
+                'awal_bayar_spp1'           => '0',
+                'awal_bayar_spp2'           => '0',
+                'awal_bayar_spp3'           => '0',
+                'awal_bayar_spp4'           => '0',
+                'awal_bayar_modul'          => '0',
+                'awal_bayar_lainnya'        => $bayar_lain,
+                'bukti_bayar'               => $namafoto_new,
+                'tgl_bayar'                 => date('Y-m-d'),
+                'waktu_bayar'               => date('H:i:s'),
+                'keterangan_bayar_admin'    => $keterangan_admin,
+                'tgl_bayar_konfirmasi'      => date('Y-m-d'),
+                'waktu_bayar_konfirmasi'    => date('H:i:s'),
+                'nominal_bayar'             => $awal_bayar,
+                'validator'                 => $validator,
+            ];
+
+            $this->db->transStart();
+            $this->bayar->insert($data_bayar);
+            $filefoto->move('public/img/transfer/', $namafoto_new);
+            $bayar_id = $this->bayar->insertID();
+
+            if ($bayar_lain != '0') {
+                $data_lain = [
+                    'lainnya_bayar_id'        => $bayar_id,
+                    'bayar_lainnya'           => $bayar_lain,
+                    'data_peserta_id_lain'    => $peserta_id,
+                    'status_bayar_lainnya'    => 'Lunas',
                 ];
-
-                $this->db->transStart();
-                $this->bayar->insert($data_bayar);
-                $filefoto->move('public/img/transfer/', $namafoto_new);
-                $bayar_id = $this->bayar->insertID();
-
-                if ($bayar_lain != '0') {
-                    $data_lain = [
-                        'lainnya_bayar_id'        => $bayar_id,
-                        'bayar_lainnya'           => $bayar_lain,
-                        'data_peserta_id_lain'    => $peserta_id,
-                        'status_bayar_lainnya'    => 'Lunas',
-                    ];
-                    $this->bayar_lain->insert($data_lain);
-                }
-
-                if ($bayar_infaq != '0') {
-                    $data_infaq = [
-                        'infaq_bayar_id'        => $bayar_id,
-                        'bayar_infaq'           => $bayar_infaq,
-                        'data_peserta_id_infaq' => $peserta_id
-                    ];
-                    $this->infaq->insert($data_infaq);
-                }
-                $aktivitas = 'Buat Data Pembayaran Infaq & Lain Atas Nama Peserta : ' . $nis . ' - ' . $nama_peserta;
-
-                if ($this->db->transStatus() === FALSE)
-                {
-                    $this->db->transRollback();
-                    /*--- Log ---*/
-                    $this->logging('Admin', 'FAIL', $aktivitas);
-                }
-                else
-                {
-                    $this->db->transComplete();
-                    /*--- Log ---*/
-                    $this->logging('Admin', 'BERHASIL', $aktivitas);
-                }
-
-                $this->session->setFlashdata('pesan_sukses', 'Pembuatan Pembayaran Infaq & Pembayaran Lain oleh Admin Berhasil.');
-                return redirect()->to('/pembayaran/add-lain');
+                $this->bayar_lain->insert($data_lain);
             }
+
+            if ($bayar_infaq != '0') {
+                $data_infaq = [
+                    'infaq_bayar_id'        => $bayar_id,
+                    'bayar_infaq'           => $bayar_infaq,
+                    'data_peserta_id_infaq' => $peserta_id
+                ];
+                $this->infaq->insert($data_infaq);
+            }
+            $aktivitas = 'Buat Data Pembayaran Infaq & Lain Atas Nama Peserta : ' . $nis . ' - ' . $nama_peserta;
+
+            if ($this->db->transStatus() === FALSE) {
+                $this->db->transRollback();
+                /*--- Log ---*/
+                $this->logging('Admin', 'FAIL', $aktivitas);
+            } else {
+                $this->db->transComplete();
+                /*--- Log ---*/
+                $this->logging('Admin', 'BERHASIL', $aktivitas);
+            }
+
+            $this->session->setFlashdata('pesan_sukses', 'Pembuatan Pembayaran Infaq & Pembayaran Lain oleh Admin Berhasil.');
+            return redirect()->to('/pembayaran/add-lain');
+        }
     }
 
     public function save_nonreg()
@@ -2280,7 +2261,7 @@ class Pembayaran extends BaseController
 
         if (!$valid) {
             $this->session->setFlashdata('pesan_eror', 'ERROR! Harap Upload Bukti Bayar!');
-            return redirect()->to('/pembayaran/add-nonreg?id='.$nk_id);
+            return redirect()->to('/pembayaran/add-nonreg?id=' . $nk_id);
         } else {
 
             $user               = $this->userauth();
@@ -2288,14 +2269,14 @@ class Pembayaran extends BaseController
 
             //Get inputan peserta, kelas, status bayar dan keterangan admin
             $status_bayar_admin = $this->request->getVar('status_bayar_admin');
-            $keterangan_admin   = str_replace(array("\r", "\n"), ' ',strtoupper($this->request->getVar('keterangan_admin')));
+            $keterangan_admin   = str_replace(array("\r", "\n"), ' ', strtoupper($this->request->getVar('keterangan_admin')));
 
             //Get Data Peserta-Kelas, Peserta, dan Data Kelas
             $kelas                  = $this->nonreg_kelas->find($nk_id);
             $program_id             = $kelas['nk_program'];
             $program                = $this->program->find($program_id);
 
-            if ($kelas['nk_status_daftar'] == NULL || $kelas['nk_status_daftar'] == "0" ) {
+            if ($kelas['nk_status_daftar'] == NULL || $kelas['nk_status_daftar'] == "0") {
                 $jenis_bayar = "Pendaftaran";
                 $extend      = NULL;
                 $daftar      = $this->request->getVar('daftar');
@@ -2304,18 +2285,18 @@ class Pembayaran extends BaseController
                 $extend      = 1;
                 $daftar      = 0;
             }
-            
+
             // get file foto from input
             $filefoto = $this->request->getFile('foto');
             // ambil nama file
             //$namafoto = $filefoto->getName();
             // nama foto baru
             $ext            = $filefoto->guessExtension();
-            $namafoto_new   = $kelas['nk_id'].'-'.date('Ymd-His').'.'.$ext;
+            $namafoto_new   = $kelas['nk_id'] . '-' . date('Ymd-His') . '.' . $ext;
 
             //Get nominal (on rupiah curenncy format) input from view
             $total             = $this->request->getVar('total');
-            $spp               = $this->request->getVar('spp')*$this->request->getVar('spp1');
+            $spp               = $this->request->getVar('spp') * $this->request->getVar('spp1');
             $modul             = $this->request->getVar('modul');
             $get_bayar_infaq   = $this->request->getVar('infaq');
             $get_bayar_lain    = $this->request->getVar('lain');
@@ -2353,15 +2334,15 @@ class Pembayaran extends BaseController
             ];
 
             $this->db->transStart();
-            $state[]= $this->bayar->insert($data_bayar);
-            $state[]= $filefoto->move('public/img/transfer/', $namafoto_new);
+            $state[] = $this->bayar->insert($data_bayar);
+            $state[] = $filefoto->move('public/img/transfer/', $namafoto_new);
             $bayar_id = $this->bayar->insertID();
 
             $lastPay = $this->request->getVar('lastPay');
             if ($lastPay == 'on') {
                 $nk_tm_ambil = $kelas['nk_tm_ambil'];
             } else {
-                $nk_tm_ambil =  $kelas['nk_tm_ambil']+$this->request->getVar('spp1');
+                $nk_tm_ambil =  $kelas['nk_tm_ambil'] + $this->request->getVar('spp1');
             }
 
             $daftar = $this->request->getVar('daftar');
@@ -2372,7 +2353,7 @@ class Pembayaran extends BaseController
             }
 
             $tm_bayar    = $this->request->getVar('spp1');
-            $nk_tm_bayar = $kelas['nk_tm_bayar']+$tm_bayar;
+            $nk_tm_bayar = $kelas['nk_tm_bayar'] + $tm_bayar;
             $updateNK = [
                 'nk_tm_ambil'       => $nk_tm_ambil,
                 'nk_status_daftar'  => $pendaftaran,
@@ -2380,7 +2361,7 @@ class Pembayaran extends BaseController
                 'nk_tm_bayar'       => $nk_tm_bayar,
             ];
 
-            $state[]= $this->nonreg_kelas->update($nk_id,$updateNK);
+            $state[] = $this->nonreg_kelas->update($nk_id, $updateNK);
 
             if ($bayar_lain != '0') {
                 $data_lain = [
@@ -2389,7 +2370,7 @@ class Pembayaran extends BaseController
                     'data_peserta_id_lain'    => '1',
                     'status_bayar_lainnya'    => 'Lunas',
                 ];
-                $state[]= $this->bayar_lain->insert($data_lain);
+                $state[] = $this->bayar_lain->insert($data_lain);
             }
 
             if ($bayar_infaq != '0') {
@@ -2398,23 +2379,20 @@ class Pembayaran extends BaseController
                     'bayar_infaq'           => $bayar_infaq,
                     'data_peserta_id_infaq' => '1'
                 ];
-                $state[]= $this->infaq->insert($data_infaq);
+                $state[] = $this->infaq->insert($data_infaq);
             }
 
-            $aktivitas = 'Buat Data Pembayaran '.$jenis_bayar.' Program Non_Reguler, NIK : ' . $nk_id . ' - ' . $kelas['nk_nama'] . ' - PIC = ' . $kelas['nk_pic_name'];
+            $aktivitas = 'Buat Data Pembayaran ' . $jenis_bayar . ' Program Non_Reguler, NIK : ' . $nk_id . ' - ' . $kelas['nk_nama'] . ' - PIC = ' . $kelas['nk_pic_name'];
 
             $state = json_encode($state);
 
-            if ($this->db->transStatus() === FALSE)
-            {
+            if ($this->db->transStatus() === FALSE) {
                 $this->db->transRollback();
                 /*--- Log ---*/
                 $this->logging('Admin', 'FAIL', $aktivitas);
                 $pesan      = 'pesan_eror';
-                $pesanisi   = 'Pembuatan Pembayaran oleh Admin Gagal '. $state;
-            }
-            else
-            {
+                $pesanisi   = 'Pembuatan Pembayaran oleh Admin Gagal ' . $state;
+            } else {
                 $this->db->transComplete();
                 /*--- Log ---*/
                 $this->logging('Admin', 'BERHASIL', $aktivitas);
@@ -2423,7 +2401,7 @@ class Pembayaran extends BaseController
             }
 
 
-            $this->session->setFlashdata($pesan , $pesanisi);
+            $this->session->setFlashdata($pesan, $pesanisi);
             return redirect()->to('/pembayaran/add-nonreg');
         }
     }
@@ -2470,31 +2448,31 @@ class Pembayaran extends BaseController
                 $program_id         = $kelas['program_id'];
                 $program            = $this->program->find($program_id);
                 $sertifikat_kelas   = $peserta_kelas['data_kelas_id'];
-                $padaWA = " untuk kelulusan Program ".$program['nama_program']." kelas ".$kelas['nama_kelas'];
-            } elseif($typeForm == 'nonaais') {
+                $padaWA = " untuk kelulusan Program " . $program['nama_program'] . " kelas " . $kelas['nama_kelas'];
+            } elseif ($typeForm == 'nonaais') {
                 $peserta_id         = $this->request->getVar('peserta_id');
                 $program_id         = $this->request->getVar('program_id');
                 $program            = $this->program->find($program_id);
                 $sertifikat_kelas   = 1;
-                $padaWA = " untuk kelulusan Program ".$program['nama_program'];
+                $padaWA = " untuk kelulusan Program " . $program['nama_program'];
             }
 
             //Get inputan peserta, kelas, status bayar dan keterangan admin
             $status_bayar_admin     = $this->request->getVar('status_bayar_admin');
-            $keterangan_admin       = str_replace(array("\r", "\n"), ' ',strtoupper($this->request->getVar('keterangan_admin')));
+            $keterangan_admin       = str_replace(array("\r", "\n"), ' ', strtoupper($this->request->getVar('keterangan_admin')));
 
             //Get Data Peserta-Kelas, Peserta, dan Data Kelas
             $peserta                = $this->peserta->find($peserta_id);
             $program                = $this->program->find($program_id);
-            
+
             // get file foto from input
             $filefoto           = $this->request->getFile('foto');
             $ext                = $filefoto->guessExtension();
-            $namafoto_new       = $peserta['nis'].'-Sertifikat-'.date('Ymd-His').'.'.$ext;
+            $namafoto_new       = $peserta['nis'] . '-Sertifikat-' . date('Ymd-His') . '.' . $ext;
 
             //Get nominal (on rupiah curenncy format) input from view
             $total              = $this->request->getVar('total');
-            $nominal_bayar_cetak= $this->request->getVar('nominal_bayar_cetak');
+            $nominal_bayar_cetak = $this->request->getVar('nominal_bayar_cetak');
             $get_bayar_infaq    = $this->request->getVar('infaq');
 
             //Get Data from Input view
@@ -2513,7 +2491,7 @@ class Pembayaran extends BaseController
                 'bukti_bayar'               => $namafoto_new,
                 'tgl_bayar'                 => $tgl,
                 'waktu_bayar'               => $waktu,
-                'keterangan_bayar'          => "Bayar Sertifikat#".strtoupper($typeForm)."#".$peserta['nis']." - ".$peserta['nama_peserta']."#".$program['nama_program'],
+                'keterangan_bayar'          => "Bayar Sertifikat#" . strtoupper($typeForm) . "#" . $peserta['nis'] . " - " . $peserta['nama_peserta'] . "#" . $program['nama_program'],
                 'keterangan_bayar_admin'    => $keterangan_admin,
                 'tgl_bayar_konfirmasi'      => $tgl,
                 'waktu_bayar_konfirmasi'    => $waktu,
@@ -2537,13 +2515,13 @@ class Pembayaran extends BaseController
                 'bukti_bayar_cetak'     => $bayar_id,
                 'keterangan_cetak'      => $keterangan_admin,
                 'sertifikat_tgl'        => date('Y-m-d'),
-                'sertifikat_file'       => $peserta['nis']."-".$program['kode_program']."-". date('YmdHis') . '.pdf',
+                'sertifikat_file'       => $peserta['nis'] . "-" . $program['kode_program'] . "-" . date('YmdHis') . '.pdf',
                 'sertifikat_kelas'       => $sertifikat_kelas,
             ];
 
             $state[]        = $this->sertifikat->insert($newSertifikat);
             $sertifikat_id  = $this->sertifikat->insertID();
-            $state[]        = $this->generate_sertifikat($sertifikat_id);           
+            $state[]        = $this->generate_sertifikat($sertifikat_id);
 
             if ($bayar_infaq != '0') {
                 $data_infaq = [
@@ -2551,23 +2529,20 @@ class Pembayaran extends BaseController
                     'bayar_infaq'           => $bayar_infaq,
                     'data_peserta_id_infaq' => '1'
                 ];
-                $state[]= $this->infaq->insert($data_infaq);
+                $state[] = $this->infaq->insert($data_infaq);
             }
 
-            $aktivitas = 'Buat Data Pembayaran Sertifikat '.strtoupper($typeForm).', Peserta : ' . $peserta['nis'] . ' - ' . $peserta['nama_peserta'] . ' - Program ' . $program['nama_program'];
+            $aktivitas = 'Buat Data Pembayaran Sertifikat ' . strtoupper($typeForm) . ', Peserta : ' . $peserta['nis'] . ' - ' . $peserta['nama_peserta'] . ' - Program ' . $program['nama_program'];
 
             $state = json_encode($state);
 
-            if ($this->db->transStatus() === FALSE)
-            {
+            if ($this->db->transStatus() === FALSE) {
                 $this->db->transRollback();
                 /*--- Log ---*/
                 $this->logging('Admin', 'FAIL', $aktivitas);
                 $pesan      = 'pesan_eror';
-                $pesanisi   = 'Pembuatan Pembayaran oleh Admin Gagal '. $state;
-            }
-            else
-            {
+                $pesanisi   = 'Pembuatan Pembayaran oleh Admin Gagal ' . $state;
+            } else {
                 $this->db->transComplete();
                 /*--- Log ---*/
                 $this->logging('Admin', 'BERHASIL', $aktivitas);
@@ -2576,13 +2551,13 @@ class Pembayaran extends BaseController
                 $onWA = $this->wa_switch->find("admin-input-sertifikat");
                 if ($onWA['status'] == 1) {
                     $dataWA = $this->wa->find(1);
-                    $msgWA  = "Konfirmasi Pembayaran Sertifikat "."\n\n ".$peserta['nama_peserta'].", NIS = ".$peserta['nis']."\n\nPembayaran sertifikat Anda sebesar Rp ".rupiah($total)." ".$padaWA." telah diinputkan dan dikonfirmasi oleh Admin pada ".date("d-m-Y H:i")." WITA"."\n\nKami ucapkan terimakasih atas pembayaran yang telah Anda lakukan."."\n\nAdmin\n+628998049000\nLTTQ Al Haqq Balikpapan (Pusat)".$dataWA['footer'];
-                    $this->sendWA("aaispusat", $peserta['hp'],$msgWA);
+                    $msgWA  = "Konfirmasi Pembayaran Sertifikat " . "\n\n " . $peserta['nama_peserta'] . ", NIS = " . $peserta['nis'] . "\n\nPembayaran sertifikat Anda sebesar Rp " . rupiah($total) . " " . $padaWA . " telah diinputkan dan dikonfirmasi oleh Admin pada " . date("d-m-Y H:i") . " WITA" . "\n\nKami ucapkan terimakasih atas pembayaran yang telah Anda lakukan." . "\n\nAdmin\n+628998049000\nLTTQ Al Haqq Balikpapan (Pusat)" . $dataWA['footer'];
+                    $this->sendWA("aaispusat", $peserta['hp'], $msgWA);
                 }
             }
 
 
-            $this->session->setFlashdata($pesan , $pesanisi);
+            $this->session->setFlashdata($pesan, $pesanisi);
             return redirect()->to('/pembayaran/add-sertifikat');
         }
     }
@@ -2593,7 +2568,7 @@ class Pembayaran extends BaseController
     {
         $user           = $this->userauth(); // Return Array
         //Angkatan
-		$uri            = new \CodeIgniter\HTTP\URI(current_url(true));
+        $uri            = new \CodeIgniter\HTTP\URI(current_url(true));
         $queryString    = $uri->getQuery();
         $params         = [];
         parse_str($queryString, $params);
@@ -2602,7 +2577,7 @@ class Pembayaran extends BaseController
             $angkatan           = $params['angkatan'];
             if (ctype_digit($angkatan)) {
                 $angkatan           = $params['angkatan'];
-            }else {
+            } else {
                 $get_angkatan       = $this->konfigurasi->angkatan_kuliah();
                 $angkatan           = $get_angkatan->angkatan_kuliah;
             }
@@ -2610,7 +2585,7 @@ class Pembayaran extends BaseController
             $get_angkatan       = $this->konfigurasi->angkatan_kuliah();
             $angkatan           = $get_angkatan->angkatan_kuliah;
         }
-        
+
         $list_angkatan      = $this->kelas->list_unik_angkatan();
         $list_rekap         = $this->peserta_kelas->admin_rekap_bayar($angkatan);
 
@@ -2619,9 +2594,9 @@ class Pembayaran extends BaseController
             'user'          => $user,
             'list_angkatan' => $list_angkatan,
             'list'          => $list_rekap,
-            'angkatan_pilih'=> $angkatan,
+            'angkatan_pilih' => $angkatan,
         ];
-        
+
         return view('panel_admin/pembayaran/rekap/spp', $data);
     }
 
@@ -2629,7 +2604,7 @@ class Pembayaran extends BaseController
     {
         $user           = $this->userauth(); // Return Array
         //Angkatan
-		$uri            = new \CodeIgniter\HTTP\URI(current_url(true));
+        $uri            = new \CodeIgniter\HTTP\URI(current_url(true));
         $queryString    = $uri->getQuery();
         $params         = [];
         parse_str($queryString, $params);
@@ -2638,27 +2613,26 @@ class Pembayaran extends BaseController
             $peserta_id    = $params['peserta'];
             $kelas_id      = $params['kelas'];
             if (ctype_digit($peserta_id)) {
-                $peserta_id= $params['peserta'];
-            }else {
+                $peserta_id = $params['peserta'];
+            } else {
                 return redirect()->to('/pembayaran/rekap-spp');
             }
 
             if (ctype_digit($kelas_id)) {
                 $kelas_id  = $params['kelas'];
-            }else {
+            } else {
                 return redirect()->to('/pembayaran/rekap-spp');
             }
-
         } else {
             return redirect()->to('/pembayaran/rekap-spp');
         }
-        
+
 
         //Data peserta
         $peserta  = $this->peserta->find($peserta_id);
 
         //Data kelas
-        $kelas    = $this->kelas->find($kelas_id); 
+        $kelas    = $this->kelas->find($kelas_id);
 
         //Query List Bayar
         $list          = $this->bayar->rincian_bayar_peserta($peserta_id, $kelas_id);
@@ -2711,8 +2685,8 @@ class Pembayaran extends BaseController
     }
 
     public function rekap_nonreg()
-	{
-		$user  		= $this->userauth();
+    {
+        $user          = $this->userauth();
 
         $uri            = new \CodeIgniter\HTTP\URI(current_url(true));
         $queryString    = $uri->getQuery();
@@ -2725,17 +2699,17 @@ class Pembayaran extends BaseController
             $tahun       = date('Y');
         }
         $modul          = "list";
-        $title          = "Data Rekap Pembayaran Non Reguler "." Tahun ".$tahun;
+        $title          = "Data Rekap Pembayaran Non Reguler " . " Tahun " . $tahun;
         $list_kelas     = $this->nonreg_kelas->list($tahun);
         if (count($list_kelas) > 0) {
             $highest_tm_ambil = max(array_column($list_kelas, 'nk_tm_ambil'));
         } else {
             $highest_tm_ambil = 0;
         }
-        $lists 		    = $this->nonreg_absen_pengajar->list_rekap($tahun);
-        
+        $lists             = $this->nonreg_absen_pengajar->list_rekap($tahun);
+
         //Process each record in the lists array
-        $processed_lists = array_map(function($record) {
+        $processed_lists = array_map(function ($record) {
             // Loop through each field in the record
             foreach ($record as $key => $value) {
                 // Check if it's a napj field and not null
@@ -2748,121 +2722,121 @@ class Pembayaran extends BaseController
         }, $lists);
         // var_dump($lists);
 
-		$data = [
-			'title'			    => $title,
-			'user'			    => $user,	
+        $data = [
+            'title'                => $title,
+            'user'                => $user,
             'list_tahun'        => $this->nonreg_kelas->list_unik_tahun(),
             'tahun_pilih'       => $tahun,
             'modul'             => $modul,
             'highest_tm_ambil'  => $highest_tm_ambil,
             'processed_lists'   => $processed_lists,
-		];
-		return view('panel_admin/pembayaran/rekap/nonreg', $data);
-	}
+        ];
+        return view('panel_admin/pembayaran/rekap/nonreg', $data);
+    }
 
     //backend
     public function rekap_spp_update()
     {
         if ($this->request->isAJAX()) {
-                //Get nominal (on rupiah curenncy format) input from view
-                $get_byr_daftar             = $this->request->getVar('byr_daftar');
-                $get_byr_modul              = $this->request->getVar('byr_modul');
-                $get_byr_spp1               = $this->request->getVar('byr_spp1');
-                $get_byr_spp2               = $this->request->getVar('byr_spp2');
-                $get_byr_spp3               = $this->request->getVar('byr_spp3');
-                $get_byr_spp4               = $this->request->getVar('byr_spp4');
-                $get_status_aktif_peserta   = $this->request->getVar('status_aktif_peserta');
-                
-                if ($get_byr_spp1 == '') {
-                    $byr_spp1 = NULL;
-                } else {
-                    $byr_spp1     = str_replace(str_split('Rp. .'), '', $get_byr_spp1);
-                }
+            //Get nominal (on rupiah curenncy format) input from view
+            $get_byr_daftar             = $this->request->getVar('byr_daftar');
+            $get_byr_modul              = $this->request->getVar('byr_modul');
+            $get_byr_spp1               = $this->request->getVar('byr_spp1');
+            $get_byr_spp2               = $this->request->getVar('byr_spp2');
+            $get_byr_spp3               = $this->request->getVar('byr_spp3');
+            $get_byr_spp4               = $this->request->getVar('byr_spp4');
+            $get_status_aktif_peserta   = $this->request->getVar('status_aktif_peserta');
 
-                if ($get_byr_spp2 == '') {
-                    $byr_spp2 = NULL;
-                } else {
-                    $byr_spp2     = str_replace(str_split('Rp. .'), '', $get_byr_spp2);
-                }
+            if ($get_byr_spp1 == '') {
+                $byr_spp1 = NULL;
+            } else {
+                $byr_spp1     = str_replace(str_split('Rp. .'), '', $get_byr_spp1);
+            }
 
-                if ($get_byr_spp3 == '') {
-                    $byr_spp3 = NULL;
-                } else {
-                    $byr_spp3     = str_replace(str_split('Rp. .'), '', $get_byr_spp3);
-                }
+            if ($get_byr_spp2 == '') {
+                $byr_spp2 = NULL;
+            } else {
+                $byr_spp2     = str_replace(str_split('Rp. .'), '', $get_byr_spp2);
+            }
 
-                if ($get_byr_spp4 == '') {
-                    $byr_spp4 = NULL;
-                } else {
-                    $byr_spp4     = str_replace(str_split('Rp. .'), '', $get_byr_spp4);
-                }
+            if ($get_byr_spp3 == '') {
+                $byr_spp3 = NULL;
+            } else {
+                $byr_spp3     = str_replace(str_split('Rp. .'), '', $get_byr_spp3);
+            }
 
-                if ($get_byr_modul == '') {
-                    $byr_modul = NULL;
-                } else {
-                    $byr_modul    = str_replace(str_split('Rp. .'), '', $get_byr_modul);
-                }
+            if ($get_byr_spp4 == '') {
+                $byr_spp4 = NULL;
+            } else {
+                $byr_spp4     = str_replace(str_split('Rp. .'), '', $get_byr_spp4);
+            }
 
-                if ($get_status_aktif_peserta == "") {
-                    $status_aktif_peserta = NULL;
-                } else {
-                    $status_aktif_peserta = "OFF";
-                }
-                
+            if ($get_byr_modul == '') {
+                $byr_modul = NULL;
+            } else {
+                $byr_modul    = str_replace(str_split('Rp. .'), '', $get_byr_modul);
+            }
 
-                //Replace Rp. and thousand separtor from input
-                $byr_daftar   = str_replace(str_split('Rp. .'), '', $get_byr_daftar);
+            if ($get_status_aktif_peserta == "") {
+                $status_aktif_peserta = NULL;
+            } else {
+                $status_aktif_peserta = "OFF";
+            }
 
-                $spp_terbayar = $byr_daftar + $byr_modul + $byr_spp1 + $byr_spp2 + $byr_spp3 + $byr_spp4;
-                $total_biaya  = $this->request->getVar('total_biaya');
-                $spp_piutang  = abs($spp_terbayar - $total_biaya);
 
-                if ($spp_piutang == '0') {
-                    $spp_status = "LUNAS";
-                } elseif ($spp_piutang != '0') {
-                    $spp_status = "BELUM LUNAS";
-                }
-                
+            //Replace Rp. and thousand separtor from input
+            $byr_daftar   = str_replace(str_split('Rp. .'), '', $get_byr_daftar);
 
-                $simpandata = [
-                    'spp_status'     => $spp_status,
-                    'byr_daftar'     => $byr_daftar,
-                    'byr_modul'      => $byr_modul,
-                    'byr_spp1'       => $byr_spp1,
-                    'byr_spp2'       => $byr_spp2,
-                    'byr_spp3'       => $byr_spp3,
-                    'byr_spp4'       => $byr_spp4,
-                    'status_aktif_peserta' => $status_aktif_peserta,
-                ];
-                
-                $peserta_kelas_id       = $this->request->getVar('peserta_kelas_id');
-                $find_data              = $this->peserta_kelas->find($peserta_kelas_id);
-                $peserta_id             = $find_data['data_peserta_id'];
-                $peserta_data           = $this->peserta->find($peserta_id);
-                $kelas_id               = $find_data['data_kelas_id'];
-                $kelas_data             = $this->kelas->find($kelas_id);
+            $spp_terbayar = $byr_daftar + $byr_modul + $byr_spp1 + $byr_spp2 + $byr_spp3 + $byr_spp4;
+            $total_biaya  = $this->request->getVar('total_biaya');
+            $spp_piutang  = abs($spp_terbayar - $total_biaya);
 
-                $this->peserta_kelas->update($peserta_kelas_id, $simpandata);
+            if ($spp_piutang == '0') {
+                $spp_status = "LUNAS";
+            } elseif ($spp_piutang != '0') {
+                $spp_status = "BELUM LUNAS";
+            }
 
-                $aktivitas = 'Ubah Data Rekap SPP Peserta  ' . $peserta_data['nis'] . ' ' . $peserta_data['nama_peserta'] . ' Kelas ' . $kelas_data['nama_kelas'];
 
-                /*--- Log ---*/
-                $this->logging('Admin', 'BERHASIL', $aktivitas);
+            $simpandata = [
+                'spp_status'     => $spp_status,
+                'byr_daftar'     => $byr_daftar,
+                'byr_modul'      => $byr_modul,
+                'byr_spp1'       => $byr_spp1,
+                'byr_spp2'       => $byr_spp2,
+                'byr_spp3'       => $byr_spp3,
+                'byr_spp4'       => $byr_spp4,
+                'status_aktif_peserta' => $status_aktif_peserta,
+            ];
 
-                $msg = [
-                    'sukses' => [
-                        'link' => '/pembayaran/rekap-spp'
-                    ]
-                ];
-            
+            $peserta_kelas_id       = $this->request->getVar('peserta_kelas_id');
+            $find_data              = $this->peserta_kelas->find($peserta_kelas_id);
+            $peserta_id             = $find_data['data_peserta_id'];
+            $peserta_data           = $this->peserta->find($peserta_id);
+            $kelas_id               = $find_data['data_kelas_id'];
+            $kelas_data             = $this->kelas->find($kelas_id);
+
+            $this->peserta_kelas->update($peserta_kelas_id, $simpandata);
+
+            $aktivitas = 'Ubah Data Rekap SPP Peserta  ' . $peserta_data['nis'] . ' ' . $peserta_data['nama_peserta'] . ' Kelas ' . $kelas_data['nama_kelas'];
+
+            /*--- Log ---*/
+            $this->logging('Admin', 'BERHASIL', $aktivitas);
+
+            $msg = [
+                'sukses' => [
+                    'link' => '/pembayaran/rekap-spp'
+                ]
+            ];
+
             echo json_encode($msg);
         }
     }
 
     public function rekap_spp_export()
     {
-         //Angkatan
-		$uri            = new \CodeIgniter\HTTP\URI(current_url(true));
+        //Angkatan
+        $uri            = new \CodeIgniter\HTTP\URI(current_url(true));
         $queryString    = $uri->getQuery();
         $params         = [];
         parse_str($queryString, $params);
@@ -2871,7 +2845,7 @@ class Pembayaran extends BaseController
             $angkatan           = $params['angkatan'];
             if (ctype_digit($angkatan)) {
                 $angkatan           = $params['angkatan'];
-            }else {
+            } else {
                 $get_angkatan       = $this->konfigurasi->angkatan_kuliah();
                 $angkatan           = $get_angkatan->angkatan_kuliah;
             }
@@ -2879,10 +2853,10 @@ class Pembayaran extends BaseController
             $get_angkatan       = $this->konfigurasi->angkatan_kuliah();
             $angkatan           = $get_angkatan->angkatan_kuliah;
         }
-        
+
         $rekap_spp         = $this->peserta_kelas->admin_rekap_bayar($angkatan);
         $total_row         = count($rekap_spp) + 5;
-        
+
         $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
         $styleColumn = [
@@ -2913,7 +2887,7 @@ class Pembayaran extends BaseController
                 'endColor' => [
                     'argb' => 'D9D9D9',
                 ],
-            ],        
+            ],
             'borders' => [
                 'allBorders' => [
                     'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
@@ -2934,7 +2908,7 @@ class Pembayaran extends BaseController
         ];
 
         $judul = "DATA REKAP PEMBAYARAN SPP ALHAQQ - ALHAQQ ACADEMIC INFORMATION SYSTEM";
-        $tgl   =  "ANGKATAN " .$angkatan. ' - ' . date("d-m-Y");
+        $tgl   =  "ANGKATAN " . $angkatan . ' - ' . date("d-m-Y");
 
         $sheet->setCellValue('A1', $judul);
         $sheet->mergeCells('A1:Z1');
@@ -2946,7 +2920,7 @@ class Pembayaran extends BaseController
 
         $sheet->getStyle('A4:Z4')->applyFromArray($style_up);
 
-        $sheet->getStyle('A5:Z'.$total_row)->applyFromArray($isi_tengah);
+        $sheet->getStyle('A5:Z' . $total_row)->applyFromArray($isi_tengah);
 
         $spreadsheet->setActiveSheetIndex(0)
             ->setCellValue('A4', 'NIS')
@@ -2988,7 +2962,7 @@ class Pembayaran extends BaseController
         foreach ($rekap_spp as $data) {
 
             $sheet->getStyle('Z' . $row)->getNumberFormat()
-            ->setFormatCode(\PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_NUMBER);
+                ->setFormatCode(\PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_NUMBER);
 
             $totalBiaya = $data['biaya_daftar'] + $data['biaya_program'];
             $totalBayar = $data['byr_daftar'] + $data['byr_spp1'] + $data['byr_spp2'] + $data['byr_spp3'] + $data['byr_spp4'];
@@ -2999,25 +2973,25 @@ class Pembayaran extends BaseController
             $bayar_spp2   = $data['byr_spp2'];
             $bayar_spp3   = $data['byr_spp3'];
             $bayar_spp4   = $data['byr_spp4'];
-        
+
             // Jika beasiswa diterima, anggap sebagai pembayaran
-            if($data['beasiswa_daftar'] == 1) {
+            if ($data['beasiswa_daftar'] == 1) {
                 $totalBeasiswa += $data['biaya_daftar'];
                 $bayar_daftar = "BEASISWA";
             }
-            if($data['beasiswa_spp1'] == 1) {
+            if ($data['beasiswa_spp1'] == 1) {
                 $totalBeasiswa += $data['biaya_bulanan'];
                 $bayar_spp1 = "BEASISWA";
             }
-            if($data['beasiswa_spp2'] == 1) {
+            if ($data['beasiswa_spp2'] == 1) {
                 $totalBeasiswa += $data['biaya_bulanan'];
                 $bayar_spp2 = "BEASISWA";
             }
-            if($data['beasiswa_spp3'] == 1) {
+            if ($data['beasiswa_spp3'] == 1) {
                 $totalBeasiswa += $data['biaya_bulanan'];
                 $bayar_spp3 = "BEASISWA";
             }
-            if($data['beasiswa_spp4'] == 1) {
+            if ($data['beasiswa_spp4'] == 1) {
                 $totalBeasiswa += $data['biaya_bulanan'];
                 $bayar_spp4 = "BEASISWA";
             }
@@ -3026,16 +3000,16 @@ class Pembayaran extends BaseController
 
             if ($totalBiaya - $totalBayar != 0) {
                 $spp_status = "BELUM LUNAS";
-            } elseif ($totalBiaya - $totalBayar == 0){
+            } elseif ($totalBiaya - $totalBayar == 0) {
                 $spp_status = "LUNAS";
             }
 
             $terbayar = $data['byr_daftar'] + $data['byr_spp1'] + $data['byr_spp2'] + $data['byr_spp3'] + $data['byr_spp4'];
-        
 
-            if($data['status_aktif_peserta'] == NULL) {
+
+            if ($data['status_aktif_peserta'] == NULL) {
                 $status_aktif_peserta = 'AKTIF';
-            }else {
+            } else {
                 $status_aktif_peserta = $data['status_aktif_peserta'];
             }
 
@@ -3067,13 +3041,13 @@ class Pembayaran extends BaseController
                 ->setCellValue('X' . $row, $data['dt_bayar_spp4'])
                 ->setCellValue('Y' . $row, $data['dt_konfirmasi_spp4'])
                 ->setCellValue('Z' . $row, $data['hp']);
-                // ->setCellValue('AA' . $row, $data['peserta_kelas_id']);
-            
+            // ->setCellValue('AA' . $row, $data['peserta_kelas_id']);
+
             $row++;
         }
 
         $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
-        $filename =  'Data-Rekap-SPP-Angkatan'.$angkatan.'-'. date('Y-m-d-His');
+        $filename =  'Data-Rekap-SPP-Angkatan' . $angkatan . '-' . date('Y-m-d-His');
 
         $aktivitas =  'Download Data Rekap SPP via Export Excel, Waktu : ' .  date('Y-m-d-H:i:s');
 
@@ -3091,7 +3065,7 @@ class Pembayaran extends BaseController
     {
         $user = $this->userauth();
         //Angkatan
-		$uri            = new \CodeIgniter\HTTP\URI(current_url(true));
+        $uri            = new \CodeIgniter\HTTP\URI(current_url(true));
         $queryString    = $uri->getQuery();
         $params         = [];
         parse_str($queryString, $params);
@@ -3100,7 +3074,7 @@ class Pembayaran extends BaseController
             $angkatan           = $params['angkatan'];
             if (ctype_digit($angkatan)) {
                 $angkatan           = $params['angkatan'];
-            }else {
+            } else {
                 $get_angkatan       = $this->konfigurasi->angkatan_kuliah();
                 $angkatan           = $get_angkatan->angkatan_kuliah;
             }
@@ -3108,39 +3082,39 @@ class Pembayaran extends BaseController
             $get_angkatan       = $this->konfigurasi->angkatan_kuliah();
             $angkatan           = $get_angkatan->angkatan_kuliah;
         }
-        
+
         $list       = $this->peserta_kelas->admin_rekap_bayar($angkatan);
         $checked    = "";
         // var_dump($list);
-        foreach($list as $data){
+        foreach ($list as $data) {
             $peserta_kelas_id =  intval($data['peserta_kelas_id']);
             $totalBiaya = $data['biaya_daftar'] + $data['biaya_program'];
             $totalBayar = $data['byr_daftar'] + $data['byr_spp1'] + $data['byr_spp2'] + $data['byr_spp3'] + $data['byr_spp4'];
             $totalBeasiswa = 0;
 
             // Jika beasiswa diterima, anggap sebagai pembayaran
-            if($data['beasiswa_daftar'] == 1) {
+            if ($data['beasiswa_daftar'] == 1) {
                 $totalBeasiswa += $data['biaya_daftar'];
             }
-            if($data['beasiswa_spp1'] == 1) {
+            if ($data['beasiswa_spp1'] == 1) {
                 $totalBeasiswa += $data['biaya_bulanan'];
             }
-            if($data['beasiswa_spp2'] == 1) {
+            if ($data['beasiswa_spp2'] == 1) {
                 $totalBeasiswa += $data['biaya_bulanan'];
             }
-            if($data['beasiswa_spp3'] == 1) {
+            if ($data['beasiswa_spp3'] == 1) {
                 $totalBeasiswa += $data['biaya_bulanan'];
             }
-            if($data['beasiswa_spp4'] == 1) {
+            if ($data['beasiswa_spp4'] == 1) {
                 $totalBeasiswa += $data['biaya_bulanan'];
             }
             // total pembayaran ditambah dengan total beasiswa
             $totalBayar += $totalBeasiswa;
 
-            if($totalBiaya - $totalBayar != 0) {
+            if ($totalBiaya - $totalBayar != 0) {
                 $spp_status_real = "BELUM LUNAS";
             }
-            if($totalBiaya - $totalBayar == 0) {
+            if ($totalBiaya - $totalBayar == 0) {
                 $spp_status_real = "LUNAS";
             }
 
@@ -3149,11 +3123,11 @@ class Pembayaran extends BaseController
                     'spp_status' => $spp_status_real
                 ];
                 $this->peserta_kelas->update($peserta_kelas_id, $data);
-                
-                $checked = $checked . $peserta_kelas_id.', ';
+
+                $checked = $checked . $peserta_kelas_id . ', ';
             }
         }
-        $aktivitas = "Pembenaran Otomatis Status SPP pada peserta_kelas_id: ".$checked;
+        $aktivitas = "Pembenaran Otomatis Status SPP pada peserta_kelas_id: " . $checked;
         /*--- Log ---*/
         $this->logging('Admin', 'BERHASIL', $aktivitas);
         return redirect()->to('/log-admin');
@@ -3161,7 +3135,7 @@ class Pembayaran extends BaseController
 
     public function rekap_nonreg_export()
     {
-        $user  		= $this->userauth();
+        $user          = $this->userauth();
 
         $uri            = new \CodeIgniter\HTTP\URI(current_url(true));
         $queryString    = $uri->getQuery();
@@ -3179,9 +3153,9 @@ class Pembayaran extends BaseController
         } else {
             $highest_tm_ambil = 0;
         }
-        $lists 		    = $this->nonreg_absen_pengajar->list_rekap($tahun);
+        $lists             = $this->nonreg_absen_pengajar->list_rekap($tahun);
         // Process each record in the lists array
-        $lists = array_map(function($record) {
+        $lists = array_map(function ($record) {
             // Loop through each field in the record
             foreach ($record as $key => $value) {
                 // Check if it's a napj field and not null
@@ -3195,7 +3169,7 @@ class Pembayaran extends BaseController
 
         $total_row  = count($lists) + 5;
         $col_isi    = 0;
-    
+
         $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
         $styleColumn = [
@@ -3226,7 +3200,7 @@ class Pembayaran extends BaseController
                 'endColor' => [
                     'argb' => 'D9D9D9',
                 ],
-            ],        
+            ],
             'borders' => [
                 'allBorders' => [
                     'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
@@ -3247,7 +3221,7 @@ class Pembayaran extends BaseController
         ];
 
         $judul = "DATA REKAP PEMBAYARAN PROGRAM NON-REGULER";
-        $tgl   =  "TAHUN " .$tahun. ' - ' . date("d-m-Y");
+        $tgl   =  "TAHUN " . $tahun . ' - ' . date("d-m-Y");
 
         $sheet->setCellValue('A1', $judul);
         $sheet->mergeCells('A1:J1');
@@ -3270,42 +3244,42 @@ class Pembayaran extends BaseController
             ->setCellValue('I4', 'PERTEMUAN TERBAYAR')
             ->setCellValue('J4', 'PERTEMUAN BELUM TERBAYAR');
 
-            // $lastW      = 'D';
-            // $step       = 0;
+        // $lastW      = 'D';
+        // $step       = 0;
 
-            // for ($i=1; $i <= $highest_tm_ambil; $i++){
-            //     $step       = $step+1;
-            //     $newAsci    = $this->incrementAlphaSequence($lastW, $step);
-            //     $spreadsheet->getActiveSheet()->setCellValue($newAsci.'4', 'TM'.$i);
+        // for ($i=1; $i <= $highest_tm_ambil; $i++){
+        //     $step       = $step+1;
+        //     $newAsci    = $this->incrementAlphaSequence($lastW, $step);
+        //     $spreadsheet->getActiveSheet()->setCellValue($newAsci.'4', 'TM'.$i);
 
-            //     $spreadsheet->getActiveSheet()->getColumnDimension($newAsci)->setAutoSize(true);
-            // }
-            // $sheet->getStyle('A4:'.$newAsci.'4')->applyFromArray($style_up);
-            // $sheet->getStyle('A5:'.$newAsci.$total_row)->applyFromArray($isi_tengah);
+        //     $spreadsheet->getActiveSheet()->getColumnDimension($newAsci)->setAutoSize(true);
+        // }
+        // $sheet->getStyle('A4:'.$newAsci.'4')->applyFromArray($style_up);
+        // $sheet->getStyle('A5:'.$newAsci.$total_row)->applyFromArray($isi_tengah);
 
-            $sheet->getStyle('A4:'.'J4')->applyFromArray($style_up);
-            $sheet->getStyle('A5:'.'J'.$total_row)->applyFromArray($isi_tengah);
-            
-            $columns = range('A', 'K');
-            foreach ($columns as $column) {
-                $spreadsheet->getActiveSheet()->getColumnDimension($column)->setAutoSize(true);
-            }
-    
-            $row = 5;
+        $sheet->getStyle('A4:' . 'J4')->applyFromArray($style_up);
+        $sheet->getStyle('A5:' . 'J' . $total_row)->applyFromArray($isi_tengah);
+
+        $columns = range('A', 'K');
+        foreach ($columns as $column) {
+            $spreadsheet->getActiveSheet()->getColumnDimension($column)->setAutoSize(true);
+        }
+
+        $row = 5;
 
         foreach ($lists as $data) {
 
             $totHadir = 0;
             for ($i = 1; $i <= $highest_tm_ambil; $i++) {
-                if (isset($data['napj'.$i])) {
-                    if ($data['napj'.$i]['tm'] == '1') {
+                if (isset($data['napj' . $i])) {
+                    if ($data['napj' . $i]['tm'] == '1') {
                         $totHadir = $totHadir + 1;
                     }
                 }
             }
 
             $spreadsheet->setActiveSheetIndex(0)
-                
+
                 ->setCellValue('A' . $row, $data['nk_id'])
                 ->setCellValue('B' . $row, $data['nk_nama'])
                 ->setCellValue('C' . $row, $data['nama_pengajar'])
@@ -3317,43 +3291,43 @@ class Pembayaran extends BaseController
                 ->setCellValue('I' . $row, $data['nk_tm_bayar'])
                 ->setCellValue('J' . $row, $totHadir - $data['nk_tm_bayar']);
 
-                // $lastW      = 'D';
-                // $step       = 0;
+            // $lastW      = 'D';
+            // $step       = 0;
 
-                // for ($i=1; $i <= $highest_tm_ambil; $i++){
-                //     $step= $step+1;
-                //     $var = 'napj'.$i;
-                //     $col_letter = $this->incrementAlphaSequence($lastW, $step);
+            // for ($i=1; $i <= $highest_tm_ambil; $i++){
+            //     $step= $step+1;
+            //     $var = 'napj'.$i;
+            //     $col_letter = $this->incrementAlphaSequence($lastW, $step);
 
-                //     if (isset($data[$var]['tm'])) {
-                //         if ($data[$var]['tm'] == '1') {
-                //             $cell = $col_letter.$row;
-                //             $spreadsheet->getActiveSheet()
-                //             ->setCellValue($cell, $data[$var]['dt_tm']);
-                //         } elseif ($data[$var]['tm'] == '0') {
-                //             $cell = $col_letter.$row;
-                //             $spreadsheet->getActiveSheet()
-                //             ->setCellValue($cell, '--');
-                //         } else {
-                //             $cell = $col_letter.$row;
-                //             $spreadsheet->getActiveSheet()
-                //             ->setCellValue($cell, '');
-                //         }
-                //     } else {
-                //         $cell = $col_letter.$row;
-                //             $spreadsheet->getActiveSheet()
-                //             ->setCellValue($cell, '');
-                //     };
-                // }
-            
+            //     if (isset($data[$var]['tm'])) {
+            //         if ($data[$var]['tm'] == '1') {
+            //             $cell = $col_letter.$row;
+            //             $spreadsheet->getActiveSheet()
+            //             ->setCellValue($cell, $data[$var]['dt_tm']);
+            //         } elseif ($data[$var]['tm'] == '0') {
+            //             $cell = $col_letter.$row;
+            //             $spreadsheet->getActiveSheet()
+            //             ->setCellValue($cell, '--');
+            //         } else {
+            //             $cell = $col_letter.$row;
+            //             $spreadsheet->getActiveSheet()
+            //             ->setCellValue($cell, '');
+            //         }
+            //     } else {
+            //         $cell = $col_letter.$row;
+            //             $spreadsheet->getActiveSheet()
+            //             ->setCellValue($cell, '');
+            //     };
+            // }
+
             $row++;
         }
 
         $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xls($spreadsheet);
-        $filename =  'Data-Rekap-Pembayaran-NonReguler-Tahun'.$tahun.'-'. date('Y-m-d-His');
+        $filename =  'Data-Rekap-Pembayaran-NonReguler-Tahun' . $tahun . '-' . date('Y-m-d-His');
 
         /*--- Log ---*/
-        $this->logging('Admin', 'BERHASIL', 'Donwload rekap pembayaran program Non-Reguler Tahun '.$tahun);
+        $this->logging('Admin', 'BERHASIL', 'Donwload rekap pembayaran program Non-Reguler Tahun ' . $tahun);
 
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         header('Content-Disposition: attachment;filename=' . $filename . '.xls');
@@ -3369,7 +3343,7 @@ class Pembayaran extends BaseController
         $user = $this->userauth();
         $data = [
             'title'  => 'Rekap Data Pembayaran Infaq',
-            'user'   => $user,   
+            'user'   => $user,
             'infaq'  => $this->infaq->list(),
         ];
         return view('panel_admin/pembayaran/rekap/infaq', $data);
@@ -3413,7 +3387,7 @@ class Pembayaran extends BaseController
                 'endColor' => [
                     'argb' => 'D9D9D9',
                 ],
-            ],        
+            ],
             'borders' => [
                 'allBorders' => [
                     'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
@@ -3446,7 +3420,7 @@ class Pembayaran extends BaseController
 
         $sheet->getStyle('A4:I4')->applyFromArray($style_up);
 
-        $sheet->getStyle('A5:I'.$total_row)->applyFromArray($isi_tengah);
+        $sheet->getStyle('A5:I' . $total_row)->applyFromArray($isi_tengah);
 
         $spreadsheet->setActiveSheetIndex(0)
             ->setCellValue('A4', 'TRANSAKSI ID')
@@ -3458,7 +3432,7 @@ class Pembayaran extends BaseController
             ->setCellValue('G4', 'VALIDATOR')
             ->setCellValue('H4', 'KET. PESERTA')
             ->setCellValue('I4', 'KET. ADMIN');
-        
+
         $columns = range('A', 'I');
         foreach ($columns as $column) {
             $spreadsheet->getActiveSheet()->getColumnDimension($column)->setAutoSize(true);
@@ -3481,7 +3455,7 @@ class Pembayaran extends BaseController
         }
 
         $writer     = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
-        $filename   =  'Data-Rekap-Infaq-'. date('Y-m-d-His');
+        $filename   =  'Data-Rekap-Infaq-' . date('Y-m-d-His');
 
         $aktivitas  = 'Download Data Rekap Infaq via Export Excel, Waktu : ' .  date('Y-m-d-H:i:s');
 
@@ -3564,7 +3538,7 @@ class Pembayaran extends BaseController
                 'endColor' => [
                     'argb' => 'D9D9D9',
                 ],
-            ],        
+            ],
             'borders' => [
                 'allBorders' => [
                     'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
@@ -3597,7 +3571,7 @@ class Pembayaran extends BaseController
 
         $sheet->getStyle('A4:I4')->applyFromArray($style_up);
 
-        $sheet->getStyle('A5:I'.$total_row)->applyFromArray($isi_tengah);
+        $sheet->getStyle('A5:I' . $total_row)->applyFromArray($isi_tengah);
 
         $spreadsheet->setActiveSheetIndex(0)
             ->setCellValue('A4', 'TRANSAKSI ID')
@@ -3609,11 +3583,11 @@ class Pembayaran extends BaseController
             ->setCellValue('G4', 'VALIDATOR')
             ->setCellValue('H4', 'KET. PESERTA')
             ->setCellValue('I4', 'KET. ADMIN');
-        
-            $columns = range('A', 'I');
-            foreach ($columns as $column) {
-                $spreadsheet->getActiveSheet()->getColumnDimension($column)->setAutoSize(true);
-            }
+
+        $columns = range('A', 'I');
+        foreach ($columns as $column) {
+            $spreadsheet->getActiveSheet()->getColumnDimension($column)->setAutoSize(true);
+        }
 
         $row = 5;
 
@@ -3633,7 +3607,7 @@ class Pembayaran extends BaseController
         }
 
         $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
-        $filename =  'Data-Rekap-Pembyaran-Lain-'. date('Y-m-d-His');
+        $filename =  'Data-Rekap-Pembyaran-Lain-' . date('Y-m-d-His');
 
         $aktivitas = 'Download Data Rekap Pemby. Lain via Export Excel, Waktu : ' .  date('Y-m-d-H:i:s');
 
@@ -3650,36 +3624,36 @@ class Pembayaran extends BaseController
     public function rekap_lain_update()
     {
         if ($this->request->isAJAX()) {
-                $get             = $this->request->getVar('bayar_lainnya');
-                $bayar_lainnya   = str_replace(str_split('Rp. .'), '', $get);
-                $update_data = [
-                    'bayar_lainnya'  => $bayar_lainnya,
-                ];
+            $get             = $this->request->getVar('bayar_lainnya');
+            $bayar_lainnya   = str_replace(str_split('Rp. .'), '', $get);
+            $update_data = [
+                'bayar_lainnya'  => $bayar_lainnya,
+            ];
 
-                $biaya_lainnya_id = $this->request->getVar('biaya_lainnya_id');
-                $this->bayar_lain->update($biaya_lainnya_id, $update_data);
+            $biaya_lainnya_id = $this->request->getVar('biaya_lainnya_id');
+            $this->bayar_lain->update($biaya_lainnya_id, $update_data);
 
-                $find_data              = $this->bayar_lain->find($biaya_lainnya_id);
-                $transaksi_id           = $find_data['lainnya_bayar_id'];
+            $find_data              = $this->bayar_lain->find($biaya_lainnya_id);
+            $transaksi_id           = $find_data['lainnya_bayar_id'];
 
-                $bayar_data             = $this->bayar->find($transaksi_id);
-                $peserta_id             = $bayar_data['bayar_peserta_id'];
+            $bayar_data             = $this->bayar->find($transaksi_id);
+            $peserta_id             = $bayar_data['bayar_peserta_id'];
 
-                $peserta_data           = $this->peserta->find($peserta_id);
-                $nis                    = $peserta_data['nis'];
-                $nama                   = $peserta_data['nama_peserta'];
+            $peserta_data           = $this->peserta->find($peserta_id);
+            $nis                    = $peserta_data['nis'];
+            $nama                   = $peserta_data['nama_peserta'];
 
-                $aktivitas = 'Ubah Pembayaran Lain, Transaksi ID: ' .  $transaksi_id . ' Peserta ' . $nis . ' - ' . $nama;
+            $aktivitas = 'Ubah Pembayaran Lain, Transaksi ID: ' .  $transaksi_id . ' Peserta ' . $nis . ' - ' . $nama;
 
-                /*--- Log ---*/
-                $this->logging('Admin', 'BERHASIL', $aktivitas);
+            /*--- Log ---*/
+            $this->logging('Admin', 'BERHASIL', $aktivitas);
 
-                $msg = [
-                    'sukses' => [
-                        'link' => '/pembayaran/rekap-lain'
-                    ]
-                ];
-            
+            $msg = [
+                'sukses' => [
+                    'link' => '/pembayaran/rekap-lain'
+                ]
+            ];
+
             echo json_encode($msg);
         }
     }

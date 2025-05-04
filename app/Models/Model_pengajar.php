@@ -8,7 +8,7 @@ class Model_pengajar extends Model
 {
     protected $table      = 'pengajar';
     protected $primaryKey = 'pengajar_id';
-    protected $allowedFields = ['user_id', 'asal_kantor', 'tipe_pengajar','nama_pengajar', 'nik_pengajar', 'jenkel_pengajar', 'tmp_lahir_pengajar', 'tgl_lahir_pengajar', 'suku_bangsa', 'status_nikah', 'jumlah_anak', 'pendidikan_pengajar', 'jurusan_pengajar', 'tgl_gabung_pengajar', 'hp_pengajar', 'email_pengajar', 'alamat_pengajar', 'foto_pengajar'];
+    protected $allowedFields = ['user_id', 'asal_kantor', 'tipe_pengajar', 'nama_pengajar', 'nik_pengajar', 'jenkel_pengajar', 'tmp_lahir_pengajar', 'tgl_lahir_pengajar', 'suku_bangsa', 'status_nikah', 'jumlah_anak', 'pendidikan_pengajar', 'jurusan_pengajar', 'tgl_gabung_pengajar', 'hp_pengajar', 'email_pengajar', 'alamat_pengajar', 'foto_pengajar', 'kategori_pengajar'];
 
     //backend
     public function list()
@@ -35,7 +35,7 @@ class Model_pengajar extends Model
     public function jml_pengajar()
     {
         return $this->table('pengajar')
-        ->countAllResults();
+            ->countAllResults();
     }
 
     //Cek data duplikat - import file excel pada data peserta

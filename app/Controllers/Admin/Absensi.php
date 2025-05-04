@@ -1980,11 +1980,12 @@ class Absensi extends BaseController
 
         $spreadsheet->setActiveSheetIndex(0)
             ->setCellValue('A4', 'NAMA')
-            ->setCellValue('B4', 'KELAS')
-            ->setCellValue('C4', 'ANGKATAN KELAS')
-            ->setCellValue('D4', 'TOTAL HADIR');
+            ->setCellValue('B4', 'TIPE')
+            ->setCellValue('C4', 'KELAS')
+            ->setCellValue('D4', 'ANGKATAN KELAS')
+            ->setCellValue('E4', 'TOTAL HADIR');
 
-        $lastW      = 'D';
+        $lastW      = 'E';
         $step       = 0;
         // $newAsci = 'D0';
 
@@ -1995,10 +1996,17 @@ class Absensi extends BaseController
 
             $spreadsheet->getActiveSheet()->getColumnDimension($newAsci)->setAutoSize(true);
         }
+        for ($i = 1; $i <= $highest_tm_ambil; $i++) {
+            $step       = $step + 1;
+            $newAsci    = $this->incrementAlphaSequence($lastW, $step);
+            $spreadsheet->getActiveSheet()->setCellValue($newAsci . '4', 'ISI ABS TM-' . $i);
+
+            $spreadsheet->getActiveSheet()->getColumnDimension($newAsci)->setAutoSize(true);
+        }
         $sheet->getStyle('A4:' . $newAsci . '4')->applyFromArray($style_up);
         $sheet->getStyle('A5:' . $newAsci . $total_row)->applyFromArray($isi_tengah);
 
-        $columns = range('A', 'D');
+        $columns = range('A', 'E');
         foreach ($columns as $column) {
             $spreadsheet->getActiveSheet()->getColumnDimension($column)->setAutoSize(true);
         }
@@ -2019,11 +2027,12 @@ class Absensi extends BaseController
             $spreadsheet->setActiveSheetIndex(0)
 
                 ->setCellValue('A' . $row, $data['nama_pengajar'])
-                ->setCellValue('B' . $row, $data['nk_nama'])
-                ->setCellValue('C' . $row, $data['nk_angkatan'])
-                ->setCellValue('D' . $row, $totHadir);
+                ->setCellValue('B' . $row, $data['kategori_pengajar'])
+                ->setCellValue('C' . $row, $data['nk_nama'])
+                ->setCellValue('D' . $row, $data['nk_angkatan'])
+                ->setCellValue('E' . $row, $totHadir);
 
-            $lastW      = 'D';
+            $lastW      = 'E';
             $step       = 0;
 
             for ($i = 1; $i <= $highest_tm_ambil; $i++) {
@@ -2034,8 +2043,13 @@ class Absensi extends BaseController
                 if (isset($data[$var]['tm'])) {
                     if ($data[$var]['tm'] == '1') {
                         $cell = $col_letter . $row;
-                        $spreadsheet->getActiveSheet()
-                            ->setCellValue($cell, $data[$var]['dt_tm']);
+                        if (isset($data[$var]['metode_ttm'])) {
+                            $spreadsheet->getActiveSheet()
+                                ->setCellValue($cell, $data[$var]['dt_tm'] . ' ' . $data[$var]['metode_ttm']);
+                        } else {
+                            $spreadsheet->getActiveSheet()
+                                ->setCellValue($cell, $data[$var]['dt_tm']);
+                        }
                     } elseif ($data[$var]['tm'] == '0') {
                         $cell = $col_letter . $row;
                         $spreadsheet->getActiveSheet()
@@ -2045,6 +2059,21 @@ class Absensi extends BaseController
                         $spreadsheet->getActiveSheet()
                             ->setCellValue($cell, '');
                     }
+                } else {
+                    $cell = $col_letter . $row;
+                    $spreadsheet->getActiveSheet()
+                        ->setCellValue($cell, '');
+                };
+            }
+            for ($ii = 1; $ii <= $highest_tm_ambil; $ii++) {
+                $step = $step + 1;
+                $var = 'napj' . $ii;
+                $col_letter = $this->incrementAlphaSequence($lastW, $step);
+
+                if (isset($data[$var]['tm'])) {
+                    $cell = $col_letter . $row;
+                    $spreadsheet->getActiveSheet()
+                        ->setCellValue($cell, $data[$var]['dt_isi']);
                 } else {
                     $cell = $col_letter . $row;
                     $spreadsheet->getActiveSheet()
