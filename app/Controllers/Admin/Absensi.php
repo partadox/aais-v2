@@ -1996,6 +1996,15 @@ class Absensi extends BaseController
 
             $spreadsheet->getActiveSheet()->getColumnDimension($newAsci)->setAutoSize(true);
         }
+        $step       = $step + 1;
+        for ($i = 1; $i <= $highest_tm_ambil; $i++) {
+            $step       = $step + 1;
+            $newAsci    = $this->incrementAlphaSequence($lastW, $step);
+            $spreadsheet->getActiveSheet()->setCellValue($newAsci . '4', 'MTD TTM' . $i);
+
+            $spreadsheet->getActiveSheet()->getColumnDimension($newAsci)->setAutoSize(true);
+        }
+        $step       = $step + 1;
         for ($i = 1; $i <= $highest_tm_ambil; $i++) {
             $step       = $step + 1;
             $newAsci    = $this->incrementAlphaSequence($lastW, $step);
@@ -2043,13 +2052,8 @@ class Absensi extends BaseController
                 if (isset($data[$var]['tm'])) {
                     if ($data[$var]['tm'] == '1') {
                         $cell = $col_letter . $row;
-                        if (isset($data[$var]['metode_ttm'])) {
-                            $spreadsheet->getActiveSheet()
-                                ->setCellValue($cell, $data[$var]['dt_tm'] . ' ' . $data[$var]['metode_ttm']);
-                        } else {
-                            $spreadsheet->getActiveSheet()
-                                ->setCellValue($cell, $data[$var]['dt_tm']);
-                        }
+                        $spreadsheet->getActiveSheet()
+                            ->setCellValue($cell, $data[$var]['dt_tm']);
                     } elseif ($data[$var]['tm'] == '0') {
                         $cell = $col_letter . $row;
                         $spreadsheet->getActiveSheet()
@@ -2065,6 +2069,25 @@ class Absensi extends BaseController
                         ->setCellValue($cell, '');
                 };
             }
+            $step       = $step + 1;
+            for ($ii = 1; $ii <= $highest_tm_ambil; $ii++) {
+                $step = $step + 1;
+                $var = 'napj' . $ii;
+                $col_letter = $this->incrementAlphaSequence($lastW, $step);
+
+                if (isset($data[$var]['tm'])) {
+                    $cell = $col_letter . $row;
+                    if (isset($data[$var]['metode_ttm'])) {
+                        $spreadsheet->getActiveSheet()
+                            ->setCellValue($cell, $data[$var]['metode_ttm']);
+                    }
+                } else {
+                    $cell = $col_letter . $row;
+                    $spreadsheet->getActiveSheet()
+                        ->setCellValue($cell, '');
+                };
+            }
+            $step       = $step + 1;
             for ($ii = 1; $ii <= $highest_tm_ambil; $ii++) {
                 $step = $step + 1;
                 $var = 'napj' . $ii;
