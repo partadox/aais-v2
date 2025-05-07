@@ -42,13 +42,13 @@
                     </select>
                 </div>
 
-                <div class="form-group mb-3">
+                <!-- <div class="form-group mb-3">
                     <label for="" class="form-label">AKTIVITAS <code>*</code></label>
                     <select class="form-control btn-square" id="aktivitas" name="aktivitas">
                         <option value="MENGAJAR NON-REGULER" <?php if (isset($absenTm) & isset($absenTM['aktivitas']) && $absenTM['aktivitas'] == 'MENGAJAR NON-REGULER') { ?> selected <?php } ?>>MENGAJAR NON-REGULER</option>
                         <option value="MENGAJAR REGULER" <?php if (isset($absenTm) & isset($absenTM['aktivitas']) && $absenTM['aktivitas'] == 'MENGAJAR REGULER') { ?> selected <?php } ?> disabled>MENGAJAR REGULER</option>
                     </select>
-                </div>
+                </div> -->
 
                 <div class="form-group mb-3">
                     <label class="form-label">CATATAN</label>

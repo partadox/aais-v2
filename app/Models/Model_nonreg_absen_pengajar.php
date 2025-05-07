@@ -65,7 +65,7 @@ class Model_nonreg_absen_pengajar extends Model
     public function list_rekap($tahun)
     {
         return $this->table('nonreg_absen_pengajar')
-            ->select('nonreg_absen_pengajar.*, pengajar.nama_pengajar, pengajar.kategori_pengajar, nonreg_kelas.*, program.biaya_bulanan')
+            ->select('nonreg_absen_pengajar.*, pengajar.nama_pengajar, pengajar.kategori_pengajar, nonreg_kelas.*, program.biaya_bulanan, program.nama_program')
             ->where('nk_tahun', $tahun)
             ->join('nonreg_pengajar', 'nonreg_pengajar.npj_id = nonreg_absen_pengajar.napj_pengajar')
             ->join('nonreg_kelas', 'nonreg_kelas.nk_id = nonreg_pengajar.npj_kelas')

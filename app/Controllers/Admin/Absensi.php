@@ -1982,10 +1982,11 @@ class Absensi extends BaseController
             ->setCellValue('A4', 'NAMA')
             ->setCellValue('B4', 'TIPE')
             ->setCellValue('C4', 'KELAS')
-            ->setCellValue('D4', 'ANGKATAN KELAS')
-            ->setCellValue('E4', 'TOTAL HADIR');
+            ->setCellValue('D4', 'PROGRAM KELAS')
+            ->setCellValue('E4', 'ANGKATAN KELAS')
+            ->setCellValue('F4', 'TOTAL HADIR');
 
-        $lastW      = 'E';
+        $lastW      = 'F';
         $step       = 0;
         // $newAsci = 'D0';
 
@@ -2015,7 +2016,7 @@ class Absensi extends BaseController
         $sheet->getStyle('A4:' . $newAsci . '4')->applyFromArray($style_up);
         $sheet->getStyle('A5:' . $newAsci . $total_row)->applyFromArray($isi_tengah);
 
-        $columns = range('A', 'E');
+        $columns = range('A', 'F');
         foreach ($columns as $column) {
             $spreadsheet->getActiveSheet()->getColumnDimension($column)->setAutoSize(true);
         }
@@ -2038,10 +2039,11 @@ class Absensi extends BaseController
                 ->setCellValue('A' . $row, $data['nama_pengajar'])
                 ->setCellValue('B' . $row, $data['kategori_pengajar'])
                 ->setCellValue('C' . $row, $data['nk_nama'])
-                ->setCellValue('D' . $row, $data['nk_angkatan'])
-                ->setCellValue('E' . $row, $totHadir);
+                ->setCellValue('D' . $row, $data['nama_program'])
+                ->setCellValue('E' . $row, $data['nk_angkatan'])
+                ->setCellValue('F' . $row, $totHadir);
 
-            $lastW      = 'E';
+            $lastW      = 'F';
             $step       = 0;
 
             for ($i = 1; $i <= $highest_tm_ambil; $i++) {

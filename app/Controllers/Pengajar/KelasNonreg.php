@@ -314,7 +314,7 @@ class KelasNonreg extends BaseController
         $arNp    = $this->request->getVar('arNp');
         $arNaps  = $this->request->getVar('arNaps');
         $metode_ttm  = $this->request->getVar('metode_ttm');
-        $aktivitas  = $this->request->getVar('aktivitas');
+        // $aktivitas  = $this->request->getVar('aktivitas');
 
         $kelas = $this->nonreg_kelas->find($kelasId);
 
@@ -340,7 +340,7 @@ class KelasNonreg extends BaseController
             'note'    => $note,
             'by'      => $user['nama'],
             'metode_ttm' => $metode_ttm,
-            'aktivitas' => $aktivitas
+            // 'aktivitas' => $aktivitas
         ]);
         $abpjData = [
             'napj' . $tm => $abpj,
