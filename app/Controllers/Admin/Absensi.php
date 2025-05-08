@@ -1832,7 +1832,7 @@ class Absensi extends BaseController
 
                 ->setCellValue('A' . $row, $data['np_nama'])
                 ->setCellValue('B' . $row, $data['nk_nama'])
-                ->setCellValue('C' . $row, $data['nk_angkatan'])
+                ->setCellValue('C' . $row, $data['nk_tahun'])
                 ->setCellValue('D' . $row, $totHadir);
 
             $lastW      = 'D';
@@ -2040,7 +2040,7 @@ class Absensi extends BaseController
                 ->setCellValue('B' . $row, $data['kategori_pengajar'])
                 ->setCellValue('C' . $row, $data['nk_nama'])
                 ->setCellValue('D' . $row, $data['nama_program'])
-                ->setCellValue('E' . $row, $data['nk_angkatan'])
+                ->setCellValue('E' . $row, $data['nk_tahun'])
                 ->setCellValue('F' . $row, $totHadir);
 
             $lastW      = 'F';
