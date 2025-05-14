@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Controllers\Admin;
 
 use App\Controllers\BaseController;
@@ -14,7 +15,7 @@ class WA extends BaseController
             'user'  => $user,
         ];
 
-        return view('panel_admin/wa/index', $data); 
+        return view('panel_admin/wa/index', $data);
     }
 
     public function wa_input_footer()
@@ -59,7 +60,7 @@ class WA extends BaseController
     public function wa_status()
     {
         //id
-		$uri            = new \CodeIgniter\HTTP\URI(current_url(true));
+        $uri            = new \CodeIgniter\HTTP\URI(current_url(true));
         $queryString    = $uri->getQuery();
         $params         = [];
         parse_str($queryString, $params);
@@ -70,14 +71,14 @@ class WA extends BaseController
         if ($wa) {
             if ($wa['status'] == 1) {
                 $statusShow = "CONNECT";
-            }else {
+            } else {
                 $statusShow = "DISCONNECT";
             }
             $responseData = [
                 'status'        => $wa['status'],
                 'statusShow'    => $statusShow,
                 'datetime'      => $wa['datetime'],
-                'datetimeShow'  => shortdate_indo(substr($wa['datetime'],0,10))." ".substr($wa['datetime'],11,5)." WITA",
+                'datetimeShow'  => shortdate_indo(substr($wa['datetime'], 0, 10)) . " " . substr($wa['datetime'], 11, 5) . " WITA",
                 'id'            => $wa['id'],
                 'key'           => $wa['wa_key']
             ];
@@ -91,15 +92,16 @@ class WA extends BaseController
     {
         if ($this->request->isAJAX()) {
             $idWA = $this->request->getVar('idWA');
-            $dataWA= $this->wa->find($idWA);
+            $dataWA = $this->wa->find($idWA);
 
-             //-------WAG SENDIRI BARU-------
-            $apiKey = getenv('WAG_KEY');
+            //-------WAG SENDIRI BARU-------
+            $apiKey = getenv('WAG_API_KEY');
             if ($idWA == 1) {
-                $url = "https://wag.jlbsd.my.id/session/status/aais-pusat";
+                $url = "https://wag.artakusuma.com/api/clients/aaispusat";
             } else {
-                $url = "https://wag.jlbsd.my.id/session/status/aais-cabang";
+                $url = "https://wag.artakusuma.com/api/clients/aaiscabang";
             }
+
             // Menginisialisasi CURL
             $ch = curl_init($url);
 
@@ -119,7 +121,7 @@ class WA extends BaseController
             // Mengeksekusi CURL dan mendapatkan respons
             $response = curl_exec($ch);
             $response = json_decode($response, true);
-            if ($response['state'] == "CONNECTED") {
+            if ($response['status'] == "connected") {
                 $status = 1;
             } else {
                 $status = 0;
@@ -166,7 +168,8 @@ class WA extends BaseController
                     'data'    => [
                         'title' => 'Berhasil',
                     ],
-                ]);
+                ]
+            );
         }
     }
 
@@ -182,40 +185,126 @@ class WA extends BaseController
             $idWA   = $this->request->getVar('idWA');
             $dataWA = $this->wa->find($idWA);
 
-            #------- WA gateway Sendiri Baru ---------
-            $apiKey = getenv('WAG_KEY');
-            // Endpoint API
+
+            //-------WAG SENDIRI SERVER KVM COOLIFY-------
             if ($idWA == 1) {
-                $url = "https://wag.jlbsd.my.id/client/sendMessage/aais-pusat";
+                $apiKey = getenv('WAG_KEY');
             } else {
-                $url = "https://wag.jlbsd.my.id/client/sendMessage/aais-cabang";
+                $apiKey = getenv('WAG_KEY2');
             }
-            
-            // Data yang akan dikirim
-            $data = json_encode([
-                "chatId" => $to . "@c.us",
-                "contentType"=>"string",
-                "content" =>strval("Halo, ini dari WA Gateway pesan tes")
-            ]);
 
-            // Menginisialisasi CURL
-            $ch = curl_init($url);
+            // API endpoint URL
+            $url = 'https://wag-queue.artakusuma.com/api/messages/send';
 
-            // Mengatur opsi cURL
-            curl_setopt_array($ch, array(
+            // Prepare the request body data
+            $data = [
+                "recipient" => $to,
+                "message" => "Uji coba test dari AAIS Pusat",
+                "dt_store" => date('Y-m-d\TH:i:s.') . substr(microtime(), 2, 3) . 'Z'
+            ];
+
+            // Initialize cURL session
+            $curl = curl_init();
+
+            // Set cURL options
+            curl_setopt_array($curl, [
                 CURLOPT_URL => $url,
                 CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_ENCODING => '',
+                CURLOPT_MAXREDIRS => 10,
+                CURLOPT_TIMEOUT => 30,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
                 CURLOPT_CUSTOMREQUEST => 'POST',
-                CURLOPT_POSTFIELDS => $data, // Mengirim data JSON
-                CURLOPT_HTTPHEADER => array(
-                    'accept: */*',
-                    'x-api-key: ' . $apiKey, // Header x-api-key sesuai dengan perintah cURL di Swagger
-                    'Content-Type: application/json'
-                ),
-            ));
-            $response = curl_exec($ch);
-            $response = json_decode($response, true);
-            curl_close($ch);
+                CURLOPT_POSTFIELDS => json_encode($data),
+                CURLOPT_HTTPHEADER => [
+                    'X-Api-Key: ' . $apiKey,
+                    'Content-Type: application/json',
+                    'Accept: application/json'
+                ],
+            ]);
+
+            // Execute the request
+            $response = curl_exec($curl);
+            $httpCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+            $err = curl_error($curl);
+            $responseData = json_decode($response, true);
+
+            // Close cURL session
+            curl_close($curl);
+            //var_dump($response);
+
+            // Check for errors or display response
+            if ($err || $httpCode >= 400) {
+                $responseMessage = isset($responseData['message']) ? $responseData['message'] : 'API request failed';
+                $responseArray = [
+                    "success" => false,
+                    "message" => $err ? $err : $responseMessage
+                ];
+            } else {
+                // Safely access the message_id if it exists
+                $messageId = isset($responseData['message_id']) ? $responseData['message_id'] : 'Message sent successfully';
+                $responseArray = [
+                    "success" => true,
+                    "message" => $messageId
+                ];
+            }
+
+            // Return response to client
+            if ($responseArray["success"] == true) {
+                return $this->response
+                    ->setStatusCode(200)
+                    ->setJSON([
+                        'success' => 1,
+                        'message' => $responseArray["message"],
+                        'data' => [
+                            'title' => 'Berhasil',
+                        ],
+                    ]);
+            } else {
+                return $this->response
+                    ->setStatusCode(200) // You might want to use 400 or 500 for errors
+                    ->setJSON([
+                        'success' => 0,
+                        'message' => $responseArray["message"],
+                        'data' => [
+                            'title' => 'Gagal',
+                        ],
+                    ]);
+            }
+            #------- WA gateway Server jlbsd (deprecated) ---------
+
+            // Endpoint API
+            // if ($idWA == 1) {
+            //     $url = "https://wag.jlbsd.my.id/client/sendMessage/aais-pusat";
+            // } else {
+            //     $url = "https://wag.jlbsd.my.id/client/sendMessage/aais-cabang";
+            // }
+
+            // // Data yang akan dikirim
+            // $data = json_encode([
+            //     "chatId" => $to . "@c.us",
+            //     "contentType" => "string",
+            //     "content" => strval("Halo, ini dari WA Gateway pesan tes")
+            // ]);
+
+            // // Menginisialisasi CURL
+            // $ch = curl_init($url);
+
+            // // Mengatur opsi cURL
+            // curl_setopt_array($ch, array(
+            //     CURLOPT_URL => $url,
+            //     CURLOPT_RETURNTRANSFER => true,
+            //     CURLOPT_CUSTOMREQUEST => 'POST',
+            //     CURLOPT_POSTFIELDS => $data, // Mengirim data JSON
+            //     CURLOPT_HTTPHEADER => array(
+            //         'accept: */*',
+            //         'x-api-key: ' . $apiKey, // Header x-api-key sesuai dengan perintah cURL di Swagger
+            //         'Content-Type: application/json'
+            //     ),
+            // ));
+            // $response = curl_exec($ch);
+            // $response = json_decode($response, true);
+            // curl_close($ch);
 
             #------- WA gateway Fonnte ---------
             // $countryCode ="62";
@@ -255,38 +344,37 @@ class WA extends BaseController
             #------- END WA gateway Fonnte ---------
 
             // if ($response["status"] == true) {
-            if ($response["success"] == true) {
-                return $this->response
-                ->setStatusCode(200) // Use setStatusCode for HTTP status code
-                ->setJSON([
-                    'success' => 1,
-                    'message' => 1 ? 'Operation successful.' : 'Operation failed.',
-                    'data'    => [
-                        'title' => 'Berhasil',
-                    ],
-                ]);
-            } else {
-                return $this->response
-                ->setStatusCode(200) // Use setStatusCode for HTTP status code
+            // if ($response["success"] == true) {
+            //     return $this->response
+            //         ->setStatusCode(200) // Use setStatusCode for HTTP status code
+            //         ->setJSON([
+            //             'success' => 1,
+            //             'message' => $response["message"],
+            //             'data'    => [
+            //                 'title' => 'Berhasil',
+            //             ],
+            //         ]);
+            // } else {
+            //     return $this->response
+            //         ->setStatusCode(200) // Use setStatusCode for HTTP status code
+            //         ->setJSON([
+            //             'success' => 0,
+            //             'message' => $response["message"],
+            //             'data'    => [
+            //                 'title' => 'Gagal',
+            //             ],
+            //         ]);
+            // }
+        } else {
+            return $this->response
+                ->setStatusCode(400) // Use setStatusCode for HTTP status code
                 ->setJSON([
                     'success' => 0,
                     'message' => 0 ? 'Operation successful.' : 'Operation failed.',
                     'data'    => [
-                        'title' => 'Gagal',
+                        'title' => 'Berhasil',
                     ],
                 ]);
-            }
-            
-        } else {
-            return $this->response
-            ->setStatusCode(400) // Use setStatusCode for HTTP status code
-            ->setJSON([
-                'success' => 0,
-                'message' => 0 ? 'Operation successful.' : 'Operation failed.',
-                'data'    => [
-                    'title' => 'Berhasil',
-                ],
-            ]);
         }
     }
 
@@ -300,7 +388,7 @@ class WA extends BaseController
             $update_data = [
                 'footer'       => $footer,
             ];
-            
+
             $this->wa->update(1, $update_data);
 
             $aktivitas = 'Edit Data WA Notif Template Footer';
@@ -312,7 +400,7 @@ class WA extends BaseController
                     'link' => 'wa-gateway'
                 ]
             ];
-            
+
             echo json_encode($msg);
         }
     }
@@ -330,7 +418,7 @@ class WA extends BaseController
 
             $this->wa_switch->update($code, $update_data);
 
-            $aktivitas = 'Nonaktif WA Notif pada Fitur '.$wa['name'];
+            $aktivitas = 'Nonaktif WA Notif pada Fitur ' . $wa['name'];
             $this->logging('Admin', 'BERHASIL', $aktivitas);
 
 
@@ -339,7 +427,7 @@ class WA extends BaseController
                     'link' => 'wa-gateway'
                 ]
             ];
-            
+
             echo json_encode($msg);
         }
     }

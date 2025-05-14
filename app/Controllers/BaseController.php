@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Controllers;
+
 use App\Libraries\JWTCI4;
 
 // use App\Models\Model_User;
@@ -58,6 +59,7 @@ use CodeIgniter\HTTP\ResponseInterface;
 use Psr\Log\LoggerInterface;
 
 use Mpdf\Mpdf;
+
 /**
  * Class BaseController
  *
@@ -105,29 +107,29 @@ abstract class BaseController extends Controller
         $this->session      = \Config\Services::session();
         // $this->user         = new Model_User();
         $this->konfigurasi          = new Model_konfigurasi;
-		$this->user                 = new Model_user($request);
-		$this->peserta              = new Model_peserta($request);
-		$this->kelas                = new Model_kelas;
-		$this->bayar                = new Model_bayar($request);
-		$this->spp1                 = new Model_spp1;
-		$this->spp2                 = new Model_spp2;
-		$this->spp3                 = new Model_spp3;
-		$this->spp4                 = new Model_spp4;
-		$this->infaq                = new Model_infaq;
-		$this->bayar_lain           = new Model_bayar_lain;
-		$this->bayar_modul          = new Model_bayar_modul;
-		$this->peserta_kelas        = new Model_peserta_kelas($request);
-		$this->program              = new Model_program;
-		$this->pengajar             = new Model_pengajar;
-		$this->level                = new Model_level;
-		$this->kantor               = new Model_kantor;
-		$this->bank                 = new Model_bank;
-		$this->log                  = new Model_log;
-		$this->log_user             = new Model_log_user;
-		$this->absen_peserta        = new Model_absen_peserta;
-		$this->absen_pengajar       = new Model_absen_pengajar;
-		$this->ujian                = new Model_ujian;
-		$this->sertifikat           = new Model_sertifikat;
+        $this->user                 = new Model_user($request);
+        $this->peserta              = new Model_peserta($request);
+        $this->kelas                = new Model_kelas;
+        $this->bayar                = new Model_bayar($request);
+        $this->spp1                 = new Model_spp1;
+        $this->spp2                 = new Model_spp2;
+        $this->spp3                 = new Model_spp3;
+        $this->spp4                 = new Model_spp4;
+        $this->infaq                = new Model_infaq;
+        $this->bayar_lain           = new Model_bayar_lain;
+        $this->bayar_modul          = new Model_bayar_modul;
+        $this->peserta_kelas        = new Model_peserta_kelas($request);
+        $this->program              = new Model_program;
+        $this->pengajar             = new Model_pengajar;
+        $this->level                = new Model_level;
+        $this->kantor               = new Model_kantor;
+        $this->bank                 = new Model_bank;
+        $this->log                  = new Model_log;
+        $this->log_user             = new Model_log_user;
+        $this->absen_peserta        = new Model_absen_peserta;
+        $this->absen_pengajar       = new Model_absen_pengajar;
+        $this->ujian                = new Model_ujian;
+        $this->sertifikat           = new Model_sertifikat;
         $this->pekerjaan            = new Model_pekerjaan;
         $this->cart                 = new Model_cart;
         $this->payment              = new Model_payment;
@@ -148,28 +150,30 @@ abstract class BaseController extends Controller
         $this->wa                   = new Model_wa();
         $this->wa_switch            = new Model_wa_switch();
         $this->nonreg_pengajar      = new Model_nonreg_pengajar();
-        $this->nonreg_absen_pengajar= new Model_nonreg_absen_pengajar();
+        $this->nonreg_absen_pengajar = new Model_nonreg_absen_pengajar();
         $this->nonreg_absen_peserta = new Model_nonreg_absen_peserta();
-        $this->db 			        = \Config\Database::connect();
+        $this->db                     = \Config\Database::connect();
     }
 
-    public function userauth(){
-		$token      = get_cookie('gem');
-		$jwt        = new JWTCI4;
-		$user	    = $jwt->decodeweb($token);
-		$user_code  = $user->uid;
-		$userdata   = $this->user->find($user_code);
-		return $userdata;
-	}
+    public function userauth()
+    {
+        $token      = get_cookie('gem');
+        $jwt        = new JWTCI4;
+        $user        = $jwt->decodeweb($token);
+        $user_code  = $user->uid;
+        $userdata   = $this->user->find($user_code);
+        return $userdata;
+    }
 
-    public function logging($role, $status, $aktivitas){
-		$user       = $this->userauth();
+    public function logging($role, $status, $aktivitas)
+    {
+        $user       = $this->userauth();
         if ($role == "Admin") {
             $nama   = $user['nama'];
-        } else{
+        } else {
             $user_id  = $user['user_id'];
             $peserta  = $this->peserta->get_peserta($user_id);
-            $nama     = $peserta['nis'].' - '.$peserta['nama_peserta'];
+            $nama     = $peserta['nis'] . ' - ' . $peserta['nama_peserta'];
         }
 
         $log = [
@@ -177,34 +181,34 @@ abstract class BaseController extends Controller
             'tgl_log'      => date("Y-m-d"),
             'waktu_log'    => date("H:i:s"),
             'status_log'   => $status,
-            'aktivitas_log'=> $aktivitas,
+            'aktivitas_log' => $aktivitas,
         ];
 
         if ($role == "Admin") {
             $this->log->insert($log);
-        } else{
+        } else {
             $this->log_user->insert($log);
         }
-	}
+    }
 
     public function generate_nomor_sertifikat($kodeProgram)
     {
-        $last           = $this->sertifikat->where('status','1')->orderBy('sertifikat_id', 'desc')->first();  
+        $last           = $this->sertifikat->where('status', '1')->orderBy('sertifikat_id', 'desc')->first();
         if ($last != NULL) {
-            $part       = explode("/", $last['nomor_sertifikat']); 
+            $part       = explode("/", $last['nomor_sertifikat']);
             $nomor_urut = $part[0];
             $tahun      = $part[4];
 
             if ($tahun == date('Y')) {
-                $nomor_urut     = str_pad(($part[0]+1),4,"0",STR_PAD_LEFT);
-            }else{
+                $nomor_urut     = str_pad(($part[0] + 1), 4, "0", STR_PAD_LEFT);
+            } else {
                 $nomor_urut     = '0001';
             }
-        } else{
+        } else {
             $nomor_urut     = '0001';
         }
         $bulan = romawi(date('m'));
-        $nomor_sertifikat = $nomor_urut.'/SER'.'/'.$kodeProgram.'/'.$bulan.'/'.date('Y');
+        $nomor_sertifikat = $nomor_urut . '/SER' . '/' . $kodeProgram . '/' . $bulan . '/' . date('Y');
         return $nomor_sertifikat;
     }
 
@@ -225,12 +229,12 @@ abstract class BaseController extends Controller
         if ($template == NULL) {
             $template = "Sertifikat_Tes.pdf";
         }
-        
+
 
         // Set the source file (PDF, image, etc.)
-        $sourceFile     = 'public/assets/template/'.$template;
+        $sourceFile     = 'public/assets/template/' . $template;
         // Output file path
-        $outputFilePath = 'public/sertifikat/'.$sertifikat['sertifikat_file'];
+        $outputFilePath = 'public/sertifikat/' . $sertifikat['sertifikat_file'];
 
         $pageCount = $mpdf->SetSourceFile($sourceFile);
 
@@ -253,7 +257,7 @@ abstract class BaseController extends Controller
         // Variable Nama Peserta
         $mpdf->SetFont('sertifikat-nama', '', 80); //
         $mpdf->SetTextColor(255, 255, 255);
-        $namaSert   = ucwords(strtolower($peserta['nama_peserta'])); 
+        $namaSert   = ucwords(strtolower($peserta['nama_peserta']));
         $textWidth  = $mpdf->GetStringWidth($namaSert);
         $centerX    = ($pageWidth - $textWidth) / 2;
         $y          = 118;
@@ -263,7 +267,7 @@ abstract class BaseController extends Controller
         $mpdf->SetFont('arial', '', 13);
         $mpdf->SetTextColor(255, 255, 255);
         $varTgl     = $sertifikat['sertifikat_tgl'];
-        $tglSert    = "Balikpapan, ". date_indo($varTgl);
+        $tglSert    = "Balikpapan, " . date_indo($varTgl);
         $textWidth  = $mpdf->GetStringWidth($tglSert);
         $centerX    = (($pageWidth - $textWidth)) / 2;
         $y          = 153;
@@ -274,59 +278,101 @@ abstract class BaseController extends Controller
         return True;
     }
 
-    public function sendWA($session, $to, $text) 
+    public function sendWA($session, $to, $text)
     {
         if ($to[0] == '0') {
             $to = '62' . substr($to, 1);
         }
 
-        $countryCode ="62";
+        $countryCode = "62";
         if (substr($to, 0, 2) == "62" || substr($to, 0, 2) == "08") {
-            $countryCode ="62";
+            $countryCode = "62";
         } else {
             $countryCode = substr($to, 0, 2);
         }
+        //-------WAG SENDIRI SERVER KVM COOLIFY-------
 
-        //-------WAG SENDIRI BARU-------
-        // API URL
+        $url = 'https://wag-queue.artakusuma.com/api/messages/send';
         $apiKey = getenv('WAG_KEY');
-        // Endpoint API
-        $url = "https://wag.jlbsd.my.id/client/sendMessage/aais-pusat";
-        
-        // Data yang akan dikirim
-        $data = json_encode([
-            "chatId" => $to . "@c.us",
-            "contentType"=>"string",
-            "content" =>strval($text)
-        ]);
 
-        // Menginisialisasi CURL
-        $ch = curl_init($url);
+        $url = 'https://wag-queue.artakusuma.com/api/messages/send';
 
-        // Mengatur opsi cURL
-        curl_setopt_array($ch, array(
+        // Prepare the request body data
+        $data = [
+            "recipient" => $to,
+            "message" => strval($text),
+            "dt_store" => date('Y-m-d\TH:i:s.') . substr(microtime(), 2, 3) . 'Z'
+        ];
+
+        // Initialize cURL session
+        $curl = curl_init();
+
+        // Set cURL options
+        curl_setopt_array($curl, [
             CURLOPT_URL => $url,
             CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 30,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
             CURLOPT_CUSTOMREQUEST => 'POST',
-            CURLOPT_POSTFIELDS => $data, // Mengirim data JSON
-            CURLOPT_HTTPHEADER => array(
-                'accept: */*',
-                'x-api-key: ' . $apiKey, // Header x-api-key sesuai dengan perintah cURL di Swagger
-                'Content-Type: application/json'
-            ),
-        ));
+            CURLOPT_POSTFIELDS => json_encode($data),
+            CURLOPT_HTTPHEADER => [
+                'X-Api-Key: ' . $apiKey,
+                'Content-Type: application/json',
+                'Accept: application/json'
+            ],
+        ]);
 
-        // Mengeksekusi CURL dan mendapatkan respons
-        $response = curl_exec($ch);
-        if (curl_errno($ch)) {
-            $error_msg = curl_error($ch);
-        }
-        curl_close($ch);
-        $waInsert = [
-            "session" => $response
-        ];
-        // $this->wa->insert($waInsert);
-        return $response;
+        // Execute the request
+        $response = curl_exec($curl);
+        $httpCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+        $err = curl_error($curl);
+        $responseData = json_decode($response, true);
+
+        // Close cURL session
+        curl_close($curl);
+
+        //-------WAG SENDIRI SERVER JLBSD (CLOSED)-------
+        // // API URL
+        // $apiKey = getenv('WAG_KEY');
+        // // Endpoint API
+        // $url = "https://wag.jlbsd.my.id/client/sendMessage/aais-pusat";
+
+        // // Data yang akan dikirim
+        // $data = json_encode([
+        //     "chatId" => $to . "@c.us",
+        //     "contentType" => "string",
+        //     "content" => strval($text)
+        // ]);
+
+        // // Menginisialisasi CURL
+        // $ch = curl_init($url);
+
+        // // Mengatur opsi cURL
+        // curl_setopt_array($ch, array(
+        //     CURLOPT_URL => $url,
+        //     CURLOPT_RETURNTRANSFER => true,
+        //     CURLOPT_CUSTOMREQUEST => 'POST',
+        //     CURLOPT_POSTFIELDS => $data, // Mengirim data JSON
+        //     CURLOPT_HTTPHEADER => array(
+        //         'accept: */*',
+        //         'x-api-key: ' . $apiKey, // Header x-api-key sesuai dengan perintah cURL di Swagger
+        //         'Content-Type: application/json'
+        //     ),
+        // ));
+
+        // // Mengeksekusi CURL dan mendapatkan respons
+        // $response = curl_exec($ch);
+        // if (curl_errno($ch)) {
+        //     $error_msg = curl_error($ch);
+        // }
+        // curl_close($ch);
+        // $waInsert = [
+        //     "session" => $response
+        // ];
+        // // $this->wa->insert($waInsert);
+        // return $response;
 
         //-----WAG SENDIRI LAMA--------
         // // API URL
@@ -379,22 +425,23 @@ abstract class BaseController extends Controller
         // return $response;
     }
 
-    function incrementAlphaSequence($seq, $inc) {
+    function incrementAlphaSequence($seq, $inc)
+    {
         $result = '';
         $length = strlen($seq);
         $carry = $inc;
-    
+
         // Reverse the sequence for easier calculation (work from last character backwards)
         $reversedSeq = strrev($seq);
-    
+
         for ($i = 0; $i < $length; $i++) {
             $currentValue = ord($reversedSeq[$i]) - 64; // Convert letter to 1-26 range
             $newValue = $currentValue + $carry;
             $carry = intdiv($newValue - 1, 26); // Determine carry for next letter (if any)
             $newValue = ($newValue - 1) % 26 + 1; // Adjust new value within 1-26 range
-    
+
             $result = chr($newValue + 64) . $result; // Convert back to A-Z and prepend to result
-    
+
             if ($i == $length - 1 && $carry > 0) {
                 // Handle carry for the most significant character
                 while ($carry > 0) {
@@ -404,7 +451,7 @@ abstract class BaseController extends Controller
                 }
             }
         }
-    
+
         return $result;
     }
 }
