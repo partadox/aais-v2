@@ -10,105 +10,106 @@
 </p>
 
 <?php if ($cek != 0) { ?>
-<!-- Container-fluid starts-->
-<div class="container-fluid">
-    <p class="mt-1">Catatan :<br> 
-        <i class="mdi mdi-information"></i> Anda akan terdaftar di kelas yang anda pilih setelah mengisi form pembayaran, melakukan pembayaran, dan pembayaran akan dikonfirmasi oleh sistem/admin.<br>
-        <i class="mdi mdi-information"></i> Harap lakukan pembayaran sebelum batas waktu pembayaran.<br>
-        <i class="mdi mdi-information"></i> Jika anda ingin memilih kelas lain harap tekan tombol batal.<br>
-    </p>
-    <hr>
-    <h5 style="text-align:center"> Status Konfirmasi :
-        <button class="btn btn-warning" disabled> Belum Bayar</button> </h5> <br>
-        <h5 style="text-align:center; color:red">Batas Waktu Bayar: <br> Tgl: <?= shortdate_indo(substr($expired_waktu,0,10)) ?> <br> Jam: <?=substr($expired_waktu,11,5)?> WITA</h5>
-    
-    <h5 style="text-align:center; color:red" id="demo"></h5> <br>
+    <!-- Container-fluid starts-->
+    <div class="container-fluid">
+        <p class="mt-1">Catatan :<br>
+            <i class="mdi mdi-information"></i> Anda akan terdaftar di kelas yang anda pilih setelah mengisi form pembayaran, melakukan pembayaran, dan pembayaran akan dikonfirmasi oleh sistem/admin.<br>
+            <i class="mdi mdi-information"></i> Harap lakukan pembayaran sebelum batas waktu pembayaran.<br>
+            <i class="mdi mdi-information"></i> Jika anda ingin memilih kelas lain harap tekan tombol batal.<br>
+        </p>
+        <hr>
+        <h5 style="text-align:center"> Status Konfirmasi :
+            <button class="btn btn-warning" disabled> Belum Bayar</button>
+        </h5> <br>
+        <h5 style="text-align:center; color:red">Batas Waktu Bayar: <br> Tgl: <?= shortdate_indo(substr($expired_waktu, 0, 10)) ?> <br> Jam: <?= substr($expired_waktu, 11, 5) ?> WITA</h5>
 
-    <div class="card shadow-lg bg-white rounded">
-        <div class="card-body">
-            <button type="button" class="btn btn-danger" onclick="hapus(<?= $cart_id ?>, <?= $peserta_kelas_id ?>)">Batal</button>
-            <h6><?= $kelas['nama_program'] ?></h6>
-            <h5 class="card-title"><?= $kelas['nama_kelas'] ?></h5>
-            <hr>
-            <p> <i class="mdi mdi-calendar"></i> Hari = <?= $kelas['hari_kelas'] ?> </p>
-            <p> <i class="mdi mdi-clock"></i> Waktu = <?= $kelas['waktu_kelas'] ?></p>
-            <a> <i class="mdi mdi-teach"></i>
-                <?php if($kelas['metode_kelas'] == 'OFFLINE') { ?>
-                    Metode Perkuliahan = <span class="badge badge-secondary">TATAP MUKA / OFFLINE</span>
-                <?php } ?>
-                <?php if($kelas['metode_kelas'] == 'ONLINE') { ?>
-                    Metode Perkuliahan = <span class="badge badge-success">DARING / ONLINE</span>
-                <?php } ?>
-                <?php if($kelas['metode_kelas'] == 'HYBRID') { ?>
-                    Metode Perkuliahan = <span class="badge badge-info">HYBRID</span>
-                <?php } ?>
-            </a>
-            <hr>
-            <p> <i class="mdi mdi-cash-marker"></i> Biaya Pendaftaran = Rp <?= rupiah($kelas['biaya_daftar']) ?></p>
-            <p> <i class="mdi mdi-cash-marker"></i> Biaya Modul = Rp <?= rupiah($kelas['biaya_modul']) ?></p>
-            <p> <i class="mdi mdi-cash-register"></i> SPP per Bulan = Rp <?= rupiah($kelas['biaya_bulanan']) ?> (x 4 Bulan)</p>
-            <hr>
-            <p> <i class="mdi mdi-bookmark-check"></i> Total Kuota = <?= $kelas['kouta'] ?></p>
-            <h6> <i class="mdi mdi-bookmark-minus"> </i> Kuota Tersedia = <?= $kelas['kouta']-$kelas['peserta_kelas_count'] ?> </h6>
-        </div>
-    </div>
-    
-    <div class="row">
-        <div class="col-sm-5 col-md-5">
-            <div class="card shadow-lg bg-white rounded">
-                <div class="card-body">
-                    <h6>Pilih yg akan dibayar</h6>
-                    <div id="services">
-                        <!-- Services will be added here -->
-                    </div>
-                    <hr>
-                    <label for="keterangan_bayar">Keterangan Pembayaran</label>
-                    <textarea class="form-control" name="keterangan_bayar" id="keterangan_bayar" cols="30" rows="10"></textarea>
-                </div>
+        <h5 style="text-align:center; color:red" id="demo"></h5> <br>
+
+        <div class="card shadow-lg bg-white rounded">
+            <div class="card-body">
+                <button type="button" class="btn btn-danger" onclick="hapus(<?= $cart_id ?>, <?= $peserta_kelas_id ?>)">Batal</button>
+                <h6><?= $kelas['nama_program'] ?></h6>
+                <h5 class="card-title"><?= $kelas['nama_kelas'] ?></h5>
+                <hr>
+                <p> <i class="mdi mdi-calendar"></i> Hari = <?= $kelas['hari_kelas'] ?> </p>
+                <p> <i class="mdi mdi-clock"></i> Waktu = <?= $kelas['waktu_kelas'] ?></p>
+                <a> <i class="mdi mdi-teach"></i>
+                    <?php if ($kelas['metode_kelas'] == 'OFFLINE') { ?>
+                        Metode Perkuliahan = <span class="badge badge-secondary">TATAP MUKA / OFFLINE</span>
+                    <?php } ?>
+                    <?php if ($kelas['metode_kelas'] == 'ONLINE') { ?>
+                        Metode Perkuliahan = <span class="badge badge-success">DARING / ONLINE</span>
+                    <?php } ?>
+                    <?php if ($kelas['metode_kelas'] == 'HYBRID') { ?>
+                        Metode Perkuliahan = <span class="badge badge-info">HYBRID</span>
+                    <?php } ?>
+                </a>
+                <hr>
+                <p> <i class="mdi mdi-cash-marker"></i> Biaya Pendaftaran = Rp <?= rupiah($kelas['biaya_daftar']) ?></p>
+                <p> <i class="mdi mdi-cash-marker"></i> Biaya Modul = Rp <?= rupiah($kelas['biaya_modul']) ?></p>
+                <p> <i class="mdi mdi-cash-register"></i> SPP per Bulan = Rp <?= rupiah($kelas['biaya_bulanan']) ?> (x 4 Bulan)</p>
+                <hr>
+                <p> <i class="mdi mdi-bookmark-check"></i> Total Kuota = <?= $kelas['kouta'] ?></p>
+                <h6> <i class="mdi mdi-bookmark-minus"> </i> Kuota Tersedia = <?= $kelas['kouta'] - $kelas['peserta_kelas_count'] ?> </h6>
             </div>
         </div>
-        <div class="col-sm-7 col-md-7">
-            <div class="card shadow-lg bg-white rounded">
-                <div class="card-body">
-                    <div id="cart">
-                        <label for="va_list">Metode Pembayaran<code>*</code></label>
-                        
-                        <select class="form-control btn-square select2 mb-3" id="va_list">
-                            <option value="" disabled selected>--Pilih--</option>
-                            <?php foreach ($payment as $pay): ?>
-                                <option value="<?= $pay['payment_code'] ?>"><?= $pay['payment_name'] ?> (+ Rp <?= rupiah($pay['payment_price']+(( $pay['payment_tax']/100)* $pay['payment_price'])) ?>)</option>
-                            <?php endforeach; ?>
-                        </select>
-                        <div class="mb-3" id="detail_bank" style="display: none;">
-                            <?php foreach ($payment_manual as $manual): ?>
-                                <h6 class="text-center"><?= $manual['payment_bank'] ?> - <?= $manual['payment_rekening'] ?> a.n <?= $manual['payment_atasnama'] ?></h6>
-                            <?php endforeach; ?>
+
+        <div class="row">
+            <div class="col-sm-5 col-md-5">
+                <div class="card shadow-lg bg-white rounded">
+                    <div class="card-body">
+                        <h6>Pilih yg akan dibayar</h6>
+                        <div id="services">
+                            <!-- Services will be added here -->
                         </div>
-                        <h6>Daftar Pembayaran</h6>
-                        <div id="cart-items" class="list-group">
-                            <!-- Cart items will be added here -->
-                        </div>
-                        <h5 class="text-left">Total: Rp <span id="total-price">0</span></h5>
-                        <button id="pay-btn" class="btn btn-primary" style="display: none;">Bayar via TF Manual</button>
-                        <button id="pay-va-btn" class="btn btn-warning" style="display: none;">Bayar via Payment Gateway</button>
-                        <button id="pay-beasiswa-btn" class="btn btn-success" style="display: none;">Beasiwa</button>
+                        <hr>
+                        <label for="keterangan_bayar">Keterangan Pembayaran</label>
+                        <textarea class="form-control" name="keterangan_bayar" id="keterangan_bayar" cols="30" rows="10"></textarea>
                     </div>
                 </div>
             </div>
+            <div class="col-sm-7 col-md-7">
+                <div class="card shadow-lg bg-white rounded">
+                    <div class="card-body">
+                        <div id="cart">
+                            <label for="va_list">Metode Pembayaran<code>*</code></label>
+
+                            <select class="form-control btn-square select2 mb-3" id="va_list">
+                                <option value="" disabled selected>--Pilih--</option>
+                                <?php foreach ($payment as $pay): ?>
+                                    <option value="<?= $pay['payment_code'] ?>"><?= $pay['payment_name'] ?> (+ Rp <?= rupiah($pay['payment_price'] + (($pay['payment_tax'] / 100) * $pay['payment_price'])) ?>)</option>
+                                <?php endforeach; ?>
+                            </select>
+                            <div class="mb-3" id="detail_bank" style="display: none;">
+                                <?php foreach ($payment_manual as $manual): ?>
+                                    <h6 class="text-center"><?= $manual['payment_bank'] ?> - <?= $manual['payment_rekening'] ?> a.n <?= $manual['payment_atasnama'] ?></h6>
+                                <?php endforeach; ?>
+                            </div>
+                            <h6>Daftar Pembayaran</h6>
+                            <div id="cart-items" class="list-group">
+                                <!-- Cart items will be added here -->
+                            </div>
+                            <h5 class="text-left">Total: Rp <span id="total-price">0</span></h5>
+                            <button id="pay-btn" class="btn btn-primary" style="display: none;">Bayar via TF Manual</button>
+                            <button id="pay-va-btn" class="btn btn-warning" style="display: none;">Bayar via Payment Gateway</button>
+                            <button id="pay-beasiswa-btn" class="btn btn-success" style="display: none;">Beasiwa</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
-        
+
     </div>
-    
-</div>
-<div class="viewmodalmanual"></div>
-<!-- Container-fluid Ends-->
+    <div class="viewmodalmanual"></div>
+    <!-- Container-fluid Ends-->
 <?php } ?>
 
 <?php if ($cek == 0) { ?>
     <div class="card col d-flex justify-content-center shadow">
         <div class="card-body">
             <h5 class="card-title">Anda Belum Memiliki Tagihan Pendaftaran Kelas Yang Akan Dibayar.</h5>
-            <p class="card-text"> 
+            <p class="card-text">
                 Silihkan Pilih Program Dan Kelas Dahulu di Menu Pilih Program.
             </p>
         </div>
@@ -122,38 +123,87 @@
             minimumResultsForSearch: Infinity
         });
 
-        var services = [
-            { id: 5, name: "Pendaftaran", price: <?= $biaya_daftar?>, fixed: true },
-            { id: 1, name: "SPP-1", price: <?= $biaya_bulanan?>, fixed: true },
-            { id: 2, name: "SPP-2", price: <?= $biaya_bulanan?>, fixed: true },
-            { id: 3, name: "SPP-3", price: <?= $biaya_bulanan?>, fixed: true },
-            { id: 4, name: "SPP-4", price: <?= $biaya_bulanan?>, fixed: true },
-            { id: 6, name: "Modul", price: <?= $biaya_modul?>, fixed: true },
-            { id: 7, name: "Infaq", price: 0, fixed: false },
-            { id: 8, name: "Pemby. Lain", price: 0, fixed: false },
+        var services = [{
+                id: 5,
+                name: "Pendaftaran",
+                price: <?= $biaya_daftar ?>,
+                fixed: true
+            },
+            {
+                id: 1,
+                name: "SPP-1",
+                price: <?= $biaya_bulanan ?>,
+                fixed: true
+            },
+            {
+                id: 2,
+                name: "SPP-2",
+                price: <?= $biaya_bulanan ?>,
+                fixed: true
+            },
+            {
+                id: 3,
+                name: "SPP-3",
+                price: <?= $biaya_bulanan ?>,
+                fixed: true
+            },
+            {
+                id: 4,
+                name: "SPP-4",
+                price: <?= $biaya_bulanan ?>,
+                fixed: true
+            },
+            {
+                id: 6,
+                name: "Modul",
+                price: <?= $biaya_modul ?>,
+                fixed: true
+            },
+            {
+                id: 7,
+                name: "Infaq Palestina",
+                price: 0,
+                fixed: false
+            },
+            {
+                id: 8,
+                name: "Pemby. Lain",
+                price: 0,
+                fixed: false
+            },
         ];
-        var cart = [
-            { id: 5, name: "Pendaftaran", price: <?= $biaya_daftar?> },
-            { id: 1, name: "SPP-1", price: <?= $biaya_bulanan?> },
+        var cart = [{
+                id: 5,
+                name: "Pendaftaran",
+                price: <?= $biaya_daftar ?>
+            },
+            {
+                id: 1,
+                name: "SPP-1",
+                price: <?= $biaya_bulanan ?>
+            },
         ];
         var total = cart.reduce((sum, service) => sum + service.price, 0);
 
         var bankServices = [
-            <?php foreach ($payment as $pay): ?>
-                { bank: '<?= $pay['payment_code'] ?>', id: <?= $pay['payment_id'] ?>, price: <?= $pay['payment_price']+(( $pay['payment_tax']/100)* $pay['payment_price']) ?> },
+            <?php foreach ($payment as $pay): ?> {
+                    bank: '<?= $pay['payment_code'] ?>',
+                    id: <?= $pay['payment_id'] ?>,
+                    price: <?= $pay['payment_price'] + (($pay['payment_tax'] / 100) * $pay['payment_price']) ?>
+                },
             <?php endforeach; ?>
         ];
 
         function formatPrice(price) {
-                return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-            }
+            return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+        }
 
         function renderServices() {
             $('#services').empty();
-            for(var i=0; i<services.length; i++) {
+            for (var i = 0; i < services.length; i++) {
                 var isInCart = cart.find(item => item.id === services[i].id);
                 var buttonClass = isInCart ? 'btn-secondary' : 'btn-success';
-                if(services[i].fixed) {
+                if (services[i].fixed) {
                     $('#services').append(`
                         <hr>
                         <div class="card-service card mb-3 p-2">
@@ -177,10 +227,10 @@
 
         function renderCart() {
             $('#cart-items').empty();
-            for(var i=0; i<cart.length; i++) {
+            for (var i = 0; i < cart.length; i++) {
                 var isBankService = cart[i].id >= 20 && cart[i].id <= 35;
                 var isDaftar = cart[i].id == 5;
-                var isSpp1   = cart[i].id == 1;
+                var isSpp1 = cart[i].id == 1;
                 $('#cart-items').append(`
                     <div class="list-group-item">
                         <span>${isBankService ? `Biaya Transaksi` : ''} ${!isBankService ? cart[i].name : ''} </span>  <br> 
@@ -199,15 +249,19 @@
             var service = services.find(item => item.id === serviceId);
             var servicePrice = service.fixed ? $(this).data('price') : Number($('#price-' + serviceId).val());
             var serviceInCart = cart.find(item => item.id === serviceId);
-            
-            if(serviceInCart) {
-                total -= serviceInCart.price;  // Subtract the old price from the total
-                serviceInCart.price = servicePrice;  // Update the price in the cart
+
+            if (serviceInCart) {
+                total -= serviceInCart.price; // Subtract the old price from the total
+                serviceInCart.price = servicePrice; // Update the price in the cart
             } else {
-                cart.push({ id: serviceId, name: service.name, price: servicePrice });
+                cart.push({
+                    id: serviceId,
+                    name: service.name,
+                    price: servicePrice
+                });
             }
-            
-            total += servicePrice;  // Add the new price to the total
+
+            total += servicePrice; // Add the new price to the total
 
             renderServices();
             renderCart();
@@ -216,7 +270,7 @@
         $('#cart').on('click', '.remove-from-cart', function() {
             var serviceId = $(this).data('id');
             var index = cart.findIndex(item => item.id === serviceId);
-            if(index !== -1) {
+            if (index !== -1) {
                 total -= cart[index].price;
                 cart.splice(index, 1);
             }
@@ -231,34 +285,36 @@
             var serviceInCart = cart.find(item => item.id >= 20 && item.id <= 35);
 
             if (serviceInCart) {
-                total -= serviceInCart.price;  // Subtract the old price from the total
+                total -= serviceInCart.price; // Subtract the old price from the total
                 var index = cart.indexOf(serviceInCart);
-                cart.splice(index, 1);  // Remove the bank service from the cart
+                cart.splice(index, 1); // Remove the bank service from the cart
             }
 
             if (!bankService) return;
 
-            cart.push({ id: bankService.id, name: bankName.toUpperCase(), price: bankService.price });
-            total += bankService.price;  // Add the new price to the total
+            cart.push({
+                id: bankService.id,
+                name: bankName.toUpperCase(),
+                price: bankService.price
+            });
+            total += bankService.price; // Add the new price to the total
 
             renderServices();
             renderCart();
         }
 
         $('#va_list').change(function() {
-            if($(this).val() == 'manual_1' || $(this).val() == 'manual_2'){
+            if ($(this).val() == 'manual_1' || $(this).val() == 'manual_2') {
                 document.getElementById('detail_bank').style.display = "block";
                 document.getElementById('pay-btn').style.display = "block";
                 document.getElementById('pay-va-btn').style.display = "none";
                 document.getElementById('pay-beasiswa-btn').style.display = "none";
-            }
-            else if($(this).val() == 'beasiswa'){
+            } else if ($(this).val() == 'beasiswa') {
                 document.getElementById('detail_bank').style.display = "none";
                 document.getElementById('pay-btn').style.display = "none";
                 document.getElementById('pay-va-btn').style.display = "none";
                 document.getElementById('pay-beasiswa-btn').style.display = "block";
-            } 
-            else{
+            } else {
                 document.getElementById('detail_bank').style.display = "none";
                 document.getElementById('pay-btn').style.display = "none";
                 document.getElementById('pay-va-btn').style.display = "block";
@@ -266,7 +322,7 @@
             }
             var selectedValue = $(this).val();
             addToCartByBankName(selectedValue);
-            
+
         });
 
         $('#pay-btn').click(function() {
@@ -334,7 +390,7 @@
                 preview.id = 'image_preview';
                 preview.src = reader.result;
                 preview.style.height = '200px';
-                preview.style.width = '150px';  
+                preview.style.width = '150px';
                 document.getElementById('image_preview_div').appendChild(preview);
             }
             reader.readAsDataURL(event.target.files[0]);
@@ -370,7 +426,7 @@
                 data: formData,
                 contentType: false,
                 processData: false,
-                success: function(response){
+                success: function(response) {
                     // Close the loading alert
                     Swal.close();
 
@@ -419,7 +475,7 @@
                             didOpen: () => {
                                 const vaValue = va;
 
-                                $('#copy').click(function () {
+                                $('#copy').click(function() {
                                     const tempInput = document.createElement('input');
                                     tempInput.value = vaValue;
                                     document.body.appendChild(tempInput);
@@ -432,13 +488,13 @@
                                     $(this).html('<i class="fas fa-check"></i> VA dicopy');
                                 })
                             },
-                                didClose: () => {
+                            didClose: () => {
                                 window.location.href = "/bayar/riwayat";
                             }
                         });
                     }
                 },
-                error: function(jqXHR, textStatus, errorThrown){
+                error: function(jqXHR, textStatus, errorThrown) {
                     // Close the loading alert
                     Swal.close();
                     console.log(textStatus, errorThrown);
@@ -536,7 +592,7 @@
                                 timer: 1500
                             }).then(function() {
                                 window.location = response.sukses.link;
-                        });
+                            });
                         }
                     }
                 });
