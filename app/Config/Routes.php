@@ -14,9 +14,8 @@ $routes->setDefaultNamespace('App\Controllers');
 $routes->setDefaultController('Home');
 $routes->setDefaultMethod('index');
 $routes->setTranslateURIDashes(false);
-$routes->set404Override(function( $message = null )
-{
-    
+$routes->set404Override(function ($message = null) {
+
     $data = [
         'title' => '404 Page not found',
         'message' => $message,
@@ -47,11 +46,11 @@ $routes->post('auth/dologin', 'Auth::dologin');
 $routes->post('auth/logout', 'Auth::logout');
 
 /*--- Dashboard ---*/
-$routes->get('dashboard', 'Dashboard::index', ["filter" => "authweb:1-2-3-4-5-6"]); 
+$routes->get('dashboard', 'Dashboard::index', ["filter" => "authweb:1-2-3-4-5-6"]);
 
 /*--- Dashboard ---*/
 $routes->get('terms-of-service', 'Tos::tos');
-$routes->get('privacy-policy', 'Tos::privacy'); 
+$routes->get('privacy-policy', 'Tos::privacy');
 
 /*
  * --------------------------------------------------------------------
@@ -215,6 +214,7 @@ $routes->post('kelas-bina/create', 'Admin\KelasBina::create', ["filter" => "auth
 $routes->post('kelas-bina/update', 'Admin\KelasBina::update', ["filter" => "authweb:1-2-3-7"]);
 $routes->post('kelas-bina/detail/update', 'Admin\KelasBina::update_detail', ["filter" => "authweb:1-2-3-7"]);
 $routes->post('kelas-bina/delete', 'Admin\KelasBina::delete', ["filter" => "authweb:1-2-3-7"]);
+$routes->post('kelas-bina/duplicate', 'Admin\KelasBina::duplicate', ["filter" => "authweb:1-2-3-7"]);
 
 /*--- Level---*/
 $routes->get('level', 'Admin\Level::index', ["filter" => "authweb:1-2-3-7"]);

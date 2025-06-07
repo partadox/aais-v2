@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Controllers\Admin;
 
 use App\Controllers\BaseController;
@@ -20,7 +21,7 @@ class KelasBina extends BaseController
             $get_angkatan       = $this->konfigurasi->angkatan_kuliah();
             $angkatan           = $get_angkatan->angkatan_kuliah;
         }
-        
+
         $list_angkatan      = $this->bina_kelas->list_unik_angkatan();
         $list_kelas         = $this->bina_kelas->list($angkatan);
         $data = [
@@ -60,7 +61,7 @@ class KelasBina extends BaseController
             $bk_id          = $this->request->getVar('bk_id');
             $bina_kelas   =  $this->bina_kelas->find($bk_id);
             $data = [
-                'title'     => 'Ubah Data Kelas Pembinaan '.$bina_kelas['bk_name'],
+                'title'     => 'Ubah Data Kelas Pembinaan ' . $bina_kelas['bk_name'],
                 'pengajar'  => $this->pengajar->list(),
                 'bina'    => $bina_kelas,
             ];
@@ -88,12 +89,12 @@ class KelasBina extends BaseController
             if ($kelas['bk_absen_koor'] != NULL) {
                 $koor_peserta_id    = $kelas['bk_absen_koor'];
                 $koor_peserta       = $this->peserta->find($koor_peserta_id);
-                $koor               = $koor_peserta['nis'] .'-'. $koor_peserta['nama_peserta'];
+                $koor               = $koor_peserta['nis'] . '-' . $koor_peserta['nama_peserta'];
             }
             if ($kelas['bk_absen_expired'] != NULL) {
-                $expired            = shortdate_indo(substr($kelas['bk_absen_expired'],0,10)) . ', '.substr($kelas['bk_absen_expired'],11,5). ' WITA';
+                $expired            = shortdate_indo(substr($kelas['bk_absen_expired'], 0, 10)) . ', ' . substr($kelas['bk_absen_expired'], 11, 5) . ' WITA';
             }
-            
+
             $data = [
                 'title'             => 'Al-Haqq - Detail Kelas Pembinaan',
                 'user'              => $user,
@@ -126,7 +127,7 @@ class KelasBina extends BaseController
             } elseif ($modul == 'pengajar') {
                 $title = 'Form Input Pengjar';
                 $pengajar = $this->pengajar->list();
-            } elseif($modul == 'absensi'){
+            } elseif ($modul == 'absensi') {
                 $title        = 'Form Pengaturan Absensi Kelas Pembinaan';
                 $koor         = $this->bina_peserta->peserta_onkelas($bk_id);
             }
@@ -149,7 +150,7 @@ class KelasBina extends BaseController
     /*--- BACKEND ---*/
     public function create()
     {
-        
+
         if ($this->request->isAJAX()) {
             $validation = \Config\Services::validation();
             $valid = $this->validate([
@@ -236,13 +237,13 @@ class KelasBina extends BaseController
                         'bk_timezone'  => $validation->getError('bk_timezone'),
                         'bk_jenkel'    => $validation->getError('bk_jenkel'),
                         'bk_tm_total'  => $validation->getError('bk_tm_total'),
-                        'bk_tm_methode'=> $validation->getError('bk_tm_methode'),
+                        'bk_tm_methode' => $validation->getError('bk_tm_methode'),
                         'bk_status'    => $validation->getError('bk_status'),
                     ]
                 ];
             } else {
-                
-                
+
+
                 $this->db->transStart();
                 $bina_kelas_New = [
                     'bk_name'          => strtoupper($this->request->getVar('bk_name')),
@@ -269,18 +270,15 @@ class KelasBina extends BaseController
                     $this->bina_pengajar->insert($bina_pengajar_NEW);
                 }
                 $this->db->transComplete();
-                
+
                 $aktivitas = 'Buat Data Kelas Pembinaan Nama : ' .  $this->request->getVar('bk_name');
 
-                if ($this->db->transStatus() === FALSE)
-                {
+                if ($this->db->transStatus() === FALSE) {
                     /*--- Log ---*/
-				    $this->logging('Admin', 'FAIL', $aktivitas);
-                }
-                else
-                {
+                    $this->logging('Admin', 'FAIL', $aktivitas);
+                } else {
                     /*--- Log ---*/
-				    $this->logging('Admin', 'BERHASIL', $aktivitas);
+                    $this->logging('Admin', 'BERHASIL', $aktivitas);
                 }
 
                 $msg = [
@@ -298,10 +296,10 @@ class KelasBina extends BaseController
         if ($this->request->isAJAX()) {
             $validation = \Config\Services::validation();
             $valid = $this->validate([
-                
+
                 'bk_name' => [
                     'label' => 'bk_name',
-                    'rules' => 'required|is_unique_except[bina_kelas.bk_name.bk_id.'. $this->request->getVar('bk_id').']',
+                    'rules' => 'required|is_unique_except[bina_kelas.bk_name.bk_id.' . $this->request->getVar('bk_id') . ']',
                     'errors' => [
                         'required' => '{field} tidak boleh kosong',
                         'is_unique_except' => '{field} harus unik, sudah ada yang menggunakan {field} ini',
@@ -374,7 +372,7 @@ class KelasBina extends BaseController
                         'bk_timezone'  => $validation->getError('bk_timezone'),
                         'bk_jenkel'    => $validation->getError('bk_jenkel'),
                         'bk_tm_total'  => $validation->getError('bk_tm_total'),
-                        'bk_tm_methode'=> $validation->getError('bk_tm_methode'),
+                        'bk_tm_methode' => $validation->getError('bk_tm_methode'),
                         'bk_status'    => $validation->getError('bk_status'),
                     ]
                 ];
@@ -460,16 +458,16 @@ class KelasBina extends BaseController
                 $aktivitas  = 'Mengubah pengaturan absensi di kelas pembinaan ' .  $bina['bk_name'];
             }
 
-                // Data Log END
-                $this->logging('Admin', 'BERHASIL', $aktivitas);
+            // Data Log END
+            $this->logging('Admin', 'BERHASIL', $aktivitas);
 
-                $msg = [
-                    'sukses' => [
-                        'link' => '/kelas-bina/detail?id='.$bk_id,
-                        'pesan'=> $pesan
-                    ]
-                ];
-            
+            $msg = [
+                'sukses' => [
+                    'link' => '/kelas-bina/detail?id=' . $bk_id,
+                    'pesan' => $pesan
+                ]
+            ];
+
             echo json_encode($msg);
         }
     }
@@ -493,26 +491,95 @@ class KelasBina extends BaseController
 
             $aktivitas = 'Hapus ' . $modul . ' nama  : ' .  $nama . ' pada kelas ' .  $bina['bk_name'];
 
-            if ($this->db->transStatus() === FALSE)
-            {
+            if ($this->db->transStatus() === FALSE) {
                 /*--- Log ---*/
                 $this->logging('Admin', 'FAIL', $aktivitas);
-            }
-            else
-            {
+            } else {
                 /*--- Log ---*/
                 $this->logging('Admin', 'BERHASIL', $aktivitas);
             }
 
             $msg = [
                 'sukses' => [
-                    'link' => '/kelas-bina/detail?id='. $bk_id 
+                    'link' => '/kelas-bina/detail?id=' . $bk_id
                 ]
             ];
             echo json_encode($msg);
         }
     }
 
-    
-    
+    public function duplicate()
+    {
+        if ($this->request->isAJAX()) {
+            $bk_id   = $this->request->getVar('bk_id');
+            $binaKl  = $this->bina_kelas->find($bk_id);
+
+            if (!$binaKl) {
+                $msg = ['error' => 'Data kelas tidak ditemukan'];
+                echo json_encode($msg);
+                return;
+            }
+
+            $this->db->transStart();
+
+            $bina_kelas_New = [
+                'bk_name'          => 'COPY ' . $binaKl['bk_name'],
+                'bk_angkatan'      => $binaKl['bk_angkatan'],
+                'bk_hari'          => $binaKl['bk_hari'],
+                'bk_waktu'         => $binaKl['bk_waktu'],
+                'bk_timezone'      => $binaKl['bk_timezone'],
+                'bk_jenkel'        => $binaKl['bk_jenkel'],
+                'bk_tm_total'      => $binaKl['bk_tm_total'],
+                'bk_tm_methode'    => $binaKl['bk_tm_methode'],
+                'bk_created'       => date('Y-m-d H:i:s'),
+                'bk_status'        => $binaKl['bk_status'],
+                'bk_absen_status'  => $binaKl['bk_absen_status'],
+                'bk_absen_methode' => $binaKl['bk_absen_methode'],
+            ];
+            $this->bina_kelas->insert($bina_kelas_New);
+            $bj_kelas = $this->bina_kelas->insertID();
+
+            // Duplicate pengajar
+            $pengajar = $this->bina_pengajar->where('bj_kelas', $binaKl['bk_id'])->findAll();
+            foreach ($pengajar as $item) {
+                $bina_pengajar_NEW = [
+                    'bj_pengajar' => $item['bj_pengajar'], // perbaikan: ambil value dari array
+                    'bj_kelas'    => $bj_kelas,
+                ];
+                $this->bina_pengajar->insert($bina_pengajar_NEW);
+            }
+
+            // Duplicate peserta
+            $peserta = $this->bina_peserta->where('bs_kelas', $binaKl['bk_id'])->findAll();
+            foreach ($peserta as $item) {
+                $bina_peserta_NEW = [
+                    'bs_peserta' => $item['bs_peserta'], // perbaikan: ambil value dari array
+                    'bs_kelas'   => $bj_kelas, // perbaikan: gunakan ID kelas baru
+                    'bs_status'  => 'BELUM LULUS',
+                ];
+                $this->bina_peserta->insert($bina_peserta_NEW);
+            }
+
+            $this->db->transComplete();
+
+            $aktivitas = 'Buat Data Duplicate Kelas Pembinaan Nama : ' . $binaKl['bk_name'];
+
+            if ($this->db->transStatus() === FALSE) {
+                /*--- Log ---*/
+                $this->logging('Admin', 'FAIL', $aktivitas);
+                $msg = ['error' => 'Gagal menduplikasi kelas'];
+            } else {
+                /*--- Log ---*/
+                $this->logging('Admin', 'BERHASIL', $aktivitas);
+                $msg = [
+                    'sukses' => [
+                        'message' => 'Kelas berhasil diduplikasi',
+                        'link' => 'kelas-bina'
+                    ]
+                ];
+            }
+
+            echo json_encode($msg);
+        }
+    }
 }

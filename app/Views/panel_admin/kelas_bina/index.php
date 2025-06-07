@@ -11,22 +11,22 @@
 
 <div class="row">
     <div class="col-sm-auto">
-        <button type="button" class="btn btn-primary mb-3" onclick="tambah('')" ><i class=" fa fa-plus-circle"></i> Tambah Kelas</button>
+        <button type="button" class="btn btn-primary mb-3" onclick="tambah('')"><i class=" fa fa-plus-circle"></i> Tambah Kelas</button>
     </div>
-    
+
     <div class="col-sm-auto">
-        <a href="<?= base_url('kelas-bina/export?angkatan='.$angkatan_pilih ) ?>"> 
+        <a href="<?= base_url('kelas-bina/export?angkatan=' . $angkatan_pilih) ?>">
             <button type="button" class="btn btn-secondary mb-3"><i class=" fa fa-file-download"></i> Export Excel (Download)</button>
         </a>
     </div>
-    </div>
+</div>
 </div>
 <div class="row">
     <div class="col-sm-auto ml-4 mb-2">
         <label for="angkatan_kelas">Pilih Angkatan Perkuliahan</label>
         <select onchange="javascript:location.href = this.value;" class="form-control js-example-basic-single" name="angkatan_kelas_filter" id="angkatan_kelas_filter" class="js-example-basic-single mb-2">
             <?php foreach ($list_angkatan as $key => $data) { ?>
-            <option value="kelas-bina?angkatan=<?= $data['bk_angkatan'] ?>" <?php if ($angkatan_pilih == $data['bk_angkatan']) echo "selected"; ?> > <?= $data['bk_angkatan'] ?> </option>
+                <option value="kelas-bina?angkatan=<?= $data['bk_angkatan'] ?>" <?php if ($angkatan_pilih == $data['bk_angkatan']) echo "selected"; ?>> <?= $data['bk_angkatan'] ?> </option>
             <?php } ?>
         </select>
     </div>
@@ -61,34 +61,38 @@
                     <td width="5%"><?= $data['bk_hari'] ?></td>
                     <td width="5%"><?= $data['bk_waktu'] ?> <?= $data['bk_timezone'] ?></td>
                     <td width="5%">
-                        <?php if($data['bk_tm_methode'] == 'ONLINE') { ?>
-                            <button class="btn btn-primary btn-sm" disabled>ONLINE</button> 
+                        <?php if ($data['bk_tm_methode'] == 'ONLINE') { ?>
+                            <button class="btn btn-primary btn-sm" disabled>ONLINE</button>
                         <?php } ?>
-                        <?php if($data['bk_tm_methode'] == 'OFFLINE') { ?>
-                            <button class="btn btn-info btn-sm" disabled>OFFLINE</button> 
+                        <?php if ($data['bk_tm_methode'] == 'OFFLINE') { ?>
+                            <button class="btn btn-info btn-sm" disabled>OFFLINE</button>
                         <?php } ?>
-                        <?php if($data['bk_tm_methode'] == 'HYBRID') { ?>
-                            <button class="btn btn-warning btn-sm" disabled>HYBRID</button> 
+                        <?php if ($data['bk_tm_methode'] == 'HYBRID') { ?>
+                            <button class="btn btn-warning btn-sm" disabled>HYBRID</button>
                         <?php } ?>
                     </td>
-                    <td  width="5%"><?= $data['bk_jenkel'] ?></td>
+                    <td width="5%"><?= $data['bk_jenkel'] ?></td>
                     <td width="5%"><?= $data['peserta_bina_count'] ?></td>
                     <td width="5%">
-                        <?php if($data['bk_status'] == '1') { ?>
-                            <button class="btn btn-success btn-sm" disabled>Aktif</button> 
+                        <?php if ($data['bk_status'] == '1') { ?>
+                            <button class="btn btn-success btn-sm" disabled>Aktif</button>
                         <?php } ?>
-                        <?php if($data['bk_status'] == '0') { ?>
-                            <button class="btn btn-secondary btn-sm" disabled>Nonaktif</button> 
+                        <?php if ($data['bk_status'] == '0') { ?>
+                            <button class="btn btn-secondary btn-sm" disabled>Nonaktif</button>
                         <?php } ?>
                     </td>
                     <td width="10%">
-                        <button type="button" class="btn btn-warning" onclick="edit('<?= $data['bk_id'] ?>')" >
+                        <button type="button" class="btn btn-warning" onclick="edit('<?= $data['bk_id'] ?>')">
                             <i class=" fa fa-edit"></i></button>
 
                         <a href="kelas-bina/detail?id=<?= $data['bk_id'] ?>" class="btn btn-info">
                             <i class=" fa fa-user-graduate"></i>
                         </a>
-                        
+
+                        <button type="button" class="btn btn-secondary" onclick="duplicate('<?= $data['bk_id'] ?>', '<?= $data['bk_name'] ?>')" title="Duplicate">
+                            <i class="fa fa-copy"></i>
+                        </button>
+
                     </td>
                 </tr>
 
@@ -104,21 +108,19 @@
 </div>
 
 <script>
-
-    $('#angkatan_kelas_filter').bind('change', function () { // bind change event to select
+    $('#angkatan_kelas_filter').bind('change', function() { // bind change event to select
         var url = $(this).val(); // get selected value
         if (url != '') { // require a URL
             window.location = url; // redirect
         }
         return false;
     });
-    
+
     function tambah() {
         $.ajax({
             type: "post",
             url: "<?= site_url('kelas-bina/input') ?>",
-            data: {
-            },
+            data: {},
             dataType: "json",
             success: function(response) {
                 if (response.sukses) {
@@ -134,7 +136,7 @@
             type: "post",
             url: "<?= site_url('kelas-bina/edit') ?>",
             data: {
-                bk_id : bk_id
+                bk_id: bk_id
             },
             dataType: "json",
             success: function(response) {
@@ -151,7 +153,7 @@
             type: "post",
             url: "<?= site_url('kelas-bina/detail') ?>",
             data: {
-                kelas_id : kelas_id
+                kelas_id: kelas_id
             },
             dataType: "json",
             // success: function(response) {
@@ -159,6 +161,53 @@
             //                     window.location = response.sukses.link;
             //             });
             // }
+        });
+    }
+
+    function duplicate(bk_id, kelas_name) {
+        Swal.fire({
+            title: 'Apakah anda yakin akan menduplikasi kelas "' + kelas_name + '"?',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Ya',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    type: "post",
+                    url: "<?= site_url('kelas-bina/duplicate') ?>",
+                    data: {
+                        bk_id: bk_id
+                    },
+                    dataType: "json",
+                    success: function(response) {
+                        if (response.sukses) {
+                            Swal.fire({
+                                title: 'Berhasil!',
+                                text: response.sukses.message,
+                                icon: 'success'
+                            }).then(() => {
+                                window.location.href = "<?= site_url('kelas-bina') ?>";
+                            });
+                        } else if (response.error) {
+                            Swal.fire({
+                                title: 'Gagal!',
+                                text: response.error,
+                                icon: 'error'
+                            });
+                        }
+                    },
+                    error: function() {
+                        Swal.fire({
+                            title: 'Error!',
+                            text: 'Terjadi kesalahan sistem',
+                            icon: 'error'
+                        });
+                    }
+                });
+            }
         });
     }
 </script>
