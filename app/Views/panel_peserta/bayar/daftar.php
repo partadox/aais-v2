@@ -161,7 +161,7 @@
             },
             {
                 id: 7,
-                name: "Infaq Palestina",
+                name: "INFAQ OPERASIONAL LTTQ AL HAQQ",
                 price: 0,
                 fixed: false
             },
