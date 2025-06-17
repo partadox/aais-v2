@@ -22,13 +22,28 @@
                 </div>
 
                 <div class="form-group mb-3">
-                    <label class="form-label">TANGGAL </label>
+                    <label class="form-label">TANGGAL</label>
                     <div class="input-group" id="datepicker2">
-                        <input type="text" id="dt_tm" name="dt_tm" class="form-control" placeholder="Tahun-Bulan-Tanggal"
-                            data-date-format="yyyy-mm-dd" data-date-container='#datepicker2'
-                            data-provide="datepicker" data-date-autoclose="true" <?php if (isset($absenTm)) { ?> value="<?= $absenTm['dt_tm'] ?>" <?php } ?> <?php if (!isset($absenTm)) { ?> value="<?= date('Y-m-d') ?>" <?php } ?> required>
+                        <input type="text"
+                            id="dt_tm"
+                            name="dt_tm"
+                            class="form-control"
+                            placeholder="Tahun-Bulan-Tanggal"
+                            data-date-format="yyyy-mm-dd"
+                            data-date-container='#datepicker2'
+                            data-provide="datepicker"
+                            data-date-autoclose="true"
+                            readonly
+                            <?php if (isset($absenTm)) { ?>
+                            value="<?= $absenTm['dt_tm'] ?>"
+                            <?php } else { ?>
+                            value="<?= date('Y-m-d') ?>"
+                            <?php } ?>
+                            required>
                         <div class="input-group-append">
-                            <span class="input-group-text"><i class="mdi mdi-calendar"></i></span>
+                            <span class="input-group-text">
+                                <i class="mdi mdi-calendar"></i>
+                            </span>
                         </div>
                     </div>
                     <div id="date-error" class="text-danger"></div>
@@ -247,5 +262,60 @@
             });
         });
 
+    });
+
+    $(document).ready(function() {
+        // Dapatkan tanggal hari ini
+        var today = new Date();
+        var currentMonth = today.getMonth();
+        var currentYear = today.getFullYear();
+
+        // Tanggal awal dan akhir bulan ini
+        var startDate = new Date(currentYear, currentMonth, 1);
+        var endDate = new Date(currentYear, currentMonth + 1, 0);
+
+        // Inisialisasi datepicker
+        $('#dt_tm').datepicker({
+            format: 'yyyy-mm-dd',
+            autoclose: true,
+            todayHighlight: true,
+            language: 'id', // opsional, untuk bahasa Indonesia
+            startDate: startDate,
+            endDate: endDate,
+            orientation: 'bottom auto'
+        });
+
+        // Mencegah input manual
+        $('#dt_tm').on('keydown keypress keyup', function(e) {
+            e.preventDefault();
+            return false;
+        });
+
+        // Mencegah paste
+        $('#dt_tm').on('paste', function(e) {
+            e.preventDefault();
+            return false;
+        });
+
+        // Fokus ke datepicker ketika input diklik
+        $('#dt_tm').on('focus click', function() {
+            $(this).datepicker('show');
+        });
+
+        // Validasi tambahan saat tanggal berubah
+        $('#dt_tm').on('changeDate', function(e) {
+            var selectedDate = e.date;
+            var selectedMonth = selectedDate.getMonth();
+            var selectedYear = selectedDate.getFullYear();
+
+            // Clear error message
+            $('#date-error').text('');
+
+            // Validasi apakah masih dalam bulan ini
+            if (selectedMonth !== currentMonth || selectedYear !== currentYear) {
+                $('#date-error').text('Hanya dapat memilih tanggal dalam bulan ini.');
+                $(this).val(''); // Clear invalid date
+            }
+        });
     });
 </script>

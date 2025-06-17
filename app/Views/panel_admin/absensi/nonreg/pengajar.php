@@ -4,28 +4,57 @@
 <div class="col-sm-6">
     <h4 class="page-title"><?= $title ?></h4>
 </div>
-
 <?= $this->endSection('judul') ?>
 
 <?= $this->section('isi') ?>
 
-<div class="row">
-    <div class="col-sm-auto mb-2">
-        <label for="absen_pilih">Export Excel (Download)</label>
-        <select onchange="javascript:location.href = this.value;" class="form-control js-example-basic-single" name="absen_pilih" id="absen_pilih" class="js-example-basic-single mb-2">
-            <option value="" disabled selected>Download...</option>
+<div class="row mb-3">
+    <div class="col-lg-3 col-md-4 col-sm-6 mb-2">
+        <label for="tahun_filter">Filter Tampilan (Pilih Tahun)</label>
+        <select class="form-control js-example-basic-single" name="tahun_filter" id="tahun_filter">
+            <option value="" disabled selected>Pilih Tahun</option>
             <?php foreach ($list_tahun as $key => $data) { ?>
-            <option value="/absensi-nonreg/pengajar-export?tahun=<?= $data['nk_tahun'] ?>"> Tahun <?= $data['nk_tahun'] ?> </option>
+                <option value="<?= $data['nk_tahun'] ?>" <?php if ($tahun_pilih == $data['nk_tahun']) echo "selected"; ?>>
+                    <?= $data['nk_tahun'] ?>
+                </option>
             <?php } ?>
         </select>
     </div>
-    <div class="col-sm-auto mb-2">
-        <label for="tahun_kelas">Pilih Tahun</label>
-        <select onchange="javascript:location.href = this.value;" class="form-control js-example-basic-single" name="tahun_kelas" id="tahun_kelas" class="js-example-basic-single mb-2">
-            <?php foreach ($list_tahun as $key => $data) { ?>
-            <option value="/absensi-nonreg/pengajar?tahun=<?= $data['nk_tahun'] ?>" <?php if ($tahun_pilih == $data['nk_tahun']) echo "selected"; ?>> <?= $data['nk_tahun'] ?> </option>
-            <?php } ?>
-        </select>
+</div>
+
+<div class="row mb-3">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-header">
+                <h6 class="card-title mb-0">Export Data Excel</h6>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-lg-3 col-md-4 col-sm-6 mb-3">
+                        <label for="tahun_export">Pilih Tahun <span class="text-danger">*</span></label>
+                        <select class="form-control js-example-basic-single" name="tahun_export" id="tahun_export">
+                            <option value="" disabled selected>Pilih Tahun</option>
+                            <?php foreach ($list_tahun as $key => $data) { ?>
+                                <option value="<?= $data['nk_tahun'] ?>">Tahun <?= $data['nk_tahun'] ?></option>
+                            <?php } ?>
+                        </select>
+                    </div>
+
+                    <div class="col-lg-3 col-md-4 col-sm-6 mb-3">
+                        <label for="bulan_export">Pilih Bulan <span class="text-danger">*</span></label>
+                        <select class="form-control js-example-basic-single" name="bulan_export" id="bulan_export" disabled>
+                            <option value="" disabled selected>Pilih Tahun Terlebih Dahulu</option>
+                        </select>
+                    </div>
+
+                    <div class="col-lg-3 col-md-4 col-sm-6 mb-3 d-flex align-items-end">
+                        <button type="button" class="btn btn-success btn-block" id="btn_export" disabled>
+                            <i class="mdi mdi-download"></i> Export Excel
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -54,28 +83,29 @@
                     <td width="10%"><?= $data['nk_nama'] ?></td>
                     <td width="10%"><?= $data['nk_tahun'] ?></td>
                     <td width="10%">
-                        <?php $totHadir = 0; for ($i = 1; $i <= $highest_tm_ambil; $i++): ?>
-                            <?php if (isset($data['napj'.$i])) { ?> 
-                                <?php if ($data['napj'.$i]['tm'] == '1') { $totHadir = $totHadir+1; ?> 
+                        <?php $totHadir = 0;
+                        for ($i = 1; $i <= $highest_tm_ambil; $i++): ?>
+                            <?php if (isset($data['napj' . $i])) { ?>
+                                <?php if ($data['napj' . $i]['tm'] == '1') {
+                                    $totHadir = $totHadir + 1; ?>
                                 <?php } ?>
                             <?php } ?>
                         <?php endfor; ?>
-                        <?= $totHadir?>
+                        <?= $totHadir ?>
                     </td>
                     <?php for ($i = 1; $i <= $highest_tm_ambil; $i++): ?>
                         <td>
-                            <?php if (isset($data['napj'.$i])) { ?> 
-                                <?php if ($data['napj'.$i]['tm'] == '1') { ?> 
+                            <?php if (isset($data['napj' . $i])) { ?>
+                                <?php if ($data['napj' . $i]['tm'] == '1') { ?>
                                     <i style="color: green;" class="mdi mdi-check-bold"></i>
                                 <?php } ?>
-                                <?php if ($data['napj'.$i]['tm'] == '0') { ?> 
+                                <?php if ($data['napj' . $i]['tm'] == '0') { ?>
                                     <i style="color: red;" class="mdi mdi-minus"></i>
                                 <?php } ?>
                             <?php } ?>
                         </td>
                     <?php endfor; ?>
                 </tr>
-
             <?php endforeach; ?>
         </tbody>
     </table>
@@ -85,20 +115,166 @@
 </div>
 
 <script>
-    $('#tahun_kelas').bind('change', function () { // bind change event to select
-        var url = $(this).val(); // get selected value
-        if (url != '') { // require a URL
-            window.location = url; // redirect
+    // Daftar bulan untuk dropdown
+    const months = [{
+            value: 'all',
+            text: 'SEMUA'
+        },
+        {
+            value: '01',
+            text: 'Januari'
+        },
+        {
+            value: '02',
+            text: 'Februari'
+        },
+        {
+            value: '03',
+            text: 'Maret'
+        },
+        {
+            value: '04',
+            text: 'April'
+        },
+        {
+            value: '05',
+            text: 'Mei'
+        },
+        {
+            value: '06',
+            text: 'Juni'
+        },
+        {
+            value: '07',
+            text: 'Juli'
+        },
+        {
+            value: '08',
+            text: 'Agustus'
+        },
+        {
+            value: '09',
+            text: 'September'
+        },
+        {
+            value: '10',
+            text: 'Oktober'
+        },
+        {
+            value: '11',
+            text: 'November'
+        },
+        {
+            value: '12',
+            text: 'Desember'
         }
-        return false;
-    });
+    ];
 
-    $('#absen_pilih').bind('change', function () { // bind change event to select
-        var url = $(this).val(); // get selected value
-        if (url != '') { // require a URL
-            window.location = url; // redirect
-        }
-        return false;
+    $(document).ready(function() {
+        // Initialize Select2
+        $('.js-example-basic-single').select2();
+
+        // Filter tahun untuk tampilan
+        $('#tahun_filter').on('change', function() {
+            const tahun = $(this).val();
+            if (tahun) {
+                window.location.href = '/absensi-nonreg/pengajar?tahun=' + tahun;
+            }
+        });
+
+        // Export tahun selection
+        $('#tahun_export').on('change', function() {
+            const tahun = $(this).val();
+            const bulanSelect = $('#bulan_export');
+            const btnExport = $('#btn_export');
+
+            if (tahun) {
+                // Enable bulan dropdown
+                bulanSelect.prop('disabled', false);
+                bulanSelect.empty();
+                bulanSelect.append('<option value="" disabled selected>Pilih Bulan</option>');
+
+                // Populate bulan options
+                months.forEach(function(month) {
+                    bulanSelect.append('<option value="' + month.value + '">' + month.text + '</option>');
+                });
+
+                // Reinitialize Select2 for bulan dropdown
+                bulanSelect.select2();
+            } else {
+                // Disable bulan dropdown and export button
+                bulanSelect.prop('disabled', true);
+                bulanSelect.empty();
+                bulanSelect.append('<option value="" disabled selected>Pilih Tahun Terlebih Dahulu</option>');
+                btnExport.prop('disabled', true);
+            }
+        });
+
+        // Bulan selection
+        $('#bulan_export').on('change', function() {
+            const bulan = $(this).val();
+            const btnExport = $('#btn_export');
+
+            if (bulan) {
+                btnExport.prop('disabled', false);
+            } else {
+                btnExport.prop('disabled', true);
+            }
+        });
+
+        // Export button click
+        $('#btn_export').on('click', function() {
+            const tahun = $('#tahun_export').val();
+            const bulan = $('#bulan_export').val();
+
+            if (!tahun || !bulan) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Peringatan!',
+                    text: 'Mohon pilih tahun dan bulan terlebih dahulu.',
+                    confirmButtonColor: '#3085d6'
+                });
+                return;
+            }
+
+            // Show loading alert
+            Swal.fire({
+                title: 'Memproses Export...',
+                text: 'Mohon tunggu, sedang memproses data export Excel.',
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                showConfirmButton: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+
+            // Construct export URL
+            const exportUrl = '/absensi-nonreg/pengajar-export?tahun=' + tahun + '&bulan=' + bulan;
+
+            // Create hidden iframe for download
+            const iframe = document.createElement('iframe');
+            iframe.style.display = 'none';
+            iframe.src = exportUrl;
+            document.body.appendChild(iframe);
+
+            // Close loading after a short delay (adjust as needed)
+            setTimeout(function() {
+                Swal.close();
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil!',
+                    text: 'Export Excel berhasil diunduh.',
+                    timer: 2000,
+                    showConfirmButton: false
+                });
+
+                // Remove iframe after download
+                setTimeout(function() {
+                    document.body.removeChild(iframe);
+                }, 1000);
+            }, 2000);
+        });
     });
 
     function catatan(absen_pengajar_id, kelas_id) {
@@ -106,8 +282,8 @@
             type: "post",
             url: "<?= site_url('/absensi-regular/pengajar-note') ?>",
             data: {
-                absen_pengajar_id : absen_pengajar_id,
-                kelas_id : kelas_id
+                absen_pengajar_id: absen_pengajar_id,
+                kelas_id: kelas_id
             },
             dataType: "json",
             success: function(response) {

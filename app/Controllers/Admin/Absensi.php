@@ -1879,53 +1879,384 @@ class Absensi extends BaseController
 
         $writer->save('php://output');
     }
+    // public function nonreg_pengajar_export()
+    // {
+    //     $user          = $this->userauth();
+
+    //     $uri            = new \CodeIgniter\HTTP\URI(current_url(true));
+    //     $queryString    = $uri->getQuery();
+    //     $params         = [];
+    //     parse_str($queryString, $params);
+
+    //     if (count($params) == 1 && array_key_exists('tahun', $params)) {
+    //         $tahun       = $params['tahun'];
+    //     } else {
+    //         $tahun      = date('Y');
+    //     }
+    //     $list_kelas     = $this->nonreg_kelas->list($tahun);
+    //     if (count($list_kelas) > 0) {
+    //         $highest_tm_ambil = max(array_column($list_kelas, 'nk_tm_ambil'));
+    //     } else {
+    //         $highest_tm_ambil = 0;
+    //     }
+    //     $lists             = $this->nonreg_absen_pengajar->list_rekap($tahun);
+    //     // Process each record in the lists array
+    //     $lists = array_map(function ($record) {
+    //         // Loop through each field in the record
+    //         foreach ($record as $key => $value) {
+    //             // Check if it's a napj field and not null
+    //             if (preg_match('/^napj\d+$/', $key) && !is_null($value)) {
+    //                 // Decode JSON string to array
+    //                 $record[$key] = json_decode($value, true);
+    //             }
+    //         }
+    //         return $record;
+    //     }, $lists);
+    //     $total_row  = count($lists) + 5;
+    //     $col_isi    = 0;
+
+    //     $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
+    //     $sheet = $spreadsheet->getActiveSheet();
+    //     $styleColumn = [
+    //         'font' => [
+    //             'bold' => true,
+    //             'size' => 14,
+    //         ],
+    //         'alignment' => [
+    //             'horizontal'    => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+    //             'vertical'      => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+    //         ]
+    //     ];
+
+    //     $style_up = [
+    //         'font' => [
+    //             'bold' => true,
+    //             'size' => 11,
+    //         ],
+    //         'alignment' => [
+    //             'horizontal'    => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+    //             'vertical'      => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+    //         ],
+    //         'fill' => [
+    //             'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+    //             'startColor' => [
+    //                 'argb' => 'D9D9D9',
+    //             ],
+    //             'endColor' => [
+    //                 'argb' => 'D9D9D9',
+    //             ],
+    //         ],
+    //         'borders' => [
+    //             'allBorders' => [
+    //                 'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+    //             ],
+    //         ],
+    //     ];
+
+    //     $isi_tengah = [
+    //         'alignment' => [
+    //             'horizontal'    => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+    //             'vertical'      => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+    //         ],
+    //         'borders' => [
+    //             'allBorders' => [
+    //                 'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+    //             ],
+    //         ],
+    //     ];
+
+    //     $judul = "DATA REKAP ABSENSI PENGAJAR PROGRAM NON-REGULER";
+    //     $tgl   =  "TAHUN " . $tahun . ' - ' . date("d-m-Y");
+
+    //     $sheet->setCellValue('A1', $judul);
+    //     $sheet->mergeCells('A1:G1');
+    //     $sheet->getStyle('A1')->applyFromArray($styleColumn);
+
+    //     $sheet->setCellValue('A2', $tgl);
+    //     $sheet->mergeCells('A2:G2');
+    //     $sheet->getStyle('A2')->applyFromArray($styleColumn);
+
+
+    //     $spreadsheet->setActiveSheetIndex(0)
+    //         ->setCellValue('A4', 'NAMA')
+    //         ->setCellValue('B4', 'TIPE')
+    //         ->setCellValue('C4', 'KELAS')
+    //         ->setCellValue('D4', 'PROGRAM KELAS')
+    //         ->setCellValue('E4', 'ANGKATAN KELAS')
+    //         ->setCellValue('F4', 'TOTAL HADIR');
+
+    //     $lastW      = 'F';
+    //     $step       = 0;
+    //     // $newAsci = 'D0';
+
+    //     for ($i = 1; $i <= $highest_tm_ambil; $i++) {
+    //         $step       = $step + 1;
+    //         $newAsci    = $this->incrementAlphaSequence($lastW, $step);
+    //         $spreadsheet->getActiveSheet()->setCellValue($newAsci . '4', 'TM' . $i);
+
+    //         $spreadsheet->getActiveSheet()->getColumnDimension($newAsci)->setAutoSize(true);
+    //     }
+    //     $step       = $step + 1;
+    //     for ($i = 1; $i <= $highest_tm_ambil; $i++) {
+    //         $step       = $step + 1;
+    //         $newAsci    = $this->incrementAlphaSequence($lastW, $step);
+    //         $spreadsheet->getActiveSheet()->setCellValue($newAsci . '4', 'MTD TTM' . $i);
+
+    //         $spreadsheet->getActiveSheet()->getColumnDimension($newAsci)->setAutoSize(true);
+    //     }
+    //     $step       = $step + 1;
+    //     for ($i = 1; $i <= $highest_tm_ambil; $i++) {
+    //         $step       = $step + 1;
+    //         $newAsci    = $this->incrementAlphaSequence($lastW, $step);
+    //         $spreadsheet->getActiveSheet()->setCellValue($newAsci . '4', 'ISI ABS TM-' . $i);
+
+    //         $spreadsheet->getActiveSheet()->getColumnDimension($newAsci)->setAutoSize(true);
+    //     }
+    //     $sheet->getStyle('A4:' . $newAsci . '4')->applyFromArray($style_up);
+    //     $sheet->getStyle('A5:' . $newAsci . $total_row)->applyFromArray($isi_tengah);
+
+    //     $columns = range('A', 'F');
+    //     foreach ($columns as $column) {
+    //         $spreadsheet->getActiveSheet()->getColumnDimension($column)->setAutoSize(true);
+    //     }
+
+    //     $row = 5;
+
+    //     foreach ($lists as $data) {
+
+    //         $totHadir = 0;
+    //         for ($i = 1; $i <= $highest_tm_ambil; $i++) {
+    //             if (isset($data['napj' . $i])) {
+    //                 if ($data['napj' . $i]['tm'] == '1') {
+    //                     $totHadir = $totHadir + 1;
+    //                 }
+    //             }
+    //         }
+
+    //         $spreadsheet->setActiveSheetIndex(0)
+
+    //             ->setCellValue('A' . $row, $data['nama_pengajar'])
+    //             ->setCellValue('B' . $row, $data['kategori_pengajar'])
+    //             ->setCellValue('C' . $row, $data['nk_nama'])
+    //             ->setCellValue('D' . $row, $data['nama_program'])
+    //             ->setCellValue('E' . $row, $data['nk_tahun'])
+    //             ->setCellValue('F' . $row, $totHadir);
+
+    //         $lastW      = 'F';
+    //         $step       = 0;
+
+    //         for ($i = 1; $i <= $highest_tm_ambil; $i++) {
+    //             $step = $step + 1;
+    //             $var = 'napj' . $i;
+    //             $col_letter = $this->incrementAlphaSequence($lastW, $step);
+
+    //             if (isset($data[$var]['tm'])) {
+    //                 if ($data[$var]['tm'] == '1') {
+    //                     $cell = $col_letter . $row;
+    //                     $spreadsheet->getActiveSheet()
+    //                         ->setCellValue($cell, $data[$var]['dt_tm']);
+    //                 } elseif ($data[$var]['tm'] == '0') {
+    //                     $cell = $col_letter . $row;
+    //                     $spreadsheet->getActiveSheet()
+    //                         ->setCellValue($cell, '--');
+    //                 } else {
+    //                     $cell = $col_letter . $row;
+    //                     $spreadsheet->getActiveSheet()
+    //                         ->setCellValue($cell, '');
+    //                 }
+    //             } else {
+    //                 $cell = $col_letter . $row;
+    //                 $spreadsheet->getActiveSheet()
+    //                     ->setCellValue($cell, '');
+    //             };
+    //         }
+    //         $step       = $step + 1;
+    //         for ($ii = 1; $ii <= $highest_tm_ambil; $ii++) {
+    //             $step = $step + 1;
+    //             $var = 'napj' . $ii;
+    //             $col_letter = $this->incrementAlphaSequence($lastW, $step);
+
+    //             if (isset($data[$var]['tm'])) {
+    //                 $cell = $col_letter . $row;
+    //                 if (isset($data[$var]['metode_ttm'])) {
+    //                     $spreadsheet->getActiveSheet()
+    //                         ->setCellValue($cell, $data[$var]['metode_ttm']);
+    //                 }
+    //             } else {
+    //                 $cell = $col_letter . $row;
+    //                 $spreadsheet->getActiveSheet()
+    //                     ->setCellValue($cell, '');
+    //             };
+    //         }
+    //         $step       = $step + 1;
+    //         for ($ii = 1; $ii <= $highest_tm_ambil; $ii++) {
+    //             $step = $step + 1;
+    //             $var = 'napj' . $ii;
+    //             $col_letter = $this->incrementAlphaSequence($lastW, $step);
+
+    //             if (isset($data[$var]['tm'])) {
+    //                 $cell = $col_letter . $row;
+    //                 $spreadsheet->getActiveSheet()
+    //                     ->setCellValue($cell, $data[$var]['dt_isi']);
+    //             } else {
+    //                 $cell = $col_letter . $row;
+    //                 $spreadsheet->getActiveSheet()
+    //                     ->setCellValue($cell, '');
+    //             };
+    //         }
+
+    //         $row++;
+    //     }
+
+    //     $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xls($spreadsheet);
+    //     $filename =  'Data-Rekap-Absensi-Pengajar-NonReguler-' . $tahun . '-' . date('Y-m-d-His');
+
+    //     /*--- Log ---*/
+    //     $this->logging('Admin', 'BERHASIL', 'Donwload rekap absensi pengajar program Non-Reguler ' . $tahun);
+
+    //     header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    //     header('Content-Disposition: attachment;filename=' . $filename . '.xls');
+    //     header('Cache-Control: max-age=0');
+
+    //     $writer->save('php://output');
+    // }
     public function nonreg_pengajar_export()
     {
-        $user          = $this->userauth();
+        $user = $this->userauth();
 
-        $uri            = new \CodeIgniter\HTTP\URI(current_url(true));
-        $queryString    = $uri->getQuery();
-        $params         = [];
+        $uri = new \CodeIgniter\HTTP\URI(current_url(true));
+        $queryString = $uri->getQuery();
+        $params = [];
         parse_str($queryString, $params);
 
-        if (count($params) == 1 && array_key_exists('tahun', $params)) {
-            $tahun       = $params['tahun'];
+        // Get tahun parameter
+        if (count($params) >= 1 && array_key_exists('tahun', $params)) {
+            $tahun = $params['tahun'];
         } else {
-            $tahun      = date('Y');
+            $tahun = date('Y');
         }
-        $list_kelas     = $this->nonreg_kelas->list($tahun);
+
+        // Get bulan parameter
+        $bulan = isset($params['bulan']) ? $params['bulan'] : 'all';
+
+        $list_kelas = $this->nonreg_kelas->list($tahun);
         if (count($list_kelas) > 0) {
             $highest_tm_ambil = max(array_column($list_kelas, 'nk_tm_ambil'));
         } else {
             $highest_tm_ambil = 0;
         }
-        $lists             = $this->nonreg_absen_pengajar->list_rekap($tahun);
-        // Process each record in the lists array
+
+        // Get all data for the year
+        $lists = $this->nonreg_absen_pengajar->list_rekap($tahun);
+
+        // Process each record - decode JSON napj fields
         $lists = array_map(function ($record) {
-            // Loop through each field in the record
             foreach ($record as $key => $value) {
-                // Check if it's a napj field and not null
                 if (preg_match('/^napj\d+$/', $key) && !is_null($value)) {
-                    // Decode JSON string to array
                     $record[$key] = json_decode($value, true);
                 }
             }
             return $record;
         }, $lists);
 
-        $total_row  = count($lists) + 5;
-        $col_isi    = 0;
+        // Filter by month if not 'all'
+        if ($bulan !== 'all') {
+            $lists = $this->filterDataByMonth($lists, $bulan, $highest_tm_ambil);
+        }
+
+        // Transform data structure - convert horizontal TM data to vertical rows
+        $transformed_data = [];
+        foreach ($lists as $data) {
+            // Calculate total hadir
+            $totHadir = 0;
+            for ($i = 1; $i <= $highest_tm_ambil; $i++) {
+                if (isset($data['napj' . $i]) && $data['napj' . $i]['tm'] == '1') {
+                    // Check if this TM date falls within the selected month
+                    if ($bulan === 'all' || $this->isDateInMonth($data['napj' . $i]['dt_tm'], $bulan)) {
+                        $totHadir++;
+                    }
+                }
+            }
+
+            // Create rows for each TM
+            for ($i = 1; $i <= $highest_tm_ambil; $i++) {
+                // Initialize TM data
+                $tm_data = [
+                    'nama_pengajar' => $data['nama_pengajar'],
+                    'kategori_pengajar' => $data['kategori_pengajar'],
+                    'nk_nama' => $data['nk_nama'],
+                    'nama_program' => $data['nama_program'],
+                    'nk_tahun' => $data['nk_tahun'],
+                    'total_hadir' => $totHadir,
+                    'tm_number' => 'TM' . $i,
+                    'tgl_hadir' => '',
+                    'metode_ttm' => '',
+                    'dt_isi' => '',
+                    'status_hadir' => 'Tidak Hadir'
+                ];
+
+                // Check if this TM data exists
+                if (isset($data['napj' . $i]) && !is_null($data['napj' . $i])) {
+                    $napj = $data['napj' . $i];
+
+                    // Skip this TM if it's not in the selected month (when month filter is applied)
+                    if ($bulan !== 'all' && !$this->isDateInMonth($napj['dt_tm'], $bulan)) {
+                        continue;
+                    }
+
+                    if ($napj['tm'] == '1') {
+                        $tm_data['tgl_hadir'] = $napj['dt_tm'];
+                        $tm_data['status_hadir'] = 'Hadir';
+                        $tm_data['dt_isi'] = $napj['dt_isi'];
+                        if (isset($napj['metode_ttm'])) {
+                            $tm_data['metode_ttm'] = $napj['metode_ttm'];
+                        }
+                    } elseif ($napj['tm'] == '0') {
+                        $tm_data['status_hadir'] = 'Tidak Hadir';
+                        $tm_data['tgl_hadir'] = '--';
+                    }
+                } else {
+                    // If no data for this TM and month filter is applied, skip empty rows
+                    if ($bulan !== 'all') {
+                        continue;
+                    }
+                }
+
+                $transformed_data[] = $tm_data;
+            }
+        }
+
+        // If no data found for the selected month, create a message
+        if (empty($transformed_data) && $bulan !== 'all') {
+            $bulan_name = $this->getMonthName($bulan);
+            $transformed_data[] = [
+                'nama_pengajar' => 'TIDAK ADA DATA',
+                'kategori_pengajar' => '-',
+                'nk_nama' => '-',
+                'nama_program' => '-',
+                'nk_tahun' => $tahun,
+                'total_hadir' => 0,
+                'tm_number' => '-',
+                'tgl_hadir' => '-',
+                'metode_ttm' => '-',
+                'dt_isi' => '-',
+                'status_hadir' => 'Tidak ada data untuk bulan ' . $bulan_name
+            ];
+        }
+
+        $total_row = count($transformed_data) + 5;
 
         $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
+
         $styleColumn = [
             'font' => [
                 'bold' => true,
                 'size' => 14,
             ],
             'alignment' => [
-                'horizontal'    => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
-                'vertical'      => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+                'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
             ]
         ];
 
@@ -1935,8 +2266,8 @@ class Absensi extends BaseController
                 'size' => 11,
             ],
             'alignment' => [
-                'horizontal'    => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
-                'vertical'      => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+                'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
             ],
             'fill' => [
                 'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
@@ -1956,8 +2287,8 @@ class Absensi extends BaseController
 
         $isi_tengah = [
             'alignment' => [
-                'horizontal'    => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
-                'vertical'      => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+                'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
             ],
             'borders' => [
                 'allBorders' => [
@@ -1966,159 +2297,143 @@ class Absensi extends BaseController
             ],
         ];
 
+        // Dynamic title based on filter
+        $period_text = $bulan === 'all' ? 'TAHUN ' . $tahun : 'BULAN ' . $this->getMonthName($bulan) . ' TAHUN ' . $tahun;
         $judul = "DATA REKAP ABSENSI PENGAJAR PROGRAM NON-REGULER";
-        $tgl   =  "TAHUN " . $tahun . ' - ' . date("d-m-Y");
+        $tgl = $period_text . ' - ' . date("d-m-Y");
 
         $sheet->setCellValue('A1', $judul);
-        $sheet->mergeCells('A1:G1');
+        $sheet->mergeCells('A1:K1');
         $sheet->getStyle('A1')->applyFromArray($styleColumn);
 
         $sheet->setCellValue('A2', $tgl);
-        $sheet->mergeCells('A2:G2');
+        $sheet->mergeCells('A2:K2');
         $sheet->getStyle('A2')->applyFromArray($styleColumn);
 
-
+        // Set headers for vertical format
         $spreadsheet->setActiveSheetIndex(0)
-            ->setCellValue('A4', 'NAMA')
-            ->setCellValue('B4', 'TIPE')
-            ->setCellValue('C4', 'KELAS')
-            ->setCellValue('D4', 'PROGRAM KELAS')
-            ->setCellValue('E4', 'ANGKATAN KELAS')
-            ->setCellValue('F4', 'TOTAL HADIR');
+            ->setCellValue('A4', 'NO')
+            ->setCellValue('B4', 'NAMA')
+            ->setCellValue('C4', 'TIPE')
+            ->setCellValue('D4', 'KELAS')
+            ->setCellValue('E4', 'PROGRAM KELAS')
+            ->setCellValue('F4', 'ANGKATAN KELAS')
+            ->setCellValue('G4', 'TM')
+            ->setCellValue('H4', 'TGL HADIR')
+            ->setCellValue('I4', 'METODE TTM')
+            ->setCellValue('J4', 'TGL INPUT');
 
-        $lastW      = 'F';
-        $step       = 0;
-        // $newAsci = 'D0';
+        $sheet->getStyle('A4:K4')->applyFromArray($style_up);
+        $sheet->getStyle('A5:K' . $total_row)->applyFromArray($isi_tengah);
 
-        for ($i = 1; $i <= $highest_tm_ambil; $i++) {
-            $step       = $step + 1;
-            $newAsci    = $this->incrementAlphaSequence($lastW, $step);
-            $spreadsheet->getActiveSheet()->setCellValue($newAsci . '4', 'TM' . $i);
-
-            $spreadsheet->getActiveSheet()->getColumnDimension($newAsci)->setAutoSize(true);
-        }
-        $step       = $step + 1;
-        for ($i = 1; $i <= $highest_tm_ambil; $i++) {
-            $step       = $step + 1;
-            $newAsci    = $this->incrementAlphaSequence($lastW, $step);
-            $spreadsheet->getActiveSheet()->setCellValue($newAsci . '4', 'MTD TTM' . $i);
-
-            $spreadsheet->getActiveSheet()->getColumnDimension($newAsci)->setAutoSize(true);
-        }
-        $step       = $step + 1;
-        for ($i = 1; $i <= $highest_tm_ambil; $i++) {
-            $step       = $step + 1;
-            $newAsci    = $this->incrementAlphaSequence($lastW, $step);
-            $spreadsheet->getActiveSheet()->setCellValue($newAsci . '4', 'ISI ABS TM-' . $i);
-
-            $spreadsheet->getActiveSheet()->getColumnDimension($newAsci)->setAutoSize(true);
-        }
-        $sheet->getStyle('A4:' . $newAsci . '4')->applyFromArray($style_up);
-        $sheet->getStyle('A5:' . $newAsci . $total_row)->applyFromArray($isi_tengah);
-
-        $columns = range('A', 'F');
+        // Auto-size columns
+        $columns = range('A', 'K');
         foreach ($columns as $column) {
             $spreadsheet->getActiveSheet()->getColumnDimension($column)->setAutoSize(true);
         }
 
         $row = 5;
-
-        foreach ($lists as $data) {
-
-            $totHadir = 0;
-            for ($i = 1; $i <= $highest_tm_ambil; $i++) {
-                if (isset($data['napj' . $i])) {
-                    if ($data['napj' . $i]['tm'] == '1') {
-                        $totHadir = $totHadir + 1;
-                    }
-                }
-            }
-
+        $no = 1;
+        // Fill data in vertical format
+        foreach ($transformed_data as $data) {
+            // Set row number
+            $data['no'] = $no++;
             $spreadsheet->setActiveSheetIndex(0)
-
-                ->setCellValue('A' . $row, $data['nama_pengajar'])
-                ->setCellValue('B' . $row, $data['kategori_pengajar'])
-                ->setCellValue('C' . $row, $data['nk_nama'])
-                ->setCellValue('D' . $row, $data['nama_program'])
-                ->setCellValue('E' . $row, $data['nk_tahun'])
-                ->setCellValue('F' . $row, $totHadir);
-
-            $lastW      = 'F';
-            $step       = 0;
-
-            for ($i = 1; $i <= $highest_tm_ambil; $i++) {
-                $step = $step + 1;
-                $var = 'napj' . $i;
-                $col_letter = $this->incrementAlphaSequence($lastW, $step);
-
-                if (isset($data[$var]['tm'])) {
-                    if ($data[$var]['tm'] == '1') {
-                        $cell = $col_letter . $row;
-                        $spreadsheet->getActiveSheet()
-                            ->setCellValue($cell, $data[$var]['dt_tm']);
-                    } elseif ($data[$var]['tm'] == '0') {
-                        $cell = $col_letter . $row;
-                        $spreadsheet->getActiveSheet()
-                            ->setCellValue($cell, '--');
-                    } else {
-                        $cell = $col_letter . $row;
-                        $spreadsheet->getActiveSheet()
-                            ->setCellValue($cell, '');
-                    }
-                } else {
-                    $cell = $col_letter . $row;
-                    $spreadsheet->getActiveSheet()
-                        ->setCellValue($cell, '');
-                };
-            }
-            $step       = $step + 1;
-            for ($ii = 1; $ii <= $highest_tm_ambil; $ii++) {
-                $step = $step + 1;
-                $var = 'napj' . $ii;
-                $col_letter = $this->incrementAlphaSequence($lastW, $step);
-
-                if (isset($data[$var]['tm'])) {
-                    $cell = $col_letter . $row;
-                    if (isset($data[$var]['metode_ttm'])) {
-                        $spreadsheet->getActiveSheet()
-                            ->setCellValue($cell, $data[$var]['metode_ttm']);
-                    }
-                } else {
-                    $cell = $col_letter . $row;
-                    $spreadsheet->getActiveSheet()
-                        ->setCellValue($cell, '');
-                };
-            }
-            $step       = $step + 1;
-            for ($ii = 1; $ii <= $highest_tm_ambil; $ii++) {
-                $step = $step + 1;
-                $var = 'napj' . $ii;
-                $col_letter = $this->incrementAlphaSequence($lastW, $step);
-
-                if (isset($data[$var]['tm'])) {
-                    $cell = $col_letter . $row;
-                    $spreadsheet->getActiveSheet()
-                        ->setCellValue($cell, $data[$var]['dt_isi']);
-                } else {
-                    $cell = $col_letter . $row;
-                    $spreadsheet->getActiveSheet()
-                        ->setCellValue($cell, '');
-                };
-            }
+                ->setCellValue('A' . $row, $data['no'])
+                ->setCellValue('B' . $row, $data['nama_pengajar'])
+                ->setCellValue('C' . $row, $data['kategori_pengajar'])
+                ->setCellValue('D' . $row, $data['nk_nama'])
+                ->setCellValue('E' . $row, $data['nama_program'])
+                ->setCellValue('F' . $row, $data['nk_tahun'])
+                ->setCellValue('G' . $row, $data['tm_number'])
+                ->setCellValue('H' . $row, $data['tgl_hadir'])
+                ->setCellValue('I' . $row, $data['metode_ttm'])
+                ->setCellValue('J' . $row, $data['dt_isi']);
 
             $row++;
         }
 
         $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xls($spreadsheet);
-        $filename =  'Data-Rekap-Absensi-Pengajar-NonReguler-' . $tahun . '-' . date('Y-m-d-His');
+
+        // Dynamic filename based on filter
+        $filename_suffix = $bulan === 'all' ? $tahun : $tahun . '-' . $this->getMonthName($bulan);
+        $filename = 'Data-Rekap-Absensi-Pengajar-NonReguler-Vertical-' . $filename_suffix . '-' . date('Y-m-d-His');
 
         /*--- Log ---*/
-        $this->logging('Admin', 'BERHASIL', 'Donwload rekap absensi pengajar program Non-Reguler ' . $tahun);
+        $log_message = $bulan === 'all'
+            ? 'Download rekap absensi pengajar program Non-Reguler (Format Vertikal) tahun ' . $tahun
+            : 'Download rekap absensi pengajar program Non-Reguler (Format Vertikal) bulan ' . $this->getMonthName($bulan) . ' tahun ' . $tahun;
+
+        $this->logging('Admin', 'BERHASIL', $log_message);
 
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         header('Content-Disposition: attachment;filename=' . $filename . '.xls');
         header('Cache-Control: max-age=0');
 
         $writer->save('php://output');
+    }
+
+    /**
+     * Helper function to filter data by month
+     */
+    private function filterDataByMonth($lists, $bulan, $highest_tm_ambil)
+    {
+        $filtered_lists = [];
+
+        foreach ($lists as $data) {
+            $has_data_in_month = false;
+
+            // Check if any TM has data in the selected month
+            for ($i = 1; $i <= $highest_tm_ambil; $i++) {
+                if (isset($data['napj' . $i]) && !is_null($data['napj' . $i])) {
+                    if (isset($data['napj' . $i]['dt_tm']) && $this->isDateInMonth($data['napj' . $i]['dt_tm'], $bulan)) {
+                        $has_data_in_month = true;
+                        break;
+                    }
+                }
+            }
+
+            if ($has_data_in_month) {
+                $filtered_lists[] = $data;
+            }
+        }
+
+        return $filtered_lists;
+    }
+
+    /**
+     * Helper function to check if a date falls within a specific month
+     */
+    private function isDateInMonth($date, $month)
+    {
+        if (empty($date) || $month === 'all') {
+            return true;
+        }
+
+        $date_month = date('m', strtotime($date));
+        return $date_month === $month;
+    }
+
+    /**
+     * Helper function to get month name in Indonesian
+     */
+    private function getMonthName($month)
+    {
+        $months = [
+            '01' => 'Januari',
+            '02' => 'Februari',
+            '03' => 'Maret',
+            '04' => 'April',
+            '05' => 'Mei',
+            '06' => 'Juni',
+            '07' => 'Juli',
+            '08' => 'Agustus',
+            '09' => 'September',
+            '10' => 'Oktober',
+            '11' => 'November',
+            '12' => 'Desember'
+        ];
+
+        return isset($months[$month]) ? $months[$month] : 'Semua';
     }
 }
