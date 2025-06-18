@@ -267,12 +267,64 @@
     $(document).ready(function() {
         // Dapatkan tanggal hari ini
         var today = new Date();
+        var currentDate = today.getDate();
         var currentMonth = today.getMonth();
         var currentYear = today.getFullYear();
 
-        // Tanggal awal dan akhir bulan ini
-        var startDate = new Date(currentYear, currentMonth, 1);
-        var endDate = new Date(currentYear, currentMonth + 1, 0);
+        // Fungsi helper untuk format tanggal
+        function formatDate(date) {
+            var year = date.getFullYear();
+            var month = String(date.getMonth() + 1).padStart(2, '0');
+            var day = String(date.getDate()).padStart(2, '0');
+            return year + '-' + month + '-' + day;
+        }
+
+        var startDate, endDate;
+        var availableDatesArray = [];
+
+        // Logika berdasarkan tanggal saat ini
+        if (currentDate <= 2) {
+            // Jika tanggal 1 atau 2: buka tanggal 1-2 bulan ini + seluruh bulan sebelumnya
+
+            // Bulan sebelumnya
+            var prevMonth = currentMonth - 1;
+            var prevYear = currentYear;
+
+            // Handle pergantian tahun
+            if (prevMonth < 0) {
+                prevMonth = 11;
+                prevYear = currentYear - 1;
+            }
+
+            // Tanggal awal: tanggal 1 bulan sebelumnya
+            startDate = new Date(prevYear, prevMonth, 1);
+            // Tanggal akhir: tanggal 2 bulan ini
+            endDate = new Date(currentYear, currentMonth, 2);
+
+            // Tambahkan semua tanggal bulan sebelumnya
+            var lastDayPrevMonth = new Date(prevYear, prevMonth + 1, 0).getDate();
+            for (var i = 1; i <= lastDayPrevMonth; i++) {
+                availableDatesArray.push(formatDate(new Date(prevYear, prevMonth, i)));
+            }
+
+            // Tambahkan tanggal 1 dan 2 bulan ini
+            availableDatesArray.push(formatDate(new Date(currentYear, currentMonth, 1)));
+            availableDatesArray.push(formatDate(new Date(currentYear, currentMonth, 2)));
+
+        } else {
+            // Jika tanggal >= 3: buka mulai tanggal 3 sampai akhir bulan ini
+
+            // Tanggal awal: tanggal 3 bulan ini
+            startDate = new Date(currentYear, currentMonth, 3);
+            // Tanggal akhir: tanggal terakhir bulan ini
+            endDate = new Date(currentYear, currentMonth + 1, 0);
+
+            // Tambahkan tanggal 3 sampai akhir bulan ini
+            var lastDayCurrentMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+            for (var i = 3; i <= lastDayCurrentMonth; i++) {
+                availableDatesArray.push(formatDate(new Date(currentYear, currentMonth, i)));
+            }
+        }
 
         // Inisialisasi datepicker
         $('#dt_tm').datepicker({
@@ -282,7 +334,12 @@
             language: 'id', // opsional, untuk bahasa Indonesia
             startDate: startDate,
             endDate: endDate,
-            orientation: 'bottom auto'
+            orientation: 'bottom auto',
+            beforeShowDay: function(date) {
+                var dateString = formatDate(date);
+                // Return true jika tanggal ada dalam array tanggal yang diizinkan
+                return availableDatesArray.indexOf(dateString) !== -1;
+            }
         });
 
         // Mencegah input manual
@@ -305,15 +362,32 @@
         // Validasi tambahan saat tanggal berubah
         $('#dt_tm').on('changeDate', function(e) {
             var selectedDate = e.date;
-            var selectedMonth = selectedDate.getMonth();
-            var selectedYear = selectedDate.getFullYear();
+            var selectedDateString = formatDate(selectedDate);
 
             // Clear error message
             $('#date-error').text('');
 
-            // Validasi apakah masih dalam bulan ini
-            if (selectedMonth !== currentMonth || selectedYear !== currentYear) {
-                $('#date-error').text('Hanya dapat memilih tanggal dalam bulan ini.');
+            // Validasi apakah tanggal yang dipilih ada dalam daftar yang diizinkan
+            if (availableDatesArray.indexOf(selectedDateString) === -1) {
+                var errorMessage = '';
+                if (currentDate <= 2) {
+                    var prevMonthName = new Date(prevYear, prevMonth, 1).toLocaleDateString('id-ID', {
+                        month: 'long',
+                        year: 'numeric'
+                    });
+                    var currentMonthName = new Date(currentYear, currentMonth, 1).toLocaleDateString('id-ID', {
+                        month: 'long',
+                        year: 'numeric'
+                    });
+                    errorMessage = 'Hanya dapat memilih tanggal dalam ' + prevMonthName + ' atau tanggal 1-2 ' + currentMonthName + '.';
+                } else {
+                    var currentMonthName = new Date(currentYear, currentMonth, 1).toLocaleDateString('id-ID', {
+                        month: 'long',
+                        year: 'numeric'
+                    });
+                    errorMessage = 'Hanya dapat memilih tanggal 3 sampai akhir ' + currentMonthName + '.';
+                }
+                $('#date-error').text(errorMessage);
                 $(this).val(''); // Clear invalid date
             }
         });
