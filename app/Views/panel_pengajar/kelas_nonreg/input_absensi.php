@@ -315,13 +315,13 @@
             // Jika tanggal >= 3: buka mulai tanggal 3 sampai akhir bulan ini
 
             // Tanggal awal: tanggal 3 bulan ini
-            startDate = new Date(currentYear, currentMonth, 3);
+            startDate = new Date(currentYear, currentMonth, 1);
             // Tanggal akhir: tanggal terakhir bulan ini
             endDate = new Date(currentYear, currentMonth + 1, 0);
 
             // Tambahkan tanggal 3 sampai akhir bulan ini
             var lastDayCurrentMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
-            for (var i = 3; i <= lastDayCurrentMonth; i++) {
+            for (var i = 1; i <= lastDayCurrentMonth; i++) {
                 availableDatesArray.push(formatDate(new Date(currentYear, currentMonth, i)));
             }
         }

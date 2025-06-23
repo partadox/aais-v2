@@ -81,9 +81,9 @@ class KelasNonreg extends BaseController
         $absenTm = $this->nonreg_absen_pengajar
             ->join('nonreg_pengajar', 'nonreg_pengajar.npj_id = nonreg_absen_pengajar.napj_pengajar')
             ->where('npj_kelas', $kelas_id)
-            ->where('npj_pengajar', $pengajar_id)
+            // ->where('npj_pengajar', $pengajar_id)
 
-            ->first();
+            ->get()->getResultArray();
 
         if ($absenTm) {
             // Iterate through each key in the array
@@ -149,13 +149,52 @@ class KelasNonreg extends BaseController
         //     $data['tatapMukaData'][] = $tmData;
         // }
 
+        $absenTmNew = [];
+
+        foreach ($absenTm as $record) {
+            // Extract base information
+            $baseInfo = [
+                'napj_id' => $record['napj_id'],
+                'napj_pengajar' => $record['napj_pengajar'],
+                'npj_id' => $record['npj_id'],
+                'npj_pengajar' => $record['npj_pengajar'],
+                'npj_kelas' => $record['npj_kelas']
+            ];
+
+            // Process napj1 through napj50
+            for ($i = 1; $i <= 50; $i++) {
+                $napjKey = "napj{$i}";
+
+                if (!empty($record[$napjKey]) && $record[$napjKey] !== null) {
+                    // Decode JSON data
+                    $jsonData = json_decode($record[$napjKey], true);
+
+                    if ($jsonData && is_array($jsonData)) {
+                        // Create new row with base info + TM data
+                        $newRow = array_merge($baseInfo, [
+                            'tm_sequence' => $i, // Which napj field this came from
+                            'tm' => $jsonData['tm'] ?? null,
+                            'dt_tm' => $jsonData['dt_tm'] ?? null,
+                            'dt_isi' => $jsonData['dt_isi'] ?? null,
+                            'note' => $jsonData['note'] ?? null,
+                            'by' => $jsonData['by'] ?? null
+                        ]);
+
+                        $absenTmNew[] = $newRow;
+                    }
+                }
+            }
+        }
+
         $data = [
             'title'            => 'Absensi Kelas Non-Reguler ' . $kelas['nk_nama'],
             'user'            => $user,
             'kelas'         => $kelas,
-            'absenTm'       => $absenTm,
+            // 'absenTm'       => $absenTm,
+            'absenTmNew'   => $absenTmNew,
             'peserta_onkelas' => $peserta_onkelas
         ];
+        //var_dump($absenTmNew);
         return view('panel_pengajar/kelas_nonreg/absensi', $data);
     }
 

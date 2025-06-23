@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Controllers\Admin;
 
 use App\Controllers\BaseController;
@@ -19,7 +20,7 @@ class KelasNonReg extends BaseController
         } else {
             $tahun           = date('Y');
         }
-        
+
         $list_tahun      = $this->nonreg_kelas->list_unik_tahun();
         $list_kelas         = $this->nonreg_kelas->list($tahun);
         $data = [
@@ -60,7 +61,7 @@ class KelasNonReg extends BaseController
             $nk_id      = $this->request->getVar('nk_id');
             $nonreg     =  $this->nonreg_kelas->find($nk_id);
             $data = [
-                'title'     => 'Ubah Data Kelas Non-Reguler '.$nonreg['nk_nama'],
+                'title'     => 'Ubah Data Kelas Non-Reguler ' . $nonreg['nk_nama'],
                 'program'   => $this->program->list_aktif_nonreg(),
                 'pengajar'  => $this->pengajar->list(),
                 'level'     => $this->level->list(),
@@ -86,7 +87,7 @@ class KelasNonReg extends BaseController
             $nk_id              = $params['id'];
             $peserta_onkelas    = $this->nonreg_peserta->peserta_onkelas($nk_id);
             $kelas              = $this->nonreg_kelas->find($nk_id);
-            
+
             $data = [
                 'title'             => 'Al-Haqq - Detail Kelas Non-Reguler',
                 'user'              => $user,
@@ -114,8 +115,8 @@ class KelasNonReg extends BaseController
 
             if ($modul == 'level') {
                 $nkl        = $this->nonreg_kelas_level->list($nk_id);
-                $level      = $this->level->list(); 
-                
+                $level      = $this->level->list();
+
                 $selectedIds = array_map(function ($selected) {
                     return $selected['peserta_level_id'];
                 }, $nkl);
@@ -125,7 +126,7 @@ class KelasNonReg extends BaseController
                 });
 
                 $data = [
-                    'title'     => 'Ubah Data Level Kelas Non-Reguler '.$nk['nk_nama'],
+                    'title'     => 'Ubah Data Level Kelas Non-Reguler ' . $nk['nk_nama'],
                     'nk_id'     => $nk_id,
                     'level'     => $filteredLevel,
                     'pengajar'  => null,
@@ -134,8 +135,8 @@ class KelasNonReg extends BaseController
                 ];
             } elseif ($modul == 'pengajar') {
                 $nkp        = $this->nonreg_pengajar->list($nk_id);
-                $pengajar   = $this->pengajar->list(); 
-                
+                $pengajar   = $this->pengajar->list();
+
                 $selectedIds = array_map(function ($selected) {
                     return $selected['pengajar_id'];
                 }, $nkp);
@@ -145,7 +146,7 @@ class KelasNonReg extends BaseController
                 });
 
                 $data = [
-                    'title'     => 'Tambah Pengajar Kelas Non-Reguler '.$nk['nk_nama'],
+                    'title'     => 'Tambah Pengajar Kelas Non-Reguler ' . $nk['nk_nama'],
                     'nk_id'     => $nk_id,
                     'level'     => null,
                     'pengajar'  => $filteredPengajar,
@@ -153,7 +154,7 @@ class KelasNonReg extends BaseController
                     'modulText' => "Daftar Pengajar"
                 ];
             }
-            
+
 
             $msg = [
                 'sukses' => view('panel_admin/kelas_nonreg/edit_level', $data)
@@ -204,12 +205,12 @@ class KelasNonReg extends BaseController
                 $nk_level       = $this->request->getVar('nk_level');
                 $nk_kuota       = $this->request->getVar('nk_kuota');
                 // $nk_absen_metode= $this->request->getVar('nk_absen_metode');
-                $nk_absen_metode= NULL;
-                $nk_keterangan  = str_replace(array("\r", "\n"), ' ',$this->request->getVar('nk_keterangan')) ;
+                $nk_absen_metode = NULL;
+                $nk_keterangan  = str_replace(array("\r", "\n"), ' ', $this->request->getVar('nk_keterangan'));
                 $nk_status      = $this->request->getVar('nk_status');
                 $nk_pic_name    = strtoupper($this->request->getVar('nk_pic_name'));
                 $nk_pic_hp      = $this->request->getVar('nk_pic_hp');
-                $nk_lokasi      = str_replace(array("\r", "\n"), ' ',strtoupper($this->request->getVar('nk_lokasi'))) ;
+                $nk_lokasi      = str_replace(array("\r", "\n"), ' ', strtoupper($this->request->getVar('nk_lokasi')));
                 $nk_tahun       = $this->request->getVar('nk_tahun');
 
                 //Create NIK
@@ -223,25 +224,25 @@ class KelasNonReg extends BaseController
                     $Q = 'Q4';
                 }
                 $last           = $this->nonreg_kelas->orderBy('nk_created', 'desc')->first();
-                
+
                 if ($last != NULL) {
-                    $last_part      = explode("-", $last['nk_id']); 
-                    if(isset($last_part[1])) {
-                        $quarter    = substr($last_part[1], 1, 3); 
+                    $last_part      = explode("-", $last['nk_id']);
+                    if (isset($last_part[1])) {
+                        $quarter    = substr($last_part[1], 1, 3);
                         $last_year  = substr($quarter, 1);
                     }
                 }
-                
+
                 $year_code      = substr(date('Y'), -2);
-        
+
                 if ($last == NULL || $last_year != substr(date('Y'), -2)) {
                     $last_id        = '0001';
                 } else {
                     $code0          = end($last_part);
-                    $last_id        = str_pad(($code0+1),4,"0",STR_PAD_LEFT);
+                    $last_id        = str_pad(($code0 + 1), 4, "0", STR_PAD_LEFT);
                 }
-                $nk_id          = $tipe_code.'-'.$Q.$year_code.'-'.$last_id;
-                
+                $nk_id          = $tipe_code . '-' . $Q . $year_code . '-' . $last_id;
+
                 $this->db->transStart();
                 for ($i = 1; $i <= $nk_kuota; $i++) {
                     $pstData = ['np_kelas' => $nk_id];
@@ -252,13 +253,13 @@ class KelasNonReg extends BaseController
                     $this->nonreg_absen_peserta->insert($ApstData);
                 }
                 $newUser    = [
-					'username' 				=> strtoupper($nk_id),
-					'nama'					=> strtoupper($nk_pic_name),
-					'password'				=> (password_hash(getenv('password_default'), PASSWORD_BCRYPT)),
-					'foto'					=> 'default.png',
-					'level'					=> 8,
-					'active'				=> 1,
-				];
+                    'username'                 => strtoupper($nk_id),
+                    'nama'                    => strtoupper($nk_pic_name),
+                    'password'                => (password_hash(getenv('password_default'), PASSWORD_BCRYPT)),
+                    'foto'                    => 'default.png',
+                    'level'                    => 8,
+                    'active'                => 1,
+                ];
                 $this->user->insert($newUser);
                 $simpandata = [
                     'nk_id'             => $nk_id,
@@ -295,7 +296,7 @@ class KelasNonReg extends BaseController
                     ];
                     $this->nonreg_kelas_level->insert($nk_kelas_level_NEW);
                     $new_nkl        = $this->nonreg_kelas_level->insertID();
-                    $new_nkl_array[]= $new_nkl;
+                    $new_nkl_array[] = $new_nkl;
                 }
                 $var_nk_level   = json_encode($new_nkl_array);
                 $updateNKL = [
@@ -315,18 +316,15 @@ class KelasNonReg extends BaseController
                     $this->nonreg_absen_pengajar->insert($nonreg_absen_pengajar_NEW);
                 }
                 $this->db->transComplete();
-                
+
                 $aktivitas = 'Buat Data Kelas Non-Reguler Nama : ' .  $this->request->getVar('nk_nama');
 
-                if ($this->db->transStatus() === FALSE)
-                {
+                if ($this->db->transStatus() === FALSE) {
                     /*--- Log ---*/
-				    $this->logging('Admin', 'FAIL', $aktivitas);
-                }
-                else
-                {
+                    $this->logging('Admin', 'FAIL', $aktivitas);
+                } else {
                     /*--- Log ---*/
-				    $this->logging('Admin', 'BERHASIL', $aktivitas);
+                    $this->logging('Admin', 'BERHASIL', $aktivitas);
                 }
 
                 $msg = [
@@ -346,7 +344,7 @@ class KelasNonReg extends BaseController
             $valid = $this->validate([
                 'nk_nama' => [
                     'label' => 'nk_nama',
-                    'rules' => 'is_unique_except[nonreg_kelas.nk_nama.nk_id.'. $this->request->getVar('nk_id').']',
+                    'rules' => 'is_unique_except[nonreg_kelas.nk_nama.nk_id.' . $this->request->getVar('nk_id') . ']',
                     'errors' => [
                         'is_unique_except' => 'nama kelas non-reguler harus unik, sudah ada yang menggunakan nama kelas non-reguler ini',
                     ]
@@ -383,13 +381,13 @@ class KelasNonReg extends BaseController
                 // $nk_level       = $this->request->getVar('nk_level');
                 $nk_kuota       = $this->request->getVar('nk_kuota');
                 // $nk_absen_metode= $this->request->getVar('nk_absen_metode');
-                $nk_absen_metode= NULL;
+                $nk_absen_metode = NULL;
                 $nk_status      = $this->request->getVar('nk_status');
                 $nk_pic_name    = strtoupper($this->request->getVar('nk_pic_name'));
                 $nk_pic_hp      = $this->request->getVar('nk_pic_hp');
-                $nk_pic_otoritas= $this->request->getVar('nk_pic_otoritas');
-                $nk_keterangan  = str_replace(array("\r", "\n"), ' ',$this->request->getVar('nk_keterangan')) ;
-                $nk_lokasi      = str_replace(array("\r", "\n"), ' ',strtoupper($this->request->getVar('nk_lokasi'))) ;
+                $nk_pic_otoritas = $this->request->getVar('nk_pic_otoritas');
+                $nk_keterangan  = str_replace(array("\r", "\n"), ' ', $this->request->getVar('nk_keterangan'));
+                $nk_lokasi      = str_replace(array("\r", "\n"), ' ', strtoupper($this->request->getVar('nk_lokasi')));
                 $nk_tm_bayar    = $this->request->getVar('nk_tm_bayar');
                 $nk_tahun       = $this->request->getVar('nk_tahun');
 
@@ -437,57 +435,56 @@ class KelasNonReg extends BaseController
     public function update_level()
     {
         if ($this->request->isAJAX()) {
-                //Get Value
-                $modul          = $this->request->getVar('modul');
+            //Get Value
+            $modul          = $this->request->getVar('modul');
 
-                $nk_id          = $this->request->getVar('nk_id');
-                $nk             = $this->nonreg_kelas->find($nk_id);
+            $nk_id          = $this->request->getVar('nk_id');
+            $nk             = $this->nonreg_kelas->find($nk_id);
 
-                if ($modul == 'level') {    
-                    $new_nkl_array  = [$nk['nk_level']];
-                    $nk_level       = $this->request->getVar('nk_level');
+            if ($modul == 'level') {
+                $new_nkl_array  = [$nk['nk_level']];
+                $nk_level       = $this->request->getVar('nk_level');
 
-                    foreach ($nk_level as $item) {
-                        $nk_kelas_level_NEW = [
-                            'nkl_nkid' => $nk_id,
-                            'nkl_level' => $item,
-                        ];
-                        $this->nonreg_kelas_level->insert($nk_kelas_level_NEW);
-                        $new_nkl        = $this->nonreg_kelas_level->insertID();
-                        $new_nkl_array[]= $new_nkl;
-                    }
-                    $var_nk_level   = json_encode($new_nkl_array);
-                    $updateNKL = [
-                        'nk_level'  => $var_nk_level
+                foreach ($nk_level as $item) {
+                    $nk_kelas_level_NEW = [
+                        'nkl_nkid' => $nk_id,
+                        'nkl_level' => $item,
                     ];
-                    $this->nonreg_kelas->update($nk_id, $updateNKL);
-
-                } elseif ($modul == 'pengajar') {
-                    $np_pengajar       = $this->request->getVar('np_pengajar');
-
-                    foreach ($np_pengajar as $item) {
-                        $np_pengajar_NEW = [
-                            'npj_pengajar' => $item,
-                            'npj_kelas'    => $nk['nk_id'],
-                        ];
-                        $napj_pengajar = $this->nonreg_pengajar->insert($np_pengajar_NEW);
-                        $nonreg_absen_pengajar_NEW = [
-                            'napj_pengajar' => $napj_pengajar,
-                        ];
-                        $this->nonreg_absen_pengajar->insert($nonreg_absen_pengajar_NEW);
-                    }
+                    $this->nonreg_kelas_level->insert($nk_kelas_level_NEW);
+                    $new_nkl        = $this->nonreg_kelas_level->insertID();
+                    $new_nkl_array[] = $new_nkl;
                 }
-                
-                // Data Log END
-                $aktivitas = 'Ubah Data '.$modul.' pada Kelas Non-Reguler : ' . $nk['nk_nama'] ;
-                $this->logging('Admin', 'BERHASIL', $aktivitas);
-
-                $msg = [
-                    'sukses' => [
-                        'link' => '/kelas-nonreg/detail?id='.$nk_id
-                    ]
+                $var_nk_level   = json_encode($new_nkl_array);
+                $updateNKL = [
+                    'nk_level'  => $var_nk_level
                 ];
-            
+                $this->nonreg_kelas->update($nk_id, $updateNKL);
+            } elseif ($modul == 'pengajar') {
+                $np_pengajar       = $this->request->getVar('np_pengajar');
+
+                foreach ($np_pengajar as $item) {
+                    $np_pengajar_NEW = [
+                        'npj_pengajar' => $item,
+                        'npj_kelas'    => $nk['nk_id'],
+                    ];
+                    $napj_pengajar = $this->nonreg_pengajar->insert($np_pengajar_NEW);
+                    $nonreg_absen_pengajar_NEW = [
+                        'napj_pengajar' => $napj_pengajar,
+                    ];
+                    $this->nonreg_absen_pengajar->insert($nonreg_absen_pengajar_NEW);
+                }
+            }
+
+            // Data Log END
+            $aktivitas = 'Ubah Data ' . $modul . ' pada Kelas Non-Reguler : ' . $nk['nk_nama'];
+            $this->logging('Admin', 'BERHASIL', $aktivitas);
+
+            $msg = [
+                'sukses' => [
+                    'link' => '/kelas-nonreg/detail?id=' . $nk_id
+                ]
+            ];
+
             echo json_encode($msg);
         }
     }
@@ -506,7 +503,7 @@ class KelasNonReg extends BaseController
         }
 
         $kelas      =  $this->nonreg_kelas->list($tahun);
-        $total_row  = count($kelas)+5;
+        $total_row  = count($kelas) + 5;
 
         $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
 
@@ -540,7 +537,7 @@ class KelasNonReg extends BaseController
                 'endColor' => [
                     'argb' => 'D9D9D9',
                 ],
-            ],        
+            ],
             'borders' => [
                 'allBorders' => [
                     'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
@@ -560,7 +557,7 @@ class KelasNonReg extends BaseController
             ],
         ];
 
-        $judul = "DATA KELAS NON-REGULER ALHAQQ TAHUN ".$tahun." - ALHAQQ ACADEMIC INFORMATION SYSTEM";
+        $judul = "DATA KELAS NON-REGULER ALHAQQ TAHUN " . $tahun . " - ALHAQQ ACADEMIC INFORMATION SYSTEM";
         $tgl   = date("d-m-Y");
 
         $sheet->setCellValue('A1', $judul);
@@ -573,7 +570,7 @@ class KelasNonReg extends BaseController
 
         $sheet->getStyle('A4:Q4')->applyFromArray($style_up);
 
-        $sheet->getStyle('A5:Q'.$total_row)->applyFromArray($isi_tengah);
+        $sheet->getStyle('A5:Q' . $total_row)->applyFromArray($isi_tengah);
 
         $spreadsheet->setActiveSheetIndex(0)
             ->setCellValue('A4', 'NAMA KELAS')
@@ -594,10 +591,10 @@ class KelasNonReg extends BaseController
             ->setCellValue('P4', 'NO. HP PIC')
             ->setCellValue('Q4', 'LOKASI KELAS');
 
-            $columns = range('A', 'Q');
-            foreach ($columns as $column) {
-                $spreadsheet->getActiveSheet()->getColumnDimension($column)->setAutoSize(true);
-            }
+        $columns = range('A', 'Q');
+        foreach ($columns as $column) {
+            $spreadsheet->getActiveSheet()->getColumnDimension($column)->setAutoSize(true);
+        }
 
         $row = 5;
 
@@ -618,7 +615,7 @@ class KelasNonReg extends BaseController
                 ->setCellValue('F' . $row, $data['nk_hari'])
                 ->setCellValue('G' . $row, $data['nk_waktu'] . ' ' . $data['nk_timezone'])
                 ->setCellValue('H' . $row, $data['nama_pengajar'])
-                ->setCellValue('I' . $row, "")#$data['nk_level'])
+                ->setCellValue('I' . $row, "") #$data['nk_level'])
                 ->setCellValue('J' . $row, $data['nk_kuota'])
                 ->setCellValue('K' . $row, $data['nk_tm_ambil'])
                 ->setCellValue('L' . $row, $data['nk_tm_total'])
@@ -632,7 +629,7 @@ class KelasNonReg extends BaseController
         }
 
         $writer     = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
-        $filename   =  'Data-Kelas-Nonreguler-'. date('Y-m-d-His');
+        $filename   =  'Data-Kelas-Nonreguler-' . date('Y-m-d-His');
         $aktivitas  = 'Download Data Kelas Non-Reguler via Export Excel, Waktu : ' .  date('Y-m-d-H:i:s');
         /*--- Log ---*/
         $this->logging('Admin', 'BERHASIL', $aktivitas);
@@ -659,39 +656,39 @@ class KelasNonReg extends BaseController
 
             $np_nama = $row['column_1'];
             $np_id   = $row['column_2'];
-            $np_level= $row['column_3'];
+            $np_level = $row['column_3'];
 
             $dataUpdate = [
-                'np_nama' => str_replace(array("\r", "\n"), ' ',strtoupper($np_nama)),
-                'np_level'=> $np_level,
+                'np_nama' => str_replace(array("\r", "\n"), ' ', strtoupper($np_nama)),
+                'np_level' => $np_level,
             ];
-            
+
             $store = $this->nonreg_peserta->update($np_id, $dataUpdate);
 
             if ($store === false) {
                 $errors[] = $row['column_2'] . ', ';
             }
         }
-        
+
         if (!empty($errors)) {
-            $aktivitas = 'Ubah Data Peserta Pada Kelas Non-Reguler: '.$nk_id ;
+            $aktivitas = 'Ubah Data Peserta Pada Kelas Non-Reguler: ' . $nk_id;
             $this->logging('Admin', 'FAIL', $aktivitas);
             $this->db->transRollback();
             $response = [
                 'success' => false,
                 'code'    => '400',
                 'message' => 'Data Peserta Gagal Diubah',
-                'redirect' => '/kelas-nonreg/detail?id='.$nk_id 
+                'redirect' => '/kelas-nonreg/detail?id=' . $nk_id
             ];
         } else {
-            $aktivitas = 'Ubah Data Peserta Pada Kelas Non-Reguler: '.$nk_id ;
+            $aktivitas = 'Ubah Data Peserta Pada Kelas Non-Reguler: ' . $nk_id;
             $this->logging('Admin', 'BERHASIL', $aktivitas);
             $this->db->transCommit();
             $response = [
                 'success' => true,
                 'code'    => '200',
                 'message' => 'Data Peserta Berhasil Diubah',
-                'redirect' => '/kelas-nonreg/detail?id='.$nk_id
+                'redirect' => '/kelas-nonreg/detail?id=' . $nk_id
             ];
         }
 
@@ -707,7 +704,7 @@ class KelasNonReg extends BaseController
             $kelas          = $this->nonreg_kelas->find($nk_id);
 
             $update  = [
-                'nk_kuota' => $kelas['nk_kuota']+$nk_peserta_add,
+                'nk_kuota' => $kelas['nk_kuota'] + $nk_peserta_add,
             ];
             $this->nonreg_kelas->update($nk_id, $update);
             for ($i = 1; $i <= $nk_peserta_add; $i++) {
@@ -721,20 +718,17 @@ class KelasNonReg extends BaseController
 
             $aktivitas = 'Tambah kuota ' . $nk_peserta_add . ' pada kelas non-reguler ' .  $nk_id;
 
-            if ($this->db->transStatus() === FALSE)
-            {
+            if ($this->db->transStatus() === FALSE) {
                 /*--- Log ---*/
                 $this->logging('Admin', 'FAIL', $aktivitas);
-            }
-            else
-            {
+            } else {
                 /*--- Log ---*/
                 $this->logging('Admin', 'BERHASIL', $aktivitas);
             }
 
             $msg = [
                 'sukses' => [
-                    'link' => '/kelas-nonreg/detail?id='. $nk_id 
+                    'link' => '/kelas-nonreg/detail?id=' . $nk_id
                 ]
             ];
             echo json_encode($msg);
@@ -751,27 +745,24 @@ class KelasNonReg extends BaseController
             $kelas   = $this->nonreg_kelas->find($nk_id);
 
             $update  = [
-                'nk_kuota' => $kelas['nk_kuota']-1,
+                'nk_kuota' => $kelas['nk_kuota'] - 1,
             ];
             $this->nonreg_kelas->update($nk_id, $update);
             $this->nonreg_peserta->delete($np_id);
 
             $aktivitas = 'Kurangi kuota' . ' pada kelas non-reguler ' .  $nk_id;
 
-            if ($this->db->transStatus() === FALSE)
-            {
+            if ($this->db->transStatus() === FALSE) {
                 /*--- Log ---*/
                 $this->logging('Admin', 'FAIL', $aktivitas);
-            }
-            else
-            {
+            } else {
                 /*--- Log ---*/
                 $this->logging('Admin', 'BERHASIL', $aktivitas);
             }
 
             $msg = [
                 'sukses' => [
-                    'link' => '/kelas-nonreg/detail?id='. $nk_id 
+                    'link' => '/kelas-nonreg/detail?id=' . $nk_id
                 ]
             ];
             echo json_encode($msg);
@@ -790,26 +781,23 @@ class KelasNonReg extends BaseController
 
             $aktivitas = 'Hapus level' . $level_data['nama_level'] . ' pada kelas non-reguler ' .  $level['nkl_nkid'];
 
-            if ($this->db->transStatus() === FALSE)
-            {
+            if ($this->db->transStatus() === FALSE) {
                 /*--- Log ---*/
                 $this->logging('Admin', 'FAIL', $aktivitas);
-            }
-            else
-            {
+            } else {
                 /*--- Log ---*/
                 $this->logging('Admin', 'BERHASIL', $aktivitas);
             }
 
             $msg = [
                 'sukses' => [
-                    'link' => '/kelas-nonreg/detail?id='. $level['nkl_nkid'] 
+                    'link' => '/kelas-nonreg/detail?id=' . $level['nkl_nkid']
                 ]
             ];
             echo json_encode($msg);
         }
     }
-    
+
     public function delete_pengajar()
     {
         if ($this->request->isAJAX()) {
@@ -824,20 +812,17 @@ class KelasNonReg extends BaseController
 
             $aktivitas = 'Hapus pengajar ' . $pengajar['nama_pengajar'] . ' pada kelas non-reguler ' .  $nonreg_kelas['nk_nama'];
 
-            if ($this->db->transStatus() === FALSE)
-            {
+            if ($this->db->transStatus() === FALSE) {
                 /*--- Log ---*/
                 $this->logging('Admin', 'FAIL', $aktivitas);
-            }
-            else
-            {
+            } else {
                 /*--- Log ---*/
                 $this->logging('Admin', 'BERHASIL', $aktivitas);
             }
 
             $msg = [
                 'sukses' => [
-                    'link' => '/kelas-nonreg/detail?id='. $nonreg_kelas['nk_id']
+                    'link' => '/kelas-nonreg/detail?id=' . $nonreg_kelas['nk_id']
                 ]
             ];
             echo json_encode($msg);
