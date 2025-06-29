@@ -318,6 +318,83 @@ class Absensi extends BaseController
         return view('panel_admin/absensi/nonreg/pengajar', $data);
     }
 
+    public function nonreg_pengajar_note()
+    {
+        if ($this->request->isAJAX()) {
+
+            $napj_id                = $this->request->getVar('napj_id');
+            // Get data absen pengajar
+            $absen_pengajar         = $this->nonreg_absen_pengajar->find($napj_id);
+            $nonreg_pengajar        = $this->nonreg_pengajar->find($absen_pengajar['napj_pengajar']);
+            $nonreg_kelas           = $this->nonreg_kelas->find($nonreg_pengajar['npj_kelas']);
+
+            $absenTm = $this->nonreg_absen_pengajar
+                ->join('nonreg_pengajar', 'nonreg_pengajar.npj_id = nonreg_absen_pengajar.napj_pengajar')
+                ->where('npj_kelas', $nonreg_pengajar['npj_kelas'])
+                // ->where('npj_pengajar', $pengajar_id)
+
+                ->get()->getResultArray();
+
+            if ($absenTm) {
+                // Iterate through each key in the array
+                foreach ($absenTm as $key => $value) {
+                    // Check if the key matches the pattern 'tm' followed by a number and the value is not null
+                    if (preg_match('/^napj\d+$/', $key) && !is_null($value)) {
+                        // Decode the JSON string
+                        $absenTm[$key] = json_decode($value, true);
+                    }
+                }
+            }
+
+            $absenTmNew = [];
+
+            foreach ($absenTm as $record) {
+                // Extract base information
+                $baseInfo = [
+                    'napj_id' => $record['napj_id'],
+                    'napj_pengajar' => $record['napj_pengajar'],
+                    'npj_id' => $record['npj_id'],
+                    'npj_pengajar' => $record['npj_pengajar'],
+                    'npj_kelas' => $record['npj_kelas']
+                ];
+
+                // Process napj1 through napj50
+                for ($i = 1; $i <= 50; $i++) {
+                    $napjKey = "napj{$i}";
+
+                    if (!empty($record[$napjKey]) && $record[$napjKey] !== null) {
+                        // Decode JSON data
+                        $jsonData = json_decode($record[$napjKey], true);
+
+                        if ($jsonData && is_array($jsonData)) {
+                            // Create new row with base info + TM data
+                            $newRow = array_merge($baseInfo, [
+                                'tm_sequence' => $i, // Which napj field this came from
+                                'tm' => $jsonData['tm'] ?? null,
+                                'dt_tm' => $jsonData['dt_tm'] ?? null,
+                                'dt_isi' => $jsonData['dt_isi'] ?? null,
+                                'note' => $jsonData['note'] ?? null,
+                                'by' => $jsonData['by'] ?? null
+                            ]);
+
+                            $absenTmNew[] = $newRow;
+                        }
+                    }
+                }
+            }
+
+            $data = [
+                'title'              => 'Catatan Absen Pengajar Kelas Nonreg ' . $nonreg_pengajar['npj_kelas'],
+                'kelas'             => $nonreg_kelas,
+                'absenTmNew'         => $absenTmNew
+            ];
+            $msg = [
+                'sukses' => view('panel_admin/absensi/nonreg/pengajar_note', $data)
+            ];
+            echo json_encode($msg);
+        }
+    }
+
     //backend
     public function regular_peserta_export()
     {
@@ -1692,193 +1769,193 @@ class Absensi extends BaseController
         $writer->save('php://output');
     }
 
-    public function nonreg_peserta_export()
-    {
-        $user          = $this->userauth();
+    // public function nonreg_peserta_export()
+    // {
+    //     $user          = $this->userauth();
 
-        $uri            = new \CodeIgniter\HTTP\URI(current_url(true));
-        $queryString    = $uri->getQuery();
-        $params         = [];
-        parse_str($queryString, $params);
+    //     $uri            = new \CodeIgniter\HTTP\URI(current_url(true));
+    //     $queryString    = $uri->getQuery();
+    //     $params         = [];
+    //     parse_str($queryString, $params);
 
-        if (count($params) == 1 && array_key_exists('tahun', $params)) {
-            $tahun       = $params['tahun'];
-        } else {
-            $tahun      = date('Y');
-        }
-        $list_kelas     = $this->nonreg_kelas->list($tahun);
-        if (count($list_kelas) > 0) {
-            $highest_tm_ambil = max(array_column($list_kelas, 'nk_tm_ambil'));
-        } else {
-            $highest_tm_ambil = 0;
-        }
-        $lists             = $this->nonreg_absen_peserta->list_rekap($tahun);
-        // Process each record in the lists array
-        $lists = array_map(function ($record) {
-            // Loop through each field in the record
-            foreach ($record as $key => $value) {
-                // Check if it's a napj field and not null
-                if (preg_match('/^naps\d+$/', $key) && !is_null($value)) {
-                    // Decode JSON string to array
-                    $record[$key] = json_decode($value, true);
-                }
-            }
-            return $record;
-        }, $lists);
+    //     if (count($params) == 1 && array_key_exists('tahun', $params)) {
+    //         $tahun       = $params['tahun'];
+    //     } else {
+    //         $tahun      = date('Y');
+    //     }
+    //     $list_kelas     = $this->nonreg_kelas->list($tahun);
+    //     if (count($list_kelas) > 0) {
+    //         $highest_tm_ambil = max(array_column($list_kelas, 'nk_tm_ambil'));
+    //     } else {
+    //         $highest_tm_ambil = 0;
+    //     }
+    //     $lists             = $this->nonreg_absen_peserta->list_rekap($tahun);
+    //     // Process each record in the lists array
+    //     $lists = array_map(function ($record) {
+    //         // Loop through each field in the record
+    //         foreach ($record as $key => $value) {
+    //             // Check if it's a napj field and not null
+    //             if (preg_match('/^naps\d+$/', $key) && !is_null($value)) {
+    //                 // Decode JSON string to array
+    //                 $record[$key] = json_decode($value, true);
+    //             }
+    //         }
+    //         return $record;
+    //     }, $lists);
 
-        $total_row  = count($lists) + 5;
-        $col_isi    = 0;
+    //     $total_row  = count($lists) + 5;
+    //     $col_isi    = 0;
 
-        $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
-        $sheet = $spreadsheet->getActiveSheet();
-        $styleColumn = [
-            'font' => [
-                'bold' => true,
-                'size' => 14,
-            ],
-            'alignment' => [
-                'horizontal'    => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
-                'vertical'      => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
-            ]
-        ];
+    //     $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
+    //     $sheet = $spreadsheet->getActiveSheet();
+    //     $styleColumn = [
+    //         'font' => [
+    //             'bold' => true,
+    //             'size' => 14,
+    //         ],
+    //         'alignment' => [
+    //             'horizontal'    => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+    //             'vertical'      => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+    //         ]
+    //     ];
 
-        $style_up = [
-            'font' => [
-                'bold' => true,
-                'size' => 11,
-            ],
-            'alignment' => [
-                'horizontal'    => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
-                'vertical'      => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
-            ],
-            'fill' => [
-                'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
-                'startColor' => [
-                    'argb' => 'D9D9D9',
-                ],
-                'endColor' => [
-                    'argb' => 'D9D9D9',
-                ],
-            ],
-            'borders' => [
-                'allBorders' => [
-                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
-                ],
-            ],
-        ];
+    //     $style_up = [
+    //         'font' => [
+    //             'bold' => true,
+    //             'size' => 11,
+    //         ],
+    //         'alignment' => [
+    //             'horizontal'    => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+    //             'vertical'      => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+    //         ],
+    //         'fill' => [
+    //             'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+    //             'startColor' => [
+    //                 'argb' => 'D9D9D9',
+    //             ],
+    //             'endColor' => [
+    //                 'argb' => 'D9D9D9',
+    //             ],
+    //         ],
+    //         'borders' => [
+    //             'allBorders' => [
+    //                 'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+    //             ],
+    //         ],
+    //     ];
 
-        $isi_tengah = [
-            'alignment' => [
-                'horizontal'    => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
-                'vertical'      => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
-            ],
-            'borders' => [
-                'allBorders' => [
-                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
-                ],
-            ],
-        ];
+    //     $isi_tengah = [
+    //         'alignment' => [
+    //             'horizontal'    => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+    //             'vertical'      => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+    //         ],
+    //         'borders' => [
+    //             'allBorders' => [
+    //                 'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+    //             ],
+    //         ],
+    //     ];
 
-        $judul = "DATA REKAP ABSENSI PESERTA PROGRAM NON-REGULER";
-        $tgl   =  "Tahun " . $tahun . ' - ' . date("d-m-Y");
+    //     $judul = "DATA REKAP ABSENSI PESERTA PROGRAM NON-REGULER";
+    //     $tgl   =  "Tahun " . $tahun . ' - ' . date("d-m-Y");
 
-        $sheet->setCellValue('A1', $judul);
-        $sheet->mergeCells('A1:G1');
-        $sheet->getStyle('A1')->applyFromArray($styleColumn);
+    //     $sheet->setCellValue('A1', $judul);
+    //     $sheet->mergeCells('A1:G1');
+    //     $sheet->getStyle('A1')->applyFromArray($styleColumn);
 
-        $sheet->setCellValue('A2', $tgl);
-        $sheet->mergeCells('A2:G2');
-        $sheet->getStyle('A2')->applyFromArray($styleColumn);
+    //     $sheet->setCellValue('A2', $tgl);
+    //     $sheet->mergeCells('A2:G2');
+    //     $sheet->getStyle('A2')->applyFromArray($styleColumn);
 
 
-        $spreadsheet->setActiveSheetIndex(0)
-            ->setCellValue('A4', 'PESERTA')
-            ->setCellValue('B4', 'KELAS')
-            ->setCellValue('C4', 'ANGKATAN KELAS')
-            ->setCellValue('D4', 'TOTAL HADIR');
+    //     $spreadsheet->setActiveSheetIndex(0)
+    //         ->setCellValue('A4', 'PESERTA')
+    //         ->setCellValue('B4', 'KELAS')
+    //         ->setCellValue('C4', 'ANGKATAN KELAS')
+    //         ->setCellValue('D4', 'TOTAL HADIR');
 
-        $lastW      = 'D';
-        $step       = 0;
+    //     $lastW      = 'D';
+    //     $step       = 0;
 
-        for ($i = 1; $i <= $highest_tm_ambil; $i++) {
-            $step       = $step + 1;
-            $newAsci    = $this->incrementAlphaSequence($lastW, $step);
-            $spreadsheet->getActiveSheet()->setCellValue($newAsci . '4', 'TM' . $i);
+    //     for ($i = 1; $i <= $highest_tm_ambil; $i++) {
+    //         $step       = $step + 1;
+    //         $newAsci    = $this->incrementAlphaSequence($lastW, $step);
+    //         $spreadsheet->getActiveSheet()->setCellValue($newAsci . '4', 'TM' . $i);
 
-            $spreadsheet->getActiveSheet()->getColumnDimension($newAsci)->setAutoSize(true);
-        }
-        $sheet->getStyle('A4:' . $newAsci . '4')->applyFromArray($style_up);
-        $sheet->getStyle('A5:' . $newAsci . $total_row)->applyFromArray($isi_tengah);
+    //         $spreadsheet->getActiveSheet()->getColumnDimension($newAsci)->setAutoSize(true);
+    //     }
+    //     $sheet->getStyle('A4:' . $newAsci . '4')->applyFromArray($style_up);
+    //     $sheet->getStyle('A5:' . $newAsci . $total_row)->applyFromArray($isi_tengah);
 
-        $columns = range('A', 'D');
-        foreach ($columns as $column) {
-            $spreadsheet->getActiveSheet()->getColumnDimension($column)->setAutoSize(true);
-        }
+    //     $columns = range('A', 'D');
+    //     foreach ($columns as $column) {
+    //         $spreadsheet->getActiveSheet()->getColumnDimension($column)->setAutoSize(true);
+    //     }
 
-        $row = 5;
+    //     $row = 5;
 
-        foreach ($lists as $data) {
+    //     foreach ($lists as $data) {
 
-            $totHadir = 0;
-            for ($i = 1; $i <= $highest_tm_ambil; $i++) {
-                if (isset($data['naps' . $i])) {
-                    if ($data['naps' . $i]['tm'] == '1') {
-                        $totHadir = $totHadir + 1;
-                    }
-                }
-            }
+    //         $totHadir = 0;
+    //         for ($i = 1; $i <= $highest_tm_ambil; $i++) {
+    //             if (isset($data['naps' . $i])) {
+    //                 if ($data['naps' . $i]['tm'] == '1') {
+    //                     $totHadir = $totHadir + 1;
+    //                 }
+    //             }
+    //         }
 
-            $spreadsheet->setActiveSheetIndex(0)
+    //         $spreadsheet->setActiveSheetIndex(0)
 
-                ->setCellValue('A' . $row, $data['np_nama'])
-                ->setCellValue('B' . $row, $data['nk_nama'])
-                ->setCellValue('C' . $row, $data['nk_tahun'])
-                ->setCellValue('D' . $row, $totHadir);
+    //             ->setCellValue('A' . $row, $data['np_nama'])
+    //             ->setCellValue('B' . $row, $data['nk_nama'])
+    //             ->setCellValue('C' . $row, $data['nk_tahun'])
+    //             ->setCellValue('D' . $row, $totHadir);
 
-            $lastW      = 'D';
-            $step       = 0;
+    //         $lastW      = 'D';
+    //         $step       = 0;
 
-            for ($i = 1; $i <= $highest_tm_ambil; $i++) {
-                $step = $step + 1;
-                $var = 'naps' . $i;
-                $col_letter = $this->incrementAlphaSequence($lastW, $step);
+    //         for ($i = 1; $i <= $highest_tm_ambil; $i++) {
+    //             $step = $step + 1;
+    //             $var = 'naps' . $i;
+    //             $col_letter = $this->incrementAlphaSequence($lastW, $step);
 
-                if (isset($data[$var]['tm'])) {
-                    if ($data[$var]['tm'] == '1') {
-                        $cell = $col_letter . $row;
-                        $spreadsheet->getActiveSheet()
-                            ->setCellValue($cell, $data[$var]['dt_tm']);
-                    } elseif ($data[$var]['tm'] == '0') {
-                        $cell = $col_letter . $row;
-                        $spreadsheet->getActiveSheet()
-                            ->setCellValue($cell, '--');
-                    } else {
-                        $cell = $col_letter . $row;
-                        $spreadsheet->getActiveSheet()
-                            ->setCellValue($cell, '');
-                    }
-                } else {
-                    $cell = $col_letter . $row;
-                    $spreadsheet->getActiveSheet()
-                        ->setCellValue($cell, '');
-                };
-            }
+    //             if (isset($data[$var]['tm'])) {
+    //                 if ($data[$var]['tm'] == '1') {
+    //                     $cell = $col_letter . $row;
+    //                     $spreadsheet->getActiveSheet()
+    //                         ->setCellValue($cell, $data[$var]['dt_tm']);
+    //                 } elseif ($data[$var]['tm'] == '0') {
+    //                     $cell = $col_letter . $row;
+    //                     $spreadsheet->getActiveSheet()
+    //                         ->setCellValue($cell, '--');
+    //                 } else {
+    //                     $cell = $col_letter . $row;
+    //                     $spreadsheet->getActiveSheet()
+    //                         ->setCellValue($cell, '');
+    //                 }
+    //             } else {
+    //                 $cell = $col_letter . $row;
+    //                 $spreadsheet->getActiveSheet()
+    //                     ->setCellValue($cell, '');
+    //             };
+    //         }
 
-            $row++;
-        }
+    //         $row++;
+    //     }
 
-        $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xls($spreadsheet);
-        $filename =  'Data-Rekap-Absensi-Peserta-NonReguler-Tahun' . $tahun . '-' . date('Y-m-d-His');
+    //     $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xls($spreadsheet);
+    //     $filename =  'Data-Rekap-Absensi-Peserta-NonReguler-Tahun' . $tahun . '-' . date('Y-m-d-His');
 
-        /*--- Log ---*/
-        $this->logging('Admin', 'BERHASIL', 'Donwload rekap absensi peserta program Non-Reguler Tahun ' . $tahun);
+    //     /*--- Log ---*/
+    //     $this->logging('Admin', 'BERHASIL', 'Donwload rekap absensi peserta program Non-Reguler Tahun ' . $tahun);
 
-        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        header('Content-Disposition: attachment;filename=' . $filename . '.xls');
-        header('Cache-Control: max-age=0');
+    //     header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    //     header('Content-Disposition: attachment;filename=' . $filename . '.xls');
+    //     header('Cache-Control: max-age=0');
 
-        $writer->save('php://output');
-    }
+    //     $writer->save('php://output');
+    // }
     // public function nonreg_pengajar_export()
     // {
     //     $user          = $this->userauth();
@@ -2120,6 +2197,239 @@ class Absensi extends BaseController
 
     //     $writer->save('php://output');
     // }
+    public function nonreg_peserta_export()
+    {
+        $user           = $this->userauth();
+
+        $uri            = new \CodeIgniter\HTTP\URI(current_url(true));
+        $queryString    = $uri->getQuery();
+        $params         = [];
+        parse_str($queryString, $params);
+
+        // Get tahun parameter
+        $tahun = isset($params['tahun']) && !empty($params['tahun']) ? $params['tahun'] : date('Y');
+
+        // Get bulan parameter
+        $bulan = isset($params['bulan']) ? $params['bulan'] : 'all';
+
+        $list_kelas     = $this->nonreg_kelas->list($tahun);
+        if (count($list_kelas) > 0) {
+            $highest_tm_ambil = max(array_column($list_kelas, 'nk_tm_ambil'));
+        } else {
+            $highest_tm_ambil = 0;
+        }
+
+        $lists          = $this->nonreg_absen_peserta->list_rekap_export();
+
+        // Proses setiap record di dalam array $lists
+        $lists = array_map(function ($record) use ($tahun, $bulan) {
+            // Loop melalui setiap field di dalam record
+            foreach ($record as $key => &$value) { // Gunakan '&' untuk modifikasi langsung
+                // Cek apakah ini field naps (contoh: naps1, naps2, dst.) dan tidak null
+                if (preg_match('/^naps\d+$/', $key) && !is_null($value)) {
+
+                    $decoded_value = json_decode($value, true);
+
+                    // MODIFIKASI: Filter berdasarkan bulan dan tahun jika bulan dipilih (bukan 'all')
+                    if ($bulan != 'all' && is_numeric($bulan) && isset($decoded_value['dt_tm'])) {
+                        $record_year = substr($decoded_value['dt_tm'], 0, 4);
+                        $record_month = substr($decoded_value['dt_tm'], 5, 2);
+
+                        // Jika tahun atau bulan tidak cocok, buat data absensi ini menjadi NULL
+                        if ($record_year != $tahun || $record_month != $bulan) {
+                            $value = null;
+                        } else {
+                            // Jika cocok, gunakan data yang sudah di-decode
+                            $value = $decoded_value;
+                        }
+                    } else {
+                        // Jika tidak ada filter bulan, cukup decode JSON-nya
+                        $value = $decoded_value;
+                    }
+                }
+            }
+            unset($value); // Hapus referensi setelah loop selesai
+            return $record;
+        }, $lists);
+
+
+        $total_row   = count($lists) + 5;
+
+        $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+        $styleColumn = [
+            'font' => [
+                'bold' => true,
+                'size' => 14,
+            ],
+            'alignment' => [
+                'horizontal'    => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+                'vertical'      => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+            ]
+        ];
+
+        $style_up = [
+            'font' => [
+                'bold' => true,
+                'size' => 11,
+            ],
+            'alignment' => [
+                'horizontal'    => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+                'vertical'      => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+            ],
+            'fill' => [
+                'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+                'startColor' => [
+                    'argb' => 'D9D9D9',
+                ],
+                'endColor' => [
+                    'argb' => 'D9D9D9',
+                ],
+            ],
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                ],
+            ],
+        ];
+
+        $isi_tengah = [
+            'alignment' => [
+                'horizontal'    => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+                'vertical'      => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+            ],
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                ],
+            ],
+        ];
+
+        $judul = "DATA REKAP ABSENSI PESERTA PROGRAM NON-REGULER";
+
+        // MODIFIKASI: Tambahkan informasi bulan pada sub-judul jika dipilih
+        $nama_bulan_id = [
+            '1' => 'Januari',
+            '2' => 'Februari',
+            '3' => 'Maret',
+            '4' => 'April',
+            '5' => 'Mei',
+            '6' => 'Juni',
+            '7' => 'Juli',
+            '8' => 'Agustus',
+            '9' => 'September',
+            '10' => 'Oktober',
+            '11' => 'November',
+            '12' => 'Desember'
+        ];
+        $periode = "Tahun " . $tahun;
+        if ($bulan != 'all' && is_numeric($bulan)) {
+            $periode = "Periode " . ($nama_bulan_id[$bulan] ?? '') . " " . $tahun;
+        }
+        $tgl = $periode . ' - ' . date("d-m-Y");
+
+        $sheet->setCellValue('A1', $judul);
+        $sheet->mergeCells('A1:F1'); // Disesuaikan agar merge tidak terlalu jauh
+        $sheet->getStyle('A1')->applyFromArray($styleColumn);
+
+        $sheet->setCellValue('A2', $tgl);
+        $sheet->mergeCells('A2:F2'); // Disesuaikan agar merge tidak terlalu jauh
+        $sheet->getStyle('A2')->applyFromArray($styleColumn);
+
+
+        $spreadsheet->setActiveSheetIndex(0)
+            ->setCellValue('A4', 'NO')
+            ->setCellValue('B4', 'PESERTA')
+            ->setCellValue('C4', 'NIK')
+            ->setCellValue('D4', 'KELAS')
+            ->setCellValue('E4', 'ANGKATAN KELAS')
+            ->setCellValue('F4', 'TOTAL HADIR (Bulan Terpilih)'); // MODIFIKASI: Judul kolom lebih deskriptif
+
+        $lastW      = 'F'; // MODIFIKASI: Kolom terakhir sebelum TM adalah F
+        $step       = 0;
+
+        for ($i = 1; $i <= $highest_tm_ambil; $i++) {
+            $step      = $step + 1;
+            $newAsci   = $this->incrementAlphaSequence($lastW, $step);
+            $spreadsheet->getActiveSheet()->setCellValue($newAsci . '4', 'TM' . $i);
+            $spreadsheet->getActiveSheet()->getColumnDimension($newAsci)->setAutoSize(true);
+        }
+
+        // Perbaikan untuk merge header
+        $lastColumnForMerge = $this->incrementAlphaSequence('D', $highest_tm_ambil + 1); // E + highest_tm_ambil
+        $sheet->getStyle('A1')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+        $sheet->mergeCells('A1:' . $lastColumnForMerge . '1');
+        $sheet->getStyle('A2')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+        $sheet->mergeCells('A2:' . $lastColumnForMerge . '2');
+
+        $sheet->getStyle('A4:' . $newAsci . '4')->applyFromArray($style_up);
+        $sheet->getStyle('A5:' . $newAsci . $total_row)->applyFromArray($isi_tengah);
+
+        $columns = range('A', 'F'); // MODIFIKASI: Kolom yang di-autosize sampai F
+        foreach ($columns as $column) {
+            $spreadsheet->getActiveSheet()->getColumnDimension($column)->setAutoSize(true);
+        }
+
+        $row = 5;
+        $no = 1;
+        foreach ($lists as $data) {
+            $no++;
+            // Kalkulasi totHadir sekarang secara otomatis hanya menghitung data yang tidak di-set menjadi NULL (sudah terfilter)
+            $totHadir = 0;
+            for ($i = 1; $i <= $highest_tm_ambil; $i++) {
+                if (isset($data['naps' . $i]) && $data['naps' . $i]['tm'] == '1') {
+                    $totHadir++;
+                }
+            }
+
+            $spreadsheet->setActiveSheetIndex(0)
+                ->setCellValue('A' . $row, $no)
+                ->setCellValue('B' . $row, $data['np_nama'])
+                ->setCellValue('C' . $row, $data['nk_id'])
+                ->setCellValue('D' . $row, $data['nk_nama'])
+                ->setCellValue('E' . $row, $data['nk_tahun'])
+                ->setCellValue('F' . $row, $totHadir);
+
+            $lastW      = 'F';
+            $step       = 0;
+
+            for ($i = 1; $i <= $highest_tm_ambil; $i++) {
+                $step = $step + 1;
+                $var = 'naps' . $i;
+                $col_letter = $this->incrementAlphaSequence($lastW, $step);
+
+                // Kode di bawah ini tidak perlu diubah karena sudah menangani nilai NULL dari proses filter di atas
+                if (isset($data[$var]['tm'])) {
+                    if ($data[$var]['tm'] == '1') {
+                        $cell = $col_letter . $row;
+                        $spreadsheet->getActiveSheet()->setCellValue($cell, $data[$var]['dt_tm']);
+                    } elseif ($data[$var]['tm'] == '0') {
+                        $cell = $col_letter . $row;
+                        $spreadsheet->getActiveSheet()->setCellValue($cell, '--');
+                    } else {
+                        $cell = $col_letter . $row;
+                        $spreadsheet->getActiveSheet()->setCellValue($cell, '');
+                    }
+                } else {
+                    $cell = $col_letter . $row;
+                    $spreadsheet->getActiveSheet()->setCellValue($cell, '');
+                };
+            }
+
+            $row++;
+        }
+
+        $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xls($spreadsheet);
+        $filename =  'Data-Rekap-Absensi-Peserta-NonReguler-Tahun' . $tahun . '-' . date('Y-m-d-His');
+
+        $this->logging('Admin', 'BERHASIL', 'Download rekap absensi peserta program Non-Reguler Tahun ' . $tahun);
+
+        header('Content-Type: application/vnd.ms-excel'); // Koreksi content type untuk .xls
+        header('Content-Disposition: attachment;filename="' . $filename . '.xls"'); // Tambahkan kutip untuk nama file
+        header('Cache-Control: max-age=0');
+
+        $writer->save('php://output');
+    }
     public function nonreg_pengajar_export()
     {
         $user = $this->userauth();
@@ -2130,7 +2440,7 @@ class Absensi extends BaseController
         parse_str($queryString, $params);
 
         // Get tahun parameter
-        if (count($params) >= 1 && array_key_exists('tahun', $params)) {
+        if (count($params) >= 2 && array_key_exists('tahun', $params) && array_key_exists('bulan', $params)) {
             $tahun = $params['tahun'];
         } else {
             $tahun = date('Y');
@@ -2147,7 +2457,7 @@ class Absensi extends BaseController
         }
 
         // Get all data for the year
-        $lists = $this->nonreg_absen_pengajar->list_rekap($tahun);
+        $lists = $this->nonreg_absen_pengajar->list_rekap_export();
 
         // Process each record - decode JSON napj fields
         $lists = array_map(function ($record) {
@@ -2161,7 +2471,7 @@ class Absensi extends BaseController
 
         // Filter by month if not 'all'
         if ($bulan !== 'all') {
-            $lists = $this->filterDataByMonth($lists, $bulan, $highest_tm_ambil);
+            $lists = $this->filterDataByMonthAndYear($lists, $bulan, $tahun, $highest_tm_ambil);
         }
 
         // Transform data structure - convert horizontal TM data to vertical rows
@@ -2172,7 +2482,7 @@ class Absensi extends BaseController
             for ($i = 1; $i <= $highest_tm_ambil; $i++) {
                 if (isset($data['napj' . $i]) && $data['napj' . $i]['tm'] == '1') {
                     // Check if this TM date falls within the selected month
-                    if ($bulan === 'all' || $this->isDateInMonth($data['napj' . $i]['dt_tm'], $bulan)) {
+                    if ($bulan === 'all' || $this->isDateInMonthAndYear($data['napj' . $i]['dt_tm'], $bulan, $tahun)) {
                         $totHadir++;
                     }
                 }
@@ -2184,6 +2494,7 @@ class Absensi extends BaseController
                 $tm_data = [
                     'nama_pengajar' => $data['nama_pengajar'],
                     'kategori_pengajar' => $data['kategori_pengajar'],
+                    'nk_id' => $data['nk_id'],
                     'nk_nama' => $data['nk_nama'],
                     'nama_program' => $data['nama_program'],
                     'nk_tahun' => $data['nk_tahun'],
@@ -2200,7 +2511,7 @@ class Absensi extends BaseController
                     $napj = $data['napj' . $i];
 
                     // Skip this TM if it's not in the selected month (when month filter is applied)
-                    if ($bulan !== 'all' && !$this->isDateInMonth($napj['dt_tm'], $bulan)) {
+                    if ($bulan !== 'all' && !$this->isDateInMonthAndYear($napj['dt_tm'], $bulan, $tahun)) {
                         continue;
                     }
 
@@ -2232,6 +2543,7 @@ class Absensi extends BaseController
             $transformed_data[] = [
                 'nama_pengajar' => 'TIDAK ADA DATA',
                 'kategori_pengajar' => '-',
+                'nk_id' => '-',
                 'nk_nama' => '-',
                 'nama_program' => '-',
                 'nk_tahun' => $tahun,
@@ -2315,13 +2627,14 @@ class Absensi extends BaseController
             ->setCellValue('A4', 'NO')
             ->setCellValue('B4', 'NAMA')
             ->setCellValue('C4', 'TIPE')
-            ->setCellValue('D4', 'KELAS')
-            ->setCellValue('E4', 'PROGRAM KELAS')
-            ->setCellValue('F4', 'ANGKATAN KELAS')
-            ->setCellValue('G4', 'TM')
-            ->setCellValue('H4', 'TGL HADIR')
-            ->setCellValue('I4', 'METODE TTM')
-            ->setCellValue('J4', 'TGL INPUT');
+            ->setCellValue('D4', 'NIK KELAS')
+            ->setCellValue('E4', 'KELAS')
+            ->setCellValue('F4', 'PROGRAM KELAS')
+            ->setCellValue('G4', 'ANGKATAN KELAS')
+            ->setCellValue('H4', 'TM')
+            ->setCellValue('I4', 'TGL HADIR')
+            ->setCellValue('J4', 'METODE TTM')
+            ->setCellValue('K4', 'TGL INPUT');
 
         $sheet->getStyle('A4:K4')->applyFromArray($style_up);
         $sheet->getStyle('A5:K' . $total_row)->applyFromArray($isi_tengah);
@@ -2342,13 +2655,14 @@ class Absensi extends BaseController
                 ->setCellValue('A' . $row, $data['no'])
                 ->setCellValue('B' . $row, $data['nama_pengajar'])
                 ->setCellValue('C' . $row, $data['kategori_pengajar'])
-                ->setCellValue('D' . $row, $data['nk_nama'])
-                ->setCellValue('E' . $row, $data['nama_program'])
-                ->setCellValue('F' . $row, $data['nk_tahun'])
-                ->setCellValue('G' . $row, $data['tm_number'])
-                ->setCellValue('H' . $row, $data['tgl_hadir'])
-                ->setCellValue('I' . $row, $data['metode_ttm'])
-                ->setCellValue('J' . $row, $data['dt_isi']);
+                ->setCellValue('D' . $row, $data['nk_id'])
+                ->setCellValue('E' . $row, $data['nk_nama'])
+                ->setCellValue('F' . $row, $data['nama_program'])
+                ->setCellValue('G' . $row, $data['nk_tahun'])
+                ->setCellValue('H' . $row, $data['tm_number'])
+                ->setCellValue('I' . $row, $data['tgl_hadir'])
+                ->setCellValue('J' . $row, $data['metode_ttm'])
+                ->setCellValue('K' . $row, $data['dt_isi']);
 
             $row++;
         }
@@ -2376,24 +2690,25 @@ class Absensi extends BaseController
     /**
      * Helper function to filter data by month
      */
-    private function filterDataByMonth($lists, $bulan, $highest_tm_ambil)
+    private function filterDataByMonthAndYear($lists, $bulan, $tahun, $highest_tm_ambil) // Renamed and added $tahun
     {
         $filtered_lists = [];
 
         foreach ($lists as $data) {
-            $has_data_in_month = false;
+            $has_data_in_period = false;
 
-            // Check if any TM has data in the selected month
+            // Check if any TM has data in the selected month and year
             for ($i = 1; $i <= $highest_tm_ambil; $i++) {
                 if (isset($data['napj' . $i]) && !is_null($data['napj' . $i])) {
-                    if (isset($data['napj' . $i]['dt_tm']) && $this->isDateInMonth($data['napj' . $i]['dt_tm'], $bulan)) {
-                        $has_data_in_month = true;
+                    // Pass $tahun to the checking function
+                    if (isset($data['napj' . $i]['dt_tm']) && $this->isDateInMonthAndYear($data['napj' . $i]['dt_tm'], $bulan, $tahun)) {
+                        $has_data_in_period = true;
                         break;
                     }
                 }
             }
 
-            if ($has_data_in_month) {
+            if ($has_data_in_period) {
                 $filtered_lists[] = $data;
             }
         }
@@ -2402,16 +2717,28 @@ class Absensi extends BaseController
     }
 
     /**
-     * Helper function to check if a date falls within a specific month
+     * Helper function to check if a date falls within a specific month and year
      */
-    private function isDateInMonth($date, $month)
+    private function isDateInMonthAndYear($date, $month, $year) // Renamed and added $year
     {
-        if (empty($date) || $month === 'all') {
+        // If date is empty, it can't be filtered
+        if (empty($date)) {
+            return false;
+        }
+
+        // If both are 'all', no filtering is needed
+        if ($month === 'all' && $year === 'all') {
             return true;
         }
 
-        $date_month = date('m', strtotime($date));
-        return $date_month === $month;
+        $date_obj = strtotime($date);
+        $date_month = date('m', $date_obj);
+        $date_year = date('Y', $date_obj);
+
+        $month_matches = ($month === 'all' || $date_month === $month);
+        $year_matches = ($year === 'all' || $date_year === $year);
+
+        return $month_matches && $year_matches;
     }
 
     /**

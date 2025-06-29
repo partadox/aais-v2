@@ -561,44 +561,48 @@ class KelasNonReg extends BaseController
         $tgl   = date("d-m-Y");
 
         $sheet->setCellValue('A1', $judul);
-        $sheet->mergeCells('A1:Q1');
+        $sheet->mergeCells('A1:S1');
         $sheet->getStyle('A1')->applyFromArray($styleColumn);
 
         $sheet->setCellValue('A2', $tgl);
-        $sheet->mergeCells('A2:Q2');
+        $sheet->mergeCells('A2:S2');
         $sheet->getStyle('A2')->applyFromArray($styleColumn);
 
-        $sheet->getStyle('A4:Q4')->applyFromArray($style_up);
+        $sheet->getStyle('A4:S4')->applyFromArray($style_up);
 
-        $sheet->getStyle('A5:Q' . $total_row)->applyFromArray($isi_tengah);
+        $sheet->getStyle('A5:S' . $total_row)->applyFromArray($isi_tengah);
 
         $spreadsheet->setActiveSheetIndex(0)
-            ->setCellValue('A4', 'NAMA KELAS')
-            ->setCellValue('B4', 'TAHUN PERKULIAHAN')
-            ->setCellValue('C4', 'PROGRAM')
-            ->setCellValue('D4', 'TIPE')
-            ->setCellValue('E4', 'BIDANG USAHA')
-            ->setCellValue('F4', 'HARI')
-            ->setCellValue('G4', 'JAM')
-            ->setCellValue('H4', 'PENGAJAR')
-            ->setCellValue('I4', 'LEVEL')
-            ->setCellValue('J4', 'JUMLAH PESERTA')
-            ->setCellValue('K4', 'JUMLAH PERTEMUAN AMBIL')
-            ->setCellValue('L4', 'JUMLAH PERTEMUAN MAKS.')
-            ->setCellValue('M4', 'STATUS KELAS')
-            ->setCellValue('N4', 'METODE ABSEN')
-            ->setCellValue('O4', 'NAMA PIC')
-            ->setCellValue('P4', 'NO. HP PIC')
-            ->setCellValue('Q4', 'LOKASI KELAS');
+            ->setCellValue('A4', 'NO')
+            ->setCellValue('B4', 'NIK')
+            ->setCellValue('C4', 'NAMA KELAS')
+            ->setCellValue('D4', 'TAHUN PERKULIAHAN')
+            ->setCellValue('E4', 'PROGRAM')
+            ->setCellValue('F4', 'TIPE')
+            ->setCellValue('G4', 'BIDANG USAHA')
+            ->setCellValue('H4', 'HARI')
+            ->setCellValue('I4', 'JAM')
+            ->setCellValue('J4', 'PENGAJAR')
+            ->setCellValue('K4', 'LEVEL')
+            ->setCellValue('L4', 'JUMLAH PESERTA')
+            ->setCellValue('M4', 'JUMLAH PERTEMUAN AMBIL')
+            ->setCellValue('N4', 'JUMLAH PERTEMUAN MAKS.')
+            ->setCellValue('O4', 'STATUS KELAS')
+            ->setCellValue('P4', 'METODE ABSEN')
+            ->setCellValue('Q4', 'NAMA PIC')
+            ->setCellValue('R4', 'NO. HP PIC')
+            ->setCellValue('S4', 'LOKASI KELAS');
 
-        $columns = range('A', 'Q');
+        $columns = range('A', 'S');
         foreach ($columns as $column) {
             $spreadsheet->getActiveSheet()->getColumnDimension($column)->setAutoSize(true);
         }
 
         $row = 5;
+        $no = 1;
 
         foreach ($kelas as $data) {
+            $no++;
 
             if ($data['nk_status'] == 1) {
                 $status = 'Aktif';
@@ -607,23 +611,25 @@ class KelasNonReg extends BaseController
             }
 
             $spreadsheet->setActiveSheetIndex(0)
-                ->setCellValue('A' . $row, $data['nk_nama'])
-                ->setCellValue('B' . $row, $data['nk_tahun'])
-                ->setCellValue('C' . $row, $data['nk_program'])
-                ->setCellValue('D' . $row, $data['nk_tipe'])
-                ->setCellValue('E' . $row, $data['nk_usaha'])
-                ->setCellValue('F' . $row, $data['nk_hari'])
-                ->setCellValue('G' . $row, $data['nk_waktu'] . ' ' . $data['nk_timezone'])
-                ->setCellValue('H' . $row, $data['nama_pengajar'])
-                ->setCellValue('I' . $row, "") #$data['nk_level'])
-                ->setCellValue('J' . $row, $data['nk_kuota'])
-                ->setCellValue('K' . $row, $data['nk_tm_ambil'])
-                ->setCellValue('L' . $row, $data['nk_tm_total'])
-                ->setCellValue('M' . $row, $status)
-                ->setCellValue('N' . $row, $data['nk_absen_metode'])
-                ->setCellValue('O' . $row, $data['nk_pic_name'])
-                ->setCellValue('P' . $row, $data['nk_pic_hp'])
-                ->setCellValue('Q' . $row, $data['nk_lokasi']);
+                ->setCellValue('A' . $row, $no)
+                ->setCellValue('B' . $row, $data['nk_id'])
+                ->setCellValue('C' . $row, $data['nk_nama'])
+                ->setCellValue('D' . $row, $data['nk_tahun'])
+                ->setCellValue('E' . $row, $data['nk_program'])
+                ->setCellValue('F' . $row, $data['nk_tipe'])
+                ->setCellValue('G' . $row, $data['nk_usaha'])
+                ->setCellValue('H' . $row, $data['nk_hari'])
+                ->setCellValue('I' . $row, $data['nk_waktu'] . ' ' . $data['nk_timezone'])
+                ->setCellValue('J' . $row, $data['nama_pengajar_list'])
+                ->setCellValue('K' . $row, $data['nama_level_list'])
+                ->setCellValue('L' . $row, $data['nk_kuota'])
+                ->setCellValue('M' . $row, $data['nk_tm_ambil'])
+                ->setCellValue('N' . $row, $data['nk_tm_total'])
+                ->setCellValue('O' . $row, $status)
+                ->setCellValue('P' . $row, $data['nk_absen_metode'])
+                ->setCellValue('Q' . $row, $data['nk_pic_name'])
+                ->setCellValue('R' . $row, $data['nk_pic_hp'])
+                ->setCellValue('S' . $row, $data['nk_lokasi']);
 
             $row++;
         }

@@ -304,6 +304,7 @@ $routes->get('absensi-nonreg/peserta', 'Admin\Absensi::nonreg_peserta', ["filter
 $routes->get('absensi-nonreg/peserta-export', 'Admin\Absensi::nonreg_peserta_export', ["filter" => "authweb:1-2-3-7"]);
 $routes->get('absensi-nonreg/pengajar', 'Admin\Absensi::nonreg_pengajar', ["filter" => "authweb:1-2-3-7"]);
 $routes->get('absensi-nonreg/pengajar-export', 'Admin\Absensi::nonreg_pengajar_export', ["filter" => "authweb:1-2-3-7"]);
+$routes->post('absensi-nonreg/pengajar-note', 'Admin\Absensi::nonreg_pengajar_note', ["filter" => "authweb:1-2-3-7"]);
 
 //Ujian
 $routes->get('ujian', 'Admin\Ujian::index', ["filter" => "authweb:1-2-3-7"]);

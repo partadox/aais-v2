@@ -73,4 +73,16 @@ class Model_nonreg_absen_pengajar extends Model
             ->join('program', 'program.program_id = nonreg_kelas.nk_program')
             ->get()->getResultArray();
     }
+
+    public function list_rekap_export()
+    {
+        return $this->table('nonreg_absen_pengajar')
+            ->select('nonreg_absen_pengajar.*, pengajar.nama_pengajar, pengajar.kategori_pengajar, nonreg_kelas.*, program.biaya_bulanan, program.nama_program')
+            ->where('nk_status', 1)
+            ->join('nonreg_pengajar', 'nonreg_pengajar.npj_id = nonreg_absen_pengajar.napj_pengajar')
+            ->join('nonreg_kelas', 'nonreg_kelas.nk_id = nonreg_pengajar.npj_kelas')
+            ->join('pengajar', 'pengajar.pengajar_id = nonreg_pengajar.npj_pengajar')
+            ->join('program', 'program.program_id = nonreg_kelas.nk_program')
+            ->get()->getResultArray();
+    }
 }

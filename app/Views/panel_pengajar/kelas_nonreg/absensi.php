@@ -4,40 +4,31 @@
 <div class="col-sm-6">
     <h4 class="page-title"><?= $title ?></h4>
 </div>
-
 <?= $this->endSection('judul') ?>
 
 <?= $this->section('isi') ?>
 
-
 <a href="<?= base_url('/pengajar/kelas-nonreg') ?>">
-    <button type="button" class="btn btn-secondary mb-3"><i class=" fa fa-arrow-circle-left"></i> Kembali</button>
+    <button type="button" class="btn btn-secondary mb-3"><i class="fa fa-arrow-circle-left"></i> Kembali</button>
 </a>
 
-<br>
-
-
-<h5 style="text-align:center;">Kelas <?= $kelas['nk_nama'] ?></h5>
-<h6 style="text-align:center;"><?= $kelas['nk_hari'] ?>, <?= $kelas['nk_waktu'] ?> <?= $kelas['nk_timezone'] ?></h6>
-
-
-<!-- <div class="row mt-2">
-    <div class="col d-flex flex-column align-items-center">
-        <label for=""><code>Pilih TM untuk Pengisian Absensi</code></label>
-        <select onchange="inputAbsensi(this.value);" class="form-control select-single col-2" name="inputTM" id="inputTM">
+<h5 style="text-align:center;">Kelas <?= esc($kelas['nk_nama']) ?></h5>
+<h6 style="text-align:center;"><?= esc($kelas['nk_hari']) ?>, <?= esc($kelas['nk_waktu']) ?> <?= esc($kelas['nk_timezone']) ?></h6>
+<style>
+    /* Memberi warna latar abu-abu pada opsi yang tidak bisa dipilih (disabled) di Select2 */
+    .select2-container--bootstrap4 .select2-results__option[aria-disabled=true] {
+        background-color: #e9ecef;
+        /* Warna abu-abu terang */
+        cursor: not-allowed;
+        /* Mengubah kursor untuk menandakan tidak bisa diklik */
+    }
+</style>
+<div class="row mt-3">
+    <div class="col-lg-6 offset-lg-3 d-flex flex-column align-items-center">
+        <label for="inputTM"><code>Pilih TM untuk Pengisian Absensi</code></label>
+        <select onchange="inputAbsensi(this.value);" class="form-control select2Search" name="inputTM" id="inputTM" style="width: 60%;">
             <option value="" selected disabled>--PILIH--</option>
-            <?php for ($i = 1; $i <= $kelas['nk_tm_ambil']; $i++): ?>
-                <option value="<?= $i ?>">TATAP MUKA <?= $i ?></option>
-            <?php endfor; ?>
-        </select>
-    </div>
-</div> -->
-<div class="row mt-2">
-    <div class="col d-flex flex-column align-items-center">
-        <label for=""><code>Pilih TM untuk Pengisian Absensi</code></label>
-        <select onchange="inputAbsensi(this.value);" class="form-control select2Search col-2" name="inputTM" id="inputTM" style="width: 60%;">
-            <option value="" selected disabled>--PILIH--</option>
-            <?php for ($i = 1; $i <= $kelas['nk_tm_ambil']; $i++): ?>
+            <?php for ($i = 1; $i <= $kelas['nk_tm_ambil']; $i++) : ?>
                 <option value="<?= $i ?>">TATAP MUKA <?= $i ?></option>
             <?php endfor; ?>
         </select>
@@ -46,56 +37,45 @@
 </div>
 
 <div class="table-responsive mt-3">
-    <table id="datatable-absen" class="table table-striped table-bordered nowrap mt-1" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+    <table id="datatable-absen" class="table table-striped table-bordered dt-responsive nowrap" style="width: 100%;">
         <thead>
             <tr>
-                <th>NO</th>
-                <th>NAMA</th>
-                <!-- <th>NOTE</th> -->
-                <th>JML. HADIR</th>
-                <?php for ($i = 1; $i <= $kelas['nk_tm_ambil']; $i++): ?>
-                    <th><?= $i ?></th>
+                <th width="5%">NO</th>
+                <th width="20%">NAMA</th>
+                <th width="10%">JML. HADIR</th>
+                <?php for ($i = 1; $i <= $kelas['nk_tm_ambil']; $i++) : ?>
+                    <th class="text-center"><?= $i ?></th>
                 <?php endfor; ?>
             </tr>
         </thead>
-
         <tbody>
-            <?php $nomor = 0;
-            foreach ($peserta_onkelas as $data) :
-                $nomor++; ?>
+            <?php foreach ($peserta_onkelas as $nomor => $data) : ?>
                 <tr>
-                    <td width="5%"><?= $nomor ?></td>
-                    <td width="15%">
-                        <?= $data['nama'] ?>
+                    <td><?= $nomor + 1 ?></td>
+                    <td><?= esc($data['nama']) ?></td>
+                    <td class="text-center">
+                        <?php
+                        $totHadir = 0;
+                        for ($i = 1; $i <= $kelas['nk_tm_ambil']; $i++) {
+                            if (isset($data['naps' . $i]) && $data['naps' . $i]['tm'] == '1') {
+                                $totHadir++;
+                            }
+                        }
+                        echo $totHadir;
+                        ?>
                     </td>
-                    <!-- <td width="5%">
-                        <button class="btn btn-sm btn-info" onclick="inputNote(<?= $data['naps_id'] ?>)"> <i class="mdi mdi-file"></i> </button>
-                    </td> -->
-                    <td width="10%">
-                        <?php $totHadir = 0;
-                        for ($i = 1; $i <= $kelas['nk_tm_ambil']; $i++): ?>
-                            <?php if (isset($data['naps' . $i])) { ?>
-                                <?php if ($data['naps' . $i]['tm'] == '1') {
-                                    $totHadir = $totHadir + 1; ?>
-                                <?php } ?>
-                            <?php } ?>
-                        <?php endfor; ?>
-                        <?= $totHadir ?>
-                    </td>
-                    <?php for ($i = 1; $i <= $kelas['nk_tm_ambil']; $i++): ?>
-                        <td>
-                            <?php if (isset($data['naps' . $i])) { ?>
-                                <?php if ($data['naps' . $i]['tm'] == '1') { ?>
-                                    <i style="color: green;" class="mdi mdi-check-bold"></i>
-                                <?php } ?>
-                                <?php if ($data['naps' . $i]['tm'] == '0') { ?>
-                                    <i style="color: red;" class="mdi mdi-minus"></i>
-                                <?php } ?>
-                            <?php } ?>
+                    <?php for ($i = 1; $i <= $kelas['nk_tm_ambil']; $i++) : ?>
+                        <td class="text-center">
+                            <?php // IMPROVEMENT: Cleaner logic with ternary operator
+                            if (isset($data['naps' . $i])) {
+                                echo ($data['naps' . $i]['tm'] == '1')
+                                    ? '<i style="color: green;" class="mdi mdi-check-bold" title="Hadir"></i>'
+                                    : '<i style="color: red;" class="mdi mdi-minus" title="Tidak Hadir"></i>';
+                            }
+                            ?>
                         </td>
                     <?php endfor; ?>
                 </tr>
-
             <?php endforeach; ?>
         </tbody>
     </table>
@@ -105,141 +85,67 @@
 
 <h5>Absensi dan Catatan Pengajar</h5>
 
-<!-- <div class="table-responsive">
-    <table id="datatable-tm" class="table table-striped table-bordered nowrap mt-1" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
-        <thead>
-            <tr>
-                <th>TM</th>
-                <th>TGL TM</th>
-                <th>WAKTU ISI</th>
-                <th>PENGISI ABSENSI</th>
-                <th>PENGAJAR HADIR</th>
-                <th>NOTE</th>
-            </tr>
-        </thead>
-
-        <tbody>
-            <?php for ($i = 1; $i <= $kelas['nk_tm_ambil']; $i++): ?>
-                <tr>
-                    <td width="5%"><?= $i ?></td>
-                    <td width="10%">
-                        <?php if (isset($absenTm['napj' . $i]['dt_tm'])) { ?>
-                            <?= shortdate_indo($absenTm['napj' . $i]['dt_tm']) ?>
-                        <?php } ?>
-                    </td>
-                    <td width="10%">
-                        <?php if (isset($absenTm['napj' . $i]['dt_isi'])) { ?>
-                            <?= shortdate_indo(substr($absenTm['napj' . $i]['dt_isi'], 0, 10)) ?>, <?= substr($absenTm['napj' . $i]['dt_isi'], 11, 15) ?>
-                        <?php } ?>
-                    </td>
-                    <td width="10%">
-                        <?php if (isset($absenTm['napj' . $i]['by'])) { ?>
-                            <?= $absenTm['napj' . $i]['by'] ?>
-                        <?php } ?>
-                    </td>
-                    <td width="10%">
-                        <?php if (isset($absenTm['napj' . $i]['tm'])) { ?>
-                            <?php if ($absenTm['napj' . $i]['tm'] == '1') { ?>
-                                <i style="color: green;" class="mdi mdi-check-bold"></i>
-                            <?php } ?>
-                            <?php if ($absenTm['napj' . $i]['tm'] == '0') { ?>
-                                <i style="color: red;" class="mdi mdi-minus"></i>
-                            <?php } ?>
-                        <?php } ?>
-                    </td>
-                    <td width="20%">
-                        <?php if (isset($absenTm['napj' . $i]['dt_isi'])) { ?>
-                            <?= $absenTm['napj' . $i]['note'] ?>
-                        <?php } ?>
-                    </td>
-                </tr>
-            <?php endfor; ?>
-
-        </tbody>
-    </table>
-</div> -->
-
 <?php
-
-// Group data by TM untuk tampilan yang lebih terstruktur (optional)
+// Grouping data by TM is a good practice for structured display
 $groupedByTM = [];
-foreach ($absenTmNew as $record) {
-    $tmNumber = $record['tm'];
-    if (!isset($groupedByTM[$tmNumber])) {
-        $groupedByTM[$tmNumber] = [];
+if (isset($absenTmNew) && !empty($absenTmNew)) {
+    foreach ($absenTmNew as $record) {
+        $tmNumber = $record['tm_sequence'];
+        if (!isset($groupedByTM[$tmNumber])) {
+            $groupedByTM[$tmNumber] = [];
+        }
+        $groupedByTM[$tmNumber][] = $record;
     }
-    $groupedByTM[$tmNumber][] = $record;
+    ksort($groupedByTM, SORT_NUMERIC); // Sort by TM number
 }
-ksort($groupedByTM); // Sort by TM number
 ?>
 
-<div class="table-responsive">
-    <table id="datatable-tm" class="table table-striped table-bordered nowrap mt-1" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+<div class="table-responsive mt-3">
+    <table id="datatable-tm" class="table table-striped table-bordered dt-responsive nowrap" style="width: 100%;">
         <thead>
             <tr>
                 <th>TM</th>
                 <th>TGL TM</th>
                 <th>WAKTU ISI</th>
-                <th>PENGISI ABSENSI</th>
-                <th>PENGAJAR HADIR</th>
-                <th>NOTE</th>
+                <th>PENGISI</th>
+                <th>KEHADIRAN PENGAJAR</th>
+                <th>CATATAN</th>
             </tr>
         </thead>
-
         <tbody>
-            <?php if (!empty($absenTmNew)): ?>
-                <?php foreach ($groupedByTM as $tmNumber => $tmRecords): ?>
-                    <?php foreach ($tmRecords as $index => $record): ?>
+            <?php if (!empty($groupedByTM)) : ?>
+                <?php foreach ($groupedByTM as $tmNumber => $tmRecords) : ?>
+                    <?php foreach ($tmRecords as $record) : ?>
                         <tr>
-                            <!-- TM Number -->
-                            <td width="5%">
-                                <strong><?= $record['tm_sequence'] ?></strong>
-                            </td>
-
-                            <!-- Tanggal TM -->
-                            <td width="10%">
-                                <?php if (!empty($record['dt_tm'])): ?>
-                                    <?= shortdate_indo($record['dt_tm']) ?>
+                            <td class="text-center"><strong><?= esc($record['tm_sequence']) ?></strong></td>
+                            <td><?= !empty($record['dt_tm']) ? shortdate_indo($record['dt_tm']) : '-' ?></td>
+                            <td>
+                                <?php if (!empty($record['dt_isi'])) : ?>
+                                    <?= shortdate_indo(substr($record['dt_isi'], 0, 10)) ?>, <?= substr($record['dt_isi'], 11, 8) ?>
+                                <?php else : ?>
+                                    -
                                 <?php endif; ?>
                             </td>
-
-                            <!-- Waktu Input -->
-                            <td width="10%">
-                                <?php if (!empty($record['dt_isi'])): ?>
-                                    <?= shortdate_indo(substr($record['dt_isi'], 0, 10)) ?>,
-                                    <?= substr($record['dt_isi'], 11, 8) ?>
-                                <?php endif; ?>
+                            <td><?= esc($record['by'] ?? '-') ?></td>
+                            <td class="text-center">
+                                <?php // IMPROVEMENT: Cleaner logic for teacher attendance status
+                                if (isset($record['tm'])) {
+                                    echo ($record['tm'] == '1')
+                                        ? '<span class="text-success"><i class="mdi mdi-check-bold"></i> Hadir</span>'
+                                        : '<span class="text-danger"><i class="mdi mdi-minus"></i> Tidak Hadir</span>';
+                                } else {
+                                    echo '-';
+                                }
+                                ?>
                             </td>
-
-                            <!-- Pengisi Absensi -->
-                            <td width="15%">
-                                <?= $record['by'] ?? '' ?>
-                            </td>
-
-                            <!-- Status Kehadiran Pengajar -->
-                            <td width="10%" class="text-center">
-                                <?php if (!empty($record['tm'])): ?>
-                                    <?php if ($record['tm'] == '1'): ?>
-                                        <i style="color: green;" class="mdi mdi-check-bold" title="Hadir"></i>
-                                        <small class="text-success">Hadir</small>
-                                    <?php elseif ($record['tm'] == '0'): ?>
-                                        <i style="color: red;" class="mdi mdi-minus" title="Tidak Hadir"></i>
-                                        <small class="text-danger">Tidak Hadir</small>
-                                    <?php endif; ?>
-                                <?php endif; ?>
-                            </td>
-
-                            <!-- Note -->
-                            <td width="25%">
-                                <?= !empty($record['note']) ? trim($record['note']) : '-' ?>
-                            </td>
+                            <td><?= !empty(trim($record['note'])) ? esc($record['note']) : '-' ?></td>
                         </tr>
                     <?php endforeach; ?>
                 <?php endforeach; ?>
-            <?php else: ?>
+            <?php else : ?>
                 <tr>
-                    <td colspan="7" class="text-center text-muted">
-                        <em>Belum ada data absensi TM</em>
+                    <td colspan="6" class="text-center text-muted">
+                        <em>Belum ada data absensi dari pengajar.</em>
                     </td>
                 </tr>
             <?php endif; ?>
@@ -251,78 +157,149 @@ ksort($groupedByTM); // Sort by TM number
 <div class="modalIsiNote"></div>
 
 <script>
+    // FIX: Consolidate all document ready functions into one for reliability.
     $(document).ready(function() {
+
+        // Initialize the first DataTable for student attendance
         $('#datatable-absen').DataTable({
-            "paging": false,
+            "responsive": false,
+            "paging": false, // As per your original code
             "searching": true,
             "info": true,
-            "responsive": false,
             "scrollX": true,
             "fixedColumns": {
-                "leftColumns": 0
+                "start": 0
             },
-            "pageLength": 25,
-            "order": [
-                [0, "asc"],
-                [1, "asc"]
-            ], // Sort by TM then by date
-            "columnDefs": [{
-                    "targets": [4], // Status column
-                    "orderable": false
-                },
-                {
-                    "targets": [6], // Entry sequence column
-                    "orderable": true,
-                    "type": "num"
-                }
-            ]
+            "ordering": false, // It's better to disable ordering on a complex pivot table
+
         });
 
+        // Initialize the second DataTable for teacher's log
         $('#datatable-tm').DataTable({
+            "responsive": false,
             "paging": true,
             "searching": true,
             "info": true,
-            "responsive": false,
-            "pageLength": 25,
+            "pageLength": 10,
+            "scrollX": true,
+            "fixedColumns": {
+                "start": 0
+            },
             "order": [
-                [0, "asc"],
-                [1, "asc"]
-            ], // Sort by TM then by date
-            "columnDefs": [{
-                    "targets": [4], // Status column
-                    "orderable": false
-                },
-                {
-                    "targets": [6], // Entry sequence column
-                    "orderable": true,
-                    "type": "num"
-                }
-            ]
+                [0, "asc"] // Sort by TM number ascending
+            ],
         });
+
+        // Initialize Select2 plugin
+        $('.select2Search').select2({
+            theme: "bootstrap4"
+        });
+
+        // Initial setup for the sequential attendance dropdown
+        setupSequentialSelect();
+
     });
 
-    $(document).ready(function() {
-        $('.select2Search').select2({});
-    });
+    // --- DATA & CONSTANTS ---
+    const pesertaData = <?= json_encode($peserta_onkelas ?? []) ?>;
+    const maxTM = <?= $kelas['nk_tm_ambil'] ?? 0 ?>;
+    const kelasId = "<?= $kelas['nk_id'] ?>";
 
+    /**
+     * Finds the highest meeting (TM) number that has been filled for any student.
+     * @returns {number} The last filled TM number.
+     */
+    function findMaxFilledTM() {
+        let maxFilledTM = 0;
+        if (pesertaData.length > 0) {
+            for (const student of pesertaData) {
+                for (let i = maxTM; i >= 1; i--) {
+                    const napsKey = `naps${i}`;
+                    if (student[napsKey] !== null && student[napsKey] !== undefined) {
+                        maxFilledTM = Math.max(maxFilledTM, i);
+                        break; // Move to the next student
+                    }
+                }
+            }
+        }
+        return maxFilledTM;
+    }
+
+    /**
+     * Configures the TM dropdown to only allow sequential filling.
+     * It enables options up to the next unfilled TM and disables the rest.
+     */
+    function setupSequentialSelect() {
+        const select = document.getElementById('inputTM');
+        const hint = document.getElementById('tmHint');
+        if (!select) return;
+
+        const maxFilledTM = findMaxFilledTM();
+        const nextTM = Math.min(maxFilledTM + 1, maxTM);
+        const allFilled = maxFilledTM >= maxTM;
+
+        if (allFilled) {
+            select.disabled = true;
+            // Use jQuery to update Select2 text
+            $(select).find('option:first').text('-- SEMUA TM SUDAH TERISI --');
+            if (hint) hint.textContent = 'Semua TM telah diisi lengkap. Terima kasih.';
+            $(select).val(null).trigger('change'); // Reset selection
+            return;
+        }
+
+        // Enable/disable options
+        $('#inputTM option').each(function() {
+            const tmValue = parseInt($(this).val());
+            if (isNaN(tmValue)) return; // Skip the placeholder option
+
+            const canSelect = tmValue <= nextTM;
+            $(this).prop('disabled', !canSelect);
+        });
+
+        if (hint) hint.textContent = `Silakan lanjutkan pengisian untuk TM ${nextTM}.`;
+
+        // Refresh Select2 to apply changes
+        $(select).select2({
+            theme: "bootstrap4"
+        });
+    }
+
+    /**
+     * Handles the AJAX request to open the attendance input modal.
+     * @param {string|number} tm - The Tatap Muka (TM) number selected.
+     */
     function inputAbsensi(tm) {
+        if (!tm) return;
+
         $.ajax({
             type: "POST",
             url: "<?= site_url('/pengajar/input-absensi-nonreg') ?>",
             data: {
-                nk_id: "<?= $kelas['nk_id'] ?>",
+                nk_id: kelasId,
                 tm: tm,
             },
             dataType: "json",
+            beforeSend: function() {
+                // Optional: Show a loading indicator
+            },
             success: function(response) {
                 if (response.sukses) {
                     $('.modalIsi').html(response.sukses).show();
                     $('#modaltm').modal('show');
+                } else {
+                    // IMPROVEMENT: Handle cases where 'sukses' is not returned
+                    Swal.fire('Error', response.error || 'Gagal memuat data modal.', 'error');
                 }
+            },
+            error: function(xhr, status, error) {
+                // IMPROVEMENT: Better error handling
+                console.error("AJAX Error:", error);
+                Swal.fire('Terjadi Kesalahan', 'Tidak dapat menghubungi server. Silakan coba lagi nanti.', 'error');
             }
         });
     }
 
+    // This function seems unused in the main table but is kept for completeness
     function inputNote(absen_pesertaId) {
         $.ajax({
             type: "POST",
@@ -336,241 +313,13 @@ ksort($groupedByTM); // Sort by TM number
                     $('.modalIsiNote').html(response.sukses).show();
                     $('#isiNote').modal('show');
                 }
-            }
-        });
-    }
-
-    const pesertaData = <?php echo json_encode($peserta_onkelas); ?>;
-    const maxTM = <?php echo $kelas['nk_tm_ambil']; ?>;
-
-    /**
-     * Calculate next TM that should be filled
-     */
-    function calculateNextTM() {
-        let maxFilledTM = 0;
-
-        for (const student of pesertaData) {
-            if (!student.nama) continue;
-
-            for (let i = maxTM; i >= 1; i--) {
-                const napsKey = `naps${i}`;
-                if (student[napsKey] !== null && student[napsKey] !== undefined) {
-                    maxFilledTM = Math.max(maxFilledTM, i);
-                    break;
-                }
-            }
-        }
-
-        const nextTM = Math.min(maxFilledTM + 1, maxTM);
-        const allFilled = maxFilledTM >= maxTM;
-
-        return {
-            maxFilledTM,
-            nextTM,
-            allFilled
-        };
-    }
-
-    /**
-     * Setup sequential select options
-     */
-    function setupSequentialSelect() {
-        const select = document.getElementById('inputTM');
-        const hint = document.getElementById('tmHint');
-
-        // Wait for element to exist
-        if (!select) {
-            setTimeout(setupSequentialSelect, 100);
-            return;
-        }
-
-        const {
-            maxFilledTM,
-            nextTM,
-            allFilled
-        } = calculateNextTM();
-        const options = select.querySelectorAll('option');
-
-        if (allFilled) {
-            select.disabled = true;
-            options[0].textContent = '--SEMUA TM SUDAH TERISI--';
-            if (hint) hint.textContent = 'Semua TM sudah terisi lengkap';
-
-            for (let i = 1; i < options.length; i++) {
-                options[i].disabled = true;
-            }
-            return;
-        }
-
-        // Enable/disable options
-        for (let i = 1; i < options.length; i++) {
-            const tmNumber = parseInt(options[i].value);
-            const canSelect = tmNumber <= maxFilledTM || tmNumber === nextTM;
-            const isNext = tmNumber === nextTM;
-            const isFilled = tmNumber <= maxFilledTM;
-
-            options[i].disabled = !canSelect;
-
-            let optionText = `TATAP MUKA ${tmNumber}`;
-            if (isNext && !allFilled) {
-                // optionText += ' (Selanjutnya)';
-                optionText += '';
-            } else if (isFilled) {
-                // optionText += ' (Terisi)';
-                optionText += '';
-            }
-            options[i].textContent = optionText;
-        }
-
-        if (hint) hint.textContent = `Silakan isi TM ${nextTM} selanjutnya`;
-
-        console.log(`Sequential setup complete: Next TM = ${nextTM}`);
-    }
-
-    /**
-     * Your existing inputAbsensi function - keep it exactly as is
-     * Just add validation before the AJAX call
-     */
-    function inputAbsensi(tm) {
-        // Don't interfere with your existing logic
-        if (!tm) return;
-
-        console.log(`inputAbsensi called with TM: ${tm}`);
-
-        // Your original AJAX call
-        $.ajax({
-            type: "POST",
-            url: "<?= site_url('/pengajar/input-absensi-nonreg') ?>",
-            data: {
-                nk_id: "<?= $kelas['nk_id'] ?>",
-                tm: tm,
-            },
-            dataType: "json",
-            success: function(response) {
-                console.log('AJAX response:', response);
-                if (response.sukses) {
-                    $('.modalIsi').html(response.sukses).show();
-                    $('#modaltm').modal('show');
-                }
             },
             error: function(xhr, status, error) {
-                console.error('AJAX error:', error);
+                console.error("AJAX Error:", error);
+                Swal.fire('Terjadi Kesalahan', 'Gagal memuat catatan.', 'error');
             }
         });
     }
-
-    /**
-     * Call this after modal closes and attendance is saved
-     */
-    function refreshAfterAttendanceSave() {
-        // Reset select
-        const select = document.getElementById('inputTM');
-        if (select) {
-            select.selectedIndex = 0;
-            select.disabled = false;
-        }
-
-        // Recalculate sequential logic
-        setupSequentialSelect();
-    }
-
-    // Initialize after DOM is ready
-    $(document).ready(function() {
-        console.log('DOM ready, setting up sequential select');
-        setupSequentialSelect();
-    });
-
-    // Alternative initialization if jQuery is loaded after
-    if (typeof $ === 'undefined') {
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('DOM loaded, setting up sequential select');
-            setupSequentialSelect();
-        });
-    }
-
-    // Also try immediate execution if DOM already loaded
-    if (document.readyState === 'loading') {
-        // Do nothing, wait for DOMContentLoaded
-    } else {
-        // DOM already loaded
-        console.log('DOM already loaded, setting up sequential select immediately');
-        setupSequentialSelect();
-    }
-
-    // function tm(tm, kelas_id, data_absen_pengajar) {
-    //     $.ajax({
-    //         type: "post",
-    //         url: "<?= site_url('/pengajar/input-absensi') ?>",
-    //         data: {
-    //             tm : tm,
-    //             kelas_id : kelas_id,
-    //             data_absen_pengajar : data_absen_pengajar,
-    //         },
-    //         dataType: "json",
-    //         success: function(response) {
-    //             if (response.sukses) {
-    //                 $('.viewmodaltm').html(response.sukses).show();
-    //                 $('#modaltm').modal('show');
-    //             }
-    //         }
-    //     });
-    // }
-
-    // function aturAbsen(kelas_id) {
-    //     $.ajax({
-    //         type: "post",
-    //         url: "<?= site_url('/pengajar/atur-absensi') ?>",
-    //         data: {
-    //             kelas_id : kelas_id
-    //         },
-    //         dataType: "json",
-    //         success: function(response) {
-    //             if (response.sukses) {
-    //                 $('.viewmodalaturabsen').html(response.sukses).show();
-    //                 $('#modalatur').modal('show');
-    //             }
-    //         }
-    //     });
-    // }
-
-    // function note(absen_peserta_id, nis, nama, kelas_id) {
-    //     $.ajax({
-    //         type: "post",
-    //         url: "<?= site_url('/pengajar/absensi-note') ?>",
-    //         data: {
-    //             absen_peserta_id: absen_peserta_id,
-    //             nis: nis,
-    //             nama: nama,
-    //             kelas_id: kelas_id,
-    //         },
-    //         dataType: "json",
-    //         success: function(response) {
-    //             if (response.sukses) {
-    //                 $('.editNote').html(response.sukses).show();
-    //                 $('#modalNote').modal('show');
-    //             }
-    //         }
-    //     });
-    // }
-
-    // function tm_pengajar(tm, kelas_id, data_absen_pengajar) {
-    //     $.ajax({
-    //         type: "post",
-    //         url: "<?= site_url('absen/input_tm_pengajar') ?>",
-    //         data: {
-    //             tm : tm,
-    //             kelas_id : kelas_id,
-    //             data_absen_pengajar : data_absen_pengajar
-    //         },
-    //         dataType: "json",
-    //         success: function(response) {
-    //             if (response.sukses) {
-    //                 $('.viewmodaltmpgj').html(response.sukses).show();
-    //                 $('#modaltmpgj').modal('show');
-    //             }
-    //         }
-    //     });
-    // }
 </script>
 
 <?= $this->endSection('isi') ?>

@@ -64,9 +64,11 @@
             <tr>
                 <th>No.</th>
                 <th>Pengajar</th>
+                <th>NIK Kelas</th>
                 <th>Kelas</th>
                 <th>Tahun</th>
                 <th>Total Hadir</th>
+                <th>Catatan</th>
                 <?php for ($i = 1; $i <= $highest_tm_ambil; $i++): ?>
                     <th><?= $i ?></th>
                 <?php endfor; ?>
@@ -80,6 +82,7 @@
                 <tr>
                     <td width="1%"><?= $nomor ?></td>
                     <td width="5%"><?= $data['nama_pengajar'] ?></td>
+                    <td width="10%"><?= $data['nk_id'] ?></td>
                     <td width="10%"><?= $data['nk_nama'] ?></td>
                     <td width="10%"><?= $data['nk_tahun'] ?></td>
                     <td width="10%">
@@ -92,6 +95,10 @@
                             <?php } ?>
                         <?php endfor; ?>
                         <?= $totHadir ?>
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-info mb-2" onclick="catatan(<?= $data['napj_id'] ?>)">
+                            <i class=" fa fa-file mr-1"></i>Catatan</button>
                     </td>
                     <?php for ($i = 1; $i <= $highest_tm_ambil; $i++): ?>
                         <td>
@@ -277,13 +284,12 @@
         });
     });
 
-    function catatan(absen_pengajar_id, kelas_id) {
+    function catatan(napj_id) {
         $.ajax({
             type: "post",
-            url: "<?= site_url('/absensi-regular/pengajar-note') ?>",
+            url: "<?= site_url('/absensi-nonreg/pengajar-note') ?>",
             data: {
-                absen_pengajar_id: absen_pengajar_id,
-                kelas_id: kelas_id
+                napj_id: napj_id,
             },
             dataType: "json",
             success: function(response) {

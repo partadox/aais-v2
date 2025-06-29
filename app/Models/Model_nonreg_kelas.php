@@ -27,10 +27,13 @@ class Model_nonreg_kelas extends Model
                  (' . $subQuery . ') as peserta_nonreg_count,
                  program.nama_program,
                  GROUP_CONCAT(DISTINCT pengajar.nama_pengajar ORDER BY pengajar.nama_pengajar SEPARATOR ", ") as nama_pengajar_list,
-                 COUNT(DISTINCT nonreg_pengajar.npj_pengajar) as jumlah_pengajar')
+                 COUNT(DISTINCT nonreg_pengajar.npj_pengajar) as jumlah_pengajar,
+                 GROUP_CONCAT(DISTINCT peserta_level.nama_level ORDER BY peserta_level.nama_level SEPARATOR ", ") as nama_level_list')
             ->join('program', 'program.program_id = nonreg_kelas.nk_program')
             ->join('nonreg_pengajar', 'nonreg_pengajar.npj_kelas = nonreg_kelas.nk_id', 'left')
             ->join('pengajar', 'pengajar.pengajar_id = nonreg_pengajar.npj_pengajar', 'left')
+            ->join('nonreg_kelas_level', 'nonreg_kelas_level.nkl_nkid = nonreg_kelas.nk_id', 'left')
+            ->join('peserta_level', 'peserta_level.peserta_level_id = nonreg_kelas_level.nkl_level', 'left')
             ->where('nk_tahun', $tahun)
             ->groupBy('nonreg_kelas.nk_id, nonreg_kelas.nk_nama, nonreg_kelas.nk_program, nonreg_kelas.nk_tahun, program.nama_program')
             ->orderBy('nonreg_kelas.nk_id', 'DESC');
