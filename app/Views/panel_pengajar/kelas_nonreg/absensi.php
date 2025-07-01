@@ -160,44 +160,45 @@ if (isset($absenTmNew) && !empty($absenTmNew)) {
     // FIX: Consolidate all document ready functions into one for reliability.
     $(document).ready(function() {
 
-        // Initialize the first DataTable for student attendance
-        $('#datatable-absen').DataTable({
-            "responsive": false,
-            "paging": false, // As per your original code
-            "searching": true,
-            "info": true,
-            "scrollX": true,
-            "fixedColumns": {
-                "start": 0
-            },
-            "ordering": false, // It's better to disable ordering on a complex pivot table
+        // Simple function to initialize DataTable with fixed first column
+        function initDataTable(selector) {
+            // Check if table exists
+            if (!$(selector).length) return;
 
-        });
+            // Destroy if already initialized
+            if ($.fn.DataTable.isDataTable(selector)) {
+                $(selector).DataTable().destroy();
+            }
 
-        // Initialize the second DataTable for teacher's log
-        $('#datatable-tm').DataTable({
-            "responsive": false,
-            "paging": true,
-            "searching": true,
-            "info": true,
-            "pageLength": 10,
-            "scrollX": true,
-            "fixedColumns": {
-                "start": 0
-            },
-            "order": [
-                [0, "asc"] // Sort by TM number ascending
-            ],
-        });
+            try {
+                $(selector).DataTable({
+                    "scrollX": true,
+                    "fixedColumns": {
+                        "start": 1 // Fixed first column
+                    },
+                    "responsive": false,
+                    "autoWidth": false,
+                    "ordering": false,
+                    "paging": false,
+                    "searching": true,
+                    "info": true
+                });
+            } catch (error) {
+                console.error('DataTable init error:', error);
+            }
+        }
 
-        // Initialize Select2 plugin
+        // Initialize both tables with same configuration
+        initDataTable('#datatable-absen');
+        initDataTable('#datatable-tm');
+
+        // Initialize Select2
         $('.select2Search').select2({
             theme: "bootstrap4"
         });
 
-        // Initial setup for the sequential attendance dropdown
+        // Setup sequential select
         setupSequentialSelect();
-
     });
 
     // --- DATA & CONSTANTS ---
@@ -210,19 +211,34 @@ if (isset($absenTmNew) && !empty($absenTmNew)) {
      * @returns {number} The last filled TM number.
      */
     function findMaxFilledTM() {
-        let maxFilledTM = 0;
-        if (pesertaData.length > 0) {
-            for (const student of pesertaData) {
-                for (let i = maxTM; i >= 1; i--) {
-                    const napsKey = `naps${i}`;
-                    if (student[napsKey] !== null && student[napsKey] !== undefined) {
-                        maxFilledTM = Math.max(maxFilledTM, i);
-                        break; // Move to the next student
-                    }
-                }
-            }
+        // Jika tidak ada data peserta, langsung kembalikan 0.
+        if (!pesertaData || pesertaData.length === 0) {
+            return 0;
         }
-        return maxFilledTM;
+
+        // Gunakan array.reduce() untuk menemukan nilai TM maksimum dari semua peserta.
+        return pesertaData.reduce((maxKeseluruhan, peserta) => {
+
+            // 1. Dapatkan semua 'key' dari objek peserta (cth: "nama", "naps1", "naps10").
+            const keysPeserta = Object.keys(peserta);
+
+            // 2. Dari semua key itu, cari yang merupakan TM tertinggi UNTUK PESERTA INI SAJA.
+            const maxTmPesertaIni = keysPeserta.reduce((maxLokal, key) => {
+                // Cek apakah key adalah 'naps' dan datanya valid (objek).
+                if (key.startsWith('naps') && typeof peserta[key] === 'object' && peserta[key] !== null) {
+                    // Ekstrak nomor TM dari key (cth: "naps12" -> 12).
+                    const tmNumber = parseInt(key.substring(4), 10);
+                    // Kembalikan nilai yang lebih besar antara maxLokal saat ini dengan tmNumber yg baru ditemukan.
+                    return Math.max(maxLokal, tmNumber);
+                }
+                // Jika bukan key 'naps', kembalikan maxLokal tanpa perubahan.
+                return maxLokal;
+            }, 0); // Nilai awal untuk maxLokal adalah 0.
+
+            // 3. Kembalikan nilai yang lebih besar antara maxKeseluruhan sejauh ini dengan maxTmPesertaIni.
+            return Math.max(maxKeseluruhan, maxTmPesertaIni);
+
+        }, 0); // Nilai awal untuk maxKeseluruhan adalah 0.
     }
 
     /**
