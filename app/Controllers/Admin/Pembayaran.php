@@ -1618,7 +1618,7 @@ class Pembayaran extends BaseController
 
             $this->db->transStart();
             $this->bayar->insert($data_bayar);
-            $filefoto->move(ROOTPATH . 'public/img/transfer', $namafoto_new);
+            $filefoto->move('public/img/transfer', $namafoto_new, true);
             $bayar_id = $this->bayar->insertID();
 
             $dataabsen = [
