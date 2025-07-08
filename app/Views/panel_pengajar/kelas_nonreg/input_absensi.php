@@ -140,7 +140,12 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="submit" id="save" name="save" class="btn btn-primary btnsimpan"><i class="fa fa-share-square"></i> Simpan</button>
+                <?php
+                if (isset($absenTm['dt_tm']) && date('Y-m', strtotime($absenTm['dt_tm'])) < date('Y-m')) { ?>
+                    <button class="btn btn-secondary" disabled><i class="fa fa-lock"></i></button>
+                <?php } else { ?>
+                    <button type="submit" id="save" name="save" class="btn btn-primary btnsimpan"><i class="fa fa-share-square"></i> Simpan</button>
+                <?php } ?>
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
             </div>
             <?php echo form_close() ?>
