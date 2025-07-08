@@ -1618,13 +1618,7 @@ class Pembayaran extends BaseController
 
             $this->db->transStart();
             $this->bayar->insert($data_bayar);
-            // $filefoto->move('public/img/transfer', $namafoto_new);
-            if (!$filefoto->move('public/img/transfer', $namafoto_new)) {
-                $this->db->transRollback();
-                /*--- Log ---*/
-                // $this->logging('Peserta', 'FAIL', $aktivitas);
-                return;
-            }
+            $filefoto->move('public/img', $namafoto_new);
             $bayar_id = $this->bayar->insertID();
 
             $dataabsen = [
