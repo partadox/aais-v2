@@ -460,7 +460,7 @@ class Pembayaran extends BaseController
             // insert status konfirmasi
             $this->db->transStart();
             $this->bayar->update($bayar_id, $data_bayar);
-            $filefoto->move('public/img/transfer/', $namafoto_new);
+            $filefoto->move('public/img/transfer/', $namafoto_new, true);
             unlink('public/img/transfer/' . $bukti_bayar_lama);
             $this->db->transComplete();
 
@@ -1965,7 +1965,7 @@ class Pembayaran extends BaseController
 
             $this->db->transStart();
             $this->bayar->insert($data_bayar);
-            $filefoto->move('public/img/transfer/', $namafoto_new);
+            $filefoto->move('public/img/transfer/', $namafoto_new, true);
             $bayar_id = $this->bayar->insertID();
 
             //
@@ -2200,7 +2200,7 @@ class Pembayaran extends BaseController
 
             $this->db->transStart();
             $this->bayar->insert($data_bayar);
-            $filefoto->move('public/img/transfer/', $namafoto_new);
+            $filefoto->move('public/img/transfer/', $namafoto_new, true);
             $bayar_id = $this->bayar->insertID();
 
             if ($bayar_lain != '0') {
@@ -2335,7 +2335,7 @@ class Pembayaran extends BaseController
 
             $this->db->transStart();
             $state[] = $this->bayar->insert($data_bayar);
-            $state[] = $filefoto->move('public/img/transfer/', $namafoto_new);
+            $state[] = $filefoto->move('public/img/transfer/', $namafoto_new, true);
             $bayar_id = $this->bayar->insertID();
 
             $lastPay = $this->request->getVar('lastPay');
@@ -2501,7 +2501,7 @@ class Pembayaran extends BaseController
 
             $this->db->transStart();
             $state[]    = $this->bayar->insert($data_bayar);
-            $state[]    = $filefoto->move('public/img/transfer/', $namafoto_new);
+            $state[]    = $filefoto->move('public/img/transfer/', $namafoto_new, true);
             $bayar_id   = $this->bayar->insertID();
 
             $newSertifikat = [

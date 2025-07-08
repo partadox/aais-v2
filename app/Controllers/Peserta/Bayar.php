@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Controllers\Peserta;
 
 use App\Controllers\BaseController;
@@ -15,7 +16,7 @@ class Bayar extends BaseController
         $time = \CodeIgniter\I18n\Time::now('Asia/Makassar');
 
         $cek                = $this->cart->cek_daftar($peserta_id);
-        
+
         if (count($cek) != 0) {
             $expired_waktu      = $cek[0]['cart_timeout'];
             $kelas_id           = $cek[0]['cart_kelas'];
@@ -75,10 +76,10 @@ class Bayar extends BaseController
         curl_setopt($ch, CURLOPT_HEADER, FALSE);
 
         curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-        "Content-Type: application/x-www-form-urlencoded"
+            "Content-Type: application/x-www-form-urlencoded"
         ));
 
-        curl_setopt($ch, CURLOPT_USERPWD, $secret_key.":");
+        curl_setopt($ch, CURLOPT_USERPWD, $secret_key . ":");
 
         $json = curl_exec($ch);
         curl_close($ch);
@@ -93,19 +94,19 @@ class Bayar extends BaseController
         $key        = $this->konfigurasi->flip_key();
         $secret_key = $key->flip_key;
 
-        curl_setopt($ch, CURLOPT_URL, "https://bigflip.id/api/v2/general/banks?code=".$bank);
+        curl_setopt($ch, CURLOPT_URL, "https://bigflip.id/api/v2/general/banks?code=" . $bank);
         //curl_setopt($ch, CURLOPT_URL, "https://bigflip.id/big_sandbox_api/v2/general/banks?code=".$bank);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
         curl_setopt($ch, CURLOPT_HEADER, FALSE);
 
         curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-        "Content-Type: application/x-www-form-urlencoded"
+            "Content-Type: application/x-www-form-urlencoded"
         ));
 
-        curl_setopt($ch, CURLOPT_USERPWD, $secret_key.":");
+        curl_setopt($ch, CURLOPT_USERPWD, $secret_key . ":");
 
         $json = curl_exec($ch);
-        curl_close($ch);       
+        curl_close($ch);
         $data = json_decode($json);
         $bank_status = $data[0]->status;
         return $bank_status;
@@ -116,9 +117,9 @@ class Bayar extends BaseController
         $ch         = curl_init();
         $key        = $this->konfigurasi->flip_key();
         $secret_key = $key->flip_key;
-        $title      = $peserta_kelas_id.'-'.$cart_id.'-'.$bayar_id.'-'.time();
+        $title      = $peserta_kelas_id . '-' . $cart_id . '-' . $bayar_id . '-' . time();
 
-        $byr        = ['keterangan_bayar_admin'=>$title];
+        $byr        = ['keterangan_bayar_admin' => $title];
         $this->bayar->update($bayar_id, $byr);
 
         curl_setopt($ch, CURLOPT_URL, "https://bigflip.id/api/v2/pwf/bill");
@@ -145,10 +146,10 @@ class Bayar extends BaseController
         curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($payloads));
 
         curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-        "Content-Type: application/x-www-form-urlencoded"
+            "Content-Type: application/x-www-form-urlencoded"
         ));
 
-        curl_setopt($ch, CURLOPT_USERPWD, $secret_key.":");
+        curl_setopt($ch, CURLOPT_USERPWD, $secret_key . ":");
 
         $response = curl_exec($ch);
         curl_close($ch);
@@ -170,7 +171,7 @@ class Bayar extends BaseController
         $expired_waktu      = new \DateTime($expired_waktu1);
 
         $peserta            = $this->peserta->find($peserta_id);
-        $peserta_nama       = $peserta['nis'].' - '.$peserta['nama_peserta'];
+        $peserta_nama       = $peserta['nis'] . ' - ' . $peserta['nama_peserta'];
         $peserta_email      = $peserta['email'];
         $data_kelas         = $this->kelas->find($kelas_id);
 
@@ -182,7 +183,7 @@ class Bayar extends BaseController
             $name   = $item['name'];
 
             // If there is a mapping for this id, add the price to the data to update
-            if ($id >= 22 && $id <=34) {
+            if ($id >= 22 && $id <= 34) {
                 if (strpos($name, 'FLIP_') === 0) {
                     $account_type = "bank_account";
                     $part = explode("_", $name);
@@ -191,7 +192,6 @@ class Bayar extends BaseController
                     $account_type = "virtual_account";
                     $sender_bank  = strtolower($name);
                 }
-                
             }
         }
 
@@ -273,7 +273,7 @@ class Bayar extends BaseController
         $this->db->transStart();
         $this->bayar->insert($data_bayar);
         $bayar_id   = $this->bayar->insertID();
-        $this->peserta_kelas->update($peserta_kelas_id,$dataUpdatePK);
+        $this->peserta_kelas->update($peserta_kelas_id, $dataUpdatePK);
         $this->peserta_kelas->update($peserta_kelas_id, $updatePK);
         $this->bayar->update($bayar_id, $dataUpdateBY);
         $this->cart->delete($cart_id);
@@ -284,7 +284,7 @@ class Bayar extends BaseController
         $bill_code      = $data->bill_payment->id;
         $link_url       = $data->link_url;
         $amount         = $data->bill_payment->amount;
-        $unique_code    = $data->bill_payment->unique_code;     
+        $unique_code    = $data->bill_payment->unique_code;
         $account_number = $data->bill_payment->receiver_bank_account->account_number;
         $bank_code      = $data->bill_payment->receiver_bank_account->bank_code;
 
@@ -301,25 +301,22 @@ class Bayar extends BaseController
             'bill_unique_code'  => $unique_code,
             'bill_expired'      => $expired_waktu1
         ];
-        
+
         $this->bill->insert($dtbill);
-        
-        $dtbillbayar     =[
+
+        $dtbillbayar     = [
             'flip_bill_id'  => $this->bill->insertID(),
         ];
         $this->bayar->update($bayar_id, $dtbillbayar);
 
         $this->db->transComplete();
 
-        $aktivitas = 'Mendaftar dan telah melakukan input bukti pembayaran pada kelas ' . $data_kelas['nama_kelas'] .  ' via flip VA '.strtoupper($bank_code);
+        $aktivitas = 'Mendaftar dan telah melakukan input bukti pembayaran pada kelas ' . $data_kelas['nama_kelas'] .  ' via flip VA ' . strtoupper($bank_code);
 
-        if ($this->db->transStatus() === FALSE)
-        {
+        if ($this->db->transStatus() === FALSE) {
             /*--- Log ---*/
             $this->logging('Peserta', 'FAIL', $aktivitas);
-        }
-        else
-        {
+        } else {
             /*--- Log ---*/
             $this->logging('Peserta', 'BERHASIL', $aktivitas);
         }
@@ -332,7 +329,7 @@ class Bayar extends BaseController
 
     public function save_manual()
     {
-         // Get the POST data
+        // Get the POST data
         $keterangan_bayar   = $this->request->getVar('keterangan_bayar');
         $cart               = $this->request->getVar('cart');
         $total              = $this->request->getPost('total');
@@ -358,17 +355,19 @@ class Bayar extends BaseController
         // Check if file is uploaded
         if (!$image->isValid()) {
             return $this->response->setJSON(
-                ['error' => 'Bukti transfer harus dalam format gambar (jpg/png)']);
+                ['error' => 'Bukti transfer harus dalam format gambar (jpg/png)']
+            );
         }
 
         if ($expired_waktu < $now) {
             return $this->response->setJSON(
-                ['error' => 'Anda telah melampui batas waktu transfer, silahkan pilih kelas terlebih dahulu.']);
+                ['error' => 'Anda telah melampui batas waktu transfer, silahkan pilih kelas terlebih dahulu.']
+            );
         }
 
         // Move the uploaded file somewhere
         $ext = $image->guessExtension();
-        $newName = $peserta_id."-".date('Ymd-His').'.'.$ext;
+        $newName = $peserta_id . "-" . date('Ymd-His') . '.' . $ext;
         $cart = json_decode($cart, true);
 
         $data_bayar = [
@@ -435,40 +434,37 @@ class Bayar extends BaseController
         $this->db->transStart();
         $this->bayar->insert($data_bayar);
         $bayar_id   = $this->bayar->insertID();
-        $this->peserta_kelas->update($peserta_kelas_id,$dataUpdatePK);
+        $this->peserta_kelas->update($peserta_kelas_id, $dataUpdatePK);
         $this->peserta_kelas->update($peserta_kelas_id, $updatePK);
         $this->bayar->update($bayar_id, $dataUpdateBY);
         $this->cart->delete($cart_id);
-        $image->move('public/img/transfer', $newName);
-        
+        $image->move('public/img/transfer', $newName, true);
+
 
         $aktivitas = 'Mendaftar dan telah melakukan input bukti pembayaran pada kelas ' . $data_kelas['nama_kelas'];
 
-        if ($this->db->transStatus() === FALSE)
-        {
+        if ($this->db->transStatus() === FALSE) {
             $this->db->transRollback();
             /*--- Log ---*/
             $this->logging('Peserta', 'FAIL', $aktivitas);
-        }
-        else
-        {
+        } else {
             $this->db->transComplete();
             /*--- Log ---*/
             $this->logging('Peserta', 'BERHASIL', $aktivitas);
             $onWA = $this->wa_switch->find("peserta-bayar-daftar-tf");
             if ($onWA['status'] == 1) {
                 $dataWA = $this->wa->find(1);
-                $msgWA  = "Terima kasih ".$peserta['nama_peserta'].", ".$peserta['nis']." Anda telah melakukan input pembayaran pendaftaran pada Kelas ".$data_kelas['nama_kelas']." sebesar Rp ".rupiah($total)." pada ".date('d-m-Y H:i')." WITA "."\n\nHarap hubungi Admin jika dalam 2x24 jam (hari kerja) pembayaran anda belum dikonfirmasi."."\n\nAdmin\n+628998049000\nLTTQ Al Haqq Balikpapan (Pusat)".$dataWA['footer'];
-                $this->sendWA("aaispusat", $peserta['hp'],$msgWA);
+                $msgWA  = "Terima kasih " . $peserta['nama_peserta'] . ", " . $peserta['nis'] . " Anda telah melakukan input pembayaran pendaftaran pada Kelas " . $data_kelas['nama_kelas'] . " sebesar Rp " . rupiah($total) . " pada " . date('d-m-Y H:i') . " WITA " . "\n\nHarap hubungi Admin jika dalam 2x24 jam (hari kerja) pembayaran anda belum dikonfirmasi." . "\n\nAdmin\n+628998049000\nLTTQ Al Haqq Balikpapan (Pusat)" . $dataWA['footer'];
+                $this->sendWA("aaispusat", $peserta['hp'], $msgWA);
             }
         }
-        
+
         return $this->response->setJSON(['success' => 'Your operation was successful.']);
     }
 
     public function save_beasiswa()
     {
-         // Get the POST data
+        // Get the POST data
         $beasiswa_code      = $this->request->getPost('beasiswa_code');
         $cart               = $this->request->getPost('cart');
         $total              = $this->request->getPost('total');
@@ -490,16 +486,17 @@ class Bayar extends BaseController
 
         if ($expired_waktu < $now) {
             return $this->response->setJSON(
-                ['error' => 'Anda telah melampui batas waktu transfer, silahkan pilih kelas terlebih dahulu.']);
+                ['error' => 'Anda telah melampui batas waktu transfer, silahkan pilih kelas terlebih dahulu.']
+            );
         }
 
         $beasiswa = $this->beasiswa->find_code($beasiswa_code, $peserta_id, $program_id);
 
         if (count($beasiswa) == NULL) {
             return $this->response->setJSON(['error' => 'Kode Beasiswa Tidak Ditemukan.']);
-        } elseif(count($beasiswa) == 1) {
+        } elseif (count($beasiswa) == 1) {
 
-            $beasiswa_daftar= ' ';
+            $beasiswa_daftar = ' ';
             $beasiswa_spp1  = ' ';
             $beasiswa_spp2  = ' ';
             $beasiswa_spp3  = ' ';
@@ -547,7 +544,7 @@ class Bayar extends BaseController
                 'nominal_bayar'             => '0',
                 'tgl_bayar'                 => date("Y-m-d"),
                 'waktu_bayar'               => date("H:i:s"),
-                'keterangan_bayar'          => 'Bayar dengan kode beasiswa '.$beasiswa_code . ' free beasiswa untuk:'.$beasiswa_daftar.$beasiswa_spp1.$beasiswa_spp2.$beasiswa_spp3.$beasiswa_spp4,
+                'keterangan_bayar'          => 'Bayar dengan kode beasiswa ' . $beasiswa_code . ' free beasiswa untuk:' . $beasiswa_daftar . $beasiswa_spp1 . $beasiswa_spp2 . $beasiswa_spp3 . $beasiswa_spp4,
                 'tgl_bayar_konfirmasi'      => date("Y-m-d"),
                 'waktu_bayar_konfirmasi'    => date("H:i:s"),
                 'validator'                 => 'AAIS Sistem',
@@ -588,7 +585,7 @@ class Bayar extends BaseController
             } else {
                 $spp_status = 'BELUM LUNAS';
             }
-            
+
             $updatePK = [
                 'data_absen'                => $absenID,
                 'data_ujian'                => $ujianID,
@@ -605,23 +602,19 @@ class Bayar extends BaseController
                 'beasiswa_spp3'             => $beasiswa[0]['beasiswa_spp3'],
                 'beasiswa_spp4'             => $beasiswa[0]['beasiswa_spp4'],
             ];
-            
+
             $this->peserta_kelas->update($peserta_kelas_id, $updatePK);
             $this->beasiswa->update($beasiswa[0]['beasiswa_id'], $updateBeasiswa);
             $this->cart->delete($cart_id);
-            
         }
 
         $aktivitas = 'Mendaftar dengan kode beasiswa pada kelas ' . $data_kelas['nama_kelas'];
 
-        if ($this->db->transStatus() === FALSE)
-        {
+        if ($this->db->transStatus() === FALSE) {
             $this->db->transRollback();
             /*--- Log ---*/
             $this->logging('Peserta', 'FAIL', $aktivitas);
-        }
-        else
-        {
+        } else {
             $this->db->transComplete();
             /*--- Log ---*/
             $this->logging('Peserta', 'BERHASIL', $aktivitas);
@@ -629,21 +622,21 @@ class Bayar extends BaseController
             if ($onWA['status'] == 1) {
                 $dataWA = $this->wa->find(1);
                 if ($data_kelas['wag'] != null) {
-                    $wag = "Silahkan bergabung dengan WA Group kelas pada link berikut ".$data_kelas['wag'];
-                }else {
+                    $wag = "Silahkan bergabung dengan WA Group kelas pada link berikut " . $data_kelas['wag'];
+                } else {
                     $wag = "Jika dalam waktu 5 hari kedepan Anda belum di masukkan kedalam Grup WA harap segera menghubungi Admin AAIS di +628998049000";
                 }
-                $msgWA  = "Selamat ".$peserta['nama_peserta'].", NIS = ".$peserta['nis']."\n\n Anda berhasil mendaftar pada kelas: ".$data_kelas['nama_kelas']." menggunakan kode beasiswa pada ".date("d-m-Y H:i")." WITA\n\n$wag"."\n\nKami ucapkan selamat bergabung kedalam keluarga besar LTTQ Al Haqq Balikpapan (Pusat). Semoga Allah SWT memberikan Anda kekuatan, kesabaran dan keistiqomahan untuk mengikuti program di LTTQ Al Haqq Balikpapan (Pusat)"."."."\n\nAdmin\n+628998049000\nLTTQ Al Haqq Balikpapan (Pusat)".$dataWA['footer'];
-                $this->sendWA("aaispusat", $peserta['hp'],$msgWA);
+                $msgWA  = "Selamat " . $peserta['nama_peserta'] . ", NIS = " . $peserta['nis'] . "\n\n Anda berhasil mendaftar pada kelas: " . $data_kelas['nama_kelas'] . " menggunakan kode beasiswa pada " . date("d-m-Y H:i") . " WITA\n\n$wag" . "\n\nKami ucapkan selamat bergabung kedalam keluarga besar LTTQ Al Haqq Balikpapan (Pusat). Semoga Allah SWT memberikan Anda kekuatan, kesabaran dan keistiqomahan untuk mengikuti program di LTTQ Al Haqq Balikpapan (Pusat)" . "." . "\n\nAdmin\n+628998049000\nLTTQ Al Haqq Balikpapan (Pusat)" . $dataWA['footer'];
+                $this->sendWA("aaispusat", $peserta['hp'], $msgWA);
             }
         }
-        
+
         return $this->response->setJSON(['success' => 'Your operation was successful.']);
     }
 
     public function cancel()
     {
-         // Get the POST data
+        // Get the POST data
         $peserta_kelas_id   = $this->request->getPost('peserta_kelas_id');
         $cart_id            = $this->request->getPost('cart_id');
 
@@ -660,19 +653,16 @@ class Bayar extends BaseController
 
         $aktivitas = 'Membatalkan kelas yg dipilih untuk pilih ulang kelas lain';
 
-        if ($this->db->transStatus() === FALSE)
-        {
+        if ($this->db->transStatus() === FALSE) {
             $this->db->transRollback();
             /*--- Log ---*/
             $this->logging('Peserta', 'FAIL', $aktivitas);
-        }
-        else
-        {
+        } else {
             $this->db->transComplete();
             /*--- Log ---*/
             $this->logging('Peserta', 'BERHASIL', $aktivitas);
         }
-        
+
         $msg = [
             'sukses' => [
                 'link' => '/daftar'
@@ -699,7 +689,7 @@ class Bayar extends BaseController
 
         if ($status == 'SUCCESSFUL') {
             $title_explode      = explode("-", $bill_title);
-        
+
             $peserta_kelas_id   = $title_explode[0];
             $cart_id            = $title_explode[1];
             $bayar_id           = $title_explode[2];
@@ -729,7 +719,7 @@ class Bayar extends BaseController
             $spp3   = $bayar['awal_bayar_spp3'];
             $spp4   = $bayar['awal_bayar_spp4'];
             $infaq  = $bayar['awal_bayar_infaq'];
-            $lainnya= $bayar['awal_bayar_lainnya'];
+            $lainnya = $bayar['awal_bayar_lainnya'];
 
             if ($daftar != '0') {
                 $dataabsen = [
@@ -738,7 +728,7 @@ class Bayar extends BaseController
                 ];
                 $this->absen_peserta->insert($dataabsen);
                 $absenID = $this->absen_peserta->insertID();
-    
+
                 $dataujian = [
                     'bckp_ujian_peserta'     => $peserta_id,
                     'bckp_ujian_kelas'       => $kelas_id,
@@ -848,9 +838,9 @@ class Bayar extends BaseController
                 [$byr_spp3, $beasiswa_spp3],
                 [$byr_spp4, $beasiswa_spp4]
             ];
-            
+
             $spp_status = 'LUNAS';
-            
+
             foreach ($payments as $payment) {
                 if (($payment[0] == '0' && $payment[1] != 1) || ($payment[0] == NULL && $payment[1] != 1)) {
                     $spp_status = 'BELUM LUNAS';
@@ -865,15 +855,12 @@ class Bayar extends BaseController
             $this->cart->delete($cart_id);
             $this->db->transComplete();
 
-            $aktivitas = 'Pendaftaran peserta '. $peserta['nis'].'-'.$peserta['nama_peserta'] .' pada kelas ' . $data_kelas['nama_kelas']. ' terkonfirmasi oleh flip';
+            $aktivitas = 'Pendaftaran peserta ' . $peserta['nis'] . '-' . $peserta['nama_peserta'] . ' pada kelas ' . $data_kelas['nama_kelas'] . ' terkonfirmasi oleh flip';
 
-            if ($this->db->transStatus() === FALSE)
-            {
+            if ($this->db->transStatus() === FALSE) {
                 /*--- Log ---*/
                 $this->logging('Admin', 'FAIL', $aktivitas);
-            }
-            else
-            {
+            } else {
                 /*--- Log ---*/
                 $this->logging('Admin', 'BERHASIL', $aktivitas);
             }
@@ -888,7 +875,7 @@ class Bayar extends BaseController
         $peserta_id     = $peserta['peserta_id'];
 
         //Angkatan
-		$uri            = new \CodeIgniter\HTTP\URI(current_url(true));
+        $uri            = new \CodeIgniter\HTTP\URI(current_url(true));
         $queryString    = $uri->getQuery();
         $params         = [];
         parse_str($queryString, $params);
@@ -897,7 +884,7 @@ class Bayar extends BaseController
             $angkatan           = $params['angkatan'];
             if (ctype_digit($angkatan)) {
                 $angkatan           = $params['angkatan'];
-            }else {
+            } else {
                 $get_angkatan       = $this->konfigurasi->angkatan_kuliah();
                 $angkatan           = $get_angkatan->angkatan_kuliah;
             }
@@ -909,14 +896,14 @@ class Bayar extends BaseController
         $list_angkatan      = $this->kelas->list_unik_angkatan();
 
         // Get data peserta_kelas yang belum lulus 
-        $pembayaran     = $this->bayar->list_pembayaran_peserta($peserta_id,$angkatan);
+        $pembayaran     = $this->bayar->list_pembayaran_peserta($peserta_id, $angkatan);
 
         $data = [
             'title'         => 'Riwayat Pembayaran Peserta',
             'user'          => $user,
             'list'          => $pembayaran,
             'list_angkatan' => $list_angkatan,
-            'angkatan_pilih'=> $angkatan,
+            'angkatan_pilih' => $angkatan,
         ];
         return view('panel_peserta/bayar/riwayat', $data);
     }

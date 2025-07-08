@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Controllers\Peserta;
 
 use App\Controllers\BaseController;
@@ -43,7 +44,7 @@ class Sertifikat extends BaseController
         $kelasIds = array_column($sertifikat_sudah, 'sertifikat_kelas');
 
         // Filter Array A untuk menghapus elemen yang kelas_id-nya ada di Array B
-        $list_lulus = array_filter($listLulus, function($item) use ($kelasIds) {
+        $list_lulus = array_filter($listLulus, function ($item) use ($kelasIds) {
             return !in_array($item['kelas_id'], $kelasIds);
         });
 
@@ -62,10 +63,10 @@ class Sertifikat extends BaseController
 
     public function show_sertifikat()
     {
-        if ($this->request->isAJAX()) {     
+        if ($this->request->isAJAX()) {
             $sertifikat_id   = $this->request->getVar('sertifikat_id');
             $data_sertifikat = $this->sertifikat->find($sertifikat_id);
-            
+
 
             $data = [
                 'title'                 => 'Sertifikat',
@@ -122,26 +123,26 @@ class Sertifikat extends BaseController
                 $program_id         = $kelas['program_id'];
                 $sertifikat_kelas    = $kelas_id;
                 $program = $this->program->find($program_id);
-                $padaWA = " untuk kelulusan Program ".$program['nama_program']." kelas ".$kelas['nama_kelas'];
-            } elseif($jenis == 'nonaais') {
+                $padaWA = " untuk kelulusan Program " . $program['nama_program'] . " kelas " . $kelas['nama_kelas'];
+            } elseif ($jenis == 'nonaais') {
                 $program_id         = $this->request->getVar('program_id');
                 $program            = $this->program->find($program_id);
                 $sertifikat_kelas   = 1;
 
-                $padaWA = " untuk kelulusan Program ".$program['nama_program'];
+                $padaWA = " untuk kelulusan Program " . $program['nama_program'];
             }
 
             //Get inputan peserta, kelas, status bayar dan keterangan admin
-            $keterangan_bayar       = str_replace(array("\r", "\n"), ' ',$this->request->getVar('keterangan_bayar'));
-            
+            $keterangan_bayar       = str_replace(array("\r", "\n"), ' ', $this->request->getVar('keterangan_bayar'));
+
             // get file foto from input
             $filefoto           = $this->request->getFile('foto');
             $ext                = $filefoto->guessExtension();
-            $namafoto_new       = $peserta['nis'].'-Sertifikat-'.date('Ymd-His').'.'.$ext;
+            $namafoto_new       = $peserta['nis'] . '-Sertifikat-' . date('Ymd-His') . '.' . $ext;
 
             //Get nominal (on rupiah curenncy format) input from view
             $total              = $this->request->getVar('total');
-            $nominal_bayar_cetak= $this->request->getVar('nominal_bayar_cetak');
+            $nominal_bayar_cetak = $this->request->getVar('nominal_bayar_cetak');
             $get_bayar_infaq    = $this->request->getVar('infaq');
 
             //Get Data from Input view
@@ -170,7 +171,7 @@ class Sertifikat extends BaseController
 
             $this->db->transStart();
             $state[]    = $this->bayar->insert($data_bayar);
-            $state[]    = $filefoto->move('public/img/transfer/', $namafoto_new);
+            $state[]    = $filefoto->move('public/img/transfer/', $namafoto_new, true);
             $bayar_id   = $this->bayar->insertID();
 
             $newSertifikat = [
@@ -199,23 +200,20 @@ class Sertifikat extends BaseController
                     'bayar_infaq'           => $bayar_infaq,
                     'data_peserta_id_infaq' => '1'
                 ];
-                $state[]= $this->infaq->insert($data_infaq);
+                $state[] = $this->infaq->insert($data_infaq);
             }
 
-            $aktivitas = 'Buat Data Pembayaran Sertifikat '.strtoupper($jenis);
+            $aktivitas = 'Buat Data Pembayaran Sertifikat ' . strtoupper($jenis);
 
             $state = json_encode($state);
 
-            if ($this->db->transStatus() === FALSE)
-            {
+            if ($this->db->transStatus() === FALSE) {
                 $this->db->transRollback();
                 /*--- Log ---*/
                 $this->logging('Peserta', 'FAIL', $aktivitas);
                 $pesan      = 'pesan_eror';
-                $pesanisi   = 'Pembuatan Pembayaran Sertifikat Gagal '. $state;
-            }
-            else
-            {
+                $pesanisi   = 'Pembuatan Pembayaran Sertifikat Gagal ' . $state;
+            } else {
                 $this->db->transComplete();
                 /*--- Log ---*/
                 $this->logging('Peserta', 'BERHASIL', $aktivitas);
@@ -224,13 +222,13 @@ class Sertifikat extends BaseController
                 $onWA = $this->wa_switch->find("peserta-sertifikat");
                 if ($onWA['status'] == 1) {
                     $dataWA = $this->wa->find(1);
-                    $msgWA  = "Terima kasih ".$peserta['nama_peserta'].", ".$peserta['nis']." Anda telah melakukan input pembayaran Sertifikat ".$padaWA." sebesar Rp ".rupiah($total)." pada ".date('d-m-Y H:i')." WITA"."\n\nHarap hubungi Admin jika dalam 2x24 jam (hari kerja) pembayaran anda belum dikonfirmasi."."\n\nAdmin\n+628998049000\nLTTQ Al Haqq Balikpapan (Pusat)".$dataWA['footer'];
-                    $this->sendWA("aaispusat", $peserta['hp'],$msgWA);
+                    $msgWA  = "Terima kasih " . $peserta['nama_peserta'] . ", " . $peserta['nis'] . " Anda telah melakukan input pembayaran Sertifikat " . $padaWA . " sebesar Rp " . rupiah($total) . " pada " . date('d-m-Y H:i') . " WITA" . "\n\nHarap hubungi Admin jika dalam 2x24 jam (hari kerja) pembayaran anda belum dikonfirmasi." . "\n\nAdmin\n+628998049000\nLTTQ Al Haqq Balikpapan (Pusat)" . $dataWA['footer'];
+                    $this->sendWA("aaispusat", $peserta['hp'], $msgWA);
                 }
             }
 
 
-            $this->session->setFlashdata($pesan , $pesanisi);
+            $this->session->setFlashdata($pesan, $pesanisi);
             return redirect()->to('/peserta/sertifikat');
         }
     }
