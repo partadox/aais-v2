@@ -9,7 +9,7 @@
 
 <?= $this->section('isi') ?>
 
-<a href="<?= base_url('kelas-nonreg') ?>"> 
+<a href="<?= base_url('kelas-nonreg') ?>">
     <button type="button" class="btn btn-secondary mb-3"><i class=" fa fa-arrow-circle-left"></i> Kembali</button>
 </a>
 
@@ -17,12 +17,12 @@
     <h5 style="text-align:center;">Kelas <?= $detail_kelas['nk_nama'] ?></h5>
     <h6 style="text-align:center;"><?= $detail_kelas['nk_hari'] ?>, <?= $detail_kelas['nk_waktu'] ?> <?= $detail_kelas['nk_timezone'] ?></h6>
     <!-- <h6 style="text-align:center;">Pengajar = $pengajar['nama_pengajar'] ?></h6>  -->
-    <h6 style="text-align:center;">Jumlah Peserta = <?= $jumlah_peserta ?></h6> 
+    <h6 style="text-align:center;">Jumlah Peserta = <?= $jumlah_peserta ?></h6>
 </div>
 <hr>
 
 <div class="row">
-    
+
     <div class="col-md-6">
         <div class="card card-body shadow-lg">
             <div class="card-title">
@@ -47,10 +47,10 @@
                         <tr>
                             <td width="40%"><b>Akses Edit Peserta</b></td>
                             <td>
-                                <?php if($detail_kelas['nk_pic_otoritas'] == 0) { ?>
-                                    <i style="color: red;" class="fa fa-ban"> TIDAK</i> 
+                                <?php if ($detail_kelas['nk_pic_otoritas'] == 0) { ?>
+                                    <i style="color: red;" class="fa fa-ban"> TIDAK</i>
                                 <?php } ?>
-                                <?php if($detail_kelas['nk_pic_otoritas'] == 1) { ?>
+                                <?php if ($detail_kelas['nk_pic_otoritas'] == 1) { ?>
                                     <i style="color: green;" class="fa fa-check"> BISA</i>
                                 <?php } ?>
                             </td>
@@ -100,15 +100,33 @@
                     </tbody>
                 </table>
             </div>
-        </div>                            
+        </div>
     </div>
 </div>
 
 <div class="table-responsive">
-    <button type="button" class="btn btn-primary mb-3" onclick="showAddQuotaModal('<?= $detail_kelas['nk_id'] ?>')"><i class="fa fa-plus-circle"></i> Tambah Kuota Peserta</button>
+    <div class="d-flex align-items-center mb-4" style="gap: 15px;">
+        <button type="button" class="btn btn-primary" onclick="showAddQuotaModal('<?= $detail_kelas['nk_id'] ?>')">
+            <i class="fa fa-plus-circle"></i> Tambah Kuota Peserta
+        </button>
+
+        <div class="dropdown">
+            <button class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Lakukan Absensi Sebagai
+            </button>
+            <div class="dropdown-menu">
+                <?php foreach ($pengajar as $data) : ?>
+                    <a class="dropdown-item" href="#" onclick="redirectToAbsen('<?= $data['npj_id'] ?>', '<?= $detail_kelas['nk_id'] ?>')">
+                        <?= $data['nama_pengajar'] ?>
+                    </a>
+                <?php endforeach; ?>
+            </div>
+        </div>
+    </div>
+
 
     <form id="save_form" action="<?= base_url('/kelas-nonreg/save-peserta') ?>" method="post">
-        <table id="datatable" class="table table-striped table-bordered nowrap mt-1" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+        <table id="datatable" class="table table-striped table-bordered nowrap mt-4" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
             <thead>
                 <tr>
                     <th>No.</th>
@@ -129,9 +147,9 @@
                         <td style="display: none;"><?= $row['np_id'] ?></td>
                         <td width="15%">
                             <select name="np_level" id="np_level<?= $row['np_id'] ?>" required>
-                                <option value="0" <?php if ($row['np_level'] == NULL || $row['np_level'] == "0") echo "selected"; ?> >BELUM DITENTUKAN</option>
+                                <option value="0" <?php if ($row['np_level'] == NULL || $row['np_level'] == "0") echo "selected"; ?>>BELUM DITENTUKAN</option>
                                 <?php foreach ($level as $key => $data) { ?>
-                                    <option value="<?= $data['peserta_level_id'] ?>" <?php if ($row['np_level'] == $data['peserta_level_id']) echo "selected"; ?> ><?= $data['nama_level'] ?></option>
+                                    <option value="<?= $data['peserta_level_id'] ?>" <?php if ($row['np_level'] == $data['peserta_level_id']) echo "selected"; ?>><?= $data['nama_level'] ?></option>
                                 <?php } ?>
                             </select>
                         </td>
@@ -141,7 +159,7 @@
                     </tr>
 
                     <script>
-                        $(document).ready(function () {
+                        $(document).ready(function() {
                             $('#np_level<?= $row['np_id'] ?>').select2({
                                 minimumResultsForSearch: -1
                             });
@@ -163,7 +181,6 @@
 </div>
 
 <script>
-
     $('#save_form').on('submit', function(e) {
         e.preventDefault();
 
@@ -276,7 +293,9 @@
                     Swal.showValidationMessage(`Nilai harus antara 1 dan ${maxQuota}`);
                     return false;
                 }
-                return { nk_peserta_add: nk_peserta_add };
+                return {
+                    nk_peserta_add: nk_peserta_add
+                };
             }
         }).then((result) => {
             if (result.isConfirmed && result.value) {
@@ -304,16 +323,16 @@
                 nk_peserta_add: nk_peserta_add
             },
             success: function(response) {
-                    Swal.fire({
-                        title: "Berhasil!",
-                        text: "Anda berhasil menambah kuota!",
-                        icon: "success",
-                        showConfirmButton: true,
-                        allowOutsideClick: false,
-                        confirmButtonText: 'Ya',
-                        confirmButtonColor: '#3085d6',
-                    }).then(function() {
-                        window.location.reload();
+                Swal.fire({
+                    title: "Berhasil!",
+                    text: "Anda berhasil menambah kuota!",
+                    icon: "success",
+                    showConfirmButton: true,
+                    allowOutsideClick: false,
+                    confirmButtonText: 'Ya',
+                    confirmButtonColor: '#3085d6',
+                }).then(function() {
+                    window.location.reload();
                 });
             },
             error: function(xhr, status, error) {
@@ -326,7 +345,7 @@
         });
     }
 
-    function hapus(e,np_id) {
+    function hapus(e, np_id) {
         e.preventDefault();
         e.stopPropagation();
         Swal.fire({
@@ -345,7 +364,7 @@
                     type: "post",
                     dataType: "json",
                     data: {
-                        np_id : np_id,
+                        np_id: np_id,
                     },
                     success: function(response) {
                         if (response.sukses) {
@@ -357,7 +376,7 @@
                                 timer: 1500
                             }).then(function() {
                                 window.location = response.sukses.link;
-                        });
+                            });
                         }
                     }
                 });
@@ -370,7 +389,7 @@
             type: "post",
             url: "<?= site_url('kelas-nonreg/edit-level') ?>",
             data: {
-                nk_id : nk_id,
+                nk_id: nk_id,
                 modul: modul
             },
             dataType: "json",
@@ -383,7 +402,7 @@
         });
     }
 
-    function hapusLevel(e,nkl_id) {
+    function hapusLevel(e, nkl_id) {
         e.preventDefault();
         e.stopPropagation();
         Swal.fire({
@@ -402,7 +421,7 @@
                     type: "post",
                     dataType: "json",
                     data: {
-                        nkl_id : nkl_id,
+                        nkl_id: nkl_id,
                     },
                     success: function(response) {
                         if (response.sukses) {
@@ -414,7 +433,7 @@
                                 timer: 1500
                             }).then(function() {
                                 window.location = response.sukses.link;
-                        });
+                            });
                         }
                     }
                 });
@@ -422,7 +441,7 @@
         })
     }
 
-    function hapusPengajar(e,npj_id) {
+    function hapusPengajar(e, npj_id) {
         e.preventDefault();
         e.stopPropagation();
         Swal.fire({
@@ -441,7 +460,7 @@
                     type: "post",
                     dataType: "json",
                     data: {
-                        npj_id : npj_id,
+                        npj_id: npj_id,
                     },
                     success: function(response) {
                         if (response.sukses) {
@@ -453,12 +472,19 @@
                                 timer: 1500
                             }).then(function() {
                                 window.location = response.sukses.link;
-                        });
+                            });
                         }
                     }
                 });
             }
         })
+    }
+
+    function redirectToAbsen(npjId, kelasId) {
+        // Ganti 'your_base_url' dengan base_url() CodeIgniter Anda
+        const baseUrl = '<?= base_url() ?>'; // contoh: 'http://localhost/project/'
+        const url = baseUrl + 'absensi-nonreg/absen?kelas=' + kelasId + '&npj=' + npjId;
+        window.location.href = url;
     }
 </script>
 

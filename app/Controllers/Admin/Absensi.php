@@ -2197,6 +2197,342 @@ class Absensi extends BaseController
 
     //     $writer->save('php://output');
     // }
+
+    public function nonreg_absensi()
+    {
+        $user = $this->userauth(); // Return Array
+
+        //Angkatan
+        $uri = new \CodeIgniter\HTTP\URI(current_url(true));
+        $queryString = $uri->getQuery();
+        $params = [];
+        parse_str($queryString, $params);
+
+        if (count($params) == 2 && array_key_exists('kelas', $params) && array_key_exists('npj', $params)) {
+            $kelas_id = $params['kelas'];
+            $npjId = $params['npj'];
+        } else {
+            return redirect()->to('/kelas-nonreg');
+        }
+
+        // $peserta_onkelas = $this->peserta_kelas->peserta_onkelas_absen($kelas_id);
+        // $absen_pengajar_id = $this->kelas->get_data_absen_pengajar_id($kelas_id)->data_absen_pengajar;
+        // $absen_pengajar = $this->absen_pengajar->find($absen_pengajar_id);
+
+        // $get_pengajar_id    = $this->pengajar->get_pengajar_id($user['user_id']);
+        // $pengajar_id        = $get_pengajar_id->pengajar_id;
+        $npj = $this->nonreg_pengajar->find($npjId);
+        $pengajar = $this->pengajar->find($npj['npj_pengajar']);
+
+        $absenTm = $this->nonreg_absen_pengajar
+            ->join('nonreg_pengajar', 'nonreg_pengajar.npj_id = nonreg_absen_pengajar.napj_pengajar')
+            ->where('npj_kelas', $kelas_id)
+            // ->where('npj_pengajar', $pengajar_id)
+
+            ->get()->getResultArray();
+
+        if ($absenTm) {
+            // Iterate through each key in the array
+            foreach ($absenTm as $key => $value) {
+                // Check if the key matches the pattern 'tm' followed by a number and the value is not null
+                if (preg_match('/^napj\d+$/', $key) && !is_null($value)) {
+                    // Decode the JSON string
+                    $absenTm[$key] = json_decode($value, true);
+                }
+            }
+        }
+
+        $getAbsensi = $this->nonreg_absen_peserta
+            ->join('nonreg_peserta', 'nonreg_peserta.np_id = nonreg_absen_peserta.naps_peserta')
+            ->where('np_kelas', $kelas_id)
+            ->orderBy('np_id', 'ASC')
+            ->findAll();
+
+        $kelas           = $this->nonreg_kelas->find($kelas_id);
+
+        foreach ($getAbsensi as $record) {
+            if ($record['np_level'] == null || $record['np_level'] == "0" || $record['np_level'] == "") {
+                $levelPeserta = "-";
+            } else {
+                $findLevel = $this->level->find($record['np_level']);
+                $levelPeserta = $findLevel['nama_level'];
+            }
+
+            $entry = [
+                'naps_id' => $record['naps_id'],
+                'nama' => $record['np_nama'],
+                'level' => $levelPeserta
+            ];
+
+            // Dynamically add tm1 to tm30
+            for ($i = 1; $i <= $kelas['nk_tm_ambil']; $i++) {
+                $tmKey = 'naps' . $i;
+                if (isset($record[$tmKey])) {
+                    $entry[$tmKey] = json_decode($record[$tmKey], true);
+                } else {
+                    $entry[$tmKey] = null; // or any default value if tmKey doesn't exist
+                }
+            }
+
+            $peserta_onkelas[] = $entry;
+        }
+
+        // $data = [
+        //     'title'             => 'Peserta Kelas',
+        //     'list'              => $this->kelas->list(),
+        //     'user'              => $user,
+        //     'peserta_onkelas'   => $peserta_onkelas,
+        //     'kelas'             => $kelas,
+        // ];
+
+        // for ($i = 1; $i <= 16; $i++) {
+        //     $tmData = [
+        //         'name' => "Tatap Muka ke-$i",
+        //         'absensi' => $absen_pengajar["tm{$i}_pengajar"],
+        //         'note' => $absen_pengajar["note_tm$i"],
+        //         'tanggal' => $absen_pengajar["tgl_tm$i"],
+        //     ];
+        //     $data['tatapMukaData'][] = $tmData;
+        // }
+
+        $absenTmNew = [];
+
+        foreach ($absenTm as $record) {
+            // Extract base information
+            $baseInfo = [
+                'napj_id' => $record['napj_id'],
+                'napj_pengajar' => $record['napj_pengajar'],
+                'npj_id' => $record['npj_id'],
+                'npj_pengajar' => $record['npj_pengajar'],
+                'npj_kelas' => $record['npj_kelas']
+            ];
+
+            // Process napj1 through napj50
+            for ($i = 1; $i <= 50; $i++) {
+                $napjKey = "napj{$i}";
+
+                if (!empty($record[$napjKey]) && $record[$napjKey] !== null) {
+                    // Decode JSON data
+                    $jsonData = json_decode($record[$napjKey], true);
+
+                    if ($jsonData && is_array($jsonData)) {
+                        // Create new row with base info + TM data
+                        $newRow = array_merge($baseInfo, [
+                            'tm_sequence' => $i, // Which napj field this came from
+                            'tm' => $jsonData['tm'] ?? null,
+                            'dt_tm' => $jsonData['dt_tm'] ?? null,
+                            'dt_isi' => $jsonData['dt_isi'] ?? null,
+                            'note' => $jsonData['note'] ?? null,
+                            'by' => $jsonData['by'] ?? null
+                        ]);
+
+                        $absenTmNew[] = $newRow;
+                    }
+                }
+            }
+        }
+
+        $data = [
+            'title'            => 'Absensi Kelas Non-Reguler ' . $kelas['nk_nama'],
+            'user'            => $user,
+            'kelas'         => $kelas,
+            // 'absenTm'       => $absenTm,
+            'pengajar'      => $pengajar,
+            'npjId'         => $npjId,
+            'absenTmNew'   => $absenTmNew,
+            'peserta_onkelas' => $peserta_onkelas
+        ];
+        //var_dump($absenTmNew);
+        return view('panel_admin/absensi/nonreg/absensi', $data);
+    }
+
+    public function nonreg_input_absensi()
+    {
+        if ($this->request->isAJAX()) {
+
+            $user = $this->userauth();
+
+            $tm         = $this->request->getVar('tm');
+            $nk_id      = $this->request->getVar('nk_id');
+            $npj_id     = $this->request->getVar('npj_id');
+
+            $npj = $this->nonreg_pengajar->find($npj_id);
+            $pengajar = $this->pengajar->find($npj['npj_pengajar']);
+
+            // $get_pengajar_id    = $this->pengajar->get_pengajar_id($user['user_id']);
+            // $pengajar_id        = $get_pengajar_id->pengajar_id;
+
+            $absenKelas = $this->nonreg_absen_pengajar
+                ->join('nonreg_pengajar', 'nonreg_pengajar.npj_id = nonreg_absen_pengajar.napj_pengajar')
+                ->where('npj_kelas', $nk_id)
+                ->where('napj_pengajar', $npj_id)
+                ->first();
+            $absenTm    = json_decode($absenKelas['napj' . $tm], true);
+
+            $title      = 'FORM ISI ABSENSI TM-' . $tm;
+            $kelas      = $this->nonreg_kelas->find($nk_id);
+            $pengajar   = $this->pengajar->find($npj['npj_pengajar']);
+
+            $getAbsensi = $this->nonreg_absen_peserta
+                ->join('nonreg_peserta', 'nonreg_peserta.np_id = nonreg_absen_peserta.naps_peserta')
+                ->where('np_kelas', $nk_id)
+                ->orderBy('np_id', 'ASC')
+                ->findAll();
+
+            $listAbsensi = [];
+
+            foreach ($getAbsensi as $index => $record) {
+                if ($record['np_level'] == null || $record['np_level'] == "0" || $record['np_level'] == "") {
+                    $levelPeserta = "-";
+                } else {
+                    $findLevel = $this->level->find($record['np_level']);
+                    $levelPeserta = $findLevel['nama_level'];
+                }
+                $listAbsensi[] = [
+                    'naps_id' => $record['naps_id'],
+                    'np_id' => $record['np_id'],
+                    'nama' => $record['np_nama'],
+                    'level' => $levelPeserta,
+                    'naps' . $tm => json_decode($record['naps' . $tm], true)
+                ];
+            }
+
+            // Extract all existing dt_tm values from the dataset
+            $existing_dates = [];
+
+            foreach ($listAbsensi as $peserta) {
+                // Determine how many naps entries exist by finding keys that match the pattern
+                $naps_keys = array_filter(array_keys($peserta), function ($key) {
+                    return preg_match('/^naps\d+$/', $key);
+                });
+
+                // Loop through each naps entry that actually exists
+                foreach ($naps_keys as $naps_key) {
+                    // Make sure the naps entry exists and has a dt_tm value
+                    if (!empty($peserta[$naps_key]) && !empty($peserta[$naps_key]['dt_tm'])) {
+                        $existing_dates[] = $peserta[$naps_key]['dt_tm'];
+                    }
+                }
+            }
+
+            // Remove duplicates to get unique dates
+            $unique_dates = array_unique($existing_dates);
+
+            $data = [
+                'title'         => $title,
+                'kelas'         => $kelas,
+                'pengajar'      => $pengajar,
+                'tm'            => $tm,
+                'absenTm'       => $absenTm,
+                'absenKelas'    => $absenKelas,
+                'listAbsensi'   => $listAbsensi,
+                'existing_dates'   => $unique_dates,
+                'pengajar'      => $pengajar,
+                'npjId'        => $npj_id,
+            ];
+
+            // $absen_tm   = $this->peserta_kelas->peserta_onkelas_absen_tm($tm, $kelas_id);
+            // $data_absen_pengajar   = $this->request->getVar('data_absen_pengajar');
+
+            // //Data Kelas
+            // $data_kelas         = $this->kelas->list_detail_kelas($kelas_id);
+            // $nama_pengajar      = $data_kelas[0]['nama_pengajar'];
+            // $absen_pengajar_id  = $data_kelas[0]['data_absen_pengajar'];
+
+            // //Data absen pengajar
+            // $absen_pengajar  = $this->absen_pengajar->find($data_absen_pengajar);
+            // $tgl_tm          = "tgl_" . $tm;
+            // $tgl_absen       = $absen_pengajar["$tgl_tm"];
+
+            // if ($tgl_absen == NULL || $tgl_absen == "2022-01-01") {
+            //     $tgl_absen  = date("Y-m-d");
+            // }
+
+            // $data = [
+            //     'title'         => 'Absensi Pengajar & Peserta',
+            //     'tm'            => $tm,
+            //     'kelas_id'      => $kelas_id,
+            //     'tm_upper'      => $tm_upper,
+            //     'nama_pengajar' => $nama_pengajar,
+            //     'absen_tm'      => $absen_tm,
+            //     'tgl_absen'     => $tgl_absen,
+            //     'absen_pengajar' => $absen_pengajar,
+            //     'absen_pengajar_id' => $absen_pengajar_id,
+            // ];
+            //var_dump($existing_dates);
+            $msg = [
+                'sukses' => view('panel_admin/absensi/nonreg/input_absensi', $data)
+            ];
+            echo json_encode($msg);
+        }
+    }
+
+    public function nonreg_save_absensi()
+    {
+        $user = $this->userauth();
+
+        $tm      = $this->request->getVar('tm');
+        $kelasId = $this->request->getVar('kelasId');
+        $napjId  = $this->request->getVar('napjId');
+        $npjId   = $this->request->getVar('npjId');
+
+        $dt_tm   = $this->request->getVar('dt_tm');
+        $note    = str_replace(array("\r", "\n", "\r\n"), ' ', $this->request->getVar('note'));
+
+        $arNp    = $this->request->getVar('arNp');
+        $arNaps  = $this->request->getVar('arNaps');
+        $metode_ttm  = $this->request->getVar('metode_ttm');
+        // $aktivitas  = $this->request->getVar('aktivitas');
+
+        $npj = $this->nonreg_pengajar->find($npjId);
+        $pengajar = $this->pengajar->find($npj['npj_pengajar']);
+
+        $kelas = $this->nonreg_kelas->find($kelasId);
+
+        foreach ($arNaps as $naps) {
+            $cek = $this->request->getVar('cek' . $naps);
+            $ab  = json_encode([
+                'tm'    => $cek,
+                'dt_tm' => $dt_tm,
+                'dt_isi' => date('Y-m-d H:i:s'),
+                'note'  => '',
+                'by'    => $pengajar['nama_pengajar']
+            ]);
+            $abData = [
+                'naps' . $tm => $ab,
+            ];
+            $this->nonreg_absen_peserta->update($naps, $abData);
+        }
+
+        $abpj  = json_encode([
+            'tm'      => '1',
+            'dt_tm'   => $dt_tm,
+            'dt_isi'  => date('Y-m-d H:i:s'),
+            'note'    => $note,
+            'by'      => $pengajar['nama_pengajar'],
+            'metode_ttm' => $metode_ttm,
+            // 'aktivitas' => $aktivitas
+        ]);
+        $abpjData = [
+            'napj' . $tm => $abpj,
+        ];
+        $this->nonreg_absen_pengajar->update($napjId, $abpjData);
+        $this->logging('Admin', 'BERHASIL', 'Mengisi absensi kelas ' . $kelas['nk_nama'] . ' TM-' . $tm . ' atas nama pengajar ' . $pengajar['nama_pengajar']);
+
+        return $this->response->setJSON(
+            [
+                'success' => true,
+                'code'    => '200',
+                'data'    => [
+                    'title' => 'Berhasil',
+                    'link'  => '/absensi-nonreg/absen?kelas=' . $kelasId . '&npj=' . $napjId,
+                    'icon'  => 'success',
+                ],
+                'message' => 'Pengisian Form Berhasil.',
+            ]
+        );
+    }
+
     public function nonreg_peserta_export()
     {
         $user           = $this->userauth();
