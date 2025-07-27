@@ -107,8 +107,9 @@ if (isset($absenTmNew) && !empty($absenTmNew)) {
                 <th>TM</th>
                 <th>TGL TM</th>
                 <th>WAKTU ISI</th>
+                <th>KELAS</th>
                 <th>PENGISI</th>
-                <th>KEHADIRAN PENGAJAR</th>
+                <th>METODE TM</th>
                 <th>CATATAN</th>
             </tr>
         </thead>
@@ -126,18 +127,9 @@ if (isset($absenTmNew) && !empty($absenTmNew)) {
                                     -
                                 <?php endif; ?>
                             </td>
+                            <td><?= esc($kelas['nk_nama']) ?></td>
                             <td><?= esc($record['by'] ?? '-') ?></td>
-                            <td class="text-center">
-                                <?php // IMPROVEMENT: Cleaner logic for teacher attendance status
-                                if (isset($record['tm'])) {
-                                    echo ($record['tm'] == '1')
-                                        ? '<span class="text-success"><i class="mdi mdi-check-bold"></i> Hadir</span>'
-                                        : '<span class="text-danger"><i class="mdi mdi-minus"></i> Tidak Hadir</span>';
-                                } else {
-                                    echo '-';
-                                }
-                                ?>
-                            </td>
+                            <td><?= esc($record['metode_ttm'] ?? '-') ?></td>
                             <td><?= !empty(trim($record['note'])) ? esc($record['note']) : '-' ?></td>
                         </tr>
                     <?php endforeach; ?>

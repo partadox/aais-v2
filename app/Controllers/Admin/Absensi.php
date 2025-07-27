@@ -2323,7 +2323,8 @@ class Absensi extends BaseController
                             'dt_tm' => $jsonData['dt_tm'] ?? null,
                             'dt_isi' => $jsonData['dt_isi'] ?? null,
                             'note' => $jsonData['note'] ?? null,
-                            'by' => $jsonData['by'] ?? null
+                            'by' => $jsonData['by'] ?? null,
+                            'metode_ttm' => $jsonData['metode_ttm'] ?? null,
                         ]);
 
                         $absenTmNew[] = $newRow;
