@@ -71,7 +71,7 @@
                 </div>
                 <hr>
                 <style>
-                    .table-responsive-md {
+                    .table-responsive {
                         max-height: 300px;
                     }
 
@@ -87,7 +87,7 @@
 
                 <h5> <u>Peserta</u></h5>
 
-                <div class="table-responsive-md">
+                <div class="table-responsive">
                     <table class="table table-striped table-bordered nowrap mt-1" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                         <thead>
                             <tr>
