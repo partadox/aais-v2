@@ -180,7 +180,7 @@ class Dashboard extends BaseController
 			$user_id 	= $user['user_id'];
 			$pengajar_id = $this->pengajar->get_pengajar_id($user_id);
 			$pengajar_id = $pengajar_id->pengajar_id;
-			$nonregKelas = $this->nonreg_pengajar->where('npj_pengajar', $pengajar_id)->join('nonreg_kelas', 'nonreg_kelas.nk_id = nonreg_pengajar.npj_kelas')->where('nonreg_kelas.nk_angkatan', $angkatan)->findAll();
+			$nonregKelas = $this->nonreg_pengajar->where('npj_pengajar', $pengajar_id)->join('nonreg_kelas', 'nonreg_kelas.nk_id = nonreg_pengajar.npj_kelas')->where('nonreg_kelas.nk_tahun', date('Y'))->findAll();
 			$jml_kelas_nonreg = count($nonregKelas);
 			$data = [
 				'title'                 => 'Dashboard',

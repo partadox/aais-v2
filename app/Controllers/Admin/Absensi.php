@@ -2785,6 +2785,7 @@ class Absensi extends BaseController
 
         // Get bulan parameter
         $bulan = isset($params['bulan']) ? $params['bulan'] : 'all';
+        $jenis_data = isset($params['jenis-data']) ? $params['jenis-data'] : 'tm';
 
         $list_kelas = $this->nonreg_kelas->list($tahun);
         if (count($list_kelas) > 0) {
@@ -2795,7 +2796,6 @@ class Absensi extends BaseController
 
         // Get all data for the year
         $lists = $this->nonreg_absen_pengajar->list_rekap_export();
-
         // Process each record - decode JSON napj fields
         $lists = array_map(function ($record) {
             foreach ($record as $key => $value) {
@@ -2808,7 +2808,7 @@ class Absensi extends BaseController
 
         // Filter by month if not 'all'
         if ($bulan !== 'all') {
-            $lists = $this->filterDataByMonthAndYear($lists, $bulan, $tahun, $highest_tm_ambil);
+            $lists = $this->filterDataByMonthAndYear($lists, $bulan, $tahun, $highest_tm_ambil, $jenis_data);
         }
 
         // Transform data structure - convert horizontal TM data to vertical rows
@@ -2840,7 +2840,8 @@ class Absensi extends BaseController
                     'tgl_hadir' => '',
                     'metode_ttm' => '',
                     'dt_isi' => '',
-                    'status_hadir' => 'Tidak Hadir'
+                    'status_hadir' => 'Tidak Hadir',
+                    'note' => isset($data['napj' . $i]['note']) ? $data['napj' . $i]['note'] : '',
                 ];
 
                 // Check if this TM data exists
@@ -2889,7 +2890,8 @@ class Absensi extends BaseController
                 'tgl_hadir' => '-',
                 'metode_ttm' => '-',
                 'dt_isi' => '-',
-                'status_hadir' => 'Tidak ada data untuk bulan ' . $bulan_name
+                'status_hadir' => 'Tidak ada data untuk bulan ' . $bulan_name,
+                'note' => '-',
             ];
         }
 
@@ -2952,11 +2954,11 @@ class Absensi extends BaseController
         $tgl = $period_text . ' - ' . date("d-m-Y");
 
         $sheet->setCellValue('A1', $judul);
-        $sheet->mergeCells('A1:K1');
+        $sheet->mergeCells('A1:L1');
         $sheet->getStyle('A1')->applyFromArray($styleColumn);
 
         $sheet->setCellValue('A2', $tgl);
-        $sheet->mergeCells('A2:K2');
+        $sheet->mergeCells('A2:L2');
         $sheet->getStyle('A2')->applyFromArray($styleColumn);
 
         // Set headers for vertical format
@@ -2971,13 +2973,14 @@ class Absensi extends BaseController
             ->setCellValue('H4', 'TM')
             ->setCellValue('I4', 'TGL HADIR')
             ->setCellValue('J4', 'METODE TTM')
-            ->setCellValue('K4', 'TGL INPUT');
+            ->setCellValue('K4', 'WAKTU ISI')
+            ->setCellValue('L4', 'CATATAN');
 
-        $sheet->getStyle('A4:K4')->applyFromArray($style_up);
-        $sheet->getStyle('A5:K' . $total_row)->applyFromArray($isi_tengah);
+        $sheet->getStyle('A4:L4')->applyFromArray($style_up);
+        $sheet->getStyle('A5:L' . $total_row)->applyFromArray($isi_tengah);
 
         // Auto-size columns
-        $columns = range('A', 'K');
+        $columns = range('A', 'L');
         foreach ($columns as $column) {
             $spreadsheet->getActiveSheet()->getColumnDimension($column)->setAutoSize(true);
         }
@@ -2999,7 +3002,8 @@ class Absensi extends BaseController
                 ->setCellValue('H' . $row, $data['tm_number'])
                 ->setCellValue('I' . $row, $data['tgl_hadir'])
                 ->setCellValue('J' . $row, $data['metode_ttm'])
-                ->setCellValue('K' . $row, $data['dt_isi']);
+                ->setCellValue('K' . $row, $data['dt_isi'])
+                ->setCellValue('L' . $row, $data['note']);
 
             $row++;
         }
@@ -3027,30 +3031,51 @@ class Absensi extends BaseController
     /**
      * Helper function to filter data by month
      */
-    private function filterDataByMonthAndYear($lists, $bulan, $tahun, $highest_tm_ambil) // Renamed and added $tahun
+    private function filterDataByMonthAndYear($lists, $bulan, $tahun, $highest_tm_ambil, $jenis_data) // Renamed and added $tahun
     {
         $filtered_lists = [];
+        if ($jenis_data == 'tm') {
+            foreach ($lists as $data) {
+                $has_data_in_period = false;
 
-        foreach ($lists as $data) {
-            $has_data_in_period = false;
-
-            // Check if any TM has data in the selected month and year
-            for ($i = 1; $i <= $highest_tm_ambil; $i++) {
-                if (isset($data['napj' . $i]) && !is_null($data['napj' . $i])) {
-                    // Pass $tahun to the checking function
-                    if (isset($data['napj' . $i]['dt_tm']) && $this->isDateInMonthAndYear($data['napj' . $i]['dt_tm'], $bulan, $tahun)) {
-                        $has_data_in_period = true;
-                        break;
+                // Check if any TM has data in the selected month and year
+                for ($i = 1; $i <= $highest_tm_ambil; $i++) {
+                    if (isset($data['napj' . $i]) && !is_null($data['napj' . $i])) {
+                        // Pass $tahun to the checking function
+                        if (isset($data['napj' . $i]['dt_tm']) && $this->isDateInMonthAndYear($data['napj' . $i]['dt_tm'], $bulan, $tahun)) {
+                            $has_data_in_period = true;
+                            break;
+                        }
                     }
+                }
+
+                if ($has_data_in_period) {
+                    $filtered_lists[] = $data;
                 }
             }
 
-            if ($has_data_in_period) {
-                $filtered_lists[] = $data;
-            }
-        }
+            return $filtered_lists;
+        } elseif ($jenis_data == 'input') {
+            foreach ($lists as $data) {
+                $has_data_in_period = false;
 
-        return $filtered_lists;
+                // Check if any TM has data in the selected month and year
+                for ($i = 1; $i <= $highest_tm_ambil; $i++) {
+                    if (isset($data['napj' . $i]) && !is_null($data['napj' . $i])) {
+                        // Pass $tahun to the checking function
+                        if (isset($data['napj' . $i]['dt_isi']) && $this->isDateInMonthAndYear($data['napj' . $i]['dt_isi'], $bulan, $tahun)) {
+                            $has_data_in_period = true;
+                            break;
+                        }
+                    }
+                }
+
+                if ($has_data_in_period) {
+                    $filtered_lists[] = $data;
+                }
+            }
+            return $filtered_lists;
+        }
     }
 
     /**
@@ -3084,18 +3109,18 @@ class Absensi extends BaseController
     private function getMonthName($month)
     {
         $months = [
-            '01' => 'Januari',
-            '02' => 'Februari',
-            '03' => 'Maret',
-            '04' => 'April',
-            '05' => 'Mei',
-            '06' => 'Juni',
-            '07' => 'Juli',
-            '08' => 'Agustus',
-            '09' => 'September',
-            '10' => 'Oktober',
-            '11' => 'November',
-            '12' => 'Desember'
+            '01' => 'JANUARI',
+            '02' => 'FEBRUARI',
+            '03' => 'MARET',
+            '04' => 'APRIL',
+            '05' => 'MEI',
+            '06' => 'JUNI',
+            '07' => 'JULI',
+            '08' => 'AGUSTUS',
+            '09' => 'SEPTEMBER',
+            '10' => 'OKTOBER',
+            '11' => 'NOVEMBER',
+            '12' => 'DESEMBER'
         ];
 
         return isset($months[$month]) ? $months[$month] : 'Semua';

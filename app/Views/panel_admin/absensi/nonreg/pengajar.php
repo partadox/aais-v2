@@ -47,6 +47,14 @@
                         </select>
                     </div>
 
+                    <div class="col-lg-3 col-md-4 col-sm-6 mb-3">
+                        <label for="jenis_data">Pilih Data Berdasarkan Tanggal<span class="text-danger">*</span></label>
+                        <select class="form-control js-example-basic-single" name="jenis_data" id="jenis_data">
+                            <option value="tm" selected>TM</option>
+                            <option value="input">Input</option>
+                        </select>
+                    </div>
+
                     <div class="col-lg-3 col-md-4 col-sm-6 mb-3 d-flex align-items-end">
                         <button type="button" class="btn btn-success btn-block" id="btn_export" disabled>
                             <i class="mdi mdi-download"></i> Export Excel
@@ -233,6 +241,7 @@
         $('#btn_export').on('click', function() {
             const tahun = $('#tahun_export').val();
             const bulan = $('#bulan_export').val();
+            const jenisData = $('#jenis_data').val();
 
             if (!tahun || !bulan) {
                 Swal.fire({
@@ -257,7 +266,7 @@
             });
 
             // Construct export URL
-            const exportUrl = '/absensi-nonreg/pengajar-export?tahun=' + tahun + '&bulan=' + bulan;
+            const exportUrl = '/absensi-nonreg/pengajar-export?tahun=' + tahun + '&bulan=' + bulan + '&jenis-data=' + jenisData;
 
             // Create hidden iframe for download
             const iframe = document.createElement('iframe');

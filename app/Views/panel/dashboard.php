@@ -661,7 +661,7 @@
                         <i class="mdi mdi-teach bg-warning  text-white"></i>
                     </div>
                     <div>
-                        <h5 class="font-16">Kelas Non-Reguler Anda pada Angkatan <?= $angkatan ?></h5>
+                        <h5 class="font-16">Kelas Non-Reguler Anda tahun <?= date('Y') ?></h5>
                     </div>
                     <h3 class="mt-4"><?= $jml_kelas_nonreg ?></h3>
                 </div>

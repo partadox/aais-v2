@@ -144,6 +144,15 @@ if (isset($absenTmNew) && !empty($absenTmNew)) {
         </tbody>
     </table>
 </div>
+<div class="mt-3">
+    <code>
+        <h6>Catatan:</h6>
+    </code>
+    <ul>
+        <li>Pengajar wajib melakukan validasi pengisian absensi sebelum waktu cut off penggajian di Tanggal 30 atau 31 Pkl. 23.59 WITA.</li>
+        <li>Pengisian/perbaikan absensi bulan berjalan setelah waktu cut off hanya bisa dilakukan melalui Koordinator Tahsin.</li>
+    </ul>
+</div>
 
 <div class="modalIsi"></div>
 <div class="modalIsiNote"></div>
