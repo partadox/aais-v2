@@ -80,7 +80,7 @@ if (session()->getFlashdata('pesan_sukses')) {
                 </th>
                 <th>ID</th>
                 <th>Nama</th>
-                <th>Kantor</th>
+                <th>Asal Cabang</th>
                 <th>Role</th>
                 <th>Tipe</th>
                 <th>Jenis <br>Kelamin</th>

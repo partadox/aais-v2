@@ -886,39 +886,41 @@ class Pengajar extends BaseController
         $tgl = date("d-m-Y");
 
         $sheet->setCellValue('A1', $judul);
-        $sheet->mergeCells('A1:S1');
+        $sheet->mergeCells('A1:U1');
         $sheet->getStyle('A1')->applyFromArray($styleColumn);
 
         $sheet->setCellValue('A2', $tgl);
-        $sheet->mergeCells('A2:S2');
+        $sheet->mergeCells('A2:U2');
         $sheet->getStyle('A2')->applyFromArray($styleColumn);
 
-        $sheet->getStyle('A4:S4')->applyFromArray($style_up);
+        $sheet->getStyle('A4:U4')->applyFromArray($style_up);
 
-        $sheet->getStyle('A5:S' . $total_row)->applyFromArray($isi_tengah);
+        $sheet->getStyle('A5:U' . $total_row)->applyFromArray($isi_tengah);
 
         $spreadsheet->setActiveSheetIndex(0)
             ->setCellValue('A4', 'PENGAJAR ID')
             ->setCellValue('B4', 'USERNAME')
-            ->setCellValue('C4', 'ASAL CABANG')
-            ->setCellValue('D4', 'ROLE')
-            ->setCellValue('E4', 'TIPE')
-            ->setCellValue('F4', 'NAMA')
-            ->setCellValue('G4', 'NIK')
-            ->setCellValue('H4', 'JENKEL')
-            ->setCellValue('I4', 'TMP. LAHIR')
-            ->setCellValue('J4', 'TGL. LAHIR')
-            ->setCellValue('K4', 'SUKU BANGSA')
-            ->setCellValue('L4', 'STATUS NIKAH')
-            ->setCellValue('M4', 'JUMLAH ANAK')
-            ->setCellValue('N4', 'PENDIDIKAN')
-            ->setCellValue('O4', 'JURUSAN')
-            ->setCellValue('P4', 'TGL. GABUNG')
-            ->setCellValue('Q4', 'NO. HP')
-            ->setCellValue('R4', 'EMAIL')
-            ->setCellValue('S4', 'ALAMAT');
+            ->setCellValue('C4', 'STATUS AKUN')
+            ->setCellValue('D4', 'ASAL CABANG ID')
+            ->setCellValue('E4', 'ASAL CABANG')
+            ->setCellValue('F4', 'ROLE')
+            ->setCellValue('G4', 'TIPE')
+            ->setCellValue('H4', 'NAMA')
+            ->setCellValue('I4', 'NIK')
+            ->setCellValue('J4', 'JENKEL')
+            ->setCellValue('K4', 'TMP. LAHIR')
+            ->setCellValue('L4', 'TGL. LAHIR')
+            ->setCellValue('M4', 'SUKU BANGSA')
+            ->setCellValue('N4', 'STATUS NIKAH')
+            ->setCellValue('O4', 'JUMLAH ANAK')
+            ->setCellValue('P4', 'PENDIDIKAN')
+            ->setCellValue('Q4', 'JURUSAN')
+            ->setCellValue('R4', 'TGL. GABUNG')
+            ->setCellValue('S4', 'NO. HP')
+            ->setCellValue('T4', 'EMAIL')
+            ->setCellValue('U4', 'ALAMAT');
 
-        $columns = range('A', 'S');
+        $columns = range('A', 'U');
         foreach ($columns as $column) {
             $spreadsheet->getActiveSheet()->getColumnDimension($column)->setAutoSize(true);
         }
@@ -926,29 +928,39 @@ class Pengajar extends BaseController
         $row = 5;
 
         foreach ($pengajar as $pgjdata) {
+            $cb = $this->kantor->find($pgjdata['asal_kantor']);
+            $usr = $this->user->find($pgjdata['user_id']);
+            if ($usr['active'] == 1) {
+                $actv = 'AKTIF';
+            } else {
+                $actv = 'TIDAK AKTIF';
+            }
             $spreadsheet->setActiveSheetIndex(0)
                 ->setCellValue('A' . $row, $pgjdata['pengajar_id'])
                 ->setCellValue('B' . $row, $pgjdata['username'])
-                ->setCellValue('C' . $row, $pgjdata['asal_kantor'])
-                ->setCellValue('D' . $row, $pgjdata['tipe_pengajar'])
-                ->setCellValue('E' . $row, $pgjdata['kategori_pengajar'])
-                ->setCellValue('F' . $row, $pgjdata['nama_pengajar'])
-                ->setCellValue('G' . $row, $pgjdata['nik_pengajar'])
-                ->setCellValue('H' . $row, $pgjdata['jenkel_pengajar'])
-                ->setCellValue('I' . $row, $pgjdata['tmp_lahir_pengajar'])
-                ->setCellValue('J' . $row, $pgjdata['tgl_lahir_pengajar'])
-                ->setCellValue('K' . $row, $pgjdata['suku_bangsa'])
-                ->setCellValue('L' . $row, $pgjdata['status_nikah'])
-                ->setCellValue('M' . $row, $pgjdata['jumlah_anak'])
-                ->setCellValue('N' . $row, $pgjdata['pendidikan_pengajar'])
-                ->setCellValue('O' . $row, $pgjdata['jurusan_pengajar'])
-                ->setCellValue('P' . $row, $pgjdata['tgl_gabung_pengajar'])
-                ->setCellValue('Q' . $row, $pgjdata['hp_pengajar'])
-                ->setCellValue('R' . $row, $pgjdata['email_pengajar'])
-                ->setCellValue('S' . $row, $pgjdata['alamat_pengajar']);
-
-            $sheet->getStyle('G' . $row)->getNumberFormat()
-                ->setFormatCode(\PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_NUMBER);
+                ->setCellValue('C' . $row, $actv)
+                ->setCellValue('D' . $row, $pgjdata['asal_kantor'])
+                ->setCellValue('E' . $row, $cb['nama_kantor'])
+                ->setCellValue('F' . $row, $pgjdata['tipe_pengajar'])
+                ->setCellValue('G' . $row, $pgjdata['kategori_pengajar'])
+                ->setCellValue('H' . $row, $pgjdata['nama_pengajar'])
+                ->setCellValueExplicit(
+                    'I' . $row,
+                    $pgjdata['nik_pengajar'],
+                    \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING
+                )
+                ->setCellValue('J' . $row, $pgjdata['jenkel_pengajar'])
+                ->setCellValue('K' . $row, $pgjdata['tmp_lahir_pengajar'])
+                ->setCellValue('L' . $row, $pgjdata['tgl_lahir_pengajar'])
+                ->setCellValue('M' . $row, $pgjdata['suku_bangsa'])
+                ->setCellValue('N' . $row, $pgjdata['status_nikah'])
+                ->setCellValue('O' . $row, $pgjdata['jumlah_anak'])
+                ->setCellValue('P' . $row, $pgjdata['pendidikan_pengajar'])
+                ->setCellValue('Q' . $row, $pgjdata['jurusan_pengajar'])
+                ->setCellValue('R' . $row, $pgjdata['tgl_gabung_pengajar'])
+                ->setCellValue('S' . $row, $pgjdata['hp_pengajar'])
+                ->setCellValue('T' . $row, $pgjdata['email_pengajar'])
+                ->setCellValue('U' . $row, $pgjdata['alamat_pengajar']);
 
             $row++;
         }
