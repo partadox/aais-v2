@@ -1,25 +1,26 @@
 <?php
+
 namespace App\Controllers\Admin;
 
 use App\Controllers\BaseController;
 
 class TerimaPeserta extends BaseController
 {
-	public function index()
-	{
-		$user  = $this->userauth(); // Return Array
+    public function index()
+    {
+        $user  = $this->userauth(); // Return Array
 
-		$data = [
-			'title' 				=> 'Terima Transfer Peserta dari Cabang',
-			'user'  				=> $user,
-		];
-		return view('panel_admin/terima_peserta/index', $data);
-	}
+        $data = [
+            'title'                 => 'Terima Transfer Peserta dari Cabang',
+            'user'                  => $user,
+        ];
+        return view('panel_admin/terima_peserta/index', $data);
+    }
 
     public function getdataAll()
     {
         $url = 'https://aais-alhaqq.or.id/api/transfer-peserta/list';
-        $apiKey = getenv('WAG_KEY');
+        $apiKey = getenv('WAG_KEY2');
         // $id = 1;
 
         $ch = curl_init($url);
@@ -33,7 +34,7 @@ class TerimaPeserta extends BaseController
 
         $response = curl_exec($ch);
         curl_close($ch);
-        if (count(json_decode($response,true)) != 0) {
+        if (count(json_decode($response, true)) != 0) {
             $lists = json_decode($response, true);
             $no = 0;
             foreach ($lists as $list) {
@@ -46,7 +47,7 @@ class TerimaPeserta extends BaseController
                 if ($status == 0) {
                     $status = "<span class=\"badge badge-secondary\">PENDING</span>";
                     $btnAccept = "<button type=\"button\" title=\"Terima Peserta\" class=\"btn btn-success btn-sm\" onclick=\"accept('" . $peserta . "')\"><i class=\"fa fa-check\"></i></button>";
-                }else {
+                } else {
                     $status = "<span class=\"badge badge-success\">TERKONFIRMASI</span>";
                     $btnAccept = "";
                 }
@@ -63,7 +64,7 @@ class TerimaPeserta extends BaseController
                 $phone = $list['phone'];
 
                 $no++;
-                $row[] = "<input type=\"checkbox\" name=\"id[]\" class=\"centangId\" value=\"$peserta\">" ." ".$no;
+                $row[] = "<input type=\"checkbox\" name=\"id[]\" class=\"centangId\" value=\"$peserta\">" . " " . $no;
                 $row[] = $name;
                 $row[] = $level;
                 $row[] = $gender;
@@ -74,7 +75,7 @@ class TerimaPeserta extends BaseController
                 $row[] = $dt_transfer;
                 $row[] = $dt_conf;
                 $row[] = $note;
-                $row[] = $btnAccept." ".$btnHistory;
+                $row[] = $btnAccept . " " . $btnHistory;
                 $data[] = $row;
             }
             $output = [
@@ -91,17 +92,15 @@ class TerimaPeserta extends BaseController
             ];
             echo json_encode($output);
         }
-
-        
     }
 
     public function modal()
     {
-        if ($this->request->isAJAX()) {            
+        if ($this->request->isAJAX()) {
             $peserta_id = $this->request->getVar('peserta_id');
             $modal = $this->request->getVar('modal');
             $apiKey = getenv('WAG_KEY');
-            if($modal == 'terima') {
+            if ($modal == 'terima') {
                 $url = 'https://aais-alhaqq.or.id/api/transfer-peserta/detail?id=' . $peserta_id;
 
                 $ch = curl_init($url);
@@ -145,7 +144,7 @@ class TerimaPeserta extends BaseController
                 $response = curl_exec($ch);
                 curl_close($ch);
                 $history = json_decode($response, true);
-                if($history['status'] != 200) {
+                if ($history['status'] != 200) {
                     $history = null;
                 }
                 $data = [
@@ -319,17 +318,17 @@ class TerimaPeserta extends BaseController
                     ]
                 ];
             } else {
-				$newUser    = [
-					'username' 				=> $this->request->getVar('nis'),
-					'nama'					=> strtoupper($this->request->getVar('nama')),
-					'password'				=> (password_hash(getenv('password_default'), PASSWORD_BCRYPT)),
-					'foto'					=> 'default.png',
-					'level'					=> 4,
-					'active'				=> 1,
-				];
+                $newUser    = [
+                    'username'                 => $this->request->getVar('nis'),
+                    'nama'                    => strtoupper($this->request->getVar('nama')),
+                    'password'                => (password_hash(getenv('password_default'), PASSWORD_BCRYPT)),
+                    'foto'                    => 'default.png',
+                    'level'                    => 4,
+                    'active'                => 1,
+                ];
 
                 $this->db->transStart();
-                $state[]= $this->user->insert($newUser);
+                $state[] = $this->user->insert($newUser);
                 $newpeserta = [
                     'nama_peserta'          => strtoupper($this->request->getVar('nama')),
                     'asal_cabang_peserta'   => $this->request->getVar('asal_cabang_peserta'),
@@ -351,12 +350,12 @@ class TerimaPeserta extends BaseController
                     'status_peserta'        => $this->request->getVar('status_peserta'),
                     'user_id'               => $this->user->insertID(),
                     'tgl_gabung'            => date("Y-m-d"),
-                    'peserta_note'          => str_replace(array("\r", "\n"), ' ',$this->request->getVar('peserta_note')),
+                    'peserta_note'          => str_replace(array("\r", "\n"), ' ', $this->request->getVar('peserta_note')),
                 ];
-                $state[]= $this->peserta->insert($newpeserta);
+                $state[] = $this->peserta->insert($newpeserta);
                 $peserta_transfer_id = $this->request->getVar('peserta_transfer_id');
-                $url = 'https://aais-alhaqq.or.id/api/transfer-peserta/update?id='.$peserta_transfer_id;
-                
+                $url = 'https://aais-alhaqq.or.id/api/transfer-peserta/update?id=' . $peserta_transfer_id;
+
                 $ch = curl_init($url);
                 $apiKey = getenv('WAG_KEY');
                 curl_setopt_array($ch, array(
@@ -365,7 +364,7 @@ class TerimaPeserta extends BaseController
                         'X-API-KEY: ' . $apiKey,
                         'Content-Type: application/json'
                     ),
-                    CURLOPT_CUSTOMREQUEST => 'POST',                    
+                    CURLOPT_CUSTOMREQUEST => 'POST',
                 ));
 
                 $response = curl_exec($ch);
@@ -376,18 +375,18 @@ class TerimaPeserta extends BaseController
                 } else {
                     $status = false;
                 }
-                $state[]= $status;
+                $state[] = $status;
                 $aktivitas = 'Terima Data Peserta dari Cabang ' . $this->request->getVar('nama');
-                if (in_array(false, $state, true)){
+                if (in_array(false, $state, true)) {
                     $this->db->transRollback();
                     /*--- Log ---*/
                     $this->logging('Admin', 'FAIL', $aktivitas);
                 } else {
                     $this->db->transComplete();
                     /*--- Log ---*/
-				    $this->logging('Admin', 'BERHASIL', $aktivitas);
+                    $this->logging('Admin', 'BERHASIL', $aktivitas);
                 }
-                
+
 
                 $msg = [
                     'sukses' => [
